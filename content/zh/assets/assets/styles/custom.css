@@ -1,0 +1,59 @@
+/* ACC ClubHub - 自定义样式 */
+
+:root {
+    --acc-primary: #2563eb;
+    --acc-secondary: #059669;
+    --acc-accent: #f59e0b;
+}
+
+/* 导航栏 */
+.navbar {
+    background-color: var(--acc-primary) !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .navbar-title,
+.navbar .menu-text,
+.navbar .dropdown-toggle {
+    color: white !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: #e0e0e0 !important;
+}
+
+/* 页脚 */
+.page-footer {
+    background-color: #1f2937;
+    color: white;
+    padding: 2rem 0;
+}
+
+/* 卡片样式 */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* 按钮 */
+.btn-primary {
+    background-color: var(--acc-primary);
+    border-color: var(--acc-primary);
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+/* 语言切换器高亮当前语言 */
+.dropdown-item.active {
+    background-color: var(--acc-primary);
+    color: white;
+}

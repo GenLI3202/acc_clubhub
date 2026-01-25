@@ -11,6 +11,19 @@
     background-color: var(--acc-primary) !important;
 }
 
+.navbar .nav-link,
+.navbar .navbar-brand,
+.navbar .navbar-title,
+.navbar .menu-text,
+.navbar .dropdown-toggle {
+    color: white !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: #e0e0e0 !important;
+}
+
 /* 页脚 */
 .page-footer {
     background-color: #1f2937;

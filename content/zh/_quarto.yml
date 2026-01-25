@@ -31,11 +31,11 @@ website:
       - text: "🌐 中文"
         menu:
           - text: "中文"
-            href: /zh/
+            href: /acc_clubhub/zh/
           - text: "English"
-            href: /en/
+            href: /acc_clubhub/en/
           - text: "Deutsch"
-            href: /de/
+            href: /acc_clubhub/de/
 
   page-footer:
     center: "© 2026 ACC - Across Cycling Club Munich"
