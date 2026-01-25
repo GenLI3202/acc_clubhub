@@ -1,0 +1,19 @@
+{
+  "listingMap": {
+    "events\\index.qmd": [
+      "*.qmd"
+    ],
+    "knowledge\\gear\\index.qmd": [
+      "*.qmd"
+    ],
+    "knowledge\\training\\index.qmd": [
+      "*.qmd"
+    ],
+    "knowledge\\workshop\\index.qmd": [
+      "*.qmd"
+    ],
+    "routes\\index.qmd": [
+      "*.qmd"
+    ]
+  }
+}
