@@ -1,0 +1,18 @@
+---
+title: "活动"
+lang: zh
+listing:
+  contents: "*.qmd"
+  type: default
+  sort: "date desc"
+---
+
+ACC 骑行活动与社交活动。
+
+## 活动类型
+
+- 🚴 Social Ride - 休闲骑行
+- ⚡ Training Day - 训练日
+- 🏔️ Weekend Long Ride - 周末长骑
+- 💪 力量训练
+- 🎉 社交活动

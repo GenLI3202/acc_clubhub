@@ -1,0 +1,2 @@
+error: 'content/de/' does not have a commit checked out
+fatal: adding files failed

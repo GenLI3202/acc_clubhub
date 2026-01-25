@@ -1,0 +1,13 @@
+---
+title: "Gear Knowledge"
+lang: en
+listing:
+  contents: "*.qmd"
+  type: default
+---
+
+Bicycle gear knowledge from a European perspective.
+
+- Buying guides
+- Accessories
+- New product reviews

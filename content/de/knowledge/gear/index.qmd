@@ -1,0 +1,13 @@
+---
+title: "Ausrüstungswissen"
+lang: de
+listing:
+  contents: "*.qmd"
+  type: default
+---
+
+Fahrradausrüstung aus europäischer Perspektive.
+
+- Kaufberatung
+- Zubehör
+- Neue Produktbewertungen

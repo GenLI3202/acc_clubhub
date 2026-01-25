@@ -1,0 +1,13 @@
+---
+title: "科学训练"
+lang: zh
+listing:
+  contents: "*.qmd"
+  type: default
+---
+
+授人以渔，不只是给计划，更是给方法论。
+
+- 训练理论
+- 骑行技术
+- 安全科普

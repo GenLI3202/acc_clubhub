@@ -1,0 +1,18 @@
+---
+title: "Route Library"
+lang: en
+listing:
+  contents: "*.qmd"
+  type: grid
+  sort: "date desc"
+  categories: true
+---
+
+Recommended cycling routes around Munich, tested by ACC members.
+
+## Route Categories
+
+- 🏔️ Long climbs
+- 🌊 Lake views
+- ⚡ Short intervals
+- 🌲 Forest trails

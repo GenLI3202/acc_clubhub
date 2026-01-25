@@ -1,0 +1,37 @@
+---
+title: "ACC - Across Cycling Club Munich"
+subtitle: "Making Cycling a Lifestyle"
+lang: en
+---
+
+# Welcome to ACC
+
+**Across Cycling Club Munich** is the home for Chinese cycling enthusiasts in the Munich area.
+
+## What We Do
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### 🚴 Cycling Activities
+- Social Ride - Casual group rides
+- Training Day - Structured training
+- Weekend Long Ride - Endurance rides
+:::
+
+::: {.column width="50%"}
+### 📚 Knowledge Sharing
+- ACC Workshop - Maintenance tips
+- Gear Knowledge - Buying guides
+- Scientific Training - Performance methods
+:::
+
+::::
+
+## Upcoming Events
+
+*Coming soon...*
+
+## Join Us
+
+Want to join ACC? [Learn more](about/index.qmd)

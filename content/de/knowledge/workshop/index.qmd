@@ -1,0 +1,16 @@
+---
+title: "ACC Werkstatt"
+lang: de
+listing:
+  contents: "*.qmd"
+  type: default
+---
+
+Fahrradwartung Tipps und Anleitungen.
+
+## Themen
+
+- Antriebsstrang
+- Radwartung
+- Bremsenjustierung
+- Schaltungseinstellung

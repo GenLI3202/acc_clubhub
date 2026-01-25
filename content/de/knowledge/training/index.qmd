@@ -1,0 +1,13 @@
+---
+title: "Wissenschaftliches Training"
+lang: de
+listing:
+  contents: "*.qmd"
+  type: default
+---
+
+Methodik lehren, nicht nur Trainingspläne.
+
+- Trainingstheorie
+- Radtechnik
+- Sicherheitsschulung

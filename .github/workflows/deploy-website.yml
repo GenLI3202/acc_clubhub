@@ -1,0 +1,27 @@
+name: Deploy Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'assets/**'
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Render Website
+        run: quarto render content/
+        
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./content/_site

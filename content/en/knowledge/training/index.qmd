@@ -1,0 +1,13 @@
+---
+title: "Scientific Training"
+lang: en
+listing:
+  contents: "*.qmd"
+  type: default
+---
+
+Teaching methodology, not just training plans.
+
+- Training theory
+- Cycling technique
+- Safety education

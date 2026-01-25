@@ -1,0 +1,37 @@
+---
+title: "ACC - Across Cycling Club Munich"
+subtitle: "Radfahren als Lebensstil"
+lang: de
+---
+
+# Willkommen bei ACC
+
+**Across Cycling Club Munich** ist die Heimat für chinesische Radsportbegeisterte im Raum München.
+
+## Was wir machen
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### 🚴 Radaktivitäten
+- Social Ride - Gemütliche Gruppenfahrten
+- Training Day - Strukturiertes Training
+- Weekend Long Ride - Ausdauerfahrten
+:::
+
+::: {.column width="50%"}
+### 📚 Wissensaustausch
+- ACC Werkstatt - Wartungstipps
+- Ausrüstungswissen - Kaufberatung
+- Wissenschaftliches Training - Leistungsmethoden
+:::
+
+::::
+
+## Kommende Veranstaltungen
+
+*Demnächst...*
+
+## Mitmachen
+
+Möchtest du bei ACC mitmachen? [Mehr erfahren](about/index.qmd)

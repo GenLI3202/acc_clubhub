@@ -1,0 +1,6 @@
+# ACC ClubHub - 通用依赖
+# 用于 scripts/ 目录下的工具脚本
+
+sqlalchemy>=2.0
+requests>=2.31
+python-dotenv>=1.0
