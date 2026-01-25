@@ -20,7 +20,13 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
         
       - name: Render Website
-        run: quarto render content/
+        run: |
+          cd content/zh
+          quarto render
+          cd ../en
+          quarto render
+          cd ../de
+          quarto render
         
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
