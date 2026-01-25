@@ -18,16 +18,27 @@ jobs:
       
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        
-      - name: Render Website
+      
+      # 复制 assets 到每个语言的源目录 (Quarto 会自动处理相对路径)
+      - name: Copy assets to source directories
         run: |
-          cd content/zh
-          quarto render
-          cd ../en
-          quarto render
-          cd ../de
-          quarto render
-          cp ../index.html ../_site/index.html
+          cp -r assets content/zh/assets
+          cp -r assets content/en/assets
+          cp -r assets content/de/assets
+        
+      # 分别渲染三个语言版本
+      - name: Render Chinese Project
+        run: quarto render content/zh
+        
+      - name: Render English Project
+        run: quarto render content/en
+        
+      - name: Render German Project
+        run: quarto render content/de
+      
+      # 复制根目录重定向页面
+      - name: Copy landing page
+        run: cp content/index.html content/_site/index.html
         
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
