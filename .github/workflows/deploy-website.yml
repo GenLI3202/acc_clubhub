@@ -27,6 +27,7 @@ jobs:
           quarto render
           cd ../de
           quarto render
+          cp ../index.html ../_site/index.html
         
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
