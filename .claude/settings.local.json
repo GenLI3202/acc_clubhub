@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:genli3202.github.io)",
+      "Bash(git -C \"D:\\\\my_projects\\\\acc_clubhub\" ls-files:*)"
+    ]
+  }
+}

@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 判断是否是语言切换链接 (格式: #lang-zh, #lang-en, #lang-de)
         let targetLang = null;
-        if (href.includes('#lang-zh') || href.includes('/zh/') || href.endsWith('/zh')) targetLang = 'zh';
-        else if (href.includes('#lang-en') || href.includes('/en/') || href.endsWith('/en')) targetLang = 'en';
-        else if (href.includes('#lang-de') || href.includes('/de/') || href.endsWith('/de')) targetLang = 'de';
+        if (href.includes('#lang-zh')) targetLang = 'zh';
+        else if (href.includes('#lang-en')) targetLang = 'en';
+        else if (href.includes('#lang-de')) targetLang = 'de';
 
         if (targetLang) {
             // 这是一个语言切换链接，绑定点击事件
@@ -74,8 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 找到对应语言的链接并添加 active 类
     dropdownLinks.forEach(link => {
         const href = link.getAttribute('href');
-        if (href && (href.includes('#lang-' + activeLang) ||
-            href.includes(`/${activeLang}/`) || href.endsWith(`/${activeLang}`))) {
+        if (href && href.includes('#lang-' + activeLang)) {
             link.classList.add('active');
         }
     });
