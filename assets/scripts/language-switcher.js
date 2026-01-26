@@ -1,72 +1,82 @@
 /**
- * ACC ClubHub - 智能语言切换器
- * 切换语言时保持在当前页面
+ * ACC ClubHub - 智能语言切换器 (Fix V3)
+ * 使用 #lang-xx 格式的链接来避免 Quarto 路径转换问题
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-    // 获取所有语言切换链接
-    // 获取所有语言切换链接 (匹配 href 中包含 /zh/, /en/, /de/ 的链接)
-    const langLinks = document.querySelectorAll('.dropdown-menu a[href*="/zh/"], .dropdown-menu a[href*="/en/"], .dropdown-menu a[href*="/de/"]');
+    // 选择所有下拉菜单里的链接
+    const dropdownLinks = document.querySelectorAll('.navbar-nav .dropdown-menu a');
 
-    langLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
+    dropdownLinks.forEach(link => {
+        const href = link.getAttribute('href');
 
-            const href = this.getAttribute('href');
-            // 提取语言代码 (zh, en, de)，兼容 ./en/, /en/, ../en/ 等格式
-            const langMatch = href.match(/(zh|en|de)/);
-            if (!langMatch) return; // 如果没匹配到，不做处理
-            const targetLang = langMatch[0];
+        // 如果没有 href，则跳过
+        if (!href) return;
 
-            const currentPath = window.location.pathname;
+        // 判断是否是语言切换链接 (格式: #lang-zh, #lang-en, #lang-de)
+        let targetLang = null;
+        if (href.includes('#lang-zh') || href.includes('/zh/') || href.endsWith('/zh')) targetLang = 'zh';
+        else if (href.includes('#lang-en') || href.includes('/en/') || href.endsWith('/en')) targetLang = 'en';
+        else if (href.includes('#lang-de') || href.includes('/de/') || href.endsWith('/de')) targetLang = 'de';
 
-            // 检测当前语言
-            let currentLang = 'zh'; // 默认
-            if (currentPath.includes('/en/')) currentLang = 'en';
-            if (currentPath.includes('/de/')) currentLang = 'de';
+        if (targetLang) {
+            // 这是一个语言切换链接，绑定点击事件
+            link.addEventListener('click', function (e) {
+                e.preventDefault(); // 阻止默认跳转
 
-            // 替换路径中的语言部分
-            let newPath;
-            // 正则匹配: .../(zh|en|de)/...
-            const langRegex = /\/(zh|en|de)\//;
+                const currentPath = window.location.pathname;
+                let newPath;
 
-            if (langRegex.test(currentPath)) {
-                newPath = currentPath.replace(langRegex, '/' + targetLang + '/');
-            } else {
-                // 情况 2: 当前路径没有语言代码 (通常是默认语言/中文在根目录下)
-                // 例如: /acc_clubhub/routes/index.html -> /acc_clubhub/en/routes/index.html
-                // 拆分路径
-                const pathParts = currentPath.split('/').filter(p => p);
+                // 正则检测当前路径中是否已经包含语言代码
+                const langRegex = /\/(zh|en|de)\//;
 
-                // 判断是否在 GitHub Pages 的子目录 (repo name) 下
-                // 假设 repo 名字是 'acc_clubhub' (你可以根据实际情况修改这个判断，或者让它更通用)
-                // 这里我们假设如果第一项不是 targetLang 且不是 zh/en/de，那可能就是 repo name
-                if (pathParts.length > 0 && !['zh', 'en', 'de'].includes(pathParts[0])) {
-                    // 很可能是 repo name
-                    const repoName = pathParts[0];
-                    const restPath = pathParts.slice(1).join('/');
-                    newPath = '/' + repoName + '/' + targetLang + '/' + (restPath ? restPath : '');
+                if (langRegex.test(currentPath)) {
+                    // 情况 A: 当前已经在某个语言子目录下
+                    // 直接把当前语言替换成目标语言
+                    newPath = currentPath.replace(langRegex, '/' + targetLang + '/');
                 } else {
-                    // 没有 repo name (本地根目录)
-                    newPath = '/' + targetLang + '/' + pathParts.join('/');
-                }
-            }
+                    // 情况 B: 当前路径没有语言代码
+                    const pathParts = currentPath.split('/').filter(p => p);
 
-            window.location.href = newPath;
-        });
+                    if (window.location.hostname.includes('github.io')) {
+                        // GitHub Pages: pathParts[0] 是 repo 名
+                        const repoName = pathParts[0] || 'acc_clubhub';
+                        let restPath = pathParts.slice(1).join('/');
+
+                        if (restPath === 'index.html' || restPath === '') {
+                            newPath = '/' + repoName + '/' + targetLang + '/';
+                        } else {
+                            newPath = '/' + repoName + '/' + targetLang + '/' + restPath;
+                        }
+                    } else {
+                        // 本地调试模式
+                        newPath = '/' + targetLang + '/' + currentPath.replace(/^\//, '');
+                    }
+                }
+
+                // 确保路径格式正确
+                if (!newPath.endsWith('/') && !newPath.endsWith('.html')) {
+                    newPath += '/';
+                }
+
+                // 执行跳转
+                window.location.href = newPath;
+            });
+        }
     });
 
-    // 高亮当前语言
+    // 高亮当前选中的语言
     const currentPath = window.location.pathname;
-    let currentLang = 'zh';
-    if (currentPath.includes('/en/')) currentLang = 'en';
-    if (currentPath.includes('/de/')) currentLang = 'de';
+    let activeLang = 'zh'; // 默认中文
+    if (currentPath.includes('/en/')) activeLang = 'en';
+    if (currentPath.includes('/de/')) activeLang = 'de';
 
-    // Select the link based on the detected language
-    // Note: The href in the menu is /zh/, /en/, /de/
-    // This matches the targetLang logic above
-    const currentLangLink = document.querySelector(`.dropdown-menu a[href="/${currentLang}/"]`);
-    if (currentLangLink) {
-        currentLangLink.classList.add('active');
-    }
+    // 找到对应语言的链接并添加 active 类
+    dropdownLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && (href.includes('#lang-' + activeLang) ||
+            href.includes(`/${activeLang}/`) || href.endsWith(`/${activeLang}`))) {
+            link.classList.add('active');
+        }
+    });
 });

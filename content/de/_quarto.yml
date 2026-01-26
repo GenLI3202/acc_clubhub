@@ -7,7 +7,7 @@ website:
   description: "Radfahren als Lebensstil"
   
   navbar:
-    logo: assets/images/logo.png
+    logo: assets/images/logo.jpg
     left:
       - text: Startseite
         href: index.qmd
@@ -31,11 +31,11 @@ website:
       - text: "🌐 Deutsch"
         menu:
           - text: "中文"
-            href: /acc_clubhub/zh/
+            href: "#lang-zh"
           - text: "English"
-            href: /acc_clubhub/en/
+            href: "#lang-en"
           - text: "Deutsch"
-            href: /acc_clubhub/de/
+            href: "#lang-de"
 
   page-footer:
     center: "© 2026 ACC - Across Cycling Club Munich"
@@ -48,40 +48,5 @@ format:
     css: assets/styles/custom.css
     include-after-body: 
       - text: |
-          <script>
-          document.addEventListener('DOMContentLoaded', function () {
-              const langLinks = document.querySelectorAll('.dropdown-menu a[href*="/zh/"], .dropdown-menu a[href*="/en/"], .dropdown-menu a[href*="/de/"]');
-              langLinks.forEach(link => {
-                  link.addEventListener('click', function (e) {
-                      e.preventDefault();
-                      const href = this.getAttribute('href');
-                      const langMatch = href.match(/(zh|en|de)/);
-                      if (!langMatch) return;
-                      const targetLang = langMatch[0];
-                      const currentPath = window.location.pathname;
-                      const langRegex = /\/(zh|en|de)\//;
-                      let newPath;
-                      if (langRegex.test(currentPath)) {
-                          newPath = currentPath.replace(langRegex, '/' + targetLang + '/');
-                      } else {
-                          const pathParts = currentPath.split('/').filter(p => p);
-                          if (pathParts.length > 0 && !['zh', 'en', 'de'].includes(pathParts[0])) {
-                              const repoName = pathParts[0];
-                              const restPath = pathParts.slice(1).join('/');
-                              newPath = '/' + repoName + '/' + targetLang + '/' + (restPath ? restPath : '');
-                          } else {
-                              newPath = '/' + targetLang + '/' + pathParts.join('/');
-                          }
-                      }
-                      window.location.href = newPath;
-                  });
-              });
-              const currentPath = window.location.pathname;
-              let currentLang = 'zh';
-              if (currentPath.includes('/en/')) currentLang = 'en';
-              if (currentPath.includes('/de/')) currentLang = 'de';
-              const currentLangLink = document.querySelector('.dropdown-menu a[href*="/' + currentLang + '/"]');
-              if (currentLangLink) currentLangLink.classList.add('active');
-          });
-          </script>
+          <script src="assets/scripts/language-switcher.js"></script>
     toc: true
