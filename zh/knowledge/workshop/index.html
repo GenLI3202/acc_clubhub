@@ -307,8 +307,8 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../assets/images/logo.png" alt="" class="navbar-logo light-content">
-    <img src="../../assets/images/logo.png" alt="" class="navbar-logo dark-content">
+    <img src="../../assets/images/logo.jpg" alt="" class="navbar-logo light-content">
+    <img src="../../assets/images/logo.jpg" alt="" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">ACC - Across Cycling Club Munich</span>
@@ -367,15 +367,15 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu--1">    
         <li>
-    <a class="dropdown-item" href="../../acc_clubhub/zh/">
+    <a class="dropdown-item" href="../../#lang-zh">
  <span class="dropdown-text">中文</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../acc_clubhub/en/">
+    <a class="dropdown-item" href="../../#lang-en">
  <span class="dropdown-text">English</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../acc_clubhub/de/">
+    <a class="dropdown-item" href="../../#lang-de">
  <span class="dropdown-text">Deutsch</span></a>
   </li>  
     </ul>
@@ -871,42 +871,7 @@ window.Quarto = {
     </div>
   </div>
 </footer>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const langLinks = document.querySelectorAll('.dropdown-menu a[href*="/zh/"], .dropdown-menu a[href*="/en/"], .dropdown-menu a[href*="/de/"]');
-    langLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const href = this.getAttribute('href');
-            const langMatch = href.match(/(zh|en|de)/);
-            if (!langMatch) return;
-            const targetLang = langMatch[0];
-            const currentPath = window.location.pathname;
-            const langRegex = /\/(zh|en|de)\//;
-            let newPath;
-            if (langRegex.test(currentPath)) {
-                newPath = currentPath.replace(langRegex, '/' + targetLang + '/');
-            } else {
-                const pathParts = currentPath.split('/').filter(p => p);
-                if (pathParts.length > 0 && !['zh', 'en', 'de'].includes(pathParts[0])) {
-                    const repoName = pathParts[0];
-                    const restPath = pathParts.slice(1).join('/');
-                    newPath = '/' + repoName + '/' + targetLang + '/' + (restPath ? restPath : '');
-                } else {
-                    newPath = '/' + targetLang + '/' + pathParts.join('/');
-                }
-            }
-            window.location.href = newPath;
-        });
-    });
-    const currentPath = window.location.pathname;
-    let currentLang = 'zh';
-    if (currentPath.includes('/en/')) currentLang = 'en';
-    if (currentPath.includes('/de/')) currentLang = 'de';
-    const currentLangLink = document.querySelector('.dropdown-menu a[href*="/' + currentLang + '/"]');
-    if (currentLangLink) currentLangLink.classList.add('active');
-});
-</script>
+<script src="assets/scripts/language-switcher.js"></script>
 
 
 
