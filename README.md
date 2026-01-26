@@ -2,6 +2,8 @@
 
 > **Across Cycling Club Munich** - 让骑行成为一种生活方式
 
+Website: https://genli3202.github.io/acc_clubhub/
+
 ## 项目概述
 
 这是 ACC 俱乐部的官方网站与后台支持系统，包含：
@@ -56,13 +58,13 @@ acc-clubhub/
 
 ## 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| 内容创作 | Quarto (.qmd) |
-| 网站生成 | Quarto → 静态 HTML |
-| 后端 API | FastAPI |
-| 数据库 | SQLite + SQLAlchemy |
-| 托管 | GitHub Pages + Render |
+| 层级     | 技术                  |
+| -------- | --------------------- |
+| 内容创作 | Quarto (.qmd)         |
+| 网站生成 | Quarto → 静态 HTML   |
+| 后端 API | FastAPI               |
+| 数据库   | SQLite + SQLAlchemy   |
+| 托管     | GitHub Pages + Render |
 
 ## 贡献
 
