@@ -45,8 +45,9 @@ format:
     theme:
       light: cosmo
       dark: darkly
-    css: assets/styles/custom.css
+    css: assets/styles/blaue_reiter.css
     include-after-body: 
       - text: |
           <script src="assets/scripts/language-switcher.js"></script>
+          <script src="assets/scripts/blaue_reiter.js"></script>
     toc: true
