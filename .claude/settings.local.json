@@ -9,7 +9,14 @@
       "Bash(curl:*)",
       "Bash(git rm:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(test -d \"D:\\\\my_projects\\\\acc_clubhub\\\\frontend\\\\public\\\\admin\")",
+      "WebSearch",
+      "WebFetch(domain:docs.astro.build)",
+      "WebFetch(domain:decapcms.org)",
+      "WebFetch(domain:github.com)",
+      "Bash(dir:*)",
+      "WebFetch(domain:eastondev.com)"
     ]
   }
 }

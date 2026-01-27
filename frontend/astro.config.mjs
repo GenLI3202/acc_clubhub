@@ -6,4 +6,11 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   output: 'static',
   adapter: vercel(),
+  i18n: {
+    defaultLocale: 'zh',
+    locales: ['zh', 'en', 'de'],
+    routing: {
+      prefixDefaultLocale: true,  // /zh/media, /en/media, /de/media
+    },
+  },
 });

@@ -1,0 +1,262 @@
+# ===============================
+# ACC ClubHub - Sveltia CMS Configuration
+# Phase 3.1 优化版本 (2026-01-27)
+# ===============================
+
+# ===============================
+# 后端配置
+# ===============================
+# 开发阶段使用 test-repo (本地测试，不需真实提交)
+backend:
+  name: test-repo
+
+# 未来生产配置:
+# backend:
+#   name: github
+#   repo: GenLI3202/acc_clubhub
+#   branch: master
+#   base_url: https://acc-clubhub.vercel.app  # OAuth 回调地址
+
+# ===============================
+# CMS 本地化 + 编辑器设置
+# ===============================
+locale: 'zh_Hans'  # CMS UI 简体中文
+
+editor:
+  preview: false   # 关闭预览面板，避免样式不一致困扰
+
+# ===============================
+# i18n 多语言配置
+# ===============================
+i18n:
+  structure: multiple_folders  # media/zh/article.md, media/en/article.md
+  locales: [zh, en, de]
+  default_locale: zh
+
+# ===============================
+# 媒体文件配置
+# ===============================
+media_folder: "frontend/public/images/uploads"
+public_folder: "/images/uploads"
+
+# ===============================
+# 站点配置
+# ===============================
+site_url: http://localhost:4321
+display_url: http://localhost:4321
+logo_url: /images/logo.jpg
+
+# ===============================
+# 内容集合
+# ===============================
+collections:
+
+  # ────────────────────────────────
+  # 🎬 车影骑踪 (Media)
+  # ────────────────────────────────
+  - name: media
+    label: "🎬 车影骑踪"
+    label_singular: "影像/访谈"
+    folder: "frontend/src/content/media"
+    create: true
+    i18n: true
+    slug: "{{fields.slug}}"
+    summary: "{{title}} ({{type}})"
+    fields:
+      - label: "URL 标识 (英文)"
+        name: "slug"
+        widget: "string"
+        hint: "用于 URL，只能使用英文、数字、连字符。例如: alps-cycling-2026"
+        i18n: duplicate
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "简介"
+        name: "description"
+        widget: "text"
+        required: false
+        hint: "简短描述，用于列表页卡片展示 (1-2 句话)"
+        i18n: true
+      - label: "发布日期"
+        name: "date"
+        widget: "datetime"
+        i18n: duplicate
+      - label: "类型"
+        name: "type"
+        widget: "select"
+        i18n: duplicate
+        options:
+          - { label: "🎥 影像", value: "影像" }
+          - { label: "🎙️ 访谈", value: "访谈" }
+          - { label: "⛰️ 翻山越岭", value: "翻山越岭" }
+      - label: "封面图"
+        name: "cover"
+        widget: "image"
+        required: false
+        i18n: duplicate
+      - label: "视频链接 (YouTube/Bilibili)"
+        name: "videoUrl"
+        widget: "string"
+        required: false
+        hint: "粘贴 YouTube 或 Bilibili 视频链接"
+        i18n: duplicate
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        i18n: true
+
+  # ────────────────────────────────
+  # 🔧 器械知识 (Gear)
+  # ────────────────────────────────
+  - name: knowledge-gear
+    label: "🔧 器械知识"
+    label_singular: "器械文章"
+    folder: "frontend/src/content/knowledge/gear"
+    create: true
+    i18n: true
+    slug: "{{fields.slug}}"
+    fields:
+      - label: "URL 标识 (英文)"
+        name: "slug"
+        widget: "string"
+        hint: "用于 URL，只能使用英文、数字、连字符。例如: road-bike-buying-guide"
+        i18n: duplicate
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "简介"
+        name: "description"
+        widget: "text"
+        required: false
+        hint: "简短描述，用于列表页卡片展示 (1-2 句话)"
+        i18n: true
+      - label: "作者"
+        name: "author"
+        widget: "string"
+        i18n: duplicate
+      - label: "发布日期"
+        name: "date"
+        widget: "datetime"
+        i18n: duplicate
+      - label: "封面图"
+        name: "cover"
+        widget: "image"
+        required: false
+        i18n: duplicate
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        i18n: true
+
+  # ────────────────────────────────
+  # 📊 科学训练 (Training)
+  # ────────────────────────────────
+  - name: knowledge-training
+    label: "📊 科学训练"
+    label_singular: "训练文章"
+    folder: "frontend/src/content/knowledge/training"
+    create: true
+    i18n: true
+    slug: "{{fields.slug}}"
+    fields:
+      - label: "URL 标识 (英文)"
+        name: "slug"
+        widget: "string"
+        hint: "用于 URL，只能使用英文、数字、连字符。例如: ftp-training-guide"
+        i18n: duplicate
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "简介"
+        name: "description"
+        widget: "text"
+        required: false
+        hint: "简短描述，用于列表页卡片展示 (1-2 句话)"
+        i18n: true
+      - label: "作者"
+        name: "author"
+        widget: "string"
+        i18n: duplicate
+      - label: "发布日期"
+        name: "date"
+        widget: "datetime"
+        i18n: duplicate
+      - label: "封面图"
+        name: "cover"
+        widget: "image"
+        required: false
+        i18n: duplicate
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        i18n: true
+
+  # ────────────────────────────────
+  # 🗺️ 骑行路线 (Routes)
+  # ────────────────────────────────
+  - name: routes
+    label: "🗺️ 骑行路线"
+    label_singular: "路线"
+    folder: "frontend/src/content/routes"
+    create: true
+    i18n: true
+    slug: "{{fields.slug}}"
+    summary: "{{name}} ({{region}}) - {{distance}}km"
+    fields:
+      - label: "URL 标识 (英文)"
+        name: "slug"
+        widget: "string"
+        hint: "用于 URL，只能使用英文、数字、连字符。例如: alps-classic-route"
+        i18n: duplicate
+      - label: "路线名称"
+        name: "name"
+        widget: "string"
+        i18n: true
+      - label: "区域"
+        name: "region"
+        widget: "string"
+        hint: "例如: 慕尼黑南郊, 阿尔卑斯山, 伊萨尔河谷"
+        i18n: duplicate
+      - label: "距离 (km)"
+        name: "distance"
+        widget: "number"
+        value_type: "float"
+        min: 1
+        i18n: duplicate
+      - label: "爬升 (m)"
+        name: "elevation"
+        widget: "number"
+        value_type: "int"
+        min: 0
+        i18n: duplicate
+      - label: "难度"
+        name: "difficulty"
+        widget: "select"
+        i18n: duplicate
+        options:
+          - { label: "🟢 Easy", value: "easy" }
+          - { label: "🟡 Medium", value: "medium" }
+          - { label: "🟠 Hard", value: "hard" }
+          - { label: "🔴 Expert", value: "expert" }
+      - label: "封面图"
+        name: "cover"
+        widget: "image"
+        required: false
+        i18n: duplicate
+      - label: "Strava 链接"
+        name: "stravaUrl"
+        widget: "string"
+        required: false
+        i18n: duplicate
+      - label: "Komoot 链接"
+        name: "komootUrl"
+        widget: "string"
+        required: false
+        i18n: duplicate
+      - label: "路线描述"
+        name: "body"
+        widget: "markdown"
+        i18n: true

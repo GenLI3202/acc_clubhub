@@ -2,7 +2,7 @@
 
 > **Across Cycling Club Munich** - 让骑行成为一种生活方式
 
-Website: https://genli3202.github.io/acc_clubhub/
+New Website: https://acc-clubhub.vercel.app/
 
 ## 项目概述这是 ACC 俱乐部的官方网站与后台支持系统，包含：
 
@@ -19,3 +19,5 @@ Website: https://genli3202.github.io/acc_clubhub/
 ---
 
 **ACC - Across Cycling Club Munich** 🚴‍♂️
+
+(Old Quarto based website: https://genli3202.github.io/acc_clubhub/)
