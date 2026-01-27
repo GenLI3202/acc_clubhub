@@ -1,20 +1,24 @@
 ---
-const navLinks = [
-  { label: '首页', href: '/' },
-  { label: '慕城日常', href: '/events' },
-  { label: '车影骑踪', href: '/media' },
-  { label: '器械知识', href: '/knowledge/gear' },
-  { label: '科学训练', href: '/knowledge/training' },
-  { label: '骑行路线', href: '/routes' },
-  { label: '关于 ACC', href: '/about' },
-];
+import { getNavLinks, locales, type Locale } from '../lib/i18n';
 
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = 'zh' } = Astro.props;
+const navLinks = getNavLinks(lang);
 const currentPath = Astro.url.pathname;
+
+// 生成语言切换链接 (保持当前路径，只换语言)
+function getLangSwitchUrl(targetLang: Locale): string {
+  const pathWithoutLang = currentPath.replace(/^\/(zh|en|de)/, '');
+  return `/${targetLang}${pathWithoutLang || ''}`;
+}
 ---
 
 <header>
   <nav>
-    <a href="/" class="logo">
+    <a href={`/${lang}`} class="logo">
       <img src="/images/logo.jpg" alt="ACC ClubHub" width="40" height="40" />
       <span>ACC ClubHub</span>
     </a>
@@ -31,13 +35,24 @@ const currentPath = Astro.url.pathname;
         <li>
           <a
             href={link.href}
-            class:list={[{ active: currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) }]}
+            class:list={[{ active: currentPath === link.href || (link.href !== `/${lang}` && currentPath.startsWith(link.href)) }]}
           >
             {link.label}
           </a>
         </li>
       ))}
     </ul>
+
+    <div class="lang-switcher">
+      {locales.map((l) => (
+        <a
+          href={getLangSwitchUrl(l)}
+          class:list={['lang-link', { active: l === lang }]}
+        >
+          {l.toUpperCase()}
+        </a>
+      ))}
+    </div>
   </nav>
 </header>
 
@@ -181,6 +196,41 @@ const currentPath = Astro.url.pathname;
     }
     .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
       transform: rotate(-45deg) translate(5px, -5px);
+    }
+  }
+
+  /* Language Switcher */
+  .lang-switcher {
+    display: flex;
+    gap: 0.25rem;
+    margin-left: 1rem;
+  }
+
+  .lang-link {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    color: var(--color-text-main);
+    opacity: 0.6;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+
+  .lang-link:hover {
+    opacity: 1;
+    text-decoration: none;
+  }
+
+  .lang-link.active {
+    opacity: 1;
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .lang-switcher {
+      margin-left: auto;
+      margin-right: 1rem;
     }
   }
 </style>

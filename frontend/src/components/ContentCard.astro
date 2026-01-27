@@ -1,0 +1,123 @@
+---
+// src/components/ContentCard.astro
+// 通用内容卡片组件，用于列表页显示
+
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  cover?: string;
+  date?: Date;
+  meta?: string; // 例如 "65km · 450m · Medium"
+}
+
+const { href, title, description, cover, date, meta } = Astro.props;
+const formattedDate = date
+  ? date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : null;
+---
+
+<a href={href} class="content-card">
+  {cover ? (
+    <img src={cover} alt={title} class="content-card-cover" />
+  ) : (
+    <div class="content-card-cover content-card-cover--placeholder">
+      <span>📄</span>
+    </div>
+  )}
+  <div class="content-card-body">
+    <h3>{title}</h3>
+    {description && <p class="content-card-desc">{description}</p>}
+    <div class="content-card-meta">
+      {formattedDate && <span class="content-card-date">{formattedDate}</span>}
+      {meta && <span class="content-card-tag">{meta}</span>}
+    </div>
+  </div>
+</a>
+
+<style>
+  .content-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid var(--color-border-rough);
+    border-radius: var(--radius-aero);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: var(--color-text-main);
+  }
+
+  .content-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 6px 6px 0px var(--color-primary);
+    text-decoration: none;
+  }
+
+  .content-card-cover {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 2px solid var(--color-border-rough);
+  }
+
+  .content-card-cover--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-bg-canvas) 0%, rgba(45, 93, 155, 0.1) 100%);
+    font-size: 3rem;
+  }
+
+  .content-card-body {
+    padding: var(--space-md);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-card-body h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+    line-height: 1.3;
+  }
+
+  .content-card-desc {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    flex: 1;
+    /* 限制两行 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .content-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+    font-size: 0.8rem;
+  }
+
+  .content-card-date {
+    color: #888;
+  }
+
+  .content-card-tag {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    background: rgba(45, 93, 155, 0.1);
+    border-radius: 3px;
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+</style>

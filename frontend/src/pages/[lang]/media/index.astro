@@ -1,0 +1,77 @@
+---
+// src/pages/[lang]/media/index.astro
+// 车影骑踪 - 列表页
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ContentCard from '../../../components/ContentCard.astro';
+import { getCollection } from 'astro:content';
+import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+// 使用 filePath 过滤语言 (稳健方式)
+const allMedia = await getCollection('media');
+const langMedia = allMedia.filter(
+  (entry) => getLangFromEntry(entry.filePath, 'media') === lang
+);
+const sortedMedia = langMedia.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const pageTitle = t(lang, 'nav.media');
+---
+
+<BaseLayout title={pageTitle} lang={lang}>
+  <div class="page-title">
+    <h1>🎬 {pageTitle}</h1>
+    <p class="page-subtitle">
+      {lang === 'zh'
+        ? '影像资料、骑友访谈、翻山越岭记录'
+        : lang === 'de'
+          ? 'Videos, Interviews, Bergabenteuer'
+          : 'Videos, Interviews, Mountain Adventures'}
+    </p>
+  </div>
+
+  {sortedMedia.length > 0 ? (
+    <div class="content-grid">
+      {sortedMedia.map((entry) => (
+        <ContentCard
+          href={`/${lang}/media/${entry.data.slug}`}
+          title={entry.data.title}
+          description={entry.data.description}
+          cover={entry.data.cover}
+          date={entry.data.date}
+          meta={entry.data.type}
+        />
+      ))}
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p>{t(lang, 'content.noContent')}</p>
+    </div>
+  )}
+</BaseLayout>
+
+<style>
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px dashed var(--color-border-rough);
+    border-radius: var(--radius-aero);
+    margin-top: var(--space-lg);
+  }
+</style>

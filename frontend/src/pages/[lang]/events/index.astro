@@ -1,0 +1,61 @@
+---
+// src/pages/[lang]/events/index.astro
+// 慕城日常 - 活动页面 (Layer 4 实现)
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { locales, t, type Locale } from '../../../lib/i18n';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const pageTitle = t(lang, 'nav.events');
+---
+
+<BaseLayout title={pageTitle} lang={lang}>
+  <div class="page-title">
+    <h1>🚴 {pageTitle}</h1>
+    <p class="page-subtitle">
+      {lang === 'zh'
+        ? 'Social Ride、Training Day、活动报名'
+        : lang === 'de'
+          ? 'Social Ride, Training Day, Anmeldung'
+          : 'Social Ride, Training Day, Registration'}
+    </p>
+  </div>
+
+  <div class="placeholder">
+    <span class="status-badge status-badge--coming">
+      {lang === 'zh' ? '即将上线' : lang === 'de' ? 'Demnächst' : 'Coming Soon'}
+    </span>
+  </div>
+
+  <section class="feature-placeholder">
+    <h2>{lang === 'zh' ? '规划中的功能' : lang === 'de' ? 'Geplante Funktionen' : 'Planned Features'}</h2>
+    <ul>
+      {lang === 'zh' ? (
+        <>
+          <li>活动日历展示</li>
+          <li>在线报名系统</li>
+          <li>骑行记录同步 (Strava)</li>
+          <li>成员积分系统</li>
+        </>
+      ) : lang === 'de' ? (
+        <>
+          <li>Veranstaltungskalender</li>
+          <li>Online-Anmeldesystem</li>
+          <li>Fahrtensynchronisation (Strava)</li>
+          <li>Mitglieder-Punktesystem</li>
+        </>
+      ) : (
+        <>
+          <li>Event Calendar Display</li>
+          <li>Online Registration System</li>
+          <li>Ride Sync (Strava)</li>
+          <li>Member Points System</li>
+        </>
+      )}
+    </ul>
+  </section>
+</BaseLayout>

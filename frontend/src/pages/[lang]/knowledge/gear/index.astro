@@ -1,0 +1,76 @@
+---
+// src/pages/[lang]/knowledge/gear/index.astro
+// 器械知识 - 列表页
+
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import ContentCard from '../../../../components/ContentCard.astro';
+import { getCollection } from 'astro:content';
+import { locales, getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+const allGear = await getCollection('gear');
+const langGear = allGear.filter(
+  (entry) => getLangFromEntry(entry.filePath, 'gear') === lang
+);
+const sortedGear = langGear.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const pageTitle = t(lang, 'nav.gear');
+---
+
+<BaseLayout title={pageTitle} lang={lang}>
+  <div class="page-title">
+    <h1>🔧 {pageTitle}</h1>
+    <p class="page-subtitle">
+      {lang === 'zh'
+        ? '购车指南、维修 Workshop、新品解读'
+        : lang === 'de'
+          ? 'Kaufberatung, Workshops, Neuheiten'
+          : 'Buying Guide, Workshops, New Products'}
+    </p>
+  </div>
+
+  {sortedGear.length > 0 ? (
+    <div class="content-grid">
+      {sortedGear.map((entry) => (
+        <ContentCard
+          href={`/${lang}/knowledge/gear/${entry.data.slug}`}
+          title={entry.data.title}
+          description={entry.data.description}
+          cover={entry.data.cover}
+          date={entry.data.date}
+          meta={entry.data.author}
+        />
+      ))}
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p>{t(lang, 'content.noContent')}</p>
+    </div>
+  )}
+</BaseLayout>
+
+<style>
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px dashed var(--color-border-rough);
+    border-radius: var(--radius-aero);
+    margin-top: var(--space-lg);
+  }
+</style>

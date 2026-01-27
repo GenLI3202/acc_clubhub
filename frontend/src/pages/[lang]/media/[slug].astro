@@ -1,0 +1,71 @@
+---
+// src/pages/[lang]/media/[slug].astro
+// 车影骑踪 - 详情页
+
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const allMedia = await getCollection('media');
+  // 每个 entry 对应一个路径 (用 map 而非 flatMap)
+  return allMedia.map((entry) => {
+    const lang = getLangFromEntry(entry.filePath, 'media');
+    return {
+      params: { lang, slug: entry.data.slug },
+      props: { entry },
+    };
+  });
+}
+
+type Props = {
+  entry: Awaited<ReturnType<typeof getCollection<'media'>>>[number];
+};
+
+const { entry } = Astro.props;
+const { lang } = Astro.params as { lang: Locale };
+const { Content } = await render(entry);
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  date={entry.data.date}
+  cover={entry.data.cover}
+  lang={lang}
+  backLink={`/${lang}/media`}
+  backLabel={t(lang, 'nav.media')}
+>
+  {entry.data.videoUrl && (
+    <div class="video-embed">
+      <iframe
+        src={entry.data.videoUrl.replace('watch?v=', 'embed/')}
+        title={entry.data.title}
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  )}
+  
+  <Content />
+</ArticleLayout>
+
+<style>
+  .video-embed {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: var(--space-lg);
+    border-radius: var(--radius-aero);
+    border: 2px solid var(--color-border-rough);
+  }
+
+  .video-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>

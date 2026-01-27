@@ -1,0 +1,247 @@
+---
+// src/pages/[lang]/routes/[slug].astro
+// 骑行路线 - 详情页
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const allRoutes = await getCollection('routes');
+  return allRoutes.map((entry) => {
+    const lang = getLangFromEntry(entry.filePath, 'routes');
+    return {
+      params: { lang, slug: entry.data.slug },
+      props: { entry },
+    };
+  });
+}
+
+type Props = {
+  entry: Awaited<ReturnType<typeof getCollection<'routes'>>>[number];
+};
+
+const { entry } = Astro.props;
+const { lang } = Astro.params as { lang: Locale };
+const { Content } = await render(entry);
+
+// 难度标签翻译
+const difficultyLabels: Record<string, Record<string, string>> = {
+  zh: { easy: '简单', medium: '中等', hard: '困难', expert: '专家' },
+  en: { easy: 'Easy', medium: 'Medium', hard: 'Hard', expert: 'Expert' },
+  de: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer', expert: 'Experte' },
+};
+
+const difficultyColors: Record<string, string> = {
+  easy: '#4ade80',
+  medium: '#facc15',
+  hard: '#f97316',
+  expert: '#ef4444',
+};
+---
+
+<BaseLayout title={entry.data.name} lang={lang}>
+  <article class="route-detail">
+    <header class="route-header">
+      <a href={`/${lang}/routes`} class="route-back">
+        ← {t(lang, 'nav.routes')}
+      </a>
+
+      <h1>{entry.data.name}</h1>
+      <p class="route-region">📍 {entry.data.region}</p>
+    </header>
+
+    {entry.data.cover && (
+      <img src={entry.data.cover} alt={entry.data.name} class="route-cover" />
+    )}
+
+    <div class="route-stats">
+      <div class="stat">
+        <span class="stat-value">{entry.data.distance}</span>
+        <span class="stat-label">km</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{entry.data.elevation}</span>
+        <span class="stat-label">m ↑</span>
+      </div>
+      <div class="stat">
+        <span
+          class="stat-value stat-difficulty"
+          style={`color: ${difficultyColors[entry.data.difficulty]}`}
+        >
+          {difficultyLabels[lang][entry.data.difficulty]}
+        </span>
+        <span class="stat-label">{lang === 'zh' ? '难度' : lang === 'de' ? 'Schwierigkeit' : 'Difficulty'}</span>
+      </div>
+    </div>
+
+    <div class="route-links">
+      {entry.data.stravaUrl && (
+        <a href={entry.data.stravaUrl} target="_blank" rel="noopener" class="route-link route-link--strava">
+          Strava →
+        </a>
+      )}
+      {entry.data.komootUrl && (
+        <a href={entry.data.komootUrl} target="_blank" rel="noopener" class="route-link route-link--komoot">
+          Komoot →
+        </a>
+      )}
+    </div>
+
+    <div class="route-content prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .route-detail {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .route-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .route-back {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+  }
+
+  .route-back:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .route-header h1 {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin-bottom: var(--space-xs);
+  }
+
+  .route-region {
+    font-size: 1.1rem;
+    color: #666;
+  }
+
+  .route-cover {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--radius-aero);
+    border: 2px solid var(--color-border-rough);
+    margin-bottom: var(--space-lg);
+  }
+
+  .route-stats {
+    display: flex;
+    gap: var(--space-lg);
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid var(--color-border-rough);
+    border-radius: var(--radius-aero);
+    margin-bottom: var(--space-lg);
+  }
+
+  .stat {
+    text-align: center;
+    flex: 1;
+  }
+
+  .stat-value {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .stat-difficulty {
+    font-size: 1.5rem;
+  }
+
+  .route-links {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .route-link {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 2px solid;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .route-link--strava {
+    border-color: #fc4c02;
+    color: #fc4c02;
+  }
+
+  .route-link--strava:hover {
+    background: #fc4c02;
+    color: white;
+    text-decoration: none;
+  }
+
+  .route-link--komoot {
+    border-color: #6aa127;
+    color: #6aa127;
+  }
+
+  .route-link--komoot:hover {
+    background: #6aa127;
+    color: white;
+    text-decoration: none;
+  }
+
+  .route-content {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .route-content :global(h2) {
+    font-size: 1.5rem;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .route-content :global(p) {
+    margin-bottom: var(--space-md);
+  }
+
+  .route-content :global(ul) {
+    margin-bottom: var(--space-md);
+    padding-left: 1.5rem;
+  }
+
+  .route-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-md);
+  }
+
+  .route-content :global(th),
+  .route-content :global(td) {
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border-rough);
+    text-align: left;
+  }
+
+  .route-content :global(th) {
+    background: rgba(45, 93, 155, 0.1);
+    font-weight: 600;
+  }
+</style>

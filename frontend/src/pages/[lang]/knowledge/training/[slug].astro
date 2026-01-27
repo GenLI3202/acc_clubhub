@@ -1,0 +1,39 @@
+---
+// src/pages/[lang]/knowledge/training/[slug].astro
+// 科学训练 - 详情页
+
+import ArticleLayout from '../../../../layouts/ArticleLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const allTraining = await getCollection('training');
+  return allTraining.map((entry) => {
+    const lang = getLangFromEntry(entry.filePath, 'training');
+    return {
+      params: { lang, slug: entry.data.slug },
+      props: { entry },
+    };
+  });
+}
+
+type Props = {
+  entry: Awaited<ReturnType<typeof getCollection<'training'>>>[number];
+};
+
+const { entry } = Astro.props;
+const { lang } = Astro.params as { lang: Locale };
+const { Content } = await render(entry);
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  date={entry.data.date}
+  author={entry.data.author}
+  cover={entry.data.cover}
+  lang={lang}
+  backLink={`/${lang}/knowledge/training`}
+  backLabel={t(lang, 'nav.training')}
+>
+  <Content />
+</ArticleLayout>

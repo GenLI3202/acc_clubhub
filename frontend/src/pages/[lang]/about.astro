@@ -1,0 +1,89 @@
+---
+// src/pages/[lang]/about.astro
+// 关于我们页面
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { locales, t, type Locale } from '../../lib/i18n';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const pageTitle = t(lang, 'nav.about');
+---
+
+<BaseLayout title={pageTitle} lang={lang}>
+  <div class="page-title">
+    <h1>🚴 {pageTitle}</h1>
+    <p class="page-subtitle">
+      {lang === 'zh'
+        ? 'Across Cycling Club Munich'
+        : 'Across Cycling Club München'}
+    </p>
+  </div>
+
+  <section class="about-content">
+    <div class="about-intro">
+      {lang === 'zh' ? (
+        <p>
+          ACC（Across Cycling Club）是一个位于慕尼黑的华人骑行俱乐部，
+          成立于 2019 年。我们致力于推广公路自行车运动，组织各类骑行活动，
+          并为成员提供一个交流和成长的平台。
+        </p>
+      ) : lang === 'de' ? (
+        <p>
+          ACC (Across Cycling Club) ist ein chinesischer Radsportverein in München,
+          gegründet 2019. Wir fördern den Rennradsport, organisieren verschiedene
+          Radtouren und bieten unseren Mitgliedern eine Plattform zum Austausch.
+        </p>
+      ) : (
+        <p>
+          ACC (Across Cycling Club) is a Chinese cycling club based in Munich,
+          founded in 2019. We promote road cycling, organize various riding events,
+          and provide a platform for members to connect and grow.
+        </p>
+      )}
+    </div>
+
+    <div class="about-contact">
+      <h2>{lang === 'zh' ? '联系我们' : lang === 'de' ? 'Kontakt' : 'Contact Us'}</h2>
+      <ul>
+        <li>📧 Email: acc.munich@example.com</li>
+        <li>📱 WeChat: ACC_Munich</li>
+        <li>📸 Instagram: @acc_munich</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-content {
+    max-width: 700px;
+  }
+
+  .about-intro {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: var(--space-xl);
+  }
+
+  .about-intro p {
+    margin-bottom: var(--space-md);
+  }
+
+  .about-contact h2 {
+    font-size: 1.3rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .about-contact ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .about-contact li {
+    padding: var(--space-sm) 0;
+    font-size: 1rem;
+  }
+</style>

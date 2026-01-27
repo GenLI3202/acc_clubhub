@@ -2,16 +2,18 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import type { Locale } from '../lib/i18n';
 
 interface Props {
   title: string;
+  lang?: Locale;
 }
 
-const { title } = Astro.props;
+const { title, lang = 'zh' } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,7 +21,7 @@ const { title } = Astro.props;
     <link rel="icon" type="image/jpeg" href="/images/logo.jpg" />
   </head>
   <body>
-    <Header />
+    <Header lang={lang} />
     <main>
       <slot />
     </main>
