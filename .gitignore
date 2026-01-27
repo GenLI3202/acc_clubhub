@@ -33,3 +33,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
+
+# Ignore the folder REMS-For-ACC
+REMS-For-ACC
