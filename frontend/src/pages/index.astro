@@ -6,43 +6,97 @@ const sections = [
     title: '慕城日常',
     href: '/events',
     description: 'Social Ride、Training Day、活动报名',
+    emoji: '🚴',
   },
   {
     title: '车影骑踪',
     href: '/media',
     description: '影像资料、骑友访谈、翻山越岭记录',
+    emoji: '🎬',
   },
   {
     title: '器械知识',
     href: '/knowledge/gear',
     description: '购车指南、维修 Workshop、新品解读',
+    emoji: '🔧',
   },
   {
     title: '科学训练',
     href: '/knowledge/training',
     description: '训练方法论、安全科普',
+    emoji: '📊',
   },
   {
     title: '骑行路线库',
     href: '/routes',
     description: '可搜索路线数据库、Strava/Komoot 链接',
+    emoji: '🗺️',
   },
 ];
 ---
 
 <BaseLayout title="首页">
-  <h1>ACC ClubHub</h1>
-  <p>Across Cycling Club Munich — 慕尼黑华人骑行俱乐部门户</p>
+  <section class="hero">
+    <h1>ACC ClubHub</h1>
+    <p class="hero-subtitle">Across Cycling Club Munich — 慕尼黑华人骑行俱乐部门户</p>
+    <span class="status-badge status-badge--coming">Beta 建设中</span>
+  </section>
 
-  <p class="placeholder">此网站正在建设中，以下板块将逐步上线...</p>
-
-  <h2>五大板块</h2>
-  <div class="hub-grid">
-    {sections.map((section) => (
-      <a href={section.href} class="hub-card">
-        <h3>{section.title}</h3>
-        <p>{section.description}</p>
-      </a>
-    ))}
-  </div>
+  <section class="sections-hub">
+    <h2>五大板块</h2>
+    <div class="hub-grid">
+      {sections.map((section) => (
+        <a href={section.href} class="hub-card">
+          <span class="hub-card-emoji">{section.emoji}</span>
+          <h3>{section.title}</h3>
+          <p>{section.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: var(--space-xl) 0 var(--space-lg);
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    letter-spacing: -0.03em;
+    color: var(--color-primary);
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    color: #666;
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .sections-hub {
+    margin-top: var(--space-xl);
+  }
+
+  .sections-hub h2 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .sections-hub h2::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--color-accent);
+    margin-top: var(--space-xs);
+    transform: rotate(-1deg);
+  }
+
+  .hub-card-emoji {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: var(--space-sm);
+  }
+</style>

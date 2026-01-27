@@ -1,0 +1,54 @@
+/* ===================================================
+   T1: Buttons — "The Impulse"
+   Primary: 朱砂红 + 倾斜 + 硬阴影
+   Ghost:   粗描边 + hover 反转
+   =================================================== */
+
+.btn {
+  display: inline-block;
+  border-radius: 2px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  transform: rotate(var(--angle-motion));
+  border: none;
+  text-decoration: none;
+}
+
+.btn:hover {
+  text-decoration: none;
+}
+
+/* Primary — Sun Red impulse */
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+  box-shadow: 4px 4px 0px var(--color-border-rough);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+  transform: translate(-2px, -2px) rotate(0deg);
+  box-shadow: 6px 6px 0px var(--color-border-rough);
+}
+
+/* Ghost — charcoal outline */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-main);
+  border: 2px solid var(--color-text-main);
+  box-shadow: none;
+}
+
+.btn-ghost:hover {
+  background-color: var(--color-text-main);
+  color: var(--color-text-light);
+  transform: rotate(0deg);
+}

@@ -8,6 +8,8 @@ const navLinks = [
   { label: '骑行路线', href: '/routes' },
   { label: '关于 ACC', href: '/about' },
 ];
+
+const currentPath = Astro.url.pathname;
 ---
 
 <header>
@@ -16,9 +18,24 @@ const navLinks = [
       <img src="/images/logo.jpg" alt="ACC ClubHub" width="40" height="40" />
       <span>ACC ClubHub</span>
     </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+
     <ul>
       {navLinks.map((link) => (
-        <li><a href={link.href}>{link.label}</a></li>
+        <li>
+          <a
+            href={link.href}
+            class:list={[{ active: currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) }]}
+          >
+            {link.label}
+          </a>
+        </li>
       ))}
     </ul>
   </nav>
@@ -26,13 +43,18 @@ const navLinks = [
 
 <style>
   header {
-    background: #fff;
-    border-bottom: 1px solid #ddd;
-    padding: 0.75rem 1rem;
+    background-color: transparent;
+    border-bottom: 2px solid var(--color-border-rough);
+    padding: 1rem 2rem;
+    backdrop-filter: blur(5px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(232, 228, 217, 0.85);
   }
 
   nav {
-    max-width: 960px;
+    max-width: var(--max-width);
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -45,13 +67,17 @@ const navLinks = [
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 1.1rem;
-    color: #1a1a1a;
+    font-size: 1.3rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .logo:hover {
     text-decoration: none;
+    color: var(--color-accent);
   }
 
   .logo img {
@@ -61,12 +87,99 @@ const navLinks = [
   ul {
     display: flex;
     list-style: none;
-    gap: 1rem;
+    gap: 0.25rem;
     flex-wrap: wrap;
   }
 
   li a {
+    font-family: var(--font-heading);
+    font-weight: 500;
     font-size: 0.9rem;
-    padding: 0.25rem 0;
+    color: var(--color-text-main);
+    padding: 0.25rem 0.5rem;
+    position: relative;
+    transition: color 0.2s ease;
+  }
+
+  li a:hover {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  /* Hover underline — rough stroke effect */
+  li a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease;
+    transform: rotate(-1deg);
+  }
+
+  li a:hover::after,
+  li a.active::after {
+    width: 100%;
+  }
+
+  li a.active {
+    color: var(--color-primary);
+  }
+
+  /* Mobile hamburger toggle */
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-toggle-label {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .nav-toggle-label span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text-main);
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .nav-toggle-label {
+      display: flex;
+    }
+
+    ul {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      gap: 0;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(26, 26, 26, 0.1);
+    }
+
+    .nav-toggle:checked ~ ul {
+      display: flex;
+    }
+
+    li a {
+      display: block;
+      padding: 0.5rem 0;
+    }
+
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
   }
 </style>

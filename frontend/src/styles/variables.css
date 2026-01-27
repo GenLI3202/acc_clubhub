@@ -1,0 +1,37 @@
+/* ===================================================
+   T0: Design Tokens — Der Blaue Reiter 2.0
+   Source: assets/styles/blaue_reiter.css
+   Guide:  assets/styles/atomic_guide/atomic_guide.md
+   =================================================== */
+
+/* Google Fonts: Jost (heading) + Inter (body) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Jost:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+:root {
+  /* Color Palette — extracted from Kandinsky paintings */
+  --color-bg-canvas: #E8E4D9;    /* 米灰白 — Canvas base */
+  --color-primary: #2A5CA6;      /* 群青蓝 — Motion Blue (Prussian) */
+  --color-accent: #D94F30;       /* 朱砂红 — Sun Red (Vermillion) */
+  --color-secondary: #5F8C4A;    /* 苔藓绿 — Nature Green (Moss) */
+  --color-text-main: #1A1A1A;    /* 深墨 — Ink */
+  --color-text-light: #F9F7F2;   /* 米白 — Off-white for dark BG */
+  --color-border-rough: #1A1A1A; /* 炭黑 — Charcoal rough edges */
+
+  /* Typography */
+  --font-heading: 'Jost', 'Futura', sans-serif;  /* Geometric, German Precision */
+  --font-body: 'Inter', system-ui, sans-serif;    /* Readable, Functional */
+
+  /* Angles & Shapes — from Romantic Landscape diagonal */
+  --angle-motion: -2deg;   /* Subtle tilt for components */
+  --angle-section: -3deg;  /* Larger tilt for sections */
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* Layout */
+  --max-width: 960px;
+}

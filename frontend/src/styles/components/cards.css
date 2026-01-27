@@ -1,0 +1,46 @@
+/* ===================================================
+   T1: Cards — Hard shadow + hover shift
+   From blaue_reiter.css card system
+   =================================================== */
+
+.card {
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid var(--color-border-rough);
+  border-radius: 0;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 1.5rem;
+  position: relative;
+  overflow: visible;
+}
+
+.card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 10px 10px 0px var(--color-primary);
+  z-index: 10;
+}
+
+.card-header {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.card-body {
+  font-family: var(--font-body);
+  color: var(--color-text-main);
+  line-height: 1.6;
+}
+
+/* Card as link */
+a.card {
+  display: block;
+  text-decoration: none;
+  color: var(--color-text-main);
+}
+
+a.card:hover {
+  text-decoration: none;
+  color: var(--color-text-main);
+}

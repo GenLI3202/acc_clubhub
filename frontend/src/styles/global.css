@@ -1,0 +1,240 @@
+/* ===================================================
+   Global Styles — Der Blaue Reiter 2.0
+   Layer 2: Design system applied to skeleton
+   =================================================== */
+
+@import './variables.css';
+@import './components/buttons.css';
+@import './components/cards.css';
+
+/* -------------------------------------------
+   CSS Reset
+------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------------------------------------------
+   Canvas — Kandinsky's painting surface
+------------------------------------------- */
+html {
+  font-family: var(--font-body);
+  line-height: 1.6;
+  color: var(--color-text-main);
+  background: var(--color-bg-canvas);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle canvas noise texture */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -------------------------------------------
+   Typography — German Precision meets Expression
+------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text-main);
+}
+
+h1 { font-size: 2.5rem; line-height: 1.1; }
+h2 { font-size: 1.75rem; line-height: 1.2; }
+h3 { font-size: 1.25rem; line-height: 1.3; }
+
+/* -------------------------------------------
+   Links
+------------------------------------------- */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* -------------------------------------------
+   Layout
+------------------------------------------- */
+main {
+  flex: 1;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+  width: 100%;
+}
+
+/* -------------------------------------------
+   Page Header — Title with accent underline
+------------------------------------------- */
+.page-title {
+  margin-bottom: var(--space-lg);
+}
+
+.page-title h1 {
+  margin-bottom: var(--space-sm);
+}
+
+.page-title h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: var(--color-accent);
+  margin-top: var(--space-sm);
+  transform: rotate(-1deg);
+}
+
+.page-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: var(--space-sm);
+}
+
+/* -------------------------------------------
+   Placeholder styles (kept for Layer 3 transition)
+------------------------------------------- */
+.placeholder {
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid var(--color-border-rough);
+  font-family: var(--font-body);
+  margin: var(--space-md) 0;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.06);
+}
+
+.feature-placeholder {
+  padding: var(--space-lg);
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid var(--color-border-rough);
+  margin: var(--space-md) 0;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.06);
+}
+
+.feature-placeholder h2 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--color-primary);
+}
+
+.feature-placeholder ul {
+  padding-left: 1.5rem;
+  color: #555;
+}
+
+.feature-placeholder li {
+  margin: var(--space-xs) 0;
+}
+
+/* -------------------------------------------
+   Hub Grid — Homepage section cards
+------------------------------------------- */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.hub-card {
+  display: block;
+  padding: var(--space-lg);
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid var(--color-border-rough);
+  border-radius: 0;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: var(--color-text-main);
+}
+
+.hub-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 10px 10px 0px var(--color-primary);
+  text-decoration: none;
+  color: var(--color-text-main);
+}
+
+.hub-card h3 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: var(--color-primary);
+}
+
+.hub-card p {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* -------------------------------------------
+   Diagonal Section (for future use)
+------------------------------------------- */
+.section-diagonal {
+  position: relative;
+  padding: var(--space-xl) 0;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+  margin: var(--space-lg) 0;
+}
+
+.section-diagonal h1,
+.section-diagonal h2 {
+  color: var(--color-text-light);
+}
+
+/* -------------------------------------------
+   Status badge
+------------------------------------------- */
+.status-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem;
+  border: 1.5px solid var(--color-border-rough);
+  color: var(--color-text-main);
+  background: transparent;
+}
+
+.status-badge--coming {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
