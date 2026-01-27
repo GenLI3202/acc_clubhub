@@ -4,7 +4,9 @@
       "WebFetch(domain:genli3202.github.io)",
       "Bash(git -C \"D:\\\\my_projects\\\\acc_clubhub\" ls-files:*)",
       "Bash(npm run build:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(cat:*)",
+      "Bash(curl:*)"
     ]
   }
 }
