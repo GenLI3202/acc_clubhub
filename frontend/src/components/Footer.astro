@@ -1,0 +1,45 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="footer-content">
+    <p>&copy; {year} ACC - Across Cycling Club Munich</p>
+    <nav>
+      <a href="https://github.com/GenLI3202/acc_clubhub" target="_blank" rel="noopener">GitHub</a>
+      <span>|</span>
+      <a href="/about">关于我们</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: #fff;
+    border-top: 1px solid #ddd;
+    padding: 1.5rem 1rem;
+    margin-top: auto;
+  }
+
+  .footer-content {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  nav {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  nav span {
+    color: #ccc;
+  }
+</style>
