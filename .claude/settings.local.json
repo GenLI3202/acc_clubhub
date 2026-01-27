@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:genli3202.github.io)",
-      "Bash(git -C \"D:\\\\my_projects\\\\acc_clubhub\" ls-files:*)"
+      "Bash(git -C \"D:\\\\my_projects\\\\acc_clubhub\" ls-files:*)",
+      "Bash(cat:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(curl:*)"
     ]
   }
 }

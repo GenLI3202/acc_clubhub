@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const sections = [
+  {
+    title: '慕城日常',
+    href: '/events',
+    description: 'Social Ride、Training Day、活动报名',
+  },
+  {
+    title: '车影骑踪',
+    href: '/media',
+    description: '影像资料、骑友访谈、翻山越岭记录',
+  },
+  {
+    title: '器械知识',
+    href: '/knowledge/gear',
+    description: '购车指南、维修 Workshop、新品解读',
+  },
+  {
+    title: '科学训练',
+    href: '/knowledge/training',
+    description: '训练方法论、安全科普',
+  },
+  {
+    title: '骑行路线库',
+    href: '/routes',
+    description: '可搜索路线数据库、Strava/Komoot 链接',
+  },
+];
+---
+
+<BaseLayout title="首页">
+  <h1>ACC ClubHub</h1>
+  <p>Across Cycling Club Munich — 慕尼黑华人骑行俱乐部门户</p>
+
+  <p class="placeholder">此网站正在建设中，以下板块将逐步上线...</p>
+
+  <h2>五大板块</h2>
+  <div class="hub-grid">
+    {sections.map((section) => (
+      <a href={section.href} class="hub-card">
+        <h3>{section.title}</h3>
+        <p>{section.description}</p>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

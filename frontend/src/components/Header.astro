@@ -1,0 +1,72 @@
+---
+const navLinks = [
+  { label: '首页', href: '/' },
+  { label: '慕城日常', href: '/events' },
+  { label: '车影骑踪', href: '/media' },
+  { label: '器械知识', href: '/knowledge/gear' },
+  { label: '科学训练', href: '/knowledge/training' },
+  { label: '骑行路线', href: '/routes' },
+  { label: '关于 ACC', href: '/about' },
+];
+---
+
+<header>
+  <nav>
+    <a href="/" class="logo">
+      <img src="/images/logo.jpg" alt="ACC ClubHub" width="40" height="40" />
+      <span>ACC ClubHub</span>
+    </a>
+    <ul>
+      {navLinks.map((link) => (
+        <li><a href={link.href}>{link.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+  }
+
+  nav {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a1a1a;
+  }
+
+  .logo:hover {
+    text-decoration: none;
+  }
+
+  .logo img {
+    border-radius: 4px;
+  }
+
+  ul {
+    display: flex;
+    list-style: none;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  li a {
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+  }
+</style>
