@@ -34,6 +34,9 @@ Thumbs.db
 *.tmp
 *.log
 
-# ignore all nul and NUL files 
+# ignore all .nul and .NUL files, and files named nul or NUL
 *.nul
 *.NUL
+nul
+NUL
+
