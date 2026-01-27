@@ -1,45 +1,53 @@
 /* ===================================================
-   T1: Buttons — "The Impulse"
-   Primary: 朱砂红 + 倾斜 + 硬阴影
-   Ghost:   粗描边 + hover 反转
+   T1: Buttons — "The Speed Trigger"
+   Edition: V3 (Sporty Polish)
    =================================================== */
 
 .btn {
   display: inline-block;
-  border-radius: 2px;
+  border-radius: var(--radius-btn);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: 700;
+  font-style: italic;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.6rem 1.5rem;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
-  transform: rotate(var(--angle-motion));
+  /* Aggressive skew */
+  transform: skewX(-12deg);
   border: none;
   text-decoration: none;
+}
+
+/* Counter-skew text */
+.btn>span {
+  display: block;
+  transform: skewX(12deg);
 }
 
 .btn:hover {
   text-decoration: none;
 }
 
-/* Primary — Sun Red impulse */
+/* Primary — Mountain Blue base, Red interaction */
 .btn-primary {
-  background-color: var(--color-accent);
+  background-color: var(--color-primary);
   color: var(--color-text-light);
   box-shadow: 4px 4px 0px var(--color-border-rough);
 }
 
 .btn-primary:hover {
   background-color: var(--color-accent);
+  /* Switch to Red on hover */
   color: var(--color-text-light);
-  transform: translate(-2px, -2px) rotate(0deg);
+  transform: skewX(-12deg) translate(-2px, -2px);
   box-shadow: 6px 6px 0px var(--color-border-rough);
 }
 
-/* Ghost — charcoal outline */
+/* Ghost — Charcoal outline */
 .btn-ghost {
   background-color: transparent;
   color: var(--color-text-main);
@@ -50,5 +58,5 @@
 .btn-ghost:hover {
   background-color: var(--color-text-main);
   color: var(--color-text-light);
-  transform: rotate(0deg);
+  box-shadow: 3px 3px 0px var(--color-highlight);
 }

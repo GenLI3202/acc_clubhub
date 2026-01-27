@@ -1,29 +1,32 @@
 /* ===================================================
    T0: Design Tokens — Der Blaue Reiter 2.0
-   Source: assets/styles/blaue_reiter.css
-   Guide:  assets/styles/atomic_guide/atomic_guide.md
+   Edition: V3 (Kandinsky's Blue Mountain)
    =================================================== */
 
 /* Google Fonts: Jost (heading) + Inter (body) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Jost:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Jost:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
 :root {
-  /* Color Palette — extracted from Kandinsky paintings */
-  --color-bg-canvas: #E8E4D9;    /* 米灰白 — Canvas base */
-  --color-primary: #2A5CA6;      /* 群青蓝 — Motion Blue (Prussian) */
-  --color-accent: #D94F30;       /* 朱砂红 — Sun Red (Vermillion) */
-  --color-secondary: #5F8C4A;    /* 苔藓绿 — Nature Green (Moss) */
-  --color-text-main: #1A1A1A;    /* 深墨 — Ink */
-  --color-text-light: #F9F7F2;   /* 米白 — Off-white for dark BG */
-  --color-border-rough: #1A1A1A; /* 炭黑 — Charcoal rough edges */
+  /* Color Palette — Extracted from 'Der blaue Berg' */
+  --color-bg-canvas: #F0F4F5;    /* Mist White */
+  --color-primary: #2D5D9B;      /* Mountain Blue */
+  --color-secondary: #5CA042;    /* Brush Green */
+  --color-accent: #D63E33;       /* Arch Red */
+  --color-highlight: #F2C94C;    /* Sun Yellow */
+  --color-text-main: #111111;    /* Charcoal (High Contrast) */
+  --color-text-light: #FFFFFF;   /* Pure White */
+  --color-border-rough: #111111; /* Charcoal */
 
   /* Typography */
-  --font-heading: 'Jost', 'Futura', sans-serif;  /* Geometric, German Precision */
-  --font-body: 'Inter', system-ui, sans-serif;    /* Readable, Functional */
+  --font-heading: 'Jost', 'Futura', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 
-  /* Angles & Shapes — from Romantic Landscape diagonal */
-  --angle-motion: -2deg;   /* Subtle tilt for components */
-  --angle-section: -3deg;  /* Larger tilt for sections */
+  /* Angles & Shapes — Sporty Aerodynamics */
+  --angle-motion: -4deg;   /* Faster tilt */
+  --angle-section: -3deg;
+  
+  --radius-aero: 12px;     /* Smooth aerodynamic corners */
+  --radius-btn: 4px;
 
   /* Spacing */
   --space-xs: 0.25rem;

@@ -50,7 +50,8 @@ const currentPath = Astro.url.pathname;
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(232, 228, 217, 0.85);
+    /* 1. 导航栏透明度 (10% transparency = 0.9 alpha) */
+    background: rgba(232, 228, 217, 0.9);
   }
 
   nav {

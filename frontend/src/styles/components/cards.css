@@ -1,28 +1,41 @@
 /* ===================================================
-   T1: Cards — Hard shadow + hover shift
-   From blaue_reiter.css card system
+   T1: Cards — Aero Shape (Skew + Radius)
+   Edition: V3 (Sporty Polish)
    =================================================== */
 
 .card {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: #FFFFFF;
   border: 2px solid var(--color-border-rough);
-  border-radius: 0;
-  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Aerodynamic Shape */
+  border-radius: var(--radius-aero);
+  transform: skewX(var(--angle-motion));
+
+  box-shadow: 6px 6px 0px var(--color-primary);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
   padding: 1.5rem;
   position: relative;
   overflow: visible;
+  /* Ensure readability on mesh background */
+  background-clip: padding-box;
+}
+
+/* Counter-skew content for readability */
+.card>* {
+  transform: skewX(calc(var(--angle-motion) * -1));
 }
 
 .card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 10px 10px 0px var(--color-primary);
+  transform: skewX(var(--angle-motion)) translate(-3px, -3px);
+  box-shadow: 10px 10px 0px var(--color-accent);
+  /* Red shadow on hover */
   z-index: 10;
 }
 
 .card-header {
   font-family: var(--font-heading);
   font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
   color: var(--color-primary);
   margin-bottom: var(--space-sm);
 }
