@@ -1,11 +1,11 @@
 ---
 slug: alps-summer-2025
-title: 阿尔卑斯夏日骑行记
-description: 2025年夏天，ACC 车队穿越阿尔卑斯群山的精彩影像。
+title: (Fake Template) 阿尔卑斯夏日骑行记
+description: 骑行穿越阿尔卑斯群山的精彩影像。
 date: 2025-08-15
 type: 影像
-cover: /images/uploads/alps-summer.jpg
-videoUrl: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+cover: /images/uploads/DSC04622.jpg
+videoUrl: 【瑞士阿尔卑斯最美乡间骑行线路：格林德瓦First山 滑板自行车 | First Trottibike】 https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_source=9869b386690dc31064a52b29365a3735
 ---
 
 这是一次难忘的骑行经历，我们从慕尼黑出发，一路向南穿越阿尔卑斯山脉。
