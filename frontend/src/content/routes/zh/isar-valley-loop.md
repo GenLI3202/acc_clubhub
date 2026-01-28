@@ -1,11 +1,11 @@
 ---
 slug: isar-valley-loop
-name: 伊萨尔河谷环线
+name: (Fake Template) 伊萨尔河谷环线
 region: 慕尼黑南郊
 distance: 65
 elevation: 450
 difficulty: medium
-cover: /images/uploads/isar-valley.jpg
+cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 stravaUrl: https://www.strava.com/routes/123456
 komootUrl: https://www.komoot.com/tour/123456
 ---
@@ -26,7 +26,7 @@ komootUrl: https://www.komoot.com/tour/123456
 ## 分段说明
 
 | 路段 | 距离 | 难度 | 备注 |
-|------|------|------|------|
+| --- | --- | --- | --- |
 | 慕尼黑 → Grünwald | 15km | 简单 | 沿河骑行，几乎无爬升 |
 | Grünwald → Wolfratshausen | 20km | 简单 | 继续沿河，略有起伏 |
 | Wolfratshausen → Bad Tölz | 15km | 中等 | 开始有些坡度 |
