@@ -103,6 +103,11 @@ collections:
         required: false
         hint: "粘贴 YouTube 或 Bilibili 视频链接"
         i18n: duplicate
+      - label: "小红书链接"
+        name: "xiaohongshuUrl"
+        widget: "string"
+        required: false
+        i18n: duplicate
       - label: "正文"
         name: "body"
         widget: "markdown"
@@ -147,6 +152,11 @@ collections:
         widget: "image"
         required: false
         i18n: duplicate
+      - label: "小红书链接"
+        name: "xiaohongshuUrl"
+        widget: "string"
+        required: false
+        i18n: duplicate
       - label: "正文"
         name: "body"
         widget: "markdown"
@@ -189,6 +199,11 @@ collections:
       - label: "封面图"
         name: "cover"
         widget: "image"
+        required: false
+        i18n: duplicate
+      - label: "小红书链接"
+        name: "xiaohongshuUrl"
+        widget: "string"
         required: false
         i18n: duplicate
       - label: "正文"
@@ -261,6 +276,11 @@ collections:
         i18n: duplicate
       - label: "Komoot 链接"
         name: "komootUrl"
+        widget: "string"
+        required: false
+        i18n: duplicate
+      - label: "小红书链接"
+        name: "xiaohongshuUrl"
         widget: "string"
         required: false
         i18n: duplicate
