@@ -5,6 +5,7 @@ description: 从入门到进阶，帮你选择适合的公路自行车。
 author: ACC 器械组
 date: 2026-01-20
 cover: /images/uploads/bike.jpg
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
 选购公路车是一门学问，本文将从预算、用途、品牌等多个维度为你提供参考。
