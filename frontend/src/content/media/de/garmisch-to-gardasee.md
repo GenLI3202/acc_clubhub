@@ -7,7 +7,7 @@ author: Shane Shen
 type: 翻山越岭
 cover: /images/uploads/5ef6b60d164050a9ee38afb20fb9b540.HEIC_page-0001.jpg
 videoUrl: ''
-xiaohongshuUrl: 三百公里是寒带🇩🇪到热带🇮🇹的距离 公路旅游不是为... http://xhslink.com/o/lbkX7e7fwP  复制后打开【小红书】查看笔记！
+xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
 ---
 
 ## **Über die Alpen: Die 300 km Epic-Tour von Garmisch zum Gardasee**
