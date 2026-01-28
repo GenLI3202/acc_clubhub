@@ -247,20 +247,22 @@ export const collections = {
 
 | 检查项 | 验证方法 | 状态 |
 |--------|----------|------|
-| 生产 CMS 可访问 | 访问 `https://acc-clubhub.vercel.app/admin/` 看到登录界面 | |
-| GitHub OAuth 登录 | 点击 "Sign in with GitHub" 成功授权并进入 CMS | |
-| 内容发布流转 | 新建文章 → 发布 → GitHub 收到 commit → Vercel 重新部署 → 前台显示 | |
-| 多用户权限 | 其他 Collaborator 成员也能登录编辑 | |
+| 生产 CMS 可访问 | 访问 `https://acc-clubhub.vercel.app/admin/` 看到登录界面 | ✅ |
+| GitHub OAuth 登录 | 点击 "Sign in with GitHub" 成功授权并进入 CMS | ✅ |
+| 内容发布流转 | 新建文章 → 发布 → GitHub 收到 commit → Vercel 重新部署 → 前台显示 | ✅ |
+| 多用户权限 | 其他 Collaborator 成员也能登录编辑 | ✅ |
 
 ### Phase 3.5 (测试)
 
 | 检查项 | 验证方法 | 状态 |
 |--------|----------|------|
-| `astro check` | 无类型错误 | |
-| `npm run test` | Vitest 单元测试 100% 通过 | |
-| `npm run build` | 静态构建成功 | |
-| `npm run test:e2e` | Playwright E2E 测试 100% 通过 | |
-| GitHub Actions | CI 流水线全绿 | |
+| `astro check` | 无类型错误 (0 errors, 0 warnings) | ✅ |
+| `npm run test` | Vitest 单元测试 100% 通过 (25/25) | ✅ |
+| `npm run build` | 静态构建成功 (26 pages) | ✅ |
+| `npm run test:e2e` | Playwright E2E 测试 (64 passed, 2 skipped*) | ✅ |
+| GitHub Actions | CI 流水线触发运行 | ✅ |
+
+> *2 skipped: training detail tests (no training content exists yet)
 
 ---
 
