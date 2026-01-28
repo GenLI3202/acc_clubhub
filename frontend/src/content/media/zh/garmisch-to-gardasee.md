@@ -5,7 +5,7 @@ description: 这不仅是一次骑行，更是一场关于毅力、高度与美�
 date: 2026-01-28T21:22:00
 author: Shane Shen
 type: 翻山越岭
-cover: ''
+cover: /images/uploads/5ef6b60d164050a9ee38afb20fb9b540.jpg
 videoUrl: ''
 xiaohongshuUrl: 三百公里是寒带🇩🇪到热带🇮🇹的距离 公路旅游不是为... http://xhslink.com/o/lbkX7e7fwP  复制后打开【小红书】查看笔记！
 ---
