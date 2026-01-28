@@ -2,9 +2,9 @@
 slug: road-bike-buying-guide
 title: Road Bike Buying Guide 2026 (Demo)
 description: From beginner to advanced, helping you choose the right road bike.
-author: ACC Gear Team
+author: ACC 器械组
 date: 2026-01-20
-cover: /images/uploads/bike.jpg
+cover: /images/uploads/买canyon 吧.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
