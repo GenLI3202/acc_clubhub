@@ -16,8 +16,10 @@ const mediaCollection = defineCollection({
         description: z.string().optional(),
         date: z.coerce.date(),
         type: z.enum(['影像', '访谈', '翻山越岭']),
+        author: z.string().default('ACC Club'),
         cover: z.string().optional(),
         videoUrl: z.string().optional(),
+        xiaohongshuUrl: z.string().optional(),
     }),
 });
 
@@ -33,6 +35,7 @@ const gearCollection = defineCollection({
         author: z.string(),
         date: z.coerce.date(),
         cover: z.string().optional(),
+        xiaohongshuUrl: z.string().optional(),
     }),
 });
 
@@ -48,6 +51,7 @@ const trainingCollection = defineCollection({
         author: z.string(),
         date: z.coerce.date(),
         cover: z.string().optional(),
+        xiaohongshuUrl: z.string().optional(),
     }),
 });
 
@@ -64,9 +68,13 @@ const routesCollection = defineCollection({
         distance: z.number(),
         elevation: z.number(),
         difficulty: z.enum(['easy', 'medium', 'hard', 'expert']),
+        author: z.string().default('ACC Club'),
         cover: z.string().optional(),
         stravaUrl: z.string().optional(),
-        komootUrl: z.string().optional(),
+        xiaohongshuUrl: z.string().optional(),
+    }).refine((data) => data.stravaUrl || data.komootUrl, {
+        message: 'At least one of stravaUrl or komootUrl is required',
+        path: ['stravaUrl'], // Shows error on stravaUrl field
     }),
 });
 

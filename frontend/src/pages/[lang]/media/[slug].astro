@@ -30,10 +30,12 @@ const { Content } = await render(entry);
 <ArticleLayout
   title={entry.data.title}
   date={entry.data.date}
+  author={entry.data.author}
   cover={entry.data.cover}
   lang={lang}
   backLink={`/${lang}/media`}
   backLabel={t(lang, 'nav.media')}
+  xiaohongshuUrl={entry.data.xiaohongshuUrl}
 >
   {entry.data.videoUrl && (
     <div class="video-embed">
@@ -41,7 +43,7 @@ const { Content } = await render(entry);
         src={entry.data.videoUrl.replace('watch?v=', 'embed/')}
         title={entry.data.title}
         frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen
       ></iframe>
     </div>

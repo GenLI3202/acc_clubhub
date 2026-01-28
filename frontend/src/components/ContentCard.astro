@@ -9,9 +9,10 @@ interface Props {
   cover?: string;
   date?: Date;
   meta?: string; // 例如 "65km · 450m · Medium"
+  metaType?: 'default' | 'author'; // author 显示为绿色 tag
 }
 
-const { href, title, description, cover, date, meta } = Astro.props;
+const { href, title, description, cover, date, meta, metaType = 'default' } = Astro.props;
 const formattedDate = date
   ? date.toLocaleDateString('zh-CN', {
       year: 'numeric',
@@ -34,7 +35,11 @@ const formattedDate = date
     {description && <p class="content-card-desc">{description}</p>}
     <div class="content-card-meta">
       {formattedDate && <span class="content-card-date">{formattedDate}</span>}
-      {meta && <span class="content-card-tag">{meta}</span>}
+      {meta && (
+        <span class={`content-card-tag ${metaType === 'author' ? 'content-card-tag--author' : ''}`}>
+          {meta}
+        </span>
+      )}
     </div>
   </div>
 </a>
@@ -119,5 +124,10 @@ const formattedDate = date
     border-radius: 3px;
     color: var(--color-primary);
     font-weight: 500;
+  }
+
+  .content-card-tag--author {
+    background: rgba(92, 160, 66, 0.1);
+    color: var(--color-secondary);
   }
 </style>

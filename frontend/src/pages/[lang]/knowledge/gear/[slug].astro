@@ -34,6 +34,7 @@ const { Content } = await render(entry);
   lang={lang}
   backLink={`/${lang}/knowledge/gear`}
   backLabel={t(lang, 'nav.gear')}
+  xiaohongshuUrl={entry.data.xiaohongshuUrl}
 >
   <Content />
 </ArticleLayout>

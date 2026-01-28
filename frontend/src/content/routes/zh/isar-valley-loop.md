@@ -8,6 +8,7 @@ difficulty: medium
 cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 stravaUrl: https://www.strava.com/routes/123456
 komootUrl: https://www.komoot.com/tour/123456
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
 这条经典路线沿着伊萨尔河谷蜿蜒前行，是 ACC 俱乐部最受欢迎的周末骑行路线之一。

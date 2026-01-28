@@ -6,6 +6,7 @@ date: 2025-08-15
 type: 影像
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_source=9869b386690dc31064a52b29365a3735
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
 这是一次难忘的骑行经历，我们从慕尼黑出发，一路向南穿越阿尔卑斯山脉。

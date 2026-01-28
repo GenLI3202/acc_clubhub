@@ -78,6 +78,12 @@ collections:
         name: "date"
         widget: "datetime"
         i18n: duplicate
+      - label: "作者"
+        name: "author"
+        widget: "string"
+        required: false
+        default: "ACC Club"
+        i18n: duplicate
       - label: "类型"
         name: "type"
         widget: "select"
@@ -215,6 +221,12 @@ collections:
         name: "region"
         widget: "string"
         hint: "例如: 慕尼黑南郊, 阿尔卑斯山, 伊萨尔河谷"
+        i18n: duplicate
+      - label: "作者 (Credits)"
+        name: "author"
+        widget: "string"
+        required: false
+        default: "ACC Club"
         i18n: duplicate
       - label: "距离 (km)"
         name: "distance"

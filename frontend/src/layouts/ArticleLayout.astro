@@ -13,9 +13,10 @@ interface Props {
   lang: Locale;
   backLink: string;
   backLabel?: string;
+  xiaohongshuUrl?: string;
 }
 
-const { title, date, author, cover, lang, backLink, backLabel } = Astro.props;
+const { title, date, author, cover, lang, backLink, backLabel, xiaohongshuUrl } = Astro.props;
 const formattedDate = date
   ? date.toLocaleDateString(lang === 'de' ? 'de-DE' : lang === 'en' ? 'en-US' : 'zh-CN', {
       year: 'numeric',
@@ -34,12 +35,20 @@ const formattedDate = date
 
       <h1>{title}</h1>
 
-      {(formattedDate || author) && (
-        <div class="article-meta">
-          {formattedDate && <time>{formattedDate}</time>}
-          {author && <span class="article-author">by {author}</span>}
-        </div>
-      )}
+      <div class="article-meta-row">
+        {(formattedDate || author) && (
+          <div class="article-meta">
+            {formattedDate && <time>{formattedDate}</time>}
+            {author && <span class="article-author">by {author}</span>}
+          </div>
+        )}
+
+        {xiaohongshuUrl && (
+          <a href={xiaohongshuUrl} target="_blank" rel="noopener" class="xhs-link">
+            小红书 (Xiaohongshu) ↗
+          </a>
+        )}
+      </div>
     </header>
 
     {cover && (
@@ -81,6 +90,14 @@ const formattedDate = date
     margin-bottom: var(--space-sm);
   }
 
+  .article-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+  }
+
   .article-meta {
     display: flex;
     align-items: center;
@@ -91,6 +108,24 @@ const formattedDate = date
 
   .article-author {
     font-style: italic;
+  }
+
+  .xhs-link {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #ff2442;
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .xhs-link:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: white;
   }
 
   .article-cover {

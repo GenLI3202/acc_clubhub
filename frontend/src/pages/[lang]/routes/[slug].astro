@@ -49,6 +49,7 @@ const difficultyColors: Record<string, string> = {
 
       <h1>{entry.data.name}</h1>
       <p class="route-region">📍 {entry.data.region}</p>
+      {entry.data.author && <p class="route-author">By {entry.data.author}</p>}
     </header>
 
     {entry.data.cover && (
@@ -84,6 +85,11 @@ const difficultyColors: Record<string, string> = {
       {entry.data.komootUrl && (
         <a href={entry.data.komootUrl} target="_blank" rel="noopener" class="route-link route-link--komoot">
           Komoot →
+        </a>
+      )}
+      {entry.data.xiaohongshuUrl && (
+        <a href={entry.data.xiaohongshuUrl} target="_blank" rel="noopener" class="route-link route-link--xhs">
+          小红书 →
         </a>
       )}
     </div>
@@ -203,6 +209,17 @@ const difficultyColors: Record<string, string> = {
 
   .route-link--komoot:hover {
     background: #6aa127;
+    color: white;
+    text-decoration: none;
+  }
+
+  .route-link--xhs {
+    border-color: #ff2442;
+    color: #ff2442;
+  }
+
+  .route-link--xhs:hover {
+    background: #ff2442;
     color: white;
     text-decoration: none;
   }
