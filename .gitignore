@@ -11,6 +11,7 @@ _site/
 .quarto/
 *.html
 !content/**/*.html
+!frontend/public/admin/**/*.html
 
 # Database
 *.db
