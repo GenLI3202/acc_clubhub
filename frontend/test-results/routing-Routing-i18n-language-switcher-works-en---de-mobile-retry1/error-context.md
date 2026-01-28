@@ -1,0 +1,86 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "ACC ClubHub ACC ClubHub" [ref=e4] [cursor=pointer]:
+        - /url: /de
+        - img "ACC ClubHub" [ref=e5]
+        - generic [ref=e6]: ACC ClubHub
+      - generic [ref=e11]:
+        - link "ZH" [ref=e12] [cursor=pointer]:
+          - /url: /zh/
+        - link "EN" [ref=e13] [cursor=pointer]:
+          - /url: /en/
+        - link "DE" [ref=e14] [cursor=pointer]:
+          - /url: /de/
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - heading "ACC ClubHub" [level=1] [ref=e17]
+      - paragraph [ref=e18]: Across Cycling Club Munich — Chinesischer Radsportverein München
+      - generic [ref=e19]: Beta in Entwicklung
+    - generic [ref=e21]:
+      - link "🚴 Münchner Alltag Social Ride, Training Day, Anmeldung" [ref=e22] [cursor=pointer]:
+        - /url: /de/events
+        - generic [ref=e23]: 🚴
+        - heading "Münchner Alltag" [level=3] [ref=e24]:
+          - text: Münchner
+          - text: Alltag
+        - paragraph [ref=e26]: Social Ride, Training Day, Anmeldung
+      - link "🎬 Medien Archiv Videos, Interviews, Bergabenteuer" [ref=e27] [cursor=pointer]:
+        - /url: /de/media
+        - generic [ref=e28]: 🎬
+        - heading "Medien Archiv" [level=3] [ref=e29]:
+          - text: Medien
+          - text: Archiv
+        - paragraph [ref=e31]: Videos, Interviews, Bergabenteuer
+      - link "🔧 Ausrüst- ung Kaufberatung, Workshops, Neuheiten" [ref=e32] [cursor=pointer]:
+        - /url: /de/knowledge/gear
+        - generic [ref=e33]: 🔧
+        - heading "Ausrüst- ung" [level=3] [ref=e34]:
+          - text: Ausrüst-
+          - text: ung
+        - paragraph [ref=e36]: Kaufberatung, Workshops, Neuheiten
+      - link "📊 Wissen- schaft Trainingsmethoden, Sicherheit" [ref=e37] [cursor=pointer]:
+        - /url: /de/knowledge/training
+        - generic [ref=e38]: 📊
+        - heading "Wissen- schaft" [level=3] [ref=e39]:
+          - text: Wissen-
+          - text: schaft
+        - paragraph [ref=e41]: Trainingsmethoden, Sicherheit
+      - link "🗺️ Routen- datenbank Suchbare Routen, Strava/Komoot Links" [ref=e42] [cursor=pointer]:
+        - /url: /de/routes
+        - generic [ref=e43]: 🗺️
+        - heading "Routen- datenbank" [level=3] [ref=e44]:
+          - text: Routen-
+          - text: datenbank
+        - paragraph [ref=e46]: Suchbare Routen, Strava/Komoot Links
+  - contentinfo [ref=e47]:
+    - generic [ref=e48]:
+      - paragraph [ref=e49]:
+        - text: © 2026
+        - strong [ref=e50]: ACC
+        - text: — Across Cycling Club Munich
+      - navigation [ref=e51]:
+        - link "GitHub" [ref=e52] [cursor=pointer]:
+          - /url: https://github.com/GenLI3202/acc_clubhub
+        - generic [ref=e53]: ·
+        - link "关于我们" [ref=e54] [cursor=pointer]:
+          - /url: /about
+  - generic [ref=e57]:
+    - button "Menu" [ref=e58]:
+      - img [ref=e60]
+      - generic: Menu
+    - button "Inspect" [ref=e64]:
+      - img [ref=e66]
+      - generic: Inspect
+    - button "Audit" [ref=e68]:
+      - generic [ref=e69]:
+        - img [ref=e70]
+        - img [ref=e73]
+      - generic: Audit
+    - button "Settings" [ref=e76]:
+      - img [ref=e78]
+      - generic: Settings
+```

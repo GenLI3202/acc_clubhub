@@ -63,6 +63,38 @@ frontend/
 
 ---
 
+### Phase 3.4: 生产环境 CMS 认证
+
+> **详细方案**: [phase_3_4_plan.md](./phase_3_4_plan.md)
+
+| 序号 | 任务 | 说明 |
+|------|------|------|
+| 3.4.1 | 注册 GitHub OAuth App | 在 GitHub Developer Settings 创建 OAuth App，配置 callback URL |
+| 3.4.2 | 部署 sveltia-cms-auth | Sveltia CMS 官方认证代理，部署到 Cloudflare Workers (免费) |
+| 3.4.3 | 更新 `config.yml` | backend 切换为 `github`，添加 OAuth `base_url`，更新 `site_url` |
+| 3.4.4 | 添加成员 Collaborator | 在 GitHub repo 添加俱乐部核心成员为 Collaborator (Write 权限) |
+| 3.4.5 | 部署验证 | Push 到 master → Vercel 部署 → 访问 /admin → GitHub OAuth 登录 → 创建/发布内容 → 验证前台显示 |
+
+---
+
+### Phase 3.5: 测试体系完备化
+
+> **详细方案**: [layer_3_test_plan.md](./layer_3_test_plan.md)
+
+| 序号 | 任务 | 说明 |
+|------|------|------|
+| 3.5.1 | 检查测试基础设施 | 确认 Vitest / Playwright 配置可用 |
+| 3.5.2 | i18n 单元测试 | `src/lib/__tests__/i18n.test.ts` (Vitest) |
+| 3.5.3 | E2E 路由测试 | `e2e/routing.spec.ts` (Playwright) |
+| 3.5.4 | E2E 内容页面测试 | `e2e/content.spec.ts` |
+| 3.5.5 | E2E 导航测试 | `e2e/navigation.spec.ts` |
+| 3.5.6 | E2E 响应式测试 | `e2e/responsive.spec.ts` |
+| 3.5.7 | Schema + 构建验证 | `astro check` + `astro build` |
+| 3.5.8 | 执行全部测试 | `npm run test:all`，修复所有失败项 |
+| 3.5.9 | 文档更新 | 更新 test plan 标记完成状态 |
+
+---
+
 ## 三、核心配置详解
 
 ### 3.1 Decap CMS Config
@@ -200,35 +232,48 @@ export const collections = {
 
 ## 四、验证清单
 
-| 检查项 | 验证方法 |
-|--------|----------|
-| ✅ CMS 可访问 | 访问 `http://localhost:4321/admin` 能看到 Decap 界面 |
-| ✅ 集合可编辑 | 能在 CMS 中创建/编辑各类内容 |
-| ✅ 内容生成页面 | 示例 Markdown 在对应页面显示 |
-| ✅ 列表页正常 | 列表页显示所有该集合的内容卡片 |
-| ✅ 详情页正常 | 点击卡片跳转到详情页，内容正确渲染 |
+### Phase 3.1 ~ 3.3 (本地开发)
+
+| 检查项 | 验证方法 | 状态 |
+|--------|----------|------|
+| CMS 可访问 | 访问 `http://localhost:4321/admin` 能看到 Sveltia CMS 界面 | ✅ |
+| i18n 语言标签页 | 编辑器显示 zh / en / de 标签页 | ✅ |
+| 集合可编辑 | 能在 CMS 中创建/编辑各类内容 | ✅ |
+| 内容生成页面 | 示例 Markdown 在对应页面显示 | ✅ |
+| 列表页正常 | 列表页显示所有该集合的内容卡片 | ✅ |
+| 详情页正常 | 点击卡片跳转到详情页，内容正确渲染 | ✅ |
+
+### Phase 3.4 (生产部署)
+
+| 检查项 | 验证方法 | 状态 |
+|--------|----------|------|
+| 生产 CMS 可访问 | 访问 `https://acc-clubhub.vercel.app/admin/` 看到登录界面 | |
+| GitHub OAuth 登录 | 点击 "Sign in with GitHub" 成功授权并进入 CMS | |
+| 内容发布流转 | 新建文章 → 发布 → GitHub 收到 commit → Vercel 重新部署 → 前台显示 | |
+| 多用户权限 | 其他 Collaborator 成员也能登录编辑 | |
+
+### Phase 3.5 (测试)
+
+| 检查项 | 验证方法 | 状态 |
+|--------|----------|------|
+| `astro check` | 无类型错误 | |
+| `npm run test` | Vitest 单元测试 100% 通过 | |
+| `npm run build` | 静态构建成功 | |
+| `npm run test:e2e` | Playwright E2E 测试 100% 通过 | |
+| GitHub Actions | CI 流水线全绿 | |
 
 ---
 
-## 五、预计时间
+## 五、注意事项
 
-| 阶段 | 预计时间 |
-|------|----------|
-| Phase 3.1: Decap CMS 配置 | 1-2 小时 |
-| Phase 3.2: Content Collections | 1-2 小时 |
-| Phase 3.3: 动态页面 | 3-4 小时 |
-| **合计** | **5-8 小时** |
-
----
-
-## 六、注意事项
+> [!NOTE]
+> **CMS 引擎**: 已从 Decap CMS 切换为 **Sveltia CMS** (同一份 config.yml，i18n 支持更稳定，体积更小)。
+> 详见 [Phase 3.1 优化方案](./phase_3_1_optimized_plan.md)。
 
 > [!IMPORTANT]
-> **OAuth 回调**: 本地开发时，Decap CMS 的 GitHub 后端需要 OAuth App。
-> 可选方案：
-> 1. 使用 `netlify-cms-proxy-server` 本地代理
-> 2. 先用 `test-repo` backend 进行本地测试 (不需实际提交)
-> 3. 部署到 Vercel 后配置正式 OAuth
+> **OAuth 认证架构**: 使用 **sveltia-cms-auth** (Cloudflare Workers) 作为 GitHub OAuth 代理。
+> `config.yml` 中的 `base_url` 指向 Worker URL，不是 Vercel 地址。
+> 详见 [Phase 3.4 方案](./phase_3_4_plan.md)。
 
 > [!NOTE]
 > **慕城日常 (Events)**: 这个板块依赖 FastAPI 后端 (Layer 4)，不在 Layer 3 范围内。

@@ -9,7 +9,8 @@ export const defaultLocale: Locale = 'zh';
  * 从 entry.filePath 提取语言 (稳健方式)
  * @example getLangFromEntry("src/content/media/zh/alps.md", "media") => "zh"
  */
-export function getLangFromEntry(filePath: string, collection: string): Locale {
+export function getLangFromEntry(filePath: string | undefined, collection: string): Locale {
+    if (!filePath) return defaultLocale;
     const parts = filePath.split('/');
     const collectionIndex = parts.indexOf(collection);
     const lang = parts[collectionIndex + 1];

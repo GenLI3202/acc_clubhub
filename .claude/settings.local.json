@@ -16,7 +16,9 @@
       "WebFetch(domain:decapcms.org)",
       "WebFetch(domain:github.com)",
       "Bash(dir:*)",
-      "WebFetch(domain:eastondev.com)"
+      "WebFetch(domain:eastondev.com)",
+      "WebFetch(domain:codeforum.org)",
+      "WebFetch(domain:sveltiacms.app)"
     ]
   }
 }

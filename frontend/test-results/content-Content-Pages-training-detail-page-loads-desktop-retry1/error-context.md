@@ -1,0 +1,158 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "ACC ClubHub ACC ClubHub" [ref=e4] [cursor=pointer]:
+        - /url: /zh
+        - img "ACC ClubHub" [ref=e5]
+        - generic [ref=e6]: ACC ClubHub
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "首页" [ref=e9] [cursor=pointer]:
+            - /url: /zh
+        - listitem [ref=e10]:
+          - link "慕城日常" [ref=e11] [cursor=pointer]:
+            - /url: /zh/events
+        - listitem [ref=e12]:
+          - link "车影骑踪" [ref=e13] [cursor=pointer]:
+            - /url: /zh/media
+        - listitem [ref=e14]:
+          - link "器械知识" [ref=e15] [cursor=pointer]:
+            - /url: /zh/knowledge/gear
+        - listitem [ref=e16]:
+          - link "科学训练" [ref=e17] [cursor=pointer]:
+            - /url: /zh/knowledge/training
+        - listitem [ref=e18]:
+          - link "骑行路线" [ref=e19] [cursor=pointer]:
+            - /url: /zh/routes
+        - listitem [ref=e20]:
+          - link "关于 ACC" [ref=e21] [cursor=pointer]:
+            - /url: /zh/about
+      - generic [ref=e22]:
+        - link "ZH" [ref=e23] [cursor=pointer]:
+          - /url: /zh/knowledge/training/ftp-training-basics
+        - link "EN" [ref=e24] [cursor=pointer]:
+          - /url: /en/knowledge/training/ftp-training-basics
+        - link "DE" [ref=e25] [cursor=pointer]:
+          - /url: /de/knowledge/training/ftp-training-basics
+  - main [ref=e26]:
+    - article [ref=e27]:
+      - generic [ref=e28]:
+        - link "← 科学训练" [ref=e29] [cursor=pointer]:
+          - /url: /zh/knowledge/training
+        - heading "FTP 训练入门指南" [level=1] [ref=e30]
+        - generic [ref=e31]:
+          - time [ref=e32]: 2026年1月15日
+          - generic [ref=e33]: by ACC 训练组
+      - img "FTP 训练入门指南" [ref=e34]
+      - generic [ref=e35]:
+        - paragraph [ref=e36]: FTP（Functional Threshold Power）是衡量骑行能力的关键指标，也是科学训练的基础。
+        - heading "什么是 FTP？" [level=2] [ref=e37]
+        - paragraph [ref=e38]:
+          - text: FTP 代表你能够持续
+          - strong [ref=e39]: 1 小时
+          - text: 的最大平均功率输出（瓦特）。它是划分训练区间的基准。
+        - heading "FTP 训练区间" [level=3] [ref=e40]
+        - table [ref=e41]:
+          - rowgroup [ref=e42]:
+            - row "区间 %FTP 感受 训练目的" [ref=e43]:
+              - columnheader "区间" [ref=e44]
+              - columnheader "%FTP" [ref=e45]
+              - columnheader "感受" [ref=e46]
+              - columnheader "训练目的" [ref=e47]
+          - rowgroup [ref=e48]:
+            - row "Z1 恢复 <55% 非常轻松 积极恢复" [ref=e49]:
+              - cell "Z1 恢复" [ref=e50]
+              - cell "<55%" [ref=e51]
+              - cell "非常轻松" [ref=e52]
+              - cell "积极恢复" [ref=e53]
+            - row "Z2 耐力 56-75% 可以聊天 有氧基础" [ref=e54]:
+              - cell "Z2 耐力" [ref=e55]
+              - cell "56-75%" [ref=e56]
+              - cell "可以聊天" [ref=e57]
+              - cell "有氧基础" [ref=e58]
+            - row "Z3 节奏 76-90% 略有挑战 提升耐力" [ref=e59]:
+              - cell "Z3 节奏" [ref=e60]
+              - cell "76-90%" [ref=e61]
+              - cell "略有挑战" [ref=e62]
+              - cell "提升耐力" [ref=e63]
+            - row "Z4 阈值 91-105% 较为艰难 提升 FTP" [ref=e64]:
+              - cell "Z4 阈值" [ref=e65]
+              - cell "91-105%" [ref=e66]
+              - cell "较为艰难" [ref=e67]
+              - cell "提升 FTP" [ref=e68]
+            - row "Z5 VO2max 106-120% 非常痛苦 最大摄氧量" [ref=e69]:
+              - cell "Z5 VO2max" [ref=e70]
+              - cell "106-120%" [ref=e71]
+              - cell "非常痛苦" [ref=e72]
+              - cell "最大摄氧量" [ref=e73]
+            - row "Z6 无氧 121-150% 极限冲刺 无氧能力" [ref=e74]:
+              - cell "Z6 无氧" [ref=e75]
+              - cell "121-150%" [ref=e76]
+              - cell "极限冲刺" [ref=e77]
+              - cell "无氧能力" [ref=e78]
+        - heading "如何测试 FTP" [level=2] [ref=e79]
+        - heading "方法一：20 分钟测试" [level=3] [ref=e80]
+        - list [ref=e81]:
+          - listitem [ref=e82]: 热身 10-15 分钟
+          - listitem [ref=e83]: 全力骑行 20 分钟
+          - listitem [ref=e84]: 记录平均功率
+          - listitem [ref=e85]:
+            - strong [ref=e86]: FTP = 平均功率 × 0.95
+        - heading "方法二：Ramp Test" [level=3] [ref=e87]
+        - paragraph [ref=e88]: 逐步增加功率直到力竭，适合在 Zwift 等平台进行。
+        - heading "如何提升 FTP" [level=2] [ref=e89]
+        - heading "1. 甜蜜点训练 (Sweet Spot)" [level=3] [ref=e90]
+        - paragraph [ref=e91]: 在 88-94% FTP 区间进行长时间骑行：
+        - list [ref=e92]:
+          - listitem [ref=e93]: 2×20 分钟，休息 5 分钟
+          - listitem [ref=e94]: 3×15 分钟，休息 3 分钟
+        - heading "2. 阈值间歇" [level=3] [ref=e95]
+        - paragraph [ref=e96]: 在 95-105% FTP 区间进行间歇训练：
+        - list [ref=e97]:
+          - listitem [ref=e98]: 4×10 分钟，休息 5 分钟
+          - listitem [ref=e99]: 5×8 分钟，休息 4 分钟
+        - heading "3. 充分恢复" [level=3] [ref=e100]
+        - paragraph [ref=e101]: 训练和恢复同样重要！确保每周有 1-2 天完全休息或轻松骑行。
+        - heading "推荐工具" [level=2] [ref=e102]
+        - list [ref=e103]:
+          - listitem [ref=e104]:
+            - strong [ref=e105]: 功率计
+            - text: ": Favero Assioma, Garmin Rally"
+          - listitem [ref=e106]:
+            - strong [ref=e107]: 智能骑行台
+            - text: ": Wahoo KICKR, Tacx Neo"
+          - listitem [ref=e108]:
+            - strong [ref=e109]: 训练软件
+            - text: ": TrainerRoad, Zwift, Intervals.icu"
+        - paragraph [ref=e110]: 有问题？加入我们的周二训练日，一起提升！
+  - contentinfo [ref=e111]:
+    - generic [ref=e112]:
+      - paragraph [ref=e113]:
+        - text: © 2026
+        - strong [ref=e114]: ACC
+        - text: — Across Cycling Club Munich
+      - navigation [ref=e115]:
+        - link "GitHub" [ref=e116] [cursor=pointer]:
+          - /url: https://github.com/GenLI3202/acc_clubhub
+        - generic [ref=e117]: ·
+        - link "关于我们" [ref=e118] [cursor=pointer]:
+          - /url: /about
+  - generic [ref=e121]:
+    - button "Menu" [ref=e122]:
+      - img [ref=e124]
+      - generic: Menu
+    - button "Inspect" [ref=e128]:
+      - img [ref=e130]
+      - generic: Inspect
+    - button "Audit" [ref=e132]:
+      - generic [ref=e133]:
+        - img [ref=e134]
+        - img [ref=e137]
+      - generic: Audit
+    - button "Settings" [ref=e140]:
+      - img [ref=e142]
+      - generic: Settings
+```

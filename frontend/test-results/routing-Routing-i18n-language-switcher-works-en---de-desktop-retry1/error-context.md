@@ -1,0 +1,108 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - link "ACC ClubHub ACC ClubHub" [ref=e4] [cursor=pointer]:
+        - /url: /de
+        - img "ACC ClubHub" [ref=e5]
+        - generic [ref=e6]: ACC ClubHub
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "Startseite" [ref=e9] [cursor=pointer]:
+            - /url: /de
+        - listitem [ref=e10]:
+          - link "Events" [ref=e11] [cursor=pointer]:
+            - /url: /de/events
+        - listitem [ref=e12]:
+          - link "Medien" [ref=e13] [cursor=pointer]:
+            - /url: /de/media
+        - listitem [ref=e14]:
+          - link "Ausrüstung" [ref=e15] [cursor=pointer]:
+            - /url: /de/knowledge/gear
+        - listitem [ref=e16]:
+          - link "Training" [ref=e17] [cursor=pointer]:
+            - /url: /de/knowledge/training
+        - listitem [ref=e18]:
+          - link "Routen" [ref=e19] [cursor=pointer]:
+            - /url: /de/routes
+        - listitem [ref=e20]:
+          - link "Über uns" [ref=e21] [cursor=pointer]:
+            - /url: /de/about
+      - generic [ref=e22]:
+        - link "ZH" [ref=e23] [cursor=pointer]:
+          - /url: /zh/
+        - link "EN" [ref=e24] [cursor=pointer]:
+          - /url: /en/
+        - link "DE" [ref=e25] [cursor=pointer]:
+          - /url: /de/
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - heading "ACC ClubHub" [level=1] [ref=e28]
+      - paragraph [ref=e29]: Across Cycling Club Munich — Chinesischer Radsportverein München
+      - generic [ref=e30]: Beta in Entwicklung
+    - generic [ref=e32]:
+      - link "🚴 Münchner Alltag Social Ride, Training Day, Anmeldung" [ref=e33] [cursor=pointer]:
+        - /url: /de/events
+        - generic [ref=e34]: 🚴
+        - heading "Münchner Alltag" [level=3] [ref=e35]:
+          - text: Münchner
+          - text: Alltag
+        - paragraph [ref=e37]: Social Ride, Training Day, Anmeldung
+      - link "🎬 Medien Archiv Videos, Interviews, Bergabenteuer" [ref=e38] [cursor=pointer]:
+        - /url: /de/media
+        - generic [ref=e39]: 🎬
+        - heading "Medien Archiv" [level=3] [ref=e40]:
+          - text: Medien
+          - text: Archiv
+        - paragraph [ref=e42]: Videos, Interviews, Bergabenteuer
+      - link "🔧 Ausrüst- ung Kaufberatung, Workshops, Neuheiten" [ref=e43] [cursor=pointer]:
+        - /url: /de/knowledge/gear
+        - generic [ref=e44]: 🔧
+        - heading "Ausrüst- ung" [level=3] [ref=e45]:
+          - text: Ausrüst-
+          - text: ung
+        - paragraph [ref=e47]: Kaufberatung, Workshops, Neuheiten
+      - link "📊 Wissen- schaft Trainingsmethoden, Sicherheit" [ref=e48] [cursor=pointer]:
+        - /url: /de/knowledge/training
+        - generic [ref=e49]: 📊
+        - heading "Wissen- schaft" [level=3] [ref=e50]:
+          - text: Wissen-
+          - text: schaft
+        - paragraph [ref=e52]: Trainingsmethoden, Sicherheit
+      - link "🗺️ Routen- datenbank Suchbare Routen, Strava/Komoot Links" [ref=e53] [cursor=pointer]:
+        - /url: /de/routes
+        - generic [ref=e54]: 🗺️
+        - heading "Routen- datenbank" [level=3] [ref=e55]:
+          - text: Routen-
+          - text: datenbank
+        - paragraph [ref=e57]: Suchbare Routen, Strava/Komoot Links
+  - contentinfo [ref=e58]:
+    - generic [ref=e59]:
+      - paragraph [ref=e60]:
+        - text: © 2026
+        - strong [ref=e61]: ACC
+        - text: — Across Cycling Club Munich
+      - navigation [ref=e62]:
+        - link "GitHub" [ref=e63] [cursor=pointer]:
+          - /url: https://github.com/GenLI3202/acc_clubhub
+        - generic [ref=e64]: ·
+        - link "关于我们" [ref=e65] [cursor=pointer]:
+          - /url: /about
+  - generic [ref=e68]:
+    - button "Menu" [ref=e69]:
+      - img [ref=e71]
+      - generic: Menu
+    - button "Inspect" [ref=e75]:
+      - img [ref=e77]
+      - generic: Inspect
+    - button "Audit" [ref=e79]:
+      - generic [ref=e80]:
+        - img [ref=e81]
+        - img [ref=e84]
+      - generic: Audit
+    - button "Settings" [ref=e87]:
+      - img [ref=e89]
+      - generic: Settings
+```

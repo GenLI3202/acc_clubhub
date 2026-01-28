@@ -6,16 +6,12 @@
 # ===============================
 # 后端配置
 # ===============================
-# 开发阶段使用 test-repo (本地测试，不需真实提交)
+# 生产配置: GitHub 后端 + Cloudflare Workers OAuth 代理
 backend:
-  name: test-repo
-
-# 未来生产配置:
-# backend:
-#   name: github
-#   repo: GenLI3202/acc_clubhub
-#   branch: master
-#   base_url: https://acc-clubhub.vercel.app  # OAuth 回调地址
+  name: github
+  repo: GenLI3202/acc_clubhub
+  branch: master
+  base_url: https://sveltia-cms-auth.lg897995069.workers.dev
 
 # ===============================
 # CMS 本地化 + 编辑器设置
@@ -42,8 +38,8 @@ public_folder: "/images/uploads"
 # ===============================
 # 站点配置
 # ===============================
-site_url: http://localhost:4321
-display_url: http://localhost:4321
+site_url: https://acc-clubhub.vercel.app
+display_url: https://acc-clubhub.vercel.app
 logo_url: /images/logo.jpg
 
 # ===============================
