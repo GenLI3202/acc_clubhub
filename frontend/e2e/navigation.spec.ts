@@ -23,7 +23,8 @@ test.describe('Navigation', () => {
     test('logo links to homepage', async ({ page }) => {
         await page.goto('/zh/media');
         await page.click('.logo');
-        await expect(page).toHaveURL('/zh/');
+        // URL may or may not have trailing slash
+        await expect(page).toHaveURL(/\/zh\/?$/);
     });
 
     /*
