@@ -5,6 +5,7 @@ description: 了解功能阈值功率（FTP）及如何通过科学训练提升�
 author: ACC 训练组
 date: 2026-01-15
 cover: /images/uploads/rr120_2024.jpg
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
 FTP（Functional Threshold Power）是衡量骑行能力的关键指标，也是科学训练的基础。
