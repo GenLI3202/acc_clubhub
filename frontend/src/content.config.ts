@@ -71,6 +71,7 @@ const routesCollection = defineCollection({
         author: z.string().default('ACC Club'),
         cover: z.string().optional(),
         stravaUrl: z.string().optional(),
+        komootUrl: z.string().optional(),
         xiaohongshuUrl: z.string().optional(),
     }).refine((data) => data.stravaUrl || data.komootUrl, {
         message: 'At least one of stravaUrl or komootUrl is required',

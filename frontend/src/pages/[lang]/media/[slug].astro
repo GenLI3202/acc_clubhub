@@ -37,17 +37,36 @@ const { Content } = await render(entry);
   backLabel={t(lang, 'nav.media')}
   xiaohongshuUrl={entry.data.xiaohongshuUrl}
 >
-  {entry.data.videoUrl && (
-    <div class="video-embed">
-      <iframe
-        src={entry.data.videoUrl.replace('watch?v=', 'embed/')}
-        title={entry.data.title}
-        frameborder="0"
-        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-  )}
+  {entry.data.videoUrl && (() => {
+    const videoUrl = entry.data.videoUrl || '';
+    let embedUrl = videoUrl;
+    
+    // Handle YouTube
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+      embedUrl = videoUrl.replace('watch?v=', 'embed/');
+    } 
+    // Handle Bilibili
+    else if (videoUrl.includes('bilibili.com')) {
+      // Extract BVID (starts with BV)
+      const bvidMatch = videoUrl.match(/(BV\w+)/);
+      if (bvidMatch) {
+        // use high_quality=1 and autoplay=0
+        embedUrl = `https://player.bilibili.com/player.html?bvid=${bvidMatch[1]}&autoplay=0&high_quality=1`;
+      }
+    }
+
+    return (
+      <div class="video-embed">
+        <iframe
+          src={embedUrl}
+          title={entry.data.title}
+          frameborder="0"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    );
+  })()}
   
   <Content />
 </ArticleLayout>
