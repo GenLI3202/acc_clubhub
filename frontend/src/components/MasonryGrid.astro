@@ -1,0 +1,54 @@
+---
+// src/components/MasonryGrid.astro
+// 瀑布流布局容器组件 (小红书风格)
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["masonry-grid", className]}>
+  <slot />
+</div>
+
+<style>
+  .masonry-grid {
+    column-count: 2;
+    column-gap: var(--space-md);
+    margin-top: var(--space-lg);
+  }
+
+  /* 响应式列数 */
+  @media (min-width: 640px) {
+    .masonry-grid {
+      column-count: 2;
+      column-gap: var(--space-lg);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .masonry-grid {
+      column-count: 3;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .masonry-grid {
+      column-count: 4;
+    }
+  }
+
+  /* 确保卡片不被分割到两列 */
+  .masonry-grid > :global(*) {
+    break-inside: avoid;
+    margin-bottom: var(--space-md);
+  }
+
+  @media (min-width: 640px) {
+    .masonry-grid > :global(*) {
+      margin-bottom: var(--space-lg);
+    }
+  }
+</style>

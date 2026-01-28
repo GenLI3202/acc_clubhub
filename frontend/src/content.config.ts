@@ -9,7 +9,11 @@ import { glob } from 'astro/loaders';
 // 🎬 车影骑踪 (Media)
 // ─────────────────────────────────
 const mediaCollection = defineCollection({
-    loader: glob({ pattern: '**/*.md', base: './src/content/media' }),
+    loader: glob({
+        pattern: '**/*.md',
+        base: './src/content/media',
+        generateId: ({ entry }) => entry.replace(/\.md$/, ''),  // e.g., "zh/alps-ride"
+    }),
     schema: z.object({
         slug: z.string(),
         title: z.string(),
@@ -27,7 +31,11 @@ const mediaCollection = defineCollection({
 // 🔧 器械知识 (Gear)
 // ─────────────────────────────────
 const gearCollection = defineCollection({
-    loader: glob({ pattern: '**/*.md', base: './src/content/knowledge/gear' }),
+    loader: glob({
+        pattern: '**/*.md',
+        base: './src/content/knowledge/gear',
+        generateId: ({ entry }) => entry.replace(/\.md$/, ''),  // e.g., "zh/bike-fit"
+    }),
     schema: z.object({
         slug: z.string(),
         title: z.string(),
@@ -43,7 +51,11 @@ const gearCollection = defineCollection({
 // 📊 科学训练 (Training)
 // ─────────────────────────────────
 const trainingCollection = defineCollection({
-    loader: glob({ pattern: '**/*.md', base: './src/content/knowledge/training' }),
+    loader: glob({
+        pattern: '**/*.md',
+        base: './src/content/knowledge/training',
+        generateId: ({ entry }) => entry.replace(/\.md$/, ''),  // e.g., "zh/interval-training"
+    }),
     schema: z.object({
         slug: z.string(),
         title: z.string(),
@@ -60,7 +72,11 @@ const trainingCollection = defineCollection({
 // 注意：没有 description 字段，使用结构化数据 (distance/elevation/difficulty) 作为摘要
 // ─────────────────────────────────
 const routesCollection = defineCollection({
-    loader: glob({ pattern: '**/*.md', base: './src/content/routes' }),
+    loader: glob({
+        pattern: '**/*.md',
+        base: './src/content/routes',
+        generateId: ({ entry }) => entry.replace(/\.md$/, ''),  // e.g., "zh/afterwork-north"
+    }),
     schema: z.object({
         slug: z.string(),
         name: z.string(),
