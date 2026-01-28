@@ -1,9 +1,10 @@
 ---
 // src/pages/[lang]/routes/index.astro
-// 骑行路线 - 列表页
+// 骑行路线 - 列表页 (瀑布流布局)
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ContentCard from '../../../components/ContentCard.astro';
+import MasonryGrid from '../../../components/MasonryGrid.astro';
+import MasonryCard from '../../../components/MasonryCard.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
 
@@ -46,17 +47,18 @@ const difficultyLabels: Record<string, Record<string, string>> = {
   </div>
 
   {sortedRoutes.length > 0 ? (
-    <div class="content-grid">
+    <MasonryGrid>
       {sortedRoutes.map((entry) => (
-        <ContentCard
+        <MasonryCard
           href={`/${lang}/routes/${entry.data.slug}`}
           title={entry.data.name}
           description={entry.data.region}
           cover={entry.data.cover}
           meta={`${entry.data.distance}km · ${entry.data.elevation}m ↑ · ${difficultyLabels[lang][entry.data.difficulty]}`}
+          seed={entry.data.slug}
         />
       ))}
-    </div>
+    </MasonryGrid>
   ) : (
     <div class="empty-state">
       <p>{t(lang, 'content.noContent')}</p>
@@ -65,13 +67,6 @@ const difficultyLabels: Record<string, Record<string, string>> = {
 </BaseLayout>
 
 <style>
-  .content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-lg);
-    margin-top: var(--space-lg);
-  }
-
   .empty-state {
     text-align: center;
     padding: var(--space-xl);

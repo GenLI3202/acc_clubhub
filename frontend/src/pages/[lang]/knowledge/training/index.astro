@@ -1,9 +1,10 @@
 ---
 // src/pages/[lang]/knowledge/training/index.astro
-// 科学训练 - 列表页
+// 科学训练 - 列表页 (瀑布流布局)
 
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
-import ContentCard from '../../../../components/ContentCard.astro';
+import MasonryGrid from '../../../../components/MasonryGrid.astro';
+import MasonryCard from '../../../../components/MasonryCard.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
 
@@ -37,9 +38,9 @@ const pageTitle = t(lang, 'nav.training');
   </div>
 
   {sortedTraining.length > 0 ? (
-    <div class="content-grid">
+    <MasonryGrid>
       {sortedTraining.map((entry) => (
-        <ContentCard
+        <MasonryCard
           href={`/${lang}/knowledge/training/${entry.data.slug}`}
           title={entry.data.title}
           description={entry.data.description}
@@ -47,9 +48,10 @@ const pageTitle = t(lang, 'nav.training');
           date={entry.data.date}
           meta={entry.data.author}
           metaType="author"
+          seed={entry.data.slug}
         />
       ))}
-    </div>
+    </MasonryGrid>
   ) : (
     <div class="empty-state">
       <p>{t(lang, 'content.noContent')}</p>
@@ -58,13 +60,6 @@ const pageTitle = t(lang, 'nav.training');
 </BaseLayout>
 
 <style>
-  .content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-lg);
-    margin-top: var(--space-lg);
-  }
-
   .empty-state {
     text-align: center;
     padding: var(--space-xl);

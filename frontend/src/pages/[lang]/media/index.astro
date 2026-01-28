@@ -1,9 +1,10 @@
 ---
 // src/pages/[lang]/media/index.astro
-// 车影骑踪 - 列表页
+// 车影骑踪 - 列表页 (瀑布流布局)
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import ContentCard from '../../../components/ContentCard.astro';
+import MasonryGrid from '../../../components/MasonryGrid.astro';
+import MasonryCard from '../../../components/MasonryCard.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
 
@@ -38,18 +39,19 @@ const pageTitle = t(lang, 'nav.media');
   </div>
 
   {sortedMedia.length > 0 ? (
-    <div class="content-grid">
+    <MasonryGrid>
       {sortedMedia.map((entry) => (
-        <ContentCard
+        <MasonryCard
           href={`/${lang}/media/${entry.data.slug}`}
           title={entry.data.title}
           description={entry.data.description}
           cover={entry.data.cover}
           date={entry.data.date}
           meta={entry.data.type}
+          seed={entry.data.slug}
         />
       ))}
-    </div>
+    </MasonryGrid>
   ) : (
     <div class="empty-state">
       <p>{t(lang, 'content.noContent')}</p>
@@ -58,13 +60,6 @@ const pageTitle = t(lang, 'nav.media');
 </BaseLayout>
 
 <style>
-  .content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-lg);
-    margin-top: var(--space-lg);
-  }
-
   .empty-state {
     text-align: center;
     padding: var(--space-xl);

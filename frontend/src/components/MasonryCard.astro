@@ -1,0 +1,162 @@
+---
+// src/components/MasonryCard.astro
+// 瀑布流卡片组件 (小红书风格，支持随机高度)
+
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  cover?: string;
+  date?: Date;
+  meta?: string;
+  metaType?: 'default' | 'author';
+  // 用于生成伪随机高度的种子（通常用 slug）
+  seed?: string;
+}
+
+const { href, title, description, cover, date, meta, metaType = 'default', seed = '' } = Astro.props;
+
+const formattedDate = date
+  ? date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : null;
+
+// 基于 seed 生成伪随机高度 (140px - 280px)
+function seededRandom(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+}
+
+const randomValue = seededRandom(seed || title);
+const heights = [160, 200, 240, 280, 220, 180];
+const coverHeight = heights[randomValue % heights.length];
+---
+
+<a href={href} class="masonry-card">
+  {cover ? (
+    <div class="masonry-card-cover" style={`height: ${coverHeight}px`}>
+      <img src={cover} alt={title} loading="lazy" />
+    </div>
+  ) : (
+    <div class="masonry-card-cover masonry-card-cover--placeholder" style={`height: ${coverHeight}px`}>
+      <span>📄</span>
+    </div>
+  )}
+  <div class="masonry-card-body">
+    <h3>{title}</h3>
+    {description && <p class="masonry-card-desc">{description}</p>}
+    <div class="masonry-card-meta">
+      {formattedDate && <span class="masonry-card-date">{formattedDate}</span>}
+      {meta && (
+        <span class={`masonry-card-tag ${metaType === 'author' ? 'masonry-card-tag--author' : ''}`}>
+          {meta}
+        </span>
+      )}
+    </div>
+  </div>
+</a>
+
+<style>
+  .masonry-card {
+    display: block;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--color-text-main);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .masonry-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+  }
+
+  .masonry-card-cover {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .masonry-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .masonry-card:hover .masonry-card-cover img {
+    transform: scale(1.05);
+  }
+
+  .masonry-card-cover--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    font-size: 2.5rem;
+  }
+
+  .masonry-card-body {
+    padding: 12px 14px 14px;
+  }
+
+  .masonry-card-body h3 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .masonry-card-desc {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .masonry-card-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.75rem;
+  }
+
+  .masonry-card-date {
+    color: #999;
+  }
+
+  .masonry-card-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(45, 93, 155, 0.08);
+    border-radius: 10px;
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .masonry-card-tag--author {
+    background: rgba(92, 160, 66, 0.08);
+    color: var(--color-secondary);
+  }
+</style>
