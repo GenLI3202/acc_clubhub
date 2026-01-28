@@ -19,21 +19,26 @@ test.describe('Routing & i18n', () => {
     test('language switcher works zh -> en', async ({ page }) => {
         await page.goto('/zh/');
         await page.click('.lang-link:has-text("EN")');
-        await expect(page).toHaveURL('/en/');
-        await expect(page.locator('nav')).toContainText('Home');
+        // URL may or may not have trailing slash
+        await expect(page).toHaveURL(/\/en\/?$/);
+        // Use header nav to avoid footer nav ambiguity
+        await expect(page.locator('header nav')).toContainText('Home');
     });
 
     test('language switcher works en -> de', async ({ page }) => {
         await page.goto('/en/');
         await page.click('.lang-link:has-text("DE")');
-        await expect(page).toHaveURL('/de/');
-        await expect(page.locator('nav')).toContainText('Startseite');
+        // URL may or may not have trailing slash
+        await expect(page).toHaveURL(/\/de\/?$/);
+        // Use header nav to avoid footer nav ambiguity
+        await expect(page.locator('header nav')).toContainText('Startseite');
     });
 
     test('language switcher preserves path', async ({ page }) => {
         await page.goto('/zh/media');
         await page.click('.lang-link:has-text("DE")');
-        await expect(page).toHaveURL('/de/media');
+        // URL may or may not have trailing slash
+        await expect(page).toHaveURL(/\/de\/media\/?$/);
     });
 
     test('/en/ homepage loads correctly', async ({ page }) => {

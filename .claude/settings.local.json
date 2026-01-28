@@ -18,7 +18,9 @@
       "Bash(dir:*)",
       "WebFetch(domain:eastondev.com)",
       "WebFetch(domain:codeforum.org)",
-      "WebFetch(domain:sveltiacms.app)"
+      "WebFetch(domain:sveltiacms.app)",
+      "Bash(npm run test:*)",
+      "Bash(npm run test:e2e:*)"
     ]
   }
 }
