@@ -2,9 +2,9 @@
 slug: winter-gear-essentials
 title: Winter Cycling Gear Essentials
 description: Must-have gear for staying warm and safe in cold weather.
-author: ACC Gear Team
+author: ACC 器械组
 date: 2026-01-08
-cover: /images/uploads/bike.jpg
+cover: /images/uploads/Gemini_Generated_Image_edc4obedc4obedc4.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
