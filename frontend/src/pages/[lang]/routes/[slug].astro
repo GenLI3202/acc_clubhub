@@ -48,8 +48,19 @@ const difficultyColors: Record<string, string> = {
       </a>
 
       <h1>{entry.data.name}</h1>
-      <p class="route-region">📍 {entry.data.region}</p>
-      {entry.data.author && <p class="route-author">By {entry.data.author}</p>}
+      
+      <div class="route-meta-row">
+        <div>
+           <p class="route-region">📍 {entry.data.region}</p>
+           {entry.data.author && <p class="route-author">By {entry.data.author}</p>}
+        </div>
+
+        {entry.data.xiaohongshuUrl && (
+          <a href={entry.data.xiaohongshuUrl} target="_blank" rel="noopener" class="xhs-link">
+            小红书 (Xiaohongshu) ↗
+          </a>
+        )}
+      </div>
     </header>
 
     {entry.data.cover && (
@@ -85,11 +96,6 @@ const difficultyColors: Record<string, string> = {
       {entry.data.komootUrl && (
         <a href={entry.data.komootUrl} target="_blank" rel="noopener" class="route-link route-link--komoot">
           Komoot →
-        </a>
-      )}
-      {entry.data.xiaohongshuUrl && (
-        <a href={entry.data.xiaohongshuUrl} target="_blank" rel="noopener" class="route-link route-link--xhs">
-          小红书 →
         </a>
       )}
     </div>
@@ -128,9 +134,44 @@ const difficultyColors: Record<string, string> = {
     margin-bottom: var(--space-xs);
   }
 
+  .route-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Align bottom to match text baselines better if needed */
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
   .route-region {
     font-size: 1.1rem;
     color: #666;
+    margin: 0;
+  }
+
+  .route-author {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 4px 0 0 0;
+    font-style: italic;
+  }
+
+  .xhs-link {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #ff2442;
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .xhs-link:hover {
+    opacity: 0.9;
+    text-decoration: none;
+    color: white;
   }
 
   .route-cover {
@@ -209,17 +250,6 @@ const difficultyColors: Record<string, string> = {
 
   .route-link--komoot:hover {
     background: #6aa127;
-    color: white;
-    text-decoration: none;
-  }
-
-  .route-link--xhs {
-    border-color: #ff2442;
-    color: #ff2442;
-  }
-
-  .route-link--xhs:hover {
-    background: #ff2442;
     color: white;
     text-decoration: none;
   }
