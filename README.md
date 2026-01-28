@@ -1,20 +1,69 @@
 # ACC ClubHub
 
-> **Across Cycling Club Munich** - 让骑行成为一种生活方式
+> **Across Cycling Club Munich (ACC)** – More than a club, it's a lifestyle.
 
-New Website: https://acc-clubhub.vercel.app/
+[**Visit the Website**](https://acc-clubhub.vercel.app/)
 
-## 项目概述：这是 ACC 俱乐部的官方网站与后台支持系统，包含：
+## Overview
 
-- 🌐 **官网** - Quarto 生成的静态网站
-- 📚 **知识库** - ACC 工坊、器械知识、科学训练
-- 🚴 **路线库** - 慕尼黑周边骑行路线
-- 🎉 **活动系统** - 会员注册、活动报名、邮件通知
-- 🔗 **媒体聚合** - Bilibili/YouTube/小红书/Podcast 外链
+ACC ClubHub is the digital heart of **Across Cycling Club Munich**, a cycling community for Chinese-speaking enthusiasts in the Munich area. 
 
+Revitalized in 2026, this platform serves as a hub for our members to connect, learn, and ride together. Our goal is to create a professional, engaging, and supportive environment that makes every member feel at home.
 
----
+## Core Pillars
 
-**ACC - Across Cycling Club Munich** 🚴‍♂️
+We focus on five key areas to enrich the cycling experience:
 
-(Old Quarto based website: https://genli3202.github.io/acc_clubhub/)
+*   **🎬 Media (Content)**: Capturing the beauty of our rides through films, interviews, and stories.
+*   **🚴 Events (Life)**: Regular social rides, training sessions, and weekend adventures.
+*   **🔧 Gear (Knowledge)**: Expert advice on maintenance, buying guides, and European market insights.
+*   **📊 Training (Science)**: Methodologies for improvement, from safety basics to structured training frameworks.
+*   **🗺️ Routes (Explore)**: A curated database of the best cycling routes around Munich.
+
+## Technical Architecture
+
+This project is rebuilt with a modern stack to ensure performance and ease of content management.
+
+### Stack
+*   **Framework**: [Astro](https://astro.build/) (Static Site Generation)
+*   **CMS**: [Sveltia CMS](https://github.com/sveltia/sveltia-cms) (Git-based headless CMS)
+*   **Auth**: GitHub OAuth (via [sveltia-cms-auth](https://github.com/sveltia/sveltia-cms-auth))
+*   **Styling**: TailwindCSS & Custom Design System
+*   **Deployment**: Vercel
+
+### System Status (Layer 3)
+The **Content System** is currently active.
+*   ✅ **Decap/Sveltia CMS Integration**: Full content management via `/admin`.
+*   ✅ **Content Collections**: Type-safe schemas for Media, Knowledge, and Routes.
+*   ✅ **Dynamic Routing**: Automatic page generation from Markdown/MDX content.
+*   ✅ **i18n**: Built-in support for multiple languages (Chinese/English/German).
+
+## Getting Started
+
+### Prerequisites
+*   Node.js (v18+)
+*   npm or pnpm
+
+### Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start local development server
+npm run dev
+```
+
+Visit `http://localhost:4321` to see the site.
+Visit `http://localhost:4321/admin` to access the CMS (local backend).
+
+### Content Management
+
+To manage content locally:
+1.  Run the dev server: `npm run dev`
+2.  Open `http://localhost:4321/admin`
+3.  Changes are saved directly to your local file system (`src/content/`).
+
+## License
+
+This project is proprietary to Across Cycling Club Munich.
