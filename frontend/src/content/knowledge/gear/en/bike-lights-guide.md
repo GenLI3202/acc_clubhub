@@ -2,9 +2,9 @@
 slug: bike-lights-guide
 title: Bike Lights Buying Guide
 description: Front lights, tail lights, daytime running lights - essentials for safe riding.
-author: ACC Gear Team
+author: ACC 器械组
 date: 2026-01-10
-cover: /images/uploads/bike.jpg
+cover: /images/uploads/Gemini_Generated_Image_taubr8taubr8taub.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
