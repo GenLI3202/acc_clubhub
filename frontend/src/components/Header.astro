@@ -66,16 +66,19 @@ function getLangSwitchUrl(targetLang: Locale): string {
     </div>
   </nav>
 
-  <div class="header-search-floating">
-    <SearchBar 
-      client:idle 
-      lang={lang} 
-      translations={{
-        placeholder: t(lang, 'search.placeholder'),
-        noResults: t(lang, 'search.noResults')
-      }}
-    />
-  </div>
+  {/* Only show floating search on Homepage */}
+  {currentPath === `/${lang}` || currentPath === `/${lang}/` ? (
+    <div class="header-search-floating">
+      <SearchBar 
+        client:idle 
+        lang={lang} 
+        translations={{
+          placeholder: t(lang, 'search.placeholder'),
+          noResults: t(lang, 'search.noResults')
+        }}
+      />
+    </div>
+  ) : null}
 </header>
 
 
