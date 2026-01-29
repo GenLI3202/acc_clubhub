@@ -35,16 +35,9 @@ body {
   position: relative;
   overflow-x: hidden;
 
-  /* V3: Oil Painting Brush Stroke Atmosphere */
-  background-color: var(--color-bg-canvas);
-  background-image:
-    radial-gradient(at 0% 0%, rgba(45, 93, 155, 0.15) 0px, transparent 50%),
-    /* Mountain Blue */
-    radial-gradient(at 100% 0%, rgba(214, 62, 51, 0.1) 0px, transparent 50%),
-    /* Arch Red */
-    radial-gradient(at 100% 100%, rgba(92, 160, 66, 0.15) 0px, transparent 50%);
-  /* Brush Green */
-  background-attachment: fixed;
+  /* V3: Oil Painting Brush Stroke Atmosphere - REPLACED with Image */
+  background-color: transparent;
+  /* background-attachment: fixed; - Removed as we use fixed pseudo-element */
 }
 
 /* Canvas Texture Overlay */
@@ -57,6 +50,21 @@ body::before {
   pointer-events: none;
   mix-blend-mode: overlay;
   z-index: -1;
+}
+
+/* Background Image with Hazy/Blur Effect */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  /* Behind the noise overlay */
+  background-image: url('/images/uploads/e550c933c142956f4f9794ead8c6b1ce.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(8px);
+  opacity: 0.4;
 }
 
 /* -------------------------------------------
