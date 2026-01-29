@@ -11,17 +11,19 @@ interface Props {
   meta?: string;
   metaType?: 'default' | 'author';
   // 用于生成伪随机高度的种子（通常用 slug）
+  // 用于生成伪随机高度的种子（通常用 slug）
   seed?: string;
+  lang?: string;
 }
 
-const { href, title, description, cover, date, meta, metaType = 'default', seed = '' } = Astro.props;
+const { href, title, description, cover, date, meta, metaType = 'default', seed = '', lang = 'en' } = Astro.props;
 
 // 安全转换日期：支持 Date 对象和字符串
 const dateObj = date ? (date instanceof Date ? date : new Date(date)) : null;
 const isValidDate = dateObj && !isNaN(dateObj.getTime());
 
 const formattedDate = isValidDate
-  ? dateObj.toLocaleDateString('zh-CN', {
+  ? dateObj.toLocaleDateString(lang, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

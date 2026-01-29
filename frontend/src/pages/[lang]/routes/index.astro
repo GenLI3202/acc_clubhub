@@ -3,11 +3,10 @@
 // 骑行路线 - 列表页 (瀑布流布局)
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import MasonryGrid from '../../../components/MasonryGrid.astro';
-import MasonryCard from '../../../components/MasonryCard.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
 import { SearchBar } from '../../../components/search/SearchBar';
+import RoutesPage from '../../../components/content/RoutesPage';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -26,13 +25,6 @@ const sortedRoutes = langRoutes.sort(
 );
 
 const pageTitle = t(lang, 'nav.routes');
-
-// 难度标签翻译
-const difficultyLabels: Record<string, Record<string, string>> = {
-  zh: { easy: '简单', medium: '中等', hard: '困难', expert: '专家' },
-  en: { easy: 'Easy', medium: 'Medium', hard: 'Hard', expert: 'Expert' },
-  de: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer', expert: 'Experte' },
-};
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
@@ -60,24 +52,11 @@ const difficultyLabels: Record<string, Record<string, string>> = {
     </div>
   </div>
 
-  {sortedRoutes.length > 0 ? (
-    <MasonryGrid>
-      {sortedRoutes.map((entry) => (
-        <MasonryCard
-          href={`/${lang}/routes/${entry.data.slug}`}
-          title={entry.data.name}
-          description={entry.data.region}
-          cover={entry.data.cover}
-          meta={`${entry.data.distance}km · ${entry.data.elevation}m ↑ · ${difficultyLabels[lang][entry.data.difficulty]}`}
-          seed={entry.data.slug}
-        />
-      ))}
-    </MasonryGrid>
-  ) : (
-    <div class="empty-state">
-      <p>{t(lang, 'content.noContent')}</p>
-    </div>
-  )}
+  <RoutesPage 
+    client:load 
+    initialItems={sortedRoutes} 
+    lang={lang} 
+  />
 </BaseLayout>
 
 <style>

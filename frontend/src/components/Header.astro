@@ -1,6 +1,6 @@
 ---
 import { getNavLinks, locales, type Locale, t } from '../lib/i18n';
-import { SearchBar } from './search/SearchBar';
+import { GlobalSearch } from './search/GlobalSearch';
 
 interface Props {
   lang?: Locale;
@@ -24,8 +24,6 @@ function getLangSwitchUrl(targetLang: Locale): string {
       <span>ACC ClubHub</span>
     </a>
 
-
-
     <input type="checkbox" id="nav-toggle" class="nav-toggle" />
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>
@@ -46,41 +44,37 @@ function getLangSwitchUrl(targetLang: Locale): string {
       ))}
     </ul>
 
-    <div class="lang-dropdown">
-      <button class="lang-toggle">
-        {lang.toUpperCase()}
-        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </button>
-      <div class="lang-menu">
-        {locales.map((l) => (
-          <a
-            href={getLangSwitchUrl(l)}
-            class:list={['lang-link', { active: l === lang }]}
-          >
-            {l.toUpperCase()}
-          </a>
-        ))}
-      </div>
-    </div>
-  </nav>
-
-  {/* Only show floating search on Homepage */}
-  {currentPath === `/${lang}` || currentPath === `/${lang}/` ? (
-    <div class="header-search-floating">
-      <SearchBar 
+    <div class="header-actions">
+      <GlobalSearch 
         client:idle 
         lang={lang} 
         translations={{
-          placeholder: t(lang, 'search.placeholder'),
+          searchPlaceholder: t(lang, 'search.placeholder'),
           noResults: t(lang, 'search.noResults')
         }}
       />
-    </div>
-  ) : null}
-</header>
 
+      <div class="lang-dropdown">
+        <button class="lang-toggle">
+          {lang.toUpperCase()}
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="lang-menu">
+          {locales.map((l) => (
+            <a
+              href={getLangSwitchUrl(l)}
+              class:list={['lang-link', { active: l === lang }]}
+            >
+              {l.toUpperCase()}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
 
 <style>
   header {
@@ -91,7 +85,6 @@ function getLangSwitchUrl(targetLang: Locale): string {
     position: sticky;
     top: 0;
     z-index: 100;
-    /* 1. 导航栏透明度 (10% transparency = 0.9 alpha) */
     background: rgba(232, 228, 217, 0.9);
   }
 
@@ -126,35 +119,12 @@ function getLangSwitchUrl(targetLang: Locale): string {
     border-radius: 4px;
   }
 
-  /* Floating Search Bar */
-  /* Floating Search Bar */
-  .header-search-floating {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
+  /* Header Actions (Search + Lang) */
+  .header-actions {
     display: flex;
-    justify-content: center;
-    z-index: 90;
-    margin-top: 20px; /* Space below header */
-    padding: 0 1rem; /* Safety padding */
-    pointer-events: none; /* Allow clicks to pass through the empty areas */
-  }
-
-  /* Target the inner SearchBar component */
-  .header-search-floating :global(.search-container) {
-    width: 600px;
-    max-width: 100%;
-    pointer-events: auto; /* Re-enable clicks on the search bar */
-  }
-
-  @media (max-width: 768px) {
-    .header-search-floating {
-      margin-top: 10px;
-    }
-    .header-search-floating :global(.search-container) {
-      width: 100%;
-    }
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
   }
 
   ul {
@@ -257,22 +227,16 @@ function getLangSwitchUrl(targetLang: Locale): string {
       transform: rotate(-45deg) translate(5px, -5px);
     }
     
-    .header-search {
-      order: 3; /* Move search to bottom on mobile if needed, or keep inline */
-      max-width: 100%; /* Full width on mobile */
-      margin: 1rem 0 0 0;
-      flex-basis: 100%;
-    }
-    
-    .lang-dropdown {
-      margin-left: auto;
+    .header-actions {
+      margin-left: auto; /* Push to right on mobile */
+      margin-right: 1rem; /* Space before hamburger */
     }
   }
 
   /* Compact Language Switcher with Text + Arrow */
   .lang-dropdown {
     position: relative;
-    margin-left: 1rem;
+    /* margin-left: 1rem; Removed as it's in header-actions now */
     height: 100%;
     display: flex;
     align-items: center;

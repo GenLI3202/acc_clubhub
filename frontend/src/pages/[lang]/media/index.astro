@@ -3,12 +3,10 @@
 // 车影骑踪 - 列表页 (瀑布流布局)
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import MasonryGrid from '../../../components/MasonryGrid.astro';
-import MasonryCard from '../../../components/MasonryCard.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
-
 import { SearchBar } from '../../../components/search/SearchBar';
+import MediaPage from '../../../components/content/MediaPage';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -53,25 +51,11 @@ const pageTitle = t(lang, 'nav.media');
     </div>
   </div>
 
-  {sortedMedia.length > 0 ? (
-    <MasonryGrid>
-      {sortedMedia.map((entry) => (
-        <MasonryCard
-          href={`/${lang}/media/${entry.data.slug}`}
-          title={entry.data.title}
-          description={entry.data.description}
-          cover={entry.data.cover}
-          date={entry.data.date}
-          meta={entry.data.type}
-          seed={entry.data.slug}
-        />
-      ))}
-    </MasonryGrid>
-  ) : (
-    <div class="empty-state">
-      <p>{t(lang, 'content.noContent')}</p>
-    </div>
-  )}
+  <MediaPage 
+    client:load 
+    initialItems={sortedMedia} 
+    lang={lang} 
+  />
 </BaseLayout>
 
 <style>
