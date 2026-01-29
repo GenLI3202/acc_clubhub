@@ -2,7 +2,7 @@
 slug: cadence-optimization
 title: 踏频优化训练
 description: 找到你的最佳踏频，提升骑行效率。
-author: ACC 训练组
+author: acc-
 date: 2026-01-03
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

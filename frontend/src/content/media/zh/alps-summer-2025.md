@@ -3,7 +3,7 @@ slug: alps-summer-2025
 title: (Fake Template) 阿尔卑斯夏日骑行记
 description: 骑行穿越阿尔卑斯群山的精彩影像。
 date: 2025-08-15
-type: 影像
+type: video
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_source=9869b386690dc31064a52b29365a3735
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

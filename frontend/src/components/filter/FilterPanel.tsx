@@ -5,6 +5,7 @@ import { FilterSection } from './FilterSection';
 import { FilterCheckboxGroup } from './FilterCheckboxGroup';
 import { FilterRangeSlider } from './FilterRangeSlider';
 import type { FilterDefinition, FilterState, FilterOption } from '../../types/filter';
+import type { Locale } from '../../lib/i18n';
 import './FilterComponents.css';
 
 interface FilterPanelProps {
@@ -15,6 +16,7 @@ interface FilterPanelProps {
     onFilterChange: (field: string, value: any) => void;
     onReset?: () => void;
     className?: string;
+    lang: Locale;
 }
 
 export function FilterPanel({
@@ -24,7 +26,8 @@ export function FilterPanel({
     facets = {},
     onFilterChange,
     onReset,
-    className = ''
+    className = '',
+    lang
 }: FilterPanelProps): VNode {
     const [isOpen, setIsOpen] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
@@ -111,6 +114,7 @@ export function FilterPanel({
                                         options={options}
                                         selectedValues={(value as string[]) || []}
                                         onChange={onFilterChange}
+                                        lang={lang}
                                     />
                                 ) : def.type === 'range' ? (
                                     <FilterRangeSlider

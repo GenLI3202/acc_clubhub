@@ -2,7 +2,7 @@
 slug: interval-training-guide
 title: 间歇训练完全指南
 description: 如何通过间歇训练快速提升骑行能力。
-author: ACC 训练组
+author: acc-
 date: 2026-01-12
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

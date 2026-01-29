@@ -2,7 +2,7 @@
 slug: base-training-plan
 title: Base Training Plan
 description: Winter base training to build your cycling foundation for the year.
-author: ACC Training Team
+author: acc-training-team
 date: 2025-12-28
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

@@ -2,7 +2,7 @@
 slug: hill-climbing-tips
 title: Hill Climbing Tips & Training
 description: How to climb more efficiently and specific training methods.
-author: ACC Training Team
+author: acc-training-team
 date: 2026-01-05
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

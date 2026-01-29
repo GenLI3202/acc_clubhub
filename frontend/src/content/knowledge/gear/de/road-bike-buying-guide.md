@@ -2,7 +2,7 @@
 slug: road-bike-buying-guide
 title: Rennrad Kaufberatung 2026 (Demo)
 description: Vom Einsteiger bis Fortgeschrittene - so findest du das richtige Rennrad.
-author: ACC 器械组
+author: acc-
 date: 2026-01-20
 cover: /images/uploads/买canyon 吧.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

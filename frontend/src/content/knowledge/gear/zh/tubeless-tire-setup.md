@@ -2,7 +2,7 @@
 slug: tubeless-tire-setup
 title: 真空胎安装教程
 description: 手把手教你安装和维护真空胎系统。
-author: ACC 器械组
+author: acc-
 date: 2026-01-05
 cover: /images/uploads/谁有我多.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

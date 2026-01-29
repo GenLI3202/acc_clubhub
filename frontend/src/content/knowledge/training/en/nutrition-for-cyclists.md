@@ -2,7 +2,7 @@
 slug: nutrition-for-cyclists
 title: Nutrition Guide for Cyclists
 description: Nutrition strategies before, during, and after rides.
-author: ACC Training Team
+author: acc-training-team
 date: 2026-01-10
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

@@ -2,7 +2,7 @@
 slug: race-day-preparation
 title: Race Day Preparation Guide
 description: Complete preparation from race week to race day.
-author: ACC Training Team
+author: acc-training-team
 date: 2025-12-25
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

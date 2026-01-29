@@ -3,7 +3,7 @@ slug: dolomites-tour
 title: 多洛米蒂山脉骑行之旅
 description: 意大利北部最美的骑行目的地纪录片。
 date: 2025-07-05
-type: 翻山越岭
+type: adventure
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

@@ -1,15 +1,18 @@
 import { useState } from 'preact/hooks';
 import type { VNode } from 'preact';
 import type { FilterOption } from '../../types/filter';
+import type { Locale } from '../../lib/i18n';
+import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 
 interface FilterCheckboxGroupProps {
     field: string;
     options: FilterOption[];
     selectedValues: string[];
     onChange: (field: string, values: string[]) => void;
+    lang: Locale;
 }
 
-export function FilterCheckboxGroup({ field, options, selectedValues, onChange }: FilterCheckboxGroupProps): VNode {
+export function FilterCheckboxGroup({ field, options, selectedValues, onChange, lang }: FilterCheckboxGroupProps): VNode {
     const [showAll, setShowAll] = useState(false);
 
     // Sort options: selected first, then by count (desc), then alphabetical
@@ -44,7 +47,7 @@ export function FilterCheckboxGroup({ field, options, selectedValues, onChange }
                         checked={selectedValues.includes(String(option.value))}
                         onChange={(e) => handleChange(String(option.value), (e.target as HTMLInputElement).checked)}
                     />
-                    <span className="checkbox-text">{option.label}</span>
+                    <span className="checkbox-text">{getFilterLabel(field, option.value, lang)}</span>
                     <span className="checkbox-count">({option.count || 0})</span>
                 </label>
             ))}

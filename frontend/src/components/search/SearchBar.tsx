@@ -88,9 +88,14 @@ export function SearchBar({ lang, placeholder = 'Search...' }: SearchBarProps): 
 
     const handleNavigate = (result: SearchResult<SearchItem>) => {
         const { collection, slug, lang } = result.item;
-        // Map collection names to URL paths if necessary
-        // Currently they match: /en/media/slug
-        window.location.href = `/${lang}/${collection}/${slug}`;
+
+        // Map collection names to URL paths
+        let basePath = collection;
+        if (collection === 'gear' || collection === 'training') {
+            basePath = `knowledge/${collection}`;
+        }
+
+        window.location.href = `/${lang}/${basePath}/${slug}`;
     };
 
     return (

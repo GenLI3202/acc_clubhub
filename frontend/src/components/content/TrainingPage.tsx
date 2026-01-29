@@ -5,8 +5,10 @@ import { MasonryGrid } from '../ui/MasonryGrid';
 import { MasonryCard } from '../ui/MasonryCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
+import { calculateFacets } from '../../lib/filter/facetUtils';
 import { trainingFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
+import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 
 interface TrainingPageProps {
     initialItems: any[];
@@ -21,17 +23,22 @@ export default function TrainingPage({ initialItems, lang, initialFilters = {} }
         return filterItems(initialItems, filters, { filters: trainingFilters });
     }, [initialItems, filters]);
 
+    const facetConfig = useMemo(() => {
+        return calculateFacets(initialItems, trainingFilters);
+    }, [initialItems]);
+
     const filterTitle = lang === 'zh' ? '筛选' : lang === 'de' ? 'Filter' : 'Filters';
 
     return (
         <div class="training-page-content">
             <FilterPanel
                 title={filterTitle}
-                config={trainingFilters}
+                config={facetConfig}
                 filters={filters}
                 onFilterChange={setFilter}
                 onReset={resetFilters}
                 className="mb-8"
+                lang={lang}
             />
 
             {filteredItems.length > 0 ? (
@@ -50,7 +57,7 @@ export default function TrainingPage({ initialItems, lang, initialFilters = {} }
                                 date={data.date}
                                 seed={data.slug}
                                 lang={lang}
-                                meta={data.category}
+                                meta={getFilterLabel('category', data.category, lang)}
                             />
                         );
                     })}

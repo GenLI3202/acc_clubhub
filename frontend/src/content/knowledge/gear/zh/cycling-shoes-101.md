@@ -2,7 +2,7 @@
 slug: cycling-shoes-101
 title: 骑行鞋入门指南
 description: 锁鞋 vs 平底鞋，如何选择适合你的骑行鞋。
-author: ACC 器械组
+author: acc-
 date: 2026-01-15
 cover: /images/uploads/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
