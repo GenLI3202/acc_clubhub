@@ -28,4 +28,8 @@ xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 
 ## 总结
 
+
+
+![1769725238921](image/alps-summer-2025/1769725238921.png)
+
 这次骑行让我们更加团结，也让我们对自然充满敬畏。期待下一次的冒险！
