@@ -40,9 +40,14 @@ export default function RoutesPage({ initialItems, lang, initialFilters = {} }: 
                         const data = entry.data || entry;
                         const href = `/${lang}/routes/${data.slug}`;
 
-                        // Format meta for routes: "Difficulty • Distance"
-                        const difficultyLabel = data.difficulty ? data.difficulty.charAt(0).toUpperCase() + data.difficulty.slice(1) : '';
-                        const meta = `${difficultyLabel} • ${data.distance}km`;
+                        // Format meta for routes: "Distance · Elevation · Difficulty"
+                        const difficultyAppDefaults: Record<string, Record<string, string>> = {
+                            zh: { easy: '简单', medium: '中等', hard: '困难', expert: '专家' },
+                            en: { easy: 'Easy', medium: 'Medium', hard: 'Hard', expert: 'Expert' },
+                            de: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer', expert: 'Expert' },
+                        };
+                        const diffLabel = (difficultyAppDefaults[lang] && difficultyAppDefaults[lang][data.difficulty]) || data.difficulty;
+                        const meta = `${data.distance}km · ${data.elevation}m ↑ · ${diffLabel}`;
 
                         return (
                             <MasonryCard

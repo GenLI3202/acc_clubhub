@@ -7,7 +7,7 @@
     --filter-header-bg: #e0e0e0;
     /* High contrast gray */
     --filter-header-hover: #d4d4d4;
-    --color-primary: #ff4d00;
+    --filter-active-color: #ff4d00;
 }
 
 /* Wrapper to establish positioning context */
@@ -40,7 +40,7 @@
 }
 
 .filter-toggle-btn.is-active {
-    background: var(--color-primary);
+    background: var(--filter-active-color);
     color: white;
     border-color: transparent;
 }
@@ -60,7 +60,7 @@
 
 .filter-toggle-btn.is-active .filter-count-badge {
     background: white;
-    color: var(--color-primary);
+    color: var(--filter-active-color);
 }
 
 /* Floating Overlay */
@@ -141,7 +141,7 @@
 .reset-all-btn {
     font-size: 0.85rem;
     font-weight: 500;
-    color: var(--color-primary);
+    color: var(--filter-active-color);
     background: none;
     border: none;
     cursor: pointer;
@@ -234,7 +234,7 @@
     background: none;
     border: none;
     text-align: left;
-    color: var(--color-primary);
+    color: var(--filter-active-color);
     font-size: 0.8rem;
     cursor: pointer;
     padding: 4px 0;
