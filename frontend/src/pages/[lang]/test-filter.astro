@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FilterDebug from '../../components/filter/FilterDebug.tsx';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'de' } },
+    { params: { lang: 'zh' } }
+  ];
+}
+
+const { lang } = Astro.params;
+---
+
+<BaseLayout title="Filter Debug" lang={lang}>
+  <h1>Filter Infrastructure Test</h1>
+  <p>Testing useFilterState hook synchronization.</p>
+  
+  <FilterDebug client:load />
+</BaseLayout>

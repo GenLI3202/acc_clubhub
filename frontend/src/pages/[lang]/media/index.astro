@@ -8,6 +8,8 @@ import MasonryCard from '../../../components/MasonryCard.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
 
+import { SearchBar } from '../../../components/search/SearchBar';
+
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
 }
@@ -27,15 +29,28 @@ const pageTitle = t(lang, 'nav.media');
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title">
-    <h1>🎬 {pageTitle}</h1>
-    <p class="page-subtitle">
-      {lang === 'zh'
-        ? '影像资料、骑友访谈、翻山越岭记录'
-        : lang === 'de'
-          ? 'Videos, Interviews, Bergabenteuer'
-          : 'Videos, Interviews, Mountain Adventures'}
-    </p>
+  <div class="page-title-header">
+    <div class="title-content">
+      <h1>🎬 {pageTitle}</h1>
+      <p class="page-subtitle">
+        {lang === 'zh'
+          ? '影像资料、骑友访谈、翻山越岭记录'
+          : lang === 'de'
+            ? 'Videos, Interviews, Bergabenteuer'
+            : 'Videos, Interviews, Mountain Adventures'}
+      </p>
+    </div>
+    <div class="inline-search-container">
+      <SearchBar 
+        client:idle 
+        lang={lang} 
+        translations={{
+          placeholder: t(lang, 'search.placeholder'),
+          noResults: t(lang, 'search.noResults')
+        }}
+        placeholder={t(lang, 'search.placeholder')}
+      />
+    </div>
   </div>
 
   {sortedMedia.length > 0 ? (
@@ -60,6 +75,52 @@ const pageTitle = t(lang, 'nav.media');
 </BaseLayout>
 
 <style>
+  .page-title-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--color-border-rough);
+    padding-bottom: var(--space-md);
+  }
+
+  .title-content {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .title-content h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .inline-search-container {
+    flex: 0 1 400px; /* Base width 400px, but can shrink */
+    min-width: 300px;
+    padding-top: 0.5rem; /* Align visual center with H1 roughly */
+  }
+
+  /* Override inner search bar styles to fit inline context if needed */
+  .inline-search-container :global(.search-container) {
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+  }
+
+  /* Responsive: Stack on mobile */
+  @media (max-width: 768px) {
+    .page-title-header {
+      flex-direction: column;
+    }
+    .inline-search-container {
+      width: 100%;
+      flex: none;
+    }
+  }
+
   .empty-state {
     text-align: center;
     padding: var(--space-xl);
