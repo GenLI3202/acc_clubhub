@@ -1,5 +1,6 @@
 ---
-import { getNavLinks, locales, type Locale } from '../lib/i18n';
+import { getNavLinks, locales, type Locale, t } from '../lib/i18n';
+import { SearchBar } from './search/SearchBar';
 
 interface Props {
   lang?: Locale;
@@ -23,6 +24,10 @@ function getLangSwitchUrl(targetLang: Locale): string {
       <span>ACC ClubHub</span>
     </a>
 
+    <div class="header-search">
+      <SearchBar lang={lang} placeholder={t(lang, 'search.placeholder')} client:idle />
+    </div>
+
     <input type="checkbox" id="nav-toggle" class="nav-toggle" />
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>
@@ -43,18 +48,27 @@ function getLangSwitchUrl(targetLang: Locale): string {
       ))}
     </ul>
 
-    <div class="lang-switcher">
-      {locales.map((l) => (
-        <a
-          href={getLangSwitchUrl(l)}
-          class:list={['lang-link', { active: l === lang }]}
-        >
-          {l.toUpperCase()}
-        </a>
-      ))}
+    <div class="lang-dropdown">
+      <button class="lang-toggle" aria-label="Select Language">
+        <span class="current-lang">{lang.toUpperCase()}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow-icon">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="lang-menu">
+        {locales.map((l) => (
+          <a
+            href={getLangSwitchUrl(l)}
+            class:list={['lang-link', { active: l === lang }]}
+          >
+            {l.toUpperCase()}
+          </a>
+        ))}
+      </div>
     </div>
   </nav>
 </header>
+
 
 <style>
   header {
@@ -100,11 +114,20 @@ function getLangSwitchUrl(targetLang: Locale): string {
     border-radius: 4px;
   }
 
+  /* Improved Search Bar Sizing */
+  .header-search {
+    flex: 1;
+    max-width: 500px; /* Increased from 300px */
+    margin: 0 1.5rem;
+  }
+
   ul {
     display: flex;
     list-style: none;
-    gap: 0.25rem;
+    gap: 0.5rem;
     flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
   }
 
   li a {
@@ -197,40 +220,118 @@ function getLangSwitchUrl(targetLang: Locale): string {
     .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
       transform: rotate(-45deg) translate(5px, -5px);
     }
+    
+    .header-search {
+      order: 3; /* Move search to bottom on mobile if needed, or keep inline */
+      max-width: 100%; /* Full width on mobile */
+      margin: 1rem 0 0 0;
+      flex-basis: 100%;
+    }
+    
+    .lang-dropdown {
+      margin-left: auto;
+    }
   }
 
-  /* Language Switcher */
-  .lang-switcher {
-    display: flex;
-    gap: 0.25rem;
+  /* Compact Language Switcher with Text + Arrow */
+  .lang-dropdown {
+    position: relative;
     margin-left: 1rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    color: var(--color-text-main);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 1; /* Always fully visible as it is active */
+    transition: opacity 0.2s ease;
+    position: relative; /* For underline */
+  }
+
+  /* Active/Hover underline — rough stroke effect (Match Nav) */
+  .lang-toggle::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1deg); /* Center it */
+    width: 60%; /* Short underline as requested */
+    height: 3px;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease;
+  }
+
+  .lang-toggle:hover::after {
+    width: 80%; /* Grow slightly on hover */
+  }
+
+  .lang-toggle:hover {
+    opacity: 1;
+  }
+
+  .arrow-icon {
+    width: 12px;
+    height: 12px;
+    transition: transform 0.2s ease;
+    margin-top: 1px;
+    opacity: 0.7;
+  }
+
+  /* Rotate arrow on hover */
+  .lang-dropdown:hover .arrow-icon {
+    transform: rotate(180deg);
+  }
+
+  .lang-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px; /* Sharper corners like reference */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 0.25rem 0;
+    display: none;
+    flex-direction: column;
+    min-width: 60px; /* Slimmer */
+    z-index: 101;
+  }
+
+  /* Show menu on hover */
+  .lang-dropdown:hover .lang-menu {
+    display: flex;
   }
 
   .lang-link {
+    display: block;
+    padding: 0.4rem 0.8rem;
     font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.2rem 0.4rem;
+    font-size: 0.85rem;
     color: var(--color-text-main);
-    opacity: 0.6;
-    transition: opacity 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s, color 0.2s;
   }
 
   .lang-link:hover {
-    opacity: 1;
-    text-decoration: none;
+    background: rgba(0,0,0,0.05); /* Subtle hover */
+    color: var(--color-primary);
   }
 
   .lang-link.active {
-    opacity: 1;
     color: var(--color-primary);
-    border-bottom: 2px solid var(--color-accent);
-  }
-
-  @media (max-width: 768px) {
-    .lang-switcher {
-      margin-left: auto;
-      margin-right: 1rem;
-    }
+    font-weight: 700;
+    background: rgba(0,0,0,0.03);
   }
 </style>

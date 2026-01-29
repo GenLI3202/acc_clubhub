@@ -1,74 +1,41 @@
-import type { SearchIndex, Language } from '../../types/search';
+import type { SearchIndex, SearchItem } from '../../types/search';
 
-// Singleton Cache: Stores promises to prevent multiple simultaneous fetches
-const indexCache: Record<string, Promise<SearchIndex>> = {};
-
-/**
- * Type Guard to verify the structure of the fetched index
- */
-function isValidSearchIndex(data: any): data is SearchIndex {
-    return (
-        data &&
-        typeof data === 'object' &&
-        typeof data.version === 'string' &&
-        typeof data.collections === 'object'
-    );
-}
+// Simple cache to store index promises per language
+const indexCache: Record<string, Promise<SearchItem[]>> = {};
 
 /**
- * Smart Search Index Loader
- * - Singleton pattern (prevents double fetching)
- * - Error Boundary (returns empty index on failure)
- * - Language aware
+ * Loads the search index for a given language.
+ * Flattens the nested collections into a single searchable array.
  */
-export async function loadSearchIndex(lang: Language): Promise<SearchIndex> {
-    // 1. Return cached promise if exists
-    if (indexCache[lang]) {
-        return indexCache[lang];
+export function loadSearchIndex(lang: string): Promise<SearchItem[]> {
+    // Return cached promise if available
+    const existingPromise = indexCache[lang];
+    if (existingPromise) {
+        return existingPromise;
     }
 
-    // 2. Create new fetch promise
-    const fetchPromise = (async () => {
-        try {
-            console.log(`[Search] Loading index for lang: ${lang}...`);
-            const response = await fetch(`/api/search-index.${lang}.json`);
-
+    // Create new fetch promise
+    indexCache[lang] = fetch(`/api/search-index.${lang}.json`)
+        .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Failed to load search index for ${lang}: ${response.statusText}`);
             }
+            return response.json() as Promise<SearchIndex>;
+        })
+        .then(data => {
+            // Normalization: Flatten collections into a single array for Fuse.js
+            // collections is { media: [...], routes: [...], ... }
+            const flattened: SearchItem[] = Object.values(data.collections).flat();
 
-            const data = await response.json();
+            console.log(`[Search] Loaded and flattened ${flattened.length} items for ${lang}`);
+            return flattened;
+        })
+        .catch(error => {
+            console.error(`[Search] Loader error:`, error);
+            // Clean up cache on error so it can be retried
+            delete indexCache[lang];
+            return []; // Return empty array so search engine doesn't crash
+        });
 
-            // 3. Validate structure
-            if (!isValidSearchIndex(data)) {
-                throw new Error('Invalid JSON structure');
-            }
-
-            console.log(`[Search] Index loaded. ${Object.keys(data.collections).length} collections.`);
-            return data;
-
-        } catch (error) {
-            console.error(`[Search] Failed to load index for ${lang}:`, error);
-
-            // 4. Error Boundary: Return empty safe fallback
-            // This ensures the frontend doesn't crash, it just shows no results.
-            return {
-                version: '0.0.0',
-                generated: new Date().toISOString(),
-                lang,
-                collections: {
-                    media: [],
-                    gear: [],
-                    training: [],
-                    routes: [],
-                    events: []
-                }
-            };
-        }
-    })();
-
-    // 5. Store in cache
-    indexCache[lang] = fetchPromise;
-
-    return fetchPromise;
+    return indexCache[lang];
 }

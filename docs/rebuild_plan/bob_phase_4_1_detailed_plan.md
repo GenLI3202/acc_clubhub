@@ -67,10 +67,10 @@ graph TB
         E --> F[Fuse.js Engine]
         F --> G[SearchBar Component]
         F --> H[FilterPanel Component]
-    
+  
         G --> I[Search Results Dropdown]
         H --> J[Filtered Content Grid]
-    
+  
         K[URL State Manager] --> H
         H --> K
     end
@@ -585,6 +585,7 @@ export function useFilterState(initialState: FilterState) {
 #### Tag 2: Basis-Komponenten (Optimized)
 
 **Refinements based on Debugging:**
+
 - **Robustness**: Error Boundary für leere/fehlerhafte Indizes.
 - **Date Safety**: Sicherstellen, dass String-Dates nicht zum Crash führen.
 - **Config**: `ignoreLocation: true` für bessere Description-Matches.

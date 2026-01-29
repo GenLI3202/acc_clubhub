@@ -42,6 +42,8 @@ export const ui = {
         'lang.zh': '中文',
         'lang.en': 'English',
         'lang.de': 'Deutsch',
+        'search.placeholder': '搜索...',
+        'search.noResults': '未找到相关内容',
     },
     en: {
         'nav.home': 'Home',
@@ -57,6 +59,8 @@ export const ui = {
         'lang.zh': '中文',
         'lang.en': 'English',
         'lang.de': 'Deutsch',
+        'search.placeholder': 'Search...',
+        'search.noResults': 'No results found',
     },
     de: {
         'nav.home': 'Startseite',
@@ -72,6 +76,8 @@ export const ui = {
         'lang.zh': '中文',
         'lang.en': 'English',
         'lang.de': 'Deutsch',
+        'search.placeholder': 'Suchen...',
+        'search.noResults': 'Nichts gefunden',
     },
 } as const;
 

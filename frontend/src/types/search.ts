@@ -186,29 +186,6 @@ export interface SearchResult<T extends SearchItem = SearchItem> {
 }
 
 /**
- * Filter State
- * Zustand der aktiven Filter (wird in URL synchronisiert)
- */
-export interface FilterState {
-  [key: string]: string | string[] | number | [number, number] | undefined;
-}
-
-/**
- * Filter Configuration
- * Definiert die verfügbaren Filter für eine Collection
- */
-export interface FilterConfig {
-  key: string;
-  type: 'select' | 'multiselect' | 'range' | 'date';
-  label: string;
-  options?: Array<{ value: string; label: string }>;
-  min?: number;
-  max?: number;
-  step?: number;
-  unit?: string;
-}
-
-/**
  * Asset Validation Result
  * Ergebnis der Asset-Pfad-Validierung
  */
@@ -219,3 +196,4 @@ export interface AssetValidationResult {
   warnings: string[];
   errors: string[];
 }
+

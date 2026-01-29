@@ -1,11 +1,11 @@
-import type Fuse from 'fuse.js';
+import type { IFuseOptions } from 'fuse.js';
 import type { SearchItem } from '../../types/search';
 
 /**
  * Fuse.js Search Configuration
  * Optimized for mixed content (titles, descriptions, tags)
  */
-export const fuseConfig: Fuse.IFuseOptions<SearchItem> = {
+export const fuseConfig: IFuseOptions<SearchItem> = {
     // Search Keys & Weights
     keys: [
         { name: 'title', weight: 0.7 },       // Exact matches in title are most important
