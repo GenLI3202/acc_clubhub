@@ -4,7 +4,7 @@ title: ACC 俱乐部周年庆典
 description: 回顾俱乐部成立以来的精彩瞬间。
 date: 2025-09-01
 author: ''
-type: 访谈
+type: 影像
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
