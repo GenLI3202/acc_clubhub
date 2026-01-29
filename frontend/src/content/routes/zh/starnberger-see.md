@@ -1,7 +1,7 @@
 ---
 slug: starnberger-see
 name: 施塔恩贝格湖骑行
-region: 慕尼黑南郊
+region: munich-south
 distance: 55
 elevation: 320
 difficulty: easy

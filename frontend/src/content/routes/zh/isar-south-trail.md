@@ -1,7 +1,7 @@
 ---
 slug: isar-south-trail
 name: 伊萨尔河南段探索
-region: 慕尼黑南郊
+region: munich-south
 distance: 45
 elevation: 280
 difficulty: easy

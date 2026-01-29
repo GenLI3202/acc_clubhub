@@ -1,7 +1,7 @@
 ---
 slug: olympic-park-circuit
 name: 奥林匹克公园绕圈
-region: 慕尼黑市区
+region: munich-north
 distance: 15
 elevation: 30
 difficulty: easy

@@ -1,7 +1,7 @@
 ---
 slug: english-garden-tour
 name: 英国花园休闲骑
-region: 慕尼黑市区
+region: munich-north
 distance: 25
 elevation: 50
 difficulty: easy

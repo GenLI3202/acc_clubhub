@@ -35,6 +35,9 @@ i18n:
 media_folder: "frontend/public/images/uploads"
 public_folder: "/images/uploads"
 
+media_library:
+  max_file_size: 5242880 # 5MB
+
 # ===============================
 # 站点配置
 # ===============================

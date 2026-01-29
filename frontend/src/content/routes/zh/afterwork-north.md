@@ -1,7 +1,7 @@
 ---
 slug: afterwork-north
 name: 慕尼黑北部经典Afterwork路线
-region: Munich North
+region: munich-north
 author: ''
 distance: 51
 elevation: 120

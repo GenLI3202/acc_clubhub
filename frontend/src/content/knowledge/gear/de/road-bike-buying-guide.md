@@ -4,19 +4,18 @@ title: Rennrad Kaufberatung 2026 (Demo)
 description: Vom Einsteiger bis Fortgeschrittene - so findest du das richtige Rennrad.
 author: acc-
 date: 2026-01-20
-cover: /images/uploads/买canyon 吧.jpg
+cover: /images/uploads/buy_canyon.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
-
 Der Kauf eines Rennrads ist eine Wissenschaft. Dieser Leitfaden behandelt Budget, Verwendungszweck und Markenüberlegungen.
 
 ## Budget-Stufen
 
-| Stufe | Preisbereich | Empfohlene Marken | Merkmale |
-| --- | --- | --- | --- |
-| Einsteiger | €500-1500 | Giant, Trek, Decathlon | Alurahmen, Shimano Sora/Tiagra |
-| Mittelklasse | €1500-4000 | Canyon, Specialized, BMC | Carbonrahmen, Shimano 105/Ultegra |
-| Profi | €4000+ | Cervélo, Pinarello, Colnago | Top-Carbon, Ultegra Di2/SRAM Red |
+| Stufe        | Preisbereich | Empfohlene Marken            | Merkmale                          |
+| ------------ | ------------ | ---------------------------- | --------------------------------- |
+| Einsteiger   | €500-1500   | Giant, Trek, Decathlon       | Alurahmen, Shimano Sora/Tiagra    |
+| Mittelklasse | €1500-4000  | Canyon, Specialized, BMC     | Carbonrahmen, Shimano 105/Ultegra |
+| Profi        | €4000+      | Cervélo, Pinarello, Colnago | Top-Carbon, Ultegra Di2/SRAM Red  |
 
 ## Wie wählen
 

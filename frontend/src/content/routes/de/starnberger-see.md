@@ -1,7 +1,7 @@
 ---
 slug: starnberger-see
 name: Starnberger See Runde
-region: München Süd
+region: munich-south
 distance: 55
 elevation: 320
 difficulty: easy

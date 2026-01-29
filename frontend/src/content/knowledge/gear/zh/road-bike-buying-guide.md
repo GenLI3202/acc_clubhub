@@ -4,19 +4,18 @@ title: 公路车购买指南 2026(test template)
 description: 从入门到进阶，帮你选择适合的公路自行车。
 author: acc-
 date: 2026-01-20
-cover: /images/uploads/买canyon 吧.jpg
+cover: /images/uploads/buy_canyon.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
-
 选购公路车是一门学问，本文将从预算、用途、品牌等多个维度为你提供参考。
 
 ## 预算分级
 
-| 等级 | 价格区间 | 推荐品牌 | 特点 |
-| --- | --- | --- | --- |
-| 入门 | €500-1500 | Giant, Trek, Decathlon | 铝合金车架，Shimano Sora/Tiagra |
-| 进阶 | €1500-4000 | Canyon, Specialized, BMC | 碳纤维车架，Shimano 105/Ultegra |
-| 专业 | €4000+ | Cervélo, Pinarello, Colnago | 顶级碳纤维，Ultegra Di2/SRAM Red |
+| 等级 | 价格区间    | 推荐品牌                     | 特点                             |
+| ---- | ----------- | ---------------------------- | -------------------------------- |
+| 入门 | €500-1500  | Giant, Trek, Decathlon       | 铝合金车架，Shimano Sora/Tiagra  |
+| 进阶 | €1500-4000 | Canyon, Specialized, BMC     | 碳纤维车架，Shimano 105/Ultegra  |
+| 专业 | €4000+     | Cervélo, Pinarello, Colnago | 顶级碳纤维，Ultegra Di2/SRAM Red |
 
 ## 如何选择
 

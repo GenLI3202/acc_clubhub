@@ -4,19 +4,18 @@ title: Road Bike Buying Guide 2026 (Demo)
 description: From beginner to advanced, helping you choose the right road bike.
 author: acc-
 date: 2026-01-20
-cover: /images/uploads/买canyon 吧.jpg
+cover: /images/uploads/buy_canyon.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
-
 Buying a road bike is an art. This guide covers budget, purpose, and brand considerations.
 
 ## Budget Tiers
 
-| Tier | Price Range | Recommended Brands | Features |
-| --- | --- | --- | --- |
-| Entry | €500-1500 | Giant, Trek, Decathlon | Aluminum frame, Shimano Sora/Tiagra |
-| Mid-range | €1500-4000 | Canyon, Specialized, BMC | Carbon frame, Shimano 105/Ultegra |
-| Professional | €4000+ | Cervélo, Pinarello, Colnago | Top carbon fiber, Ultegra Di2/SRAM Red |
+| Tier         | Price Range | Recommended Brands           | Features                               |
+| ------------ | ----------- | ---------------------------- | -------------------------------------- |
+| Entry        | €500-1500  | Giant, Trek, Decathlon       | Aluminum frame, Shimano Sora/Tiagra    |
+| Mid-range    | €1500-4000 | Canyon, Specialized, BMC     | Carbon frame, Shimano 105/Ultegra      |
+| Professional | €4000+     | Cervélo, Pinarello, Colnago | Top carbon fiber, Ultegra Di2/SRAM Red |
 
 ## How to Choose
 

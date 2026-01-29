@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { createPortal } from 'preact/compat';
 import { useState, useRef, useEffect } from 'preact/hooks';
 import type { VNode } from 'preact';
 import { FilterSection } from './FilterSection';
@@ -55,7 +56,14 @@ export function FilterPanel({
         };
     }, [isOpen]);
 
-    return (
+    const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+    useEffect(() => {
+        const target = document.getElementById('filter-portal-target');
+        setPortalTarget(target as HTMLElement);
+    }, []);
+
+    const content = (
         <div className={`filter-panel-wrapper ${className}`} ref={panelRef}>
             {/* Toggle Button */}
             <button
@@ -135,4 +143,10 @@ export function FilterPanel({
             </div>
         </div>
     );
+
+    if (portalTarget) {
+        return createPortal(content, portalTarget);
+    }
+
+    return content;
 }

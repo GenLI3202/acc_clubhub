@@ -1,7 +1,7 @@
 ---
 slug: afterwork-north
 name: Munich North Afterwork Classic
-region: Munich North
+region: munich-north
 author: ''
 distance: 51
 elevation: 120
