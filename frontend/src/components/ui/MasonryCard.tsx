@@ -10,6 +10,7 @@ export interface MasonryCardProps {
     meta?: string;
     metaType?: 'default' | 'author';
     seed?: string;
+    lang?: string;
 }
 
 export function MasonryCard({
@@ -21,13 +22,14 @@ export function MasonryCard({
     meta,
     metaType = 'default',
     seed = '',
+    lang = 'en',
 }: MasonryCardProps) {
     // Safe date formatting
     const dateObj = date ? (date instanceof Date ? date : new Date(date)) : null;
     const isValidDate = dateObj && !isNaN(dateObj.getTime());
 
     const formattedDate = isValidDate
-        ? dateObj.toLocaleDateString('zh-CN', {
+        ? dateObj.toLocaleDateString(lang, {
             year: 'numeric',
             month: 'short',
             day: 'numeric',

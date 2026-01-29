@@ -58,6 +58,7 @@ export default function RoutesPage({ initialItems, lang, initialFilters = {} }: 
                                 cover={data.cover} // Routes might not have cover? Check schema.
                                 // date might not be relevant for routes sorting usually, but strictly speaking they are static pages
                                 seed={data.slug}
+                                lang={lang}
                                 meta={meta}
                             />
                         );

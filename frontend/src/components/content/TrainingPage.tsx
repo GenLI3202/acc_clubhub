@@ -49,6 +49,7 @@ export default function TrainingPage({ initialItems, lang, initialFilters = {} }
                                 cover={data.cover}
                                 date={data.date}
                                 seed={data.slug}
+                                lang={lang}
                                 meta={data.category}
                             />
                         );

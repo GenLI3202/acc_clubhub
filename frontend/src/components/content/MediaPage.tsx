@@ -49,6 +49,7 @@ export default function MediaPage({ initialItems, lang, initialFilters = {} }: M
                                 cover={data.cover}
                                 date={data.date}
                                 seed={data.slug}
+                                lang={lang}
                                 meta={data.type}
                             />
                         );

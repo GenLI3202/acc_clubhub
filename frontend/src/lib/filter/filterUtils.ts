@@ -30,11 +30,11 @@ export function filterItems<T extends Record<string, any>>(
                 case 'select':
                 case 'multiselect': {
                     // Get the item's value for this property
-                    const itemValue = getValueByPath(item, filterKey);
+                    const itemValue = getFilterableValue(item, filterKey);
 
                     if (Array.isArray(filterValue)) {
                         // If filter is multiple, item must match one of them
-                        if (!filterValue.includes(String(itemValue))) {
+                        if (!(filterValue as string[]).includes(String(itemValue))) {
                             return false;
                         }
                     } else {
@@ -50,7 +50,7 @@ export function filterItems<T extends Record<string, any>>(
                     // Expecting filterValue to be [min, max]
                     if (Array.isArray(filterValue) && filterValue.length === 2) {
                         const [min, max] = filterValue as [number, number];
-                        const itemValue = Number(getValueByPath(item, filterKey));
+                        const itemValue = Number(getFilterableValue(item, filterKey));
 
                         if (isNaN(itemValue) || itemValue < min || itemValue > max) {
                             return false;
@@ -71,27 +71,20 @@ export function filterItems<T extends Record<string, any>>(
 }
 
 /**
- * Safely access object property by dot notation path (e.g., 'data.difficulty')
+ * Safely access object property. Supports both flat objects and Astro Collection Entries (nested under 'data').
  */
-function getValueByPath(obj: any, path: string): any {
-    // If property exists directly (flat object from search index)
-    if (path in obj) return obj[path];
+function getFilterableValue(obj: any, path: string): any {
+    // This function supports two object structures for flexibility:
+    // 1. Flat objects (e.g., from a search index) where the property is directly on the object.
+    // 2. Nested objects (e.g., from Astro collections) where the property is under `data`.
 
-    // If dot notation (nested object from Astro Collection Entry)
-    // But wait, Astro Collections structure is usually: id, data: { ... }
-    // Our Search Index structure is flat: slug, title, difficulty, etc.
-    // The filtering should ideally work on a UNIFIED structure.
-    // If we pass Astro Entries, difficulty is at `entry.data.difficulty`.
-    // If we pass Search Items, difficulty is at `item.difficulty`.
+    if (obj[path] !== undefined) {
+        return obj[path];
+    }
 
-    // Let's support both for flexibility.
-    // If 'difficulty' is requested:
-    // 1. Check obj['difficulty']
-    // 2. Check obj['data']['difficulty']
-
-    if (obj[path] !== undefined) return obj[path];
-
-    if (obj.data && obj.data[path] !== undefined) return obj.data[path];
+    if (obj.data && obj.data[path] !== undefined) {
+        return obj.data[path];
+    }
 
     return undefined;
 }

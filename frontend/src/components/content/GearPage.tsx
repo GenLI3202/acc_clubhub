@@ -49,6 +49,7 @@ export default function GearPage({ initialItems, lang, initialFilters = {} }: Ge
                                 cover={data.cover}
                                 date={data.date}
                                 seed={data.slug}
+                                lang={lang}
                                 meta={data.category} // Display category as tag
                             />
                         );
