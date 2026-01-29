@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { title, lang = 'zh' } = Astro.props;
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === `/${lang}` || currentPath === `/${lang}/`;
 ---
 
 <!doctype html>
@@ -22,9 +24,22 @@ const { title, lang = 'zh' } = Astro.props;
   </head>
   <body>
     <Header lang={lang} />
-    <main>
+    <main class:list={{ 'with-search-gap': !isHome }}>
       <slot />
     </main>
     <Footer />
   </body>
 </html>
+
+<style>
+  /* 
+     Non-home pages need extra top padding because the search bar 
+     is position: absolute (floating) and hangs 100% + 20px below 
+     the 70px header.
+     Header ~72px + Search hangs ~60px = ~132px needed.
+     Default main padding is space-lg (20px-40px).
+  */
+  .with-search-gap {
+    padding-top: 140px !important; 
+  }
+</style>

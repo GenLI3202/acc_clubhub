@@ -29,5 +29,5 @@ export const fuseConfig: IFuseOptions<SearchItem> = {
     // Result format
     includeScore: true,
     includeMatches: true, // For highlighting
-    minMatchCharLength: 2,
+    minMatchCharLength: 1,
 };

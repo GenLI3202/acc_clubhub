@@ -48,7 +48,7 @@ export function SearchBar({ lang, placeholder = 'Search...' }: SearchBarProps): 
 
     // Perform search
     useEffect(() => {
-        if (!fuse || debouncedQuery.length < 2) {
+        if (!fuse || debouncedQuery.length < 1) {
             setResults([]);
             return;
         }
@@ -119,7 +119,7 @@ export function SearchBar({ lang, placeholder = 'Search...' }: SearchBarProps): 
                 />
             </div>
 
-            {isOpen && query.length >= 2 && (
+            {isOpen && query.length >= 1 && (
                 <div className="search-results-container" id="search-results">
                     <SearchResults
                         results={results}

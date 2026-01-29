@@ -1,0 +1,156 @@
+/* Filter Component System Styles */
+
+.filter-section {
+    border-bottom: 1px solid var(--color-border-rough, #e0e0e0);
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    padding: 0.5rem 0;
+    text-align: left;
+    outline: none;
+}
+
+.filter-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text-main);
+    margin: 0;
+}
+
+.filter-chevron {
+    transition: transform 0.3s ease;
+    opacity: 0.6;
+}
+
+.filter-chevron.closed {
+    transform: rotate(-90deg);
+}
+
+.filter-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 1000px;
+    /* Arbitrary large height for CSS transition */
+    opacity: 1;
+}
+
+.filter-content.closed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Checkbox Group */
+.filter-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-input {
+    accent-color: var(--color-primary);
+    width: 16px;
+    height: 16px;
+}
+
+.checkbox-count {
+    font-size: 0.8rem;
+    color: var(--color-text-muted, #888);
+    margin-left: auto;
+}
+
+.show-more-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.5rem;
+    text-align: left;
+    width: fit-content;
+}
+
+.show-more-btn:hover {
+    text-decoration: underline;
+}
+
+/* Range Slider */
+.filter-slider-container {
+    padding: 1rem 0.5rem;
+}
+
+.slider-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+}
+
+/* Panel Layout */
+.filter-panel {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-rough);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.filter-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-border-rough);
+}
+
+.filter-panel-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.reset-all-btn {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 500;
+}
+
+.reset-all-btn:hover {
+    text-decoration: underline;
+}
