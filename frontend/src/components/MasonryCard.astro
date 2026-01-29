@@ -7,7 +7,7 @@ interface Props {
   title: string;
   description?: string;
   cover?: string;
-  date?: Date;
+  date?: Date | string; // 支持 Date 对象和 ISO 字符串
   meta?: string;
   metaType?: 'default' | 'author';
   // 用于生成伪随机高度的种子（通常用 slug）
@@ -16,8 +16,12 @@ interface Props {
 
 const { href, title, description, cover, date, meta, metaType = 'default', seed = '' } = Astro.props;
 
-const formattedDate = date
-  ? date.toLocaleDateString('zh-CN', {
+// 安全转换日期：支持 Date 对象和字符串
+const dateObj = date ? (date instanceof Date ? date : new Date(date)) : null;
+const isValidDate = dateObj && !isNaN(dateObj.getTime());
+
+const formattedDate = isValidDate
+  ? dateObj.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

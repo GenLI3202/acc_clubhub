@@ -1,0 +1,8 @@
+{"id":"91909371-3615-4237-93a6-7ac513341d1f","ts":"2026-01-29T11:41:49.101Z","path":"D:\\my_projects\\acc_clubhub\\frontend\\src\\types\\search.ts","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"a0101b75-62a5-470d-b7e1-ed9d96195e84","ts":"2026-01-29T11:42:25.732Z","path":"D:\\my_projects\\acc_clubhub\\frontend\\src\\pages\\api\\search-index.[lang].json.ts","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"608fe419-5af8-4cc3-b13c-42f762a60ff6","ts":"2026-01-29T11:43:03.036Z","path":"D:\\my_projects\\acc_clubhub\\frontend\\src\\content.config.ts","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"645d8fd7-2b97-4d52-b549-4c13c6466064","ts":"2026-01-29T11:55:59.829Z","path":"D:\\my_projects\\acc_clubhub\\frontend\\src\\content.config.ts","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"99009ccf-1d5c-480b-9de7-a52b62edadd1","ts":"2026-01-29T11:56:47.512Z","path":"D:\\my_projects\\acc_clubhub\\frontend\\scripts\\migrate-content.js","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"af58ef75-305c-4b01-998d-8561638ef54e","ts":"2026-01-29T12:04:47.999Z","path":"D:/my_projects/acc_clubhub/frontend/src/components/MasonryCard.astro","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"29dbcd9e-0a42-474d-a20e-fae85ad0c334","ts":"2026-01-29T12:05:11.130Z","path":"D:/my_projects/acc_clubhub/frontend/src/components/ContentCard.astro","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
+{"id":"7db80274-d5fc-4acb-81aa-984b5a29ffb1","ts":"2026-01-29T12:05:59.909Z","path":"D:/my_projects/acc_clubhub/frontend/src/layouts/ArticleLayout.astro","version":"1.0.0","taskID":"65fa60e0-2510-4557-9013-4b38ba66cc22"}
