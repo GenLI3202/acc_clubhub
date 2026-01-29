@@ -582,26 +582,40 @@ export function useFilterState(initialState: FilterState) {
 - `src/pages/api/search-index.[lang].json.ts`
 - `src/types/search.ts`
 
-#### Tag 2: Basis-Komponenten
+#### Tag 2: Basis-Komponenten (Optimized)
+
+**Refinements based on Debugging:**
+- **Robustness**: Error Boundary für leere/fehlerhafte Indizes.
+- **Date Safety**: Sicherstellen, dass String-Dates nicht zum Crash führen.
+- **Config**: `ignoreLocation: true` für bessere Description-Matches.
 
 **Aufgaben:**
 
-1. [ ] Fuse.js installieren: `npm install fuse.js`
+1. [ ] Dependencies installieren: `npm install fuse.js @types/fuse.js`
 2. [ ] `src/lib/search/fuseConfig.ts` erstellen
-3. [ ] `src/lib/search/searchIndex.ts` (Lazy-Loader)
-4. [ ] `SearchBar.tsx` Grundgerüst (ohne Styling)
-5. [ ] Unit-Tests für Index-Loader
+    - Weighting: Title (0.7), Description (0.3), Tags (0.2)
+    - Settings: `ignoreLocation: true`, `threshold: 0.4`
+3. [ ] `src/lib/search/searchIndex.ts` (Smart Loader)
+    - **Singleton Pattern**: Verhindert doppelte Fetches
+    - **Error Boundary**: Gibt leeres Objekt zurück statt zu crashen, wenn JSON invalid ist
+    - **Type Guard**: `isValidSearchIndex()` Check
+4. [ ] `SearchBar.tsx` Grundgerüst
+    - Lazy Load `onFocus`
+    - Debounce 300ms
+    - Graceful handling von leerem Index
 
 **Akzeptanzkriterien:**
 
-- ✅ Fuse.js initialisiert korrekt
-- ✅ Index wird nur einmal geladen (Caching)
-- ✅ Suche liefert Ergebnisse
+- ✅ Fuse.js initialisiert ohne Fehler (auch bei leerem Index)
+- ✅ Network Tab zeigt nur 1x Request für `search-index.json`
+- ✅ Keine `TypeError` bei Datums-Verarbeitung
+- ✅ Suche in "Description" funktioniert zuverlässig
 
 **Deliverables:**
 
 - `src/components/search/SearchBar.tsx`
-- `src/lib/search/*`
+- `src/lib/search/fuseConfig.ts`
+- `src/lib/search/searchIndex.ts`
 
 #### Tag 3: Filter-Infrastruktur
 
