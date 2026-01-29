@@ -44,6 +44,8 @@ export const ui = {
         'lang.de': 'Deutsch',
         'search.placeholder': '搜索...',
         'search.noResults': '未找到相关内容',
+        'comments.title': '评论区',
+        'comments.description': '使用 GitHub 账号参与讨论',
     },
     en: {
         'nav.home': 'Home',
@@ -61,6 +63,8 @@ export const ui = {
         'lang.de': 'Deutsch',
         'search.placeholder': 'Search...',
         'search.noResults': 'No results found',
+        'comments.title': 'Comments',
+        'comments.description': 'Join the discussion with your GitHub account',
     },
     de: {
         'nav.home': 'Startseite',
@@ -78,6 +82,8 @@ export const ui = {
         'lang.de': 'Deutsch',
         'search.placeholder': 'Suchen...',
         'search.noResults': 'Nichts gefunden',
+        'comments.title': 'Kommentare',
+        'comments.description': 'Diskutieren Sie mit Ihrem GitHub-Konto',
     },
 } as const;
 

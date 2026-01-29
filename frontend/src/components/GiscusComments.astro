@@ -1,0 +1,70 @@
+---
+// src/components/GiscusComments.astro
+// Phase 4.2: Giscus 评论组件
+
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+// Giscus 语言映射
+const giscusLangMap: Record<string, string> = {
+  zh: 'zh-CN',
+  en: 'en',
+  de: 'de',
+};
+const giscusLang = giscusLangMap[lang] || 'en';
+---
+
+<section class="comments-section">
+  <h2>{t(lang, 'comments.title')}</h2>
+  <p class="comments-desc">{t(lang, 'comments.description')}</p>
+  <div class="giscus-wrapper">
+    <script
+      src="https://giscus.app/client.js"
+      data-repo="GenLI3202/acc_clubhub"
+      data-repo-id="PLACEHOLDER_REPO_ID"
+      data-category="Announcements"
+      data-category-id="PLACEHOLDER_CATEGORY_ID"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="light"
+      data-lang={giscusLang}
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    ></script>
+  </div>
+</section>
+
+<style>
+  .comments-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--color-border-rough);
+  }
+
+  .comments-section h2 {
+    font-family: var(--font-heading);
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .comments-desc {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0;
+  }
+
+  .giscus-wrapper {
+    margin-top: 1.5rem;
+  }
+</style>

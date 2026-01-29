@@ -20,7 +20,8 @@
       "WebFetch(domain:codeforum.org)",
       "WebFetch(domain:sveltiacms.app)",
       "Bash(npm run test:*)",
-      "Bash(npm run test:e2e:*)"
+      "Bash(npm run test:e2e:*)",
+      "Bash(git remote:*)"
     ]
   }
 }

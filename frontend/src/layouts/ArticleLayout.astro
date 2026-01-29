@@ -3,6 +3,7 @@
 // 文章详情页布局
 
 import BaseLayout from './BaseLayout.astro';
+import GiscusComments from '../components/GiscusComments.astro';
 import { t, type Locale } from '../lib/i18n';
 
 interface Props {
@@ -63,6 +64,8 @@ const formattedDate = isValidDate
     <div class="article-content prose">
       <slot />
     </div>
+
+    <GiscusComments lang={lang} />
   </article>
 </BaseLayout>
 
