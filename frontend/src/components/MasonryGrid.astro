@@ -34,12 +34,6 @@ const { class: className } = Astro.props;
     }
   }
 
-  @media (min-width: 1200px) {
-    .masonry-grid {
-      column-count: 4;
-    }
-  }
-
   /* 确保卡片不被分割到两列 */
   .masonry-grid > :global(*) {
     break-inside: avoid;
