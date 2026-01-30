@@ -59,12 +59,12 @@ body::after {
   inset: 0;
   z-index: -2;
   /* Behind the noise overlay */
-  background-image: url('/images/uploads/e550c933c142956f4f9794ead8c6b1ce.jpg');
+  background-image: url('/images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(8px);
-  opacity: 0.4;
+  filter: blur(1px);
+  opacity: 0.8;
 }
 
 /* -------------------------------------------
