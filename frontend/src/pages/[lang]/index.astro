@@ -1,16 +1,12 @@
 ---
 // src/pages/[lang]/index.astro
 // 多语言首页
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
-
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
 }
-
 const { lang } = Astro.params as { lang: Locale };
-
 const sections = [
   {
     title: lang === 'zh' ? '慕城<br/>日常' : lang === 'de' ? 'Münchner<br/>Alltag' : 'Munich<br/>Daily',
@@ -69,7 +65,6 @@ const sections = [
   },
 ];
 ---
-
 <BaseLayout title={t(lang, 'nav.home')} lang={lang}>
   <section class="sections-hub">
     <div class="hub-grid">
@@ -82,22 +77,18 @@ const sections = [
       ))}
     </div>
   </section>
-
   <section class="hero">
     <img src="/images/transparent_red_logo.png" alt="ACC ClubHub" class="hero-logo" />
-
     <span class="status-badge status-badge--coming">
       {lang === 'zh' ? 'Beta 建设中' : lang === 'de' ? 'Beta in Entwicklung' : 'Beta Under Construction'}
     </span>
   </section>
 </BaseLayout>
-
 <style>
   .hero {
     text-align: center;
     padding: var(--space-xl) 0 var(--space-lg);
   }
-
   .hero-logo {
     position: fixed;
     top: 50%;
@@ -111,14 +102,11 @@ const sections = [
     pointer-events: none;
     mix-blend-mode: multiply; /* Other options: screen, overlay, difference, multiply, etc.*/
   }
-
   .hero .status-badge {
     position: relative;
     top: 40px;
   }
-
   /* H1 is removed, but we keep the style block clean */
-
   .hero-subtitle {
     font-family: var(--font-body);
     font-size: 1.15rem;
@@ -126,22 +114,15 @@ const sections = [
     margin-top: var(--space-sm);
     margin-bottom: var(--space-md);
   }
-
   .sections-hub {
     margin-top: 270px; /* Moved down by ~half card width */
   }
-
   .sections-hub h2 {
     margin-bottom: var(--space-sm);
   }
-
   .sections-hub h2::after {
     content: '';
     display: block;
     width: 40px;
     height: 3px;
     background: var(--color-accent);
-    margin-top: var(--space-xs);
-    transform: rotate(-1deg);
-  }
-</style>
