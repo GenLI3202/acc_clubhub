@@ -71,30 +71,24 @@ const sections = [
 ---
 
 <BaseLayout title={t(lang, 'nav.home')} lang={lang}>
-  <section class="hero">
-    <h1>ACC ClubHub</h1>
-    <p class="hero-subtitle">
-      {lang === 'zh'
-        ? 'Across Cycling Club Munich — 慕尼黑华人骑行俱乐部门户'
-        : lang === 'de'
-          ? 'Across Cycling Club Munich — Chinesischer Radsportverein München'
-          : 'Across Cycling Club Munich — Chinese Cycling Club Portal'}
-    </p>
-    <span class="status-badge status-badge--coming">
-      {lang === 'zh' ? 'Beta 建设中' : lang === 'de' ? 'Beta in Entwicklung' : 'Beta Under Construction'}
-    </span>
-  </section>
-
   <section class="sections-hub">
     <div class="hub-grid">
       {sections.map((section) => (
         <a href={section.href} class="hub-card">
-          <span class="hub-card-emoji">{section.emoji}</span>
+          {/* <span class="hub-card-emoji">{section.emoji}</span> */}
           <h3 set:html={section.title} />
           <p>{section.description}</p>
         </a>
       ))}
     </div>
+  </section>
+
+  <section class="hero">
+    <img src="/images/transparent_red_logo.png" alt="ACC ClubHub" class="hero-logo" />
+
+    <span class="status-badge status-badge--coming">
+      {lang === 'zh' ? 'Beta 建设中' : lang === 'de' ? 'Beta in Entwicklung' : 'Beta Under Construction'}
+    </span>
   </section>
 </BaseLayout>
 
@@ -104,11 +98,26 @@ const sections = [
     padding: var(--space-xl) 0 var(--space-lg);
   }
 
-  .hero h1 {
-    font-size: 3.5rem;
-    letter-spacing: -0.03em;
-    color: var(--color-primary);
+  .hero-logo {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vh; /* Very large relative to viewport height */
+    max-width: 80vw;
+    height: auto;
+    opacity: 0.7; /* 0.1 = Very subtle, 1 = Solid */
+    z-index: -1; /* Behind content but above background */
+    pointer-events: none;
+    mix-blend-mode: multiply; /* Other options: screen, overlay, difference, multiply, etc.*/
   }
+
+  .hero .status-badge {
+    position: relative;
+    top: 40px;
+  }
+
+  /* H1 is removed, but we keep the style block clean */
 
   .hero-subtitle {
     font-family: var(--font-body);
@@ -119,7 +128,7 @@ const sections = [
   }
 
   .sections-hub {
-    margin-top: var(--space-xl);
+    margin-top: 270px; /* Moved down by ~half card width */
   }
 
   .sections-hub h2 {

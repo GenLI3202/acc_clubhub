@@ -314,16 +314,25 @@ main {
 /* 6. 板块的主题字体颜色调成和导航字体一样的黑色 */
 .hub-card h3 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 800;
+  /* Extra bold */
   font-size: 1.8rem;
   margin-bottom: var(--space-sm);
-  color: var(--color-text-main);
+  color: #000;
+  /* Pure black */
+  text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.9);
+  /* Strong halo */
 }
 
 .hub-card p {
-  color: #555;
-  font-size: 0.9rem;
+  color: #111;
+  /* Darker than #555 */
+  font-weight: 600;
+  /* Medium bold */
+  font-size: 0.95rem;
   line-height: 1.5;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+  /* Subtle halo */
 }
 
 /* -------------------------------------------
