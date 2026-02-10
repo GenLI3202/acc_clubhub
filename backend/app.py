@@ -46,7 +46,19 @@ def read_root():
 @app.get("/health", tags=["Health"])
 def health_check():
     """Health check endpoint for monitoring"""
-    return {"status": "healthy", "service": "acc-cluhab-backend"}
+    from config import is_production_mode
+
+    health_status = {
+        "status": "healthy",
+        "service": "acc-cluhab-backend",
+        "version": "0.4.3",
+        "mode": "production" if is_production_mode() else "development"
+    }
+
+    if not is_production_mode():
+        health_status["warning"] = "Running in development mode - some features may not work"
+
+    return health_status
 
 # ============================================================
 # Route Registration
