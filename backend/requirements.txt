@@ -1,18 +1,25 @@
-# ACC ClubHub Backend - 依赖
+# ACC ClubHub Backend - Phase 4.3 Event Registration Dependencies
 
-# Web 框架
-fastapi>=0.109.0
-uvicorn[standard]>=0.27.0
+# Web Framework
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
 
-# 数据库
-sqlalchemy>=2.0
-aiosqlite>=0.19.0
+# Database (PostgreSQL for Supabase)
+sqlalchemy>=2.0.23
+psycopg2-binary>=2.9.9
 
-# 邮件服务 (二选一)
-# resend>=0.7.0
-# sendgrid>=6.11.0
+# Validation & Settings
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
 
-# 工具
-python-dotenv>=1.0
-pydantic>=2.5
-pydantic-settings>=2.1
+# Authentication (JWT for Supabase)
+python-jose[cryptography]>=3.3.0
+python-multipart>=0.0.6
+
+# HTTP Client & Email
+httpx>=0.25.1
+resend>=0.8.0
+
+# Utilities
+python-frontmatter>=1.1.0  # For parsing Markdown frontmatter
