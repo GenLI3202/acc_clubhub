@@ -11,10 +11,12 @@
 ### 为什么选择 Waline？
 
 原有 Giscus 方案有以下局限：
+
 - 只支持 GitHub 登录，非技术用户门槛高
 - 俱乐部成员不一定有 GitHub 账号
 
 Waline 解决了这些问题：
+
 - ✅ Google OAuth（普适性强）
 - ✅ GitHub OAuth（技术用户友好）
 - ✅ 访客模式（邮箱+昵称，无需任何账号）
@@ -25,6 +27,7 @@ Waline 解决了这些问题：
 ### 当前 Infra 复用
 
 Phase 4.2 已完成的基础设施可直接复用：
+
 - `GiscusComments.astro` → 重构为 `WalineComments.astro`
 - `ArticleLayout.astro` 的评论集成点（已就位）
 - `routes/[slug].astro` 的评论集成点（已就位）
@@ -63,13 +66,14 @@ graph TB
 
 ### 存储后端对比
 
-| 方案 | 迁移难度 | Vercel 集成 | 免费额度 | 推荐度 |
-|------|----------|-------------|----------|--------|
-| **Vercel Postgres** | ⭐ 简单（标准 PG） | ⭐⭐⭐ 原生 | 256MB + 10万操作/月 | ⭐⭐⭐⭐⭐ |
-| LeanCloud | ⭐⭐ 需导出脚本 | ⭐⭐ 需额外配置 | 1GB + 3万请求/天 | ⭐⭐⭐ |
-| MySQL | ⭐ 简单（标准 SQL） | ⭐⭐ 需自建 | 取决于托管商 | ⭐⭐⭐⭐ |
+| 方案                      | 迁移难度            | Vercel 集成     | 免费额度            | 推荐度     |
+| ------------------------- | ------------------- | --------------- | ------------------- | ---------- |
+| **Vercel Postgres** | ⭐ 简单（标准 PG）  | ⭐⭐⭐ 原生     | 256MB + 10万操作/月 | ⭐⭐⭐⭐⭐ |
+| LeanCloud                 | ⭐⭐ 需导出脚本     | ⭐⭐ 需额外配置 | 1GB + 3万请求/天    | ⭐⭐⭐     |
+| MySQL                     | ⭐ 简单（标准 SQL） | ⭐⭐ 需自建     | 取决于托管商        | ⭐⭐⭐⭐   |
 
 **选择 Vercel Postgres 的理由**：
+
 - PostgreSQL 是关系型数据库标准，任何云平台都支持
 - 未来迁移到 Railway/Render/自建服务器只需 `pg_dump` + 导入
 - Vercel 一键部署，环境变量自动配置
@@ -81,22 +85,22 @@ graph TB
 
 ### Phase 4.2.1: 核心登录方式（本次实施）
 
-| OAuth 提供商 | 配置难度 | 用户体验 | 优先级 |
-|-------------|----------|----------|--------|
+| OAuth 提供商       | 配置难度 | 用户体验  | 优先级  |
+| ------------------ | -------- | --------- | ------- |
 | **访客模式** | 无需配置 | 邮箱+昵称 | P0 必备 |
-| **Google** | 简单 | 一键登录 | P0 核心 |
-| **GitHub** | 简单 | 一键登录 | P0 核心 |
+| **Google**   | 简单     | 一键登录  | P0 核心 |
+| **GitHub**   | 简单     | 一键登录  | P0 核心 |
 
 ### Phase 4.2.2: 扩展登录方式（后续可选）
 
 详细方案见: [`phase_4_2_2_wechat_plan.md`](./phase_4_2_2_wechat_plan.md)
 
-| OAuth 提供商 | 配置难度 | 说明 |
-|-------------|----------|------|
-| **WeChat** | 复杂 | 需要企业资质或第三方 OAuth 服务 |
-| **QQ** | 复杂 | 同上 |
-| **Facebook** | 简单 | 欧美用户适用 |
-| **Twitter/X** | 简单 | 技术向用户 |
+| OAuth 提供商        | 配置难度 | 说明                            |
+| ------------------- | -------- | ------------------------------- |
+| **WeChat**    | 复杂     | 需要企业资质或第三方 OAuth 服务 |
+| **QQ**        | 复杂     | 同上                            |
+| **Facebook**  | 简单     | 欧美用户适用                    |
+| **Twitter/X** | 简单     | 技术向用户                      |
 
 ---
 
@@ -108,6 +112,7 @@ graph TB
 2. 点击 "Create Database" → 选择 "Postgres" → 基于 Neon
 3. 选择免费计划（Hobby Plan - Free）
 4. 记录以下环境变量（Vercel 自动添加到项目）：
+
    - `POSTGRES_URL`
    - `POSTGRES_PRISMA_URL`
    - `POSTGRES_URL_NON_POOLING`
@@ -116,14 +121,54 @@ graph TB
    - `POSTGRES_PASSWORD`
    - `POSTGRES_DATABASE`
 
+   ```
+   From Vercel Neon: 
+   # Recommended for most uses
+   DATABASE_URL=postgresql://neondb_owner:npg_YBajKm8ObSA9@ep-dark-dust-aghw9fc1-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+
+   # For uses requiring a connection without pgbouncer
+   DATABASE_URL_UNPOOLED=postgresql://neondb_owner:npg_YBajKm8ObSA9@ep-dark-dust-aghw9fc1.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+
+   # Parameters for constructing your own connection string
+   PGHOST=ep-dark-dust-aghw9fc1-pooler.c-2.eu-central-1.aws.neon.tech
+   PGHOST_UNPOOLED=ep-dark-dust-aghw9fc1.c-2.eu-central-1.aws.neon.tech
+   PGUSER=neondb_owner
+   PGDATABASE=neondb
+   PGPASSWORD=npg_YBajKm8ObSA9
+
+   # Parameters for Vercel Postgres Templates
+   POSTGRES_URL=postgresql://neondb_owner:npg_YBajKm8ObSA9@ep-dark-dust-aghw9fc1-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+   - `POSTGRES_URL` 等系列变量（通过 Connect Store 自动获取）
+
 ### Step 1: 部署 Waline 服务端
 
 #### 方式 A: Vercel 一键部署（推荐）
 
 1. 访问 Waline 官方 Vercel 模板：https://vercel.com/new/clone?repo=walinejs/waline
-2. 点击 "Deploy"
-3. 配置环境变量（见下方）
-4. 部署完成后获得服务端 URL：`https://your-waline.vercel.app`
+2. **Repository Name**: 输入 `acc-clubhub-waline`
+3. **Environment Variables**: **不要填写**，直接点击 **Deploy**
+   - *注意：首次部署会失败或报错，这是正常的，因为还没连数据库*
+4. **连接数据库 (核心步骤)**:
+   - 部署结束后，点击 **Continue to Dashboard**
+   - 顶部菜单点击 **Storage** -> **Connect Store**
+   - 选择在 **Step 0** 创建的数据库
+   - **Environment**: 全选 (Production, Preview, Development)
+   - **Custom Prefix**: <span style="color:red">**必须改为 `POSTGRES`**</span> (默认是 STORAGE)
+     - *Waline 只识别 `POSTGRES_` 开头的变量*
+   - 点击 **Connect**
+
+5. **配置其他变量**:
+   - 顶部菜单点击 **Settings** -> **Environment Variables**
+   - 添加以下变量：
+     - `SITE_NAME`: `ACC ClubHub`
+     - `SITE_URL`: `https://your-acc-clubhub.vercel.app` (您的前端域名)
+     - `JWT_SECRET`: (随机生成一串字符，越长越好)
+
+6. **重新部署**:
+   - 顶部菜单点击 **Deployments**
+   - 找到最新的部署记录，点击最右侧 **三个点 (...)** -> **Redeploy**
+   - 等待部署变绿 (Ready)
+   - 记录服务端 URL：`https://acc-clubhub-waline.vercel.app`
 
 #### 方式 B: 自建仓库部署
 
@@ -189,6 +234,7 @@ npm install @waline/client
 **文件**: `frontend/src/components/WalineComments.astro`
 
 职责：
+
 - 接受 `lang` prop，传递给 Waline 客户端
 - 渲染评论区标题 + 说明文字（复用现有 i18n）
 - 初始化 Waline 客户端（使用 `client:load` 指令）
@@ -255,16 +301,19 @@ const walineLang = walineLangMap[lang] || 'en';
 ### Step 6: 替换评论组件引用
 
 **文件**:
+
 - `frontend/src/layouts/ArticleLayout.astro`
 - `frontend/src/pages/[lang]/routes/[slug].astro`
 
 修改导入语句：
+
 ```astro
 - import GiscusComments from '../components/GiscusComments.astro';
 + import WalineComments from '../components/WalineComments.astro';
 ```
 
 修改组件调用：
+
 ```astro
 - <GiscusComments lang={lang} />
 + <WalineComments lang={lang} />
@@ -273,6 +322,7 @@ const walineLang = walineLangMap[lang] || 'en';
 ### Step 7: 删除/归档旧组件
 
 **文件**: `frontend/src/components/GiscusComments.astro`
+
 - 可选择删除或移至 `frontend/src/components/_archive/`
 
 ### Step 8: 本地验证 + 构建
@@ -283,6 +333,7 @@ npm run build
 ```
 
 验证点：
+
 - 构建成功，无 TypeScript 错误
 - `@waline/client` 正确打包
 - 五类详情页路由正确生成
@@ -301,6 +352,7 @@ npm run build
 ### Step 10: 访问 Waline 管理后台
 
 首次部署后，访问 `https://your-waline.vercel.app/ui`：
+
 1. 注册第一个账号（自动成为管理员）
 2. 配置反垃圾策略
 3. 审核评论（可选）
@@ -309,14 +361,14 @@ npm run build
 
 ## 文件修改清单
 
-| 文件 | 操作 | 说明 |
-|------|------|------|
-| `frontend/package.json` | **修改** | 添加 `@waline/client` 依赖 |
-| `frontend/src/lib/i18n.ts` | **修改** | 更新 comments.description 翻译文案 |
-| `frontend/src/components/WalineComments.astro` | **新建** | Waline 评论组件 |
-| `frontend/src/components/GiscusComments.astro` | **删除** | 归档或删除 |
-| `frontend/src/layouts/ArticleLayout.astro` | **修改** | 替换导入和组件调用 |
-| `frontend/src/pages/[lang]/routes/[slug].astro` | **修改** | 替换导入和组件调用 |
+| 文件                                              | 操作           | 说明                               |
+| ------------------------------------------------- | -------------- | ---------------------------------- |
+| `frontend/package.json`                         | **修改** | 添加 `@waline/client` 依赖       |
+| `frontend/src/lib/i18n.ts`                      | **修改** | 更新 comments.description 翻译文案 |
+| `frontend/src/components/WalineComments.astro`  | **新建** | Waline 评论组件                    |
+| `frontend/src/components/GiscusComments.astro`  | **删除** | 归档或删除                         |
+| `frontend/src/layouts/ArticleLayout.astro`      | **修改** | 替换导入和组件调用                 |
+| `frontend/src/pages/[lang]/routes/[slug].astro` | **修改** | 替换导入和组件调用                 |
 
 ---
 
@@ -364,6 +416,7 @@ Vercel Postgres → Railway / Render / 自建服务器
 ```
 
 步骤：
+
 1. 使用 `pg_dump` 导出数据库
 2. 在新平台创建 Postgres 实例
 3. 导入 SQL 文件
