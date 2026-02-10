@@ -28,7 +28,8 @@
       "mcp__zread__read_file",
       "Bash(poetry install:*)",
       "Bash(findstr:*)",
-      "Bash(poetry:*)"
+      "Bash(poetry:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }
