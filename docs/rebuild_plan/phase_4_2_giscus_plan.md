@@ -10,13 +10,13 @@
 
 ### 页面结构
 
-| 详情页 | 路由 | 使用布局 | 集成方式 |
-|--------|------|----------|----------|
-| media/[slug] | `[lang]/media/[slug]` | ArticleLayout | ArticleLayout 统一集成 |
-| gear/[slug] | `[lang]/knowledge/gear/[slug]` | ArticleLayout | ArticleLayout 统一集成 |
-| training/[slug] | `[lang]/knowledge/training/[slug]` | ArticleLayout | ArticleLayout 统一集成 |
-| events/[slug] | `[lang]/events/[slug]` | ArticleLayout | **新建详情页** + ArticleLayout 统一集成 |
-| routes/[slug] | `[lang]/routes/[slug]` | BaseLayout (自定义) | 页面中单独集成 |
+| 详情页          | 路由                                 | 使用布局            | 集成方式                                      |
+| --------------- | ------------------------------------ | ------------------- | --------------------------------------------- |
+| media/[slug]    | `[lang]/media/[slug]`              | ArticleLayout       | ArticleLayout 统一集成                        |
+| gear/[slug]     | `[lang]/knowledge/gear/[slug]`     | ArticleLayout       | ArticleLayout 统一集成                        |
+| training/[slug] | `[lang]/knowledge/training/[slug]` | ArticleLayout       | ArticleLayout 统一集成                        |
+| events/[slug]   | `[lang]/events/[slug]`             | ArticleLayout       | **新建详情页** + ArticleLayout 统一集成 |
+| routes/[slug]   | `[lang]/routes/[slug]`             | BaseLayout (自定义) | 页面中单独集成                                |
 
 ### Giscus 配置
 
@@ -28,10 +28,10 @@
 ### 语言映射
 
 | 网站 Locale | Giscus lang |
-|-------------|-------------|
-| `zh` | `zh-CN` |
-| `en` | `en` |
-| `de` | `de` |
+| ----------- | ----------- |
+| `zh`      | `zh-CN`   |
+| `en`      | `en`      |
+| `de`      | `de`      |
 
 ---
 
@@ -50,6 +50,7 @@
 **文件**: `frontend/src/lib/i18n.ts`
 
 新增键:
+
 - `comments.title`: 评论区 / Comments / Kommentare
 - `comments.description`: 使用 GitHub 账号参与讨论 / Join the discussion with your GitHub account / Diskutieren Sie mit Ihrem GitHub-Konto
 
@@ -95,19 +96,20 @@
 
 ## 修改文件清单
 
-| 文件 | 操作 | 状态 |
-|------|------|------|
-| `frontend/src/lib/i18n.ts` | **修改** — 添加 comments 翻译键 | 已完成 |
-| `frontend/src/components/GiscusComments.astro` | **新建** — Giscus 评论组件 | 已完成 |
-| `frontend/src/layouts/ArticleLayout.astro` | **修改** — 集成 GiscusComments | 已完成 |
+| 文件                                              | 操作                                      | 状态   |
+| ------------------------------------------------- | ----------------------------------------- | ------ |
+| `frontend/src/lib/i18n.ts`                      | **修改** — 添加 comments 翻译键    | 已完成 |
+| `frontend/src/components/GiscusComments.astro`  | **新建** — Giscus 评论组件         | 已完成 |
+| `frontend/src/layouts/ArticleLayout.astro`      | **修改** — 集成 GiscusComments     | 已完成 |
 | `frontend/src/pages/[lang]/routes/[slug].astro` | **修改** — 单独集成 GiscusComments | 已完成 |
-| `frontend/src/pages/[lang]/events/[slug].astro` | **新建** — 活动详情页 | 已完成 |
+| `frontend/src/pages/[lang]/events/[slug].astro` | **新建** — 活动详情页              | 已完成 |
 
 ---
 
 ## 待用户完成
 
 替换 `GiscusComments.astro` 中的两个占位符:
+
 1. `PLACEHOLDER_REPO_ID` -> 仓库 ID (从 giscus.app 获取)
 2. `PLACEHOLDER_CATEGORY_ID` -> 分类 ID (从 giscus.app 获取)
 
@@ -115,11 +117,11 @@
 
 ## 验证清单
 
-- [x] GiscusComments.astro 组件创建成功
-- [x] i18n 翻译键已添加 (zh/en/de)
-- [x] ArticleLayout 中集成评论组件 (覆盖 media, gear, training, events)
-- [x] routes/[slug] 中单独集成评论组件
-- [x] events/[slug].astro 详情页创建成功
-- [x] `npm run build` 构建成功 (127 pages, 6.63s)
+- [X] GiscusComments.astro 组件创建成功
+- [X] i18n 翻译键已添加 (zh/en/de)
+- [X] ArticleLayout 中集成评论组件 (覆盖 media, gear, training, events)
+- [X] routes/[slug] 中单独集成
+- [X] events/[slug].astro 详情页创建成功
+- [X] `npm run build` 构建成功 (127 pages, 6.63s)
 - [ ] 占位符 ID 替换 (待用户提供)
 - [ ] Vercel 部署后评论功能测试
