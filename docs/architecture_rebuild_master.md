@@ -161,18 +161,84 @@ GET  /api/events/{id}/rsvps   # 报名列表 (admin)
 
 ## 第四部分：实施计划 (基于 Iterative Plan)
 
-> **状态更新**: 截至 2026-01-29，Layer 1 (骨架)、Layer 2 (样式)、Layer 3 (内容) 均已完成。Sveltia CMS 与多语言 (i18n) 基础已就绪。
+> **状态更新**: 截至 2026-02-10，Layer 1-3 已完成，Phase 4.1 (搜索与筛选) 已完成。
 
 ### 4.1 实施分层概览
 
-| 层次 | 描述 | 状态 | 关键技术 |
-|------|------|------|----------|
-| **Layer 1: 骨架** | 基础 Astro 项目结构、路由规划、布局组件 | ✅ 已完成 | Astro, Components |
-| **Layer 2: 样式** | 迁移 "蓝骑士" 设计系统，实现 CSS 变量与组件样式 | ✅ 已完成 | CSS Variables, Responsive Design |
-| **Layer 3: 内容** | 搭建 CMS、定义内容集合、实现 i18n 动态渲染 | ✅ 已完成 | Sveltia CMS, Content Collections, i18n |
-| **Layer 4: 功能** | 用户认证、活动报名系统、路线搜索、Waline 评论 | 🚧 待启动 | FastAPI, Waline, Vercel Postgres |
+| 层次 | 描述 | 状态 | 完成日期 | 关键技术 |
+|------|------|------|----------|----------|
+| **Layer 1: 骨架** | 基础 Astro 项目结构、路由规划、布局组件 | ✅ 已完成 | 2026-01-2X | Astro, Components |
+| **Layer 2: 样式** | 迁移 "蓝骑士" 设计系统，实现 CSS 变量与组件样式 | ✅ 已完成 | 2026-01-2X | CSS Variables, Blaue Reiter V3 |
+| **Layer 3: 内容** | 搭建 CMS、定义内容集合、实现 i18n 动态渲染 | ✅ 已完成 | 2026-01-29 | Sveltia CMS, Content Collections, i18n |
+| **Layer 4: 功能** | 搜索、评论、活动报名、认证 | 🚧 部分完成 | - | Waline, Supabase, FastAPI |
 
-### 4.2 当前文件结构 (Layer 3 完成态)
+### 4.2 Layer 4 详细进度
+
+| Phase | 功能 | 状态 | 完成日期 | 详细方案 |
+|-------|------|------|----------|----------|
+| **4.1** | 搜索与筛选系统 | ✅ 完成 | 2026-02-10 | [`phase_4_1_detailed_plan.md`](./rebuild_plan/phase_4_1_detailed_plan.md) |
+| **4.2** | Waline 评论系统 | 📋 计划中 | - | [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md) |
+| **4.3** | 活动报名 (Events) | 📋 计划中 | - | - |
+| **4.4** | 认证系统 (Supabase) | 📋 计划中 | - | - |
+
+#### Phase 4.1: 搜索与筛选 — ✅ 已完成
+
+**功能特性**:
+- ✅ Fuse.js 加权模糊搜索 (标题、描述、标签、分类)
+- ✅ 多维度筛选 (事件类型、路线难度、器械分类等)
+- ✅ URL 状态同步 (筛选条件保存在 URL 中)
+- ✅ 多语言支持 (zh/en/de)
+- ✅ 响应式瀑布流布局
+
+**技术实现**:
+- `frontend/src/lib/search/fuseConfig.ts` — Fuse.js 配置
+- `frontend/src/lib/filter/` — 筛选状态管理、工具函数
+- `frontend/src/components/filter/` — FilterPanel 等组件
+- `frontend/src/pages/api/search-index.[lang].json.ts` — 搜索索引 API
+
+#### Phase 4.2: Waline 评论系统 — 📋 计划中
+
+**目标**: 从 Giscus 迁移到 Waline，支持 Google/GitHub/访客评论
+
+**当前状态**: Giscus 已集成 (仅 GitHub 登录)
+
+**待实施**:
+- 部署 Waline 服务端 (Vercel Serverless)
+- 创建 Vercel Postgres 数据库
+- 配置 Google/GitHub OAuth
+- 创建 `WalineComments.astro` 组件
+- 替换现有 Giscus 组件
+
+#### Phase 4.3: 活动报名 (Events) — 📋 计划中
+
+**目标**: 实现内部报名系统 + 邮件通知
+
+**当前状态**: 静态页面已实现，仅支持外部报名链接
+
+**已实现**:
+- ✅ 活动列表页 (`EventsPage.tsx`) + 筛选功能
+- ✅ 活动详情页 (`events/[slug].astro`)
+- ✅ 外部报名链接按钮 (`registrationLink` 字段)
+
+**待实施**:
+- ❌ FastAPI 后端 API (`events.py`, `rsvp.py`)
+- ❌ Supabase 数据库 (RSVP 记录)
+- ❌ Resend 邮件通知服务
+- ❌ 前端报名表单组件
+
+#### Phase 4.4: 认证系统 — 📋 计划中
+
+**目标**: 基于 Supabase 的用户注册/登录
+
+**待实施**:
+- ❌ Supabase Auth 配置 (Google/GitHub/Email)
+- ❌ 前端 Auth 状态管理 (`lib/auth.ts`)
+- ❌ 登录/注册 UI 组件
+- ❌ 用户权限管理 (普通用户/管理员)
+
+---
+
+### 4.3 当前文件结构 (Layer 4 部分完成态)
 
 ```
 acc_clubhub/
@@ -184,46 +250,72 @@ acc_clubhub/
 │   │   └── images/
 │   ├── src/
 │   │   ├── content.config.ts         # 内容集合定义 (Zod Schema)
-│   │   ├── content/                  # 内容文件 (Media, Knowledge, Routes)
-│   │   │   ├── media/zh/*.md
+│   │   ├── content/                  # Markdown 内容文件
+│   │   │   ├── media/{zh,en,de}/*.md
+│   │   │   ├── routes/{zh,en,de}/*.md
+│   │   │   ├── gear/{zh,en,de}/*.md
+│   │   │   ├── training/{zh,en,de}/*.md
+│   │   │   └── events/.gitkeep       # 暂无内容
+│   │   ├── components/
+│   │   │   ├── filter/               # ✅ Phase 4.1: 筛选组件
+│   │   │   │   ├── FilterPanel.tsx
+│   │   │   │   ├── FilterCheckbox.tsx
+│   │   │   │   └── FilterRange.tsx
+│   │   │   ├── ui/                   # ✅ Phase 4.1: MasonryGrid, MasonryCard
+│   │   │   ├── content/              # ✅ Phase 4.1: *Page.tsx (RoutesPage, etc.)
+│   │   │   ├── Header.astro
+│   │   │   ├── Footer.astro
+│   │   │   ├── GiscusComments.astro  # ⚠️ 待迁移到 Waline
 │   │   │   └── ...
-│   │   ├── components/               # UI 组件 (Header, Footer, Cards...)
-│   │   ├── layouts/                  # 布局 (BaseLayout, ArticleLayout)
 │   │   ├── lib/
-│   │   │   └── i18n.ts               # 多语言工具
+│   │   │   ├── i18n.ts               # 多语言工具
+│   │   │   ├── search/               # ✅ Phase 4.1: Fuse.js 配置
+│   │   │   │   └── fuseConfig.ts
+│   │   │   └── filter/               # ✅ Phase 4.1: 筛选逻辑
+│   │   │       ├── useFilterState.ts
+│   │   │       ├── filterUtils.ts
+│   │   │       ├── filterConfig.ts
+│   │   │       └── facetUtils.ts
+│   │   ├── layouts/
+│   │   │   ├── BaseLayout.astro
+│   │   │   └── ArticleLayout.astro
 │   │   ├── pages/
+│   │   │   ├── api/                  # ✅ Phase 4.1: 搜索索引 API
+│   │   │   │   └── search-index.[lang].json.ts
 │   │   │   └── [lang]/               # 动态多语言路由
 │   │   │       ├── index.astro
 │   │   │       ├── media/
+│   │   │       │   ├── index.astro
+│   │   │       │   └── [slug].astro
 │   │   │       ├── knowledge/
-│   │   │       └── routes/
-│   │   └── styles/                   # 样式库
-│   │       └── blaue-reiter.css
-│   └── astro.config.mjs
-├── backend/                          # FastAPI 后端 (Layer 4 重点)
-│   ├── app.py
-│   └── ...
-└── docs/                             # 项目文档
+│   │   │       │   ├── gear.astro
+│   │   │       │   │   └── [slug].astro
+│   │   │       │   └── training.astro
+│   │   │       │       └── [slug].astro
+│   │   │       ├── routes/
+│   │   │       │   ├── index.astro
+│   │   │       │   └── [slug].astro
+│   │   │       └── events/
+│   │   │           ├── index.astro
+│   │   │           └── [slug].astro   # ⚠️ 仅静态页面
+│   │   └── styles/                   # Blaue Reiter V3 样式
+│   │       ├── variables.css
+│   │       └── global.css
+│   └── astro.config.mjs             # i18n + Preact + Vercel 配置
+├── backend/                          # 📋 Layer 4.3: 待实施
+│   ├── app.py                        # FastAPI 主应用 (空)
+│   └── models.py                     # 数据模型定义
+└── docs/
+    └── rebuild_plan/
+        ├── phase_4_1_detailed_plan.md    # ✅ 完成
+        ├── phase_4_2_waline_plan.md      # 📋 计划中
+        └── ...
 ```
 
-### 4.3 下一阶段重点 (Layer 4)
-
-#### 4.1 认证与用户系统
-- **目标**: 实现基于 Supabase 的用户注册/登录 (Google/GitHub/Email)。
-- **交付物**: `frontend/src/lib/auth.ts`, `backend/auth.py`, 登录 UI 组件。
-
-#### 4.2 慕城日常 (Events) & 报名
-- **目标**: 完整的活动发布与报名流程。
-- **交付物**: `backend/routes/events.py`, `backend/routes/rsvp.py`, 邮件通知服务。
-
-#### 4.3 评论系统 (Waline)
-- **目标**: 全站评论功能，支持 Google/GitHub OAuth + 访客评论。
-- **交付物**: Waline 服务端 (Vercel), Vercel Postgres, WalineComments.astro 组件。
-- **详细方案**: [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md)
-
-#### 4.4 路线搜索与互动
-- **目标**: 路线多维度筛选与模糊搜索，视频嵌入功能。
-- **交付物**: Fuse.js 搜索集成, VideoEmbed 组件。
+**文件结构说明**:
+- ✅ 已实现的 Phase 4.1 功能标记为 `✅ Phase 4.1`
+- ⚠️ 部分实现的标记为 `⚠️`
+- 📋 待实施的标记为 `📋`
 
 ---
 
@@ -236,10 +328,10 @@ acc_clubhub/
 | **Layer 3** | CMS 后台可访问，支持 GitHub 登录 | ✅ PASS |
 | **Layer 3** | 多语言 (zh/en/de) 内容发布与动态渲染 | ✅ PASS |
 | **Layer 3** | CI/CD 流水线 (Vitest + Playwright) | ✅ PASS |
-| **Layer 4** | Waline 评论系统 (Google/GitHub/访客) | ⬜ TODO |
-| **Layer 4** | 用户登录与鉴权 | ⬜ TODO |
-| **Layer 4** | 活动创建与报名流程 | ⬜ TODO |
-| **Layer 4** | 路线搜索功能 | ⬜ TODO |
+| **Phase 4.1** | 搜索与筛选系统 (Fuse.js + Filter) | ✅ PASS |
+| **Phase 4.2** | Waline 评论系统 (Google/GitHub/访客) | 📋 TODO |
+| **Phase 4.3** | 活动创建与报名流程 (FastAPI + Supabase) | 📋 TODO |
+| **Phase 4.4** | Supabase 认证 (Google/GitHub/Email) | 📋 TODO |
 
 ---
 
@@ -256,12 +348,14 @@ acc_clubhub/
 
 ### B. 外部服务
 
-| 服务 | 用途 | 注册链接 |
-|------|------|---------|
-| Supabase | 认证 + 数据库 | supabase.com |
-| Resend | 邮件发送 | resend.com |
-| Vercel | 前端部署 | vercel.com |
-| Railway | 后端部署 | railway.app |
+| 服务 | 用途 | 注册链接 | 状态 |
+|------|------|---------|------|
+| **Vercel** | 前端部署 + Postgres | vercel.com | ✅ 使用中 |
+| **Sveltia CMS** | 内容管理 | sveltia.cms | ✅ 使用中 |
+| **Waline** | 评论系统 (计划中) | waline.js.org | 📋 待部署 |
+| **Supabase** | 认证 + 数据库 (计划中) | supabase.com | 📋 待配置 |
+| **Resend** | 邮件发送 (计划中) | resend.com | 📋 待配置 |
+| **Railway** | 后端部署 (可选) | railway.app | 📋 备选方案 |
 
 ### C. 决策记录
 

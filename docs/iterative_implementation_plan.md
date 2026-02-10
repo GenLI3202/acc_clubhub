@@ -126,54 +126,103 @@ frontend/
 
 ---
 
-## Layer 4: 功能 (Features) - [待启动]
+## Layer 4: 功能 (Features) - [部分已完成]
 
-> **目标**: 核心交互功能上线
+> **更新日期**: 2026-02-10
+> **状态**: Phase 4.1 (搜索与筛选) ✅ 已完成
 
-### 4.1 认证系统 & 用户中心
+### 4.1 搜索与筛选系统 — ✅ 已完成 (Phase 4.1)
 
-| 交付物 | 说明 |
-|-------|------|
-| `backend/auth` | FastAPI + JWT 认证 |
-| `frontend/src/lib/auth.ts` | 客户端 Auth 状态管理 |
-| `frontend/src/components/Auth/` | 登录/注册/个人中心 UI |
+**详细方案**: [`phase_4_1_detailed_plan.md`](./rebuild_plan/phase_4_1_detailed_plan.md)
 
-### 4.2 活动报名 (慕城日常) - Events
+| 交付物 | 状态 | 说明 |
+|-------|------|------|
+| `frontend/src/lib/search/fuseConfig.ts` | ✅ 完成 | Fuse.js 搜索配置 |
+| `frontend/src/lib/filter/` | ✅ 完成 | 筛选状态管理、工具函数、配置 |
+| `frontend/src/components/filter/` | ✅ 完成 | FilterPanel, FilterCheckbox, FilterRange 等 |
+| `frontend/src/pages/api/search-index.[lang].json.ts` | ✅ 完成 | 多语言搜索索引生成 API |
+| `frontend/src/components/content/*Page.tsx` | ✅ 完成 | 各板块筛选页面集成 |
 
-> **注**: 目前 `events` 仅为占位符，Layer 4 将完全实现
+**功能特性**:
+- ✅ 多维度筛选 (事件类型、路线难度、器械分类等)
+- ✅ 加权模糊搜索 (标题、描述、标签、分类)
+- ✅ URL 状态同步 (筛选条件保存在 URL 中)
+- ✅ 多语言支持 (zh/en/de)
+- ✅ 响应式瀑布流布局 (MasonryGrid + MasonryCard)
 
-| 交付物 | 说明 |
-|-------|------|
-| `backend/routes/events.py` | 活动管理 API |
-| `backend/routes/rsvp.py` | 报名 API |
-| `frontend/src/pages/[lang]/events/` | 活动列表与详情页 |
-| `backend/services/email.py` | 邮件通知服务 |
+---
 
-### 4.3 评论系统 (Waline)
+### 4.2 评论系统 (Giscus) — ✅ 已完成，待升级为 Waline
 
-| 交付物 | 说明 |
-|-------|------|
-| Waline 服务端 | Vercel Serverless 部署 |
-| `Vercel Postgres` | 评论数据存储 (256MB 免费) |
-| `frontend/src/components/WalineComments.astro` | 评论组件 |
-| Google/GitHub OAuth | OAuth 配置 |
+**当前状态**: Giscus 已集成，计划迁移到 Waline
 
-**详细方案**: [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md)
+| 交付物 | 当前状态 | 目标状态 |
+|-------|---------|---------|
+| 评论组件 | ✅ `GiscusComments.astro` | 📋 升级为 `WalineComments.astro` |
+| 登录方式 | 仅 GitHub | Google + GitHub + 访客 |
+| 数据存储 | GitHub Discussions | Vercel Postgres |
 
-### 4.4 搜索与筛选
+**Giscus 实施记录**: [`archive/abandoned_phase_4_2_giscus_plan.md`](./rebuild_plan/archive/abandoned_phase_4_2_giscus_plan.md)
 
-| 交付物 | 说明 |
-|-------|------|
-| `frontend/src/lib/search.ts` | Fuse.js 前端模糊搜索 |
-| `frontend/src/components/RouteFilter.astro` | 路线多维度筛选 |
+**Waline 迁移方案**: [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md)
 
-### 4.5 互动增强
+---
 
-| 交付物 | 说明 |
-|-------|------|
-| `frontend/src/components/VideoEmbed.astro` | 优化的视频播放组件 |
+### 4.3 活动报名 (慕城日常) — ⚠️ 部分完成
 
-### 预计时间: 待评估
+**当前状态**: 静态页面已实现，仅支持外部报名链接
+
+| 功能 | 状态 | 说明 |
+|------|------|------|
+| 活动列表页 | ✅ 完成 | EventsPage.tsx + 筛选功能 |
+| 活动详情页 | ✅ 完成 | `events/[slug].astro` (ArticleLayout) |
+| 报名按钮 | ✅ 完成 | 外部链接 (`registrationLink` 字段) |
+| **内部报名系统** | ❌ 未实现 | 需后端 API + 数据库 |
+| **邮件通知** | ❌ 未实现 | 需 SMTP 服务 (Resend/SendGrid) |
+| **席位管理** | ❌ 未实现 | 需后端数据库 |
+
+**待开发功能**:
+
+| 交付物 | 说明 | 优先级 |
+|-------|------|--------|
+| `backend/routes/events.py` | FastAPI 活动管理 API | P0 |
+| `backend/routes/rsvp.py` | 报名 API (POST/GET/DELETE) | P0 |
+| `backend/services/email.py` | 邮件通知服务 (Resend) | P0 |
+| `frontend/src/components/EventRegistration.tsx` | 报名表单组件 | P0 |
+| Supabase 数据库 | 存储 RSVP 记录 | P0 |
+
+---
+
+### 4.4 认证系统 & 用户中心 — ❌ 未启动
+
+| 交付物 | 说明 | 优先级 |
+|-------|------|--------|
+| Supabase Auth | Google/GitHub/Email 登录 | P1 |
+| `frontend/src/lib/auth.ts` | 客户端 Auth 状态管理 | P1 |
+| `frontend/src/components/Auth/` | 登录/注册/个人中心 UI | P1 |
+| 用户权限管理 | 区分普通用户/管理员 | P2 |
+
+---
+
+### 4.5 互动增强 — 📋 计划中
+
+| 交付物 | 说明 | 优先级 |
+|-------|------|--------|
+| `frontend/src/components/VideoEmbed.astro` | 视频播放组件 (YouTube/Bilibili) | P1 |
+
+---
+
+## 实施进度总览
+
+| Phase | 内容 | 状态 | 完成日期 |
+|-------|------|------|----------|
+| **Layer 1** | 骨架结构 | ✅ 完成 | 2026-01-2X |
+| **Layer 2** | 样式皮肤 | ✅ 完成 | 2026-01-2X |
+| **Layer 3** | 内容系统 (CMS + i18n) | ✅ 完成 | 2026-01-29 |
+| **Phase 4.1** | 搜索与筛选系统 | ✅ 完成 | 2026-02-10 |
+| **Phase 4.2** | 评论系统 (Waline 迁移) | 📋 计划中 | - |
+| **Phase 4.3** | 活动报名 (后端 API) | 📋 计划中 | - |
+| **Phase 4.4** | 认证系统 (Supabase) | 📋 计划中 | - |
 
 ---
 
@@ -184,10 +233,25 @@ frontend/
 | **M1** | Layer 1 完成 | ✅ DONE |
 | **M2** | Layer 2 完成 | ✅ DONE |
 | **M3** | Layer 3 完成 (CMS + i18n) | ✅ DONE |
-| **M4** | Layer 4 完成 (全功能上线) | 🚧 计划中 |
+| **M4.1** | Phase 4.1 完成 (搜索与筛选) | ✅ DONE |
+| **M4.2** | Phase 4.2 完成 (Waline 评论) | 📋 计划中 |
+| **M4.3** | Phase 4.3 完成 (活动报名) | 📋 计划中 |
+| **M4.4** | Phase 4.4 完成 (认证系统) | 📋 计划中 |
+| **M5** | Layer 4 完成 (全功能上线) | 📋 计划中 |
 
 ---
 
-准备好后，我们将进入 **Layer 4: 功能开发** 阶段！
+## 下一步行动
+
+| 优先级 | 任务 | 依赖 |
+|-------|------|------|
+| 🔴 P0 | Phase 4.2: 部署 Waline 评论系统 | Vercel Postgres + OAuth 配置 |
+| 🔴 P0 | Phase 4.3: 实现活动报名 API | FastAPI + Supabase |
+| 🟡 P1 | Phase 4.4: 集成 Supabase Auth | Supabase 项目配置 |
+| 🟢 P2 | Phase 4.5: 视频嵌入组件 | 无依赖 |
+
+---
+
+准备好后，我们可以开始 **Phase 4.2: Waline 评论系统** 的实施！
 
 
