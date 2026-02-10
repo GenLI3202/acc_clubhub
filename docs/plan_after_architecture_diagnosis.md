@@ -253,33 +253,47 @@ graph LR
 **您的需求**:
 > 最好还可以支持评论功能
 
-**静态网站评论方案**:
+**静态网站评论方案** (2026-02-10 更新):
 
 | 方案 | 特点 | 推荐度 |
 |------|------|-------|
-| **Giscus** | 基于 GitHub Discussions | ⭐⭐⭐⭐⭐ |
+| **Waline** | Google/GitHub/访客，Vercel Postgres | ⭐⭐⭐⭐⭐ |
+| **Giscus** | 仅 GitHub 登录 | ⭐⭐⭐ |
 | **Disqus** | 成熟但有广告 | ⭐⭐⭐ |
 | **Cusdis** | 轻量自托管 | ⭐⭐⭐⭐ |
-| **自建** | 需要后端开发 | ⭐⭐ |
 
-**推荐: Giscus**
-- 免费
-- 无广告
-- 支持中文
-- 评论者需要 GitHub 账号（对技术社区友好）
-- 数据存储在 GitHub Discussions
+**推荐: Waline** ✅
+- 支持 Google OAuth、GitHub OAuth、访客评论（邮箱+昵称）
+- 可部署在 Vercel（与网站同平台）
+- Vercel Postgres 存储（标准 SQL，易迁移）
+- 无广告、免费
+- 数据完全自控
+
+**为什么选择 Waline 而非 Giscus?**
+
+| 对比项 | Giscus | Waline |
+|--------|--------|--------|
+| 登录方式 | 仅 GitHub | Google + GitHub + 访客 |
+| 部署 | 无需后端 | 需部署服务端 |
+| 存储 | GitHub Discussions | Vercel Postgres |
+| 迁移性 | 受限于 GitHub | 标准 SQL，易迁移 |
+| 适合用户 | 技术社区 | 通用用户群体 |
 
 ```html
-<!-- 嵌入代码 -->
-<script src="https://giscus.app/client.js"
-        data-repo="acc-munich/clubhub"
-        data-repo-id="..."
-        data-category="Comments"
-        data-mapping="pathname">
+<!-- Waline 嵌入代码 -->
+<div id="waline"></div>
+<script>
+  import { init } from '@waline/client';
+
+  init({
+    el: '#waline',
+    serverURL: 'https://your-waline.vercel.app',
+    lang: 'zh-CN',
+  });
 </script>
 ```
 
-如果希望非技术用户也能评论，可以考虑 **Cusdis** (自托管) 或直接在后端实现。
+**详细实施方案**: [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md)
 
 ---
 
@@ -368,7 +382,7 @@ gantt
     section Phase 3: 交互功能
     活动注册 API (FastAPI)     :c1, after b2, 4d
     邮件通知集成               :c2, after c1, 2d
-    Giscus 评论集成            :c3, after b2, 1d
+    Waline 评论系统           :c3, after b2, 2d
     
     section Phase 4: 上线
     多语言路由配置             :d1, after c2, 2d
@@ -384,10 +398,11 @@ gantt
 | 优先级 | 行动项 | 产出 |
 |-------|-------|------|
 | 🔴 P0 | 初始化 Astro 项目 + 蓝骑士设计系统 | 可运行的基础框架 |
-| 🔴 P0 | 配置 Decap CMS | 团队成员可登录贡献内容 |
+| 🔴 P0 | 配置 Sveltia CMS | 团队成员可登录贡献内容 |
 | 🟡 P1 | 开发路线库搜索页面 | 验证搜索筛选技术方案 |
 | 🟡 P1 | 完善 FastAPI 活动注册 | 核心后端功能 |
-| 🟢 P2 | 视频嵌入 + 评论 | 增强用户体验 |
+| 🟢 P2 | 部署 Waline 评论系统 | 全站评论功能 |
+| 🟢 P2 | 视频嵌入组件 | 增强用户体验 |
 
 > [!TIP]
 > **建议下一步**: 如果您准备好了，我可以帮您初始化 Astro 项目结构，并配置 Decap CMS 的基础框架。这将让您立即看到新技术栈的运作方式。

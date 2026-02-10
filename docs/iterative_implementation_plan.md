@@ -149,18 +149,28 @@ frontend/
 | `frontend/src/pages/[lang]/events/` | 活动列表与详情页 |
 | `backend/services/email.py` | 邮件通知服务 |
 
-### 4.3 搜索与筛选
+### 4.3 评论系统 (Waline)
+
+| 交付物 | 说明 |
+|-------|------|
+| Waline 服务端 | Vercel Serverless 部署 |
+| `Vercel Postgres` | 评论数据存储 (256MB 免费) |
+| `frontend/src/components/WalineComments.astro` | 评论组件 |
+| Google/GitHub OAuth | OAuth 配置 |
+
+**详细方案**: [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md)
+
+### 4.4 搜索与筛选
 
 | 交付物 | 说明 |
 |-------|------|
 | `frontend/src/lib/search.ts` | Fuse.js 前端模糊搜索 |
 | `frontend/src/components/RouteFilter.astro` | 路线多维度筛选 |
 
-### 4.4 互动增强
+### 4.5 互动增强
 
 | 交付物 | 说明 |
 |-------|------|
-| `frontend/src/components/Comments.astro` | Giscus 评论集成 |
 | `frontend/src/components/VideoEmbed.astro` | 优化的视频播放组件 |
 
 ### 预计时间: 待评估

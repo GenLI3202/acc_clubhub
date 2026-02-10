@@ -32,34 +32,40 @@ graph TB
         E[科学训练]
         F[骑行路线库]
     end
-    
+
     subgraph "内容管理"
-        G[Decap CMS]
+        G[Sveltia CMS]
         H[GitHub Repo]
     end
-    
+
     subgraph "后端 FastAPI"
         I[活动 API]
         J[报名 API]
         K[邮件服务]
     end
-    
-    subgraph "认证"
-        L[Supabase Auth]
+
+    subgraph "评论系统"
+        L[Waline 服务端]
+        M[Vercel Postgres]
+        N[Google/GitHub OAuth]
     end
-    
+
     subgraph "数据"
-        M[(Supabase DB)]
+        O[(Supabase DB)]
     end
-    
-    A --> L
-    C --> I --> M
+
+    A --> WalineComments
+    C --> I --> O
     G --> H --> A
     J --> K
-    
+    WalineComments --> L
+    L --> M
+    L --> N
+
     style A fill:#2A5CA6,color:white
     style I fill:#5F8C4A,color:white
     style L fill:#D94F30,color:white
+    style N fill:#9B59B6,color:white
 ```
 
 ---
@@ -164,7 +170,7 @@ GET  /api/events/{id}/rsvps   # 报名列表 (admin)
 | **Layer 1: 骨架** | 基础 Astro 项目结构、路由规划、布局组件 | ✅ 已完成 | Astro, Components |
 | **Layer 2: 样式** | 迁移 "蓝骑士" 设计系统，实现 CSS 变量与组件样式 | ✅ 已完成 | CSS Variables, Responsive Design |
 | **Layer 3: 内容** | 搭建 CMS、定义内容集合、实现 i18n 动态渲染 | ✅ 已完成 | Sveltia CMS, Content Collections, i18n |
-| **Layer 4: 功能** | 用户认证、活动报名系统、路线搜索、评论互动 | 🚧 待启动 | FastAPI, Supabase, Fuse.js |
+| **Layer 4: 功能** | 用户认证、活动报名系统、路线搜索、Waline 评论 | 🚧 待启动 | FastAPI, Waline, Vercel Postgres |
 
 ### 4.2 当前文件结构 (Layer 3 完成态)
 
@@ -210,9 +216,14 @@ acc_clubhub/
 - **目标**: 完整的活动发布与报名流程。
 - **交付物**: `backend/routes/events.py`, `backend/routes/rsvp.py`, 邮件通知服务。
 
-#### 4.3 路线搜索与互动
-- **目标**: 路线多维度筛选与模糊搜索，视频嵌入与评论功能。
-- **交付物**: Fuse.js 搜索集成, Giscus 评论组件, VideoEmbed 组件。
+#### 4.3 评论系统 (Waline)
+- **目标**: 全站评论功能，支持 Google/GitHub OAuth + 访客评论。
+- **交付物**: Waline 服务端 (Vercel), Vercel Postgres, WalineComments.astro 组件。
+- **详细方案**: [`phase_4_2_waline_plan.md`](./rebuild_plan/phase_4_2_waline_plan.md)
+
+#### 4.4 路线搜索与互动
+- **目标**: 路线多维度筛选与模糊搜索，视频嵌入功能。
+- **交付物**: Fuse.js 搜索集成, VideoEmbed 组件。
 
 ---
 
@@ -225,6 +236,7 @@ acc_clubhub/
 | **Layer 3** | CMS 后台可访问，支持 GitHub 登录 | ✅ PASS |
 | **Layer 3** | 多语言 (zh/en/de) 内容发布与动态渲染 | ✅ PASS |
 | **Layer 3** | CI/CD 流水线 (Vitest + Playwright) | ✅ PASS |
+| **Layer 4** | Waline 评论系统 (Google/GitHub/访客) | ⬜ TODO |
 | **Layer 4** | 用户登录与鉴权 | ⬜ TODO |
 | **Layer 4** | 活动创建与报名流程 | ⬜ TODO |
 | **Layer 4** | 路线搜索功能 | ⬜ TODO |
@@ -259,3 +271,4 @@ acc_clubhub/
 | 2026-01-27 | 不复用 REMS 前端 | 需要统一设计风格，避免跳转 |
 | 2026-01-27 | 选择 Astro | 静态优先、设计自由、i18n 支持 |
 | 2026-01-27 | 选择 Supabase | Google/GitHub OAuth，免费额度大 |
+| 2026-02-10 | 选择 Waline 评论 | 支持 Google/GitHub/访客，Vercel Postgres 易迁移 |
