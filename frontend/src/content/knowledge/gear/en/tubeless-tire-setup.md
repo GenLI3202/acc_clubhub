@@ -2,7 +2,7 @@
 slug: tubeless-tire-setup
 title: Tubeless Tire Setup Guide
 description: Step-by-step guide to installing and maintaining tubeless tires.
-author: ACC 器械组
+author: acc-
 date: 2026-01-05
 cover: /images/uploads/谁有我多.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

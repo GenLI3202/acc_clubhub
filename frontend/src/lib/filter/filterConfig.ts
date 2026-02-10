@@ -48,6 +48,7 @@ export const gearFilters: FilterDefinition[] = [
         key: 'author',
         label: 'Author',
         type: 'select',
+        dynamic: true,
         options: [] // Populated dynamically
     }
 ];
@@ -71,12 +72,14 @@ export const trainingFilters: FilterDefinition[] = [
         key: 'tags',
         label: 'Tags',
         type: 'multiselect',
+        dynamic: true,
         options: []
     },
     {
         key: 'author',
         label: 'Author',
         type: 'select',
+        dynamic: true,
         options: []
     }
 ];

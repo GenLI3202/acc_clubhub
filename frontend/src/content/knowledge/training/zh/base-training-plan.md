@@ -2,7 +2,7 @@
 slug: base-training-plan
 title: 基础期训练计划
 description: 冬季基础期训练，打好全年骑行基础。
-author: ACC 训练组
+author: acc-
 date: 2025-12-28
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

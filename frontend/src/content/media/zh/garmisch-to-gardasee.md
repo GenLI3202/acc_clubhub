@@ -3,8 +3,8 @@ slug: garmisch-to-gardasee
 title: 从加米施到加尔达湖的 300 公里史诗远征
 description: 这不仅是一次骑行，更是一场关于毅力、高度与美景的洗礼
 date: 2026-01-28T21:22:00
-author: Shane Shen
-type: 翻山越岭
+author: shane-shen
+type: adventure
 cover: /images/uploads/5ef6b60d164050a9ee38afb20fb9b540.HEIC_page-0001.jpg
 videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP

@@ -1,7 +1,7 @@
 ---
 slug: isar-valley-loop
 name: (Fake Template) 伊萨尔河谷环线
-region: 慕尼黑南郊
+region: munich-south
 distance: 65
 elevation: 450
 difficulty: medium

@@ -1,7 +1,7 @@
 ---
 slug: alps-panorama
 name: 阿尔卑斯全景路线
-region: 巴伐利亚阿尔卑斯
+region: alps-bavaria
 distance: 120
 elevation: 1800
 difficulty: hard

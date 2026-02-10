@@ -1,7 +1,7 @@
 ---
 slug: isar-south-trail
 name: Isar Süd Trail
-region: München Süd
+region: munich-south
 distance: 45
 elevation: 280
 difficulty: easy

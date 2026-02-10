@@ -3,7 +3,7 @@ slug: gravel-adventure
 title: 巴伐利亚 Gravel 探险
 description: 离开公路，探索巴伐利亚的砾石小道。
 date: 2025-05-20
-type: 翻山越岭
+type: adventure
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

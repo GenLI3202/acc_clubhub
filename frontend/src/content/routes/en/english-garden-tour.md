@@ -1,7 +1,7 @@
 ---
 slug: english-garden-tour
 name: English Garden Tour
-region: Munich City
+region: munich-north
 distance: 25
 elevation: 50
 difficulty: easy

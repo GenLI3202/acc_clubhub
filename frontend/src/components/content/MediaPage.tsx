@@ -5,6 +5,7 @@ import { MasonryGrid } from '../ui/MasonryGrid';
 import { MasonryCard } from '../ui/MasonryCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
+import { calculateFacets } from '../../lib/filter/facetUtils';
 import { mediaFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
 
@@ -14,6 +15,8 @@ interface MediaPageProps {
     initialFilters?: Record<string, any>;
 }
 
+import { getFilterLabel } from '../../lib/i18n/filterTranslations';
+
 export default function MediaPage({ initialItems, lang, initialFilters = {} }: MediaPageProps) {
     const { filters, setFilter, resetFilters } = useFilterState(initialFilters);
 
@@ -21,17 +24,23 @@ export default function MediaPage({ initialItems, lang, initialFilters = {} }: M
         return filterItems(initialItems, filters, { filters: mediaFilters });
     }, [initialItems, filters]);
 
+    // Calculate facets based on initial items (Global Counts) to ensure options are populated
+    const facetConfig = useMemo(() => {
+        return calculateFacets(initialItems, mediaFilters);
+    }, [initialItems]);
+
     const filterTitle = lang === 'zh' ? '筛选' : lang === 'de' ? 'Filter' : 'Filters';
 
     return (
         <div class="media-page-content">
             <FilterPanel
                 title={filterTitle}
-                config={mediaFilters}
+                config={facetConfig}
                 filters={filters}
                 onFilterChange={setFilter}
                 onReset={resetFilters}
                 className="mb-8"
+                lang={lang}
             />
 
             {filteredItems.length > 0 ? (
@@ -50,7 +59,7 @@ export default function MediaPage({ initialItems, lang, initialFilters = {} }: M
                                 date={data.date}
                                 seed={data.slug}
                                 lang={lang}
-                                meta={data.type}
+                                meta={getFilterLabel('type', data.type, lang)}
                             />
                         );
                     })}

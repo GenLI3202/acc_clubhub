@@ -1,7 +1,7 @@
 ---
 slug: isar-valley-loop
 name: (Demo) Isartal Rundfahrt
-region: München Süd
+region: munich-south
 distance: 65
 elevation: 450
 difficulty: medium

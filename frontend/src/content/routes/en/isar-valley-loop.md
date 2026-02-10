@@ -1,7 +1,7 @@
 ---
 slug: isar-valley-loop
 name: (Demo) Isar Valley Loop
-region: Munich South
+region: munich-south
 distance: 65
 elevation: 450
 difficulty: medium

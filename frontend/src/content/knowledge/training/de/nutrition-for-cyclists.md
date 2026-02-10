@@ -2,7 +2,7 @@
 slug: nutrition-for-cyclists
 title: Ernährungsleitfaden für Radfahrer
 description: Ernährungsstrategien vor, während und nach dem Radfahren.
-author: ACC Trainingsteam
+author: acc-trainingsteam
 date: 2026-01-10
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

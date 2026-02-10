@@ -3,8 +3,8 @@ slug: garmisch-to-gardasee
 title: Die 300 km Epic-Tour von Garmisch zum Gardasee
 description: Dies ist nicht nur eine Radtour – es ist eine Grenzerfahrung zwischen Ausdauer und Natur.
 date: 2026-01-28T21:22:00
-author: Shane Shen
-type: 翻山越岭
+author: shane-shen
+type: adventure
 cover: /images/uploads/5ef6b60d164050a9ee38afb20fb9b540.HEIC_page-0001.jpg
 videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP

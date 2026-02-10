@@ -2,7 +2,7 @@
 slug: ftp-training-basics
 title: FTP Training Basics Guide (Demo)
 description: Understanding Functional Threshold Power (FTP) and how to improve it through scientific training.
-author: ACC Training Team
+author: acc-training-team
 date: 2026-01-15
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

@@ -1,10 +1,12 @@
 import { h } from 'preact';
+import { createPortal } from 'preact/compat';
 import { useState, useRef, useEffect } from 'preact/hooks';
 import type { VNode } from 'preact';
 import { FilterSection } from './FilterSection';
 import { FilterCheckboxGroup } from './FilterCheckboxGroup';
 import { FilterRangeSlider } from './FilterRangeSlider';
 import type { FilterDefinition, FilterState, FilterOption } from '../../types/filter';
+import type { Locale } from '../../lib/i18n';
 import './FilterComponents.css';
 
 interface FilterPanelProps {
@@ -15,6 +17,7 @@ interface FilterPanelProps {
     onFilterChange: (field: string, value: any) => void;
     onReset?: () => void;
     className?: string;
+    lang: Locale;
 }
 
 export function FilterPanel({
@@ -24,7 +27,8 @@ export function FilterPanel({
     facets = {},
     onFilterChange,
     onReset,
-    className = ''
+    className = '',
+    lang
 }: FilterPanelProps): VNode {
     const [isOpen, setIsOpen] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
@@ -52,7 +56,14 @@ export function FilterPanel({
         };
     }, [isOpen]);
 
-    return (
+    const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+    useEffect(() => {
+        const target = document.getElementById('filter-portal-target');
+        setPortalTarget(target as HTMLElement);
+    }, []);
+
+    const content = (
         <div className={`filter-panel-wrapper ${className}`} ref={panelRef}>
             {/* Toggle Button */}
             <button
@@ -111,6 +122,7 @@ export function FilterPanel({
                                         options={options}
                                         selectedValues={(value as string[]) || []}
                                         onChange={onFilterChange}
+                                        lang={lang}
                                     />
                                 ) : def.type === 'range' ? (
                                     <FilterRangeSlider
@@ -131,4 +143,10 @@ export function FilterPanel({
             </div>
         </div>
     );
+
+    if (portalTarget) {
+        return createPortal(content, portalTarget);
+    }
+
+    return content;
 }

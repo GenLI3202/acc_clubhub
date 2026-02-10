@@ -2,7 +2,7 @@
 slug: hill-climbing-tips
 title: 爬坡技巧与训练
 description: 如何更高效地爬坡，以及针对性训练方法。
-author: ACC 训练组
+author: acc-
 date: 2026-01-05
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

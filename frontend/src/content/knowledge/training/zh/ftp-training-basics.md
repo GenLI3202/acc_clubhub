@@ -2,7 +2,7 @@
 slug: ftp-training-basics
 title: FTP 训练入门指南 (AI generated Test Template)
 description: 了解功能阈值功率（FTP）及如何通过科学训练提升它。
-author: ACC 训练组
+author: acc-
 date: 2026-01-15
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

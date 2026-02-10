@@ -2,7 +2,7 @@
 slug: cadence-optimization
 title: Cadence Optimization Training
 description: Find your optimal cadence to improve cycling efficiency.
-author: ACC Training Team
+author: acc-training-team
 date: 2026-01-03
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

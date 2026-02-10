@@ -2,7 +2,7 @@
 slug: base-training-plan
 title: Grundlagen-Trainingsplan
 description: Winter-Grundlagentraining für die Basis des Jahres.
-author: ACC Trainingsteam
+author: acc-trainingsteam
 date: 2025-12-28
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

@@ -1,7 +1,7 @@
 ---
 slug: starnberger-see
 name: Starnberger See Ride
-region: Munich South
+region: munich-south
 distance: 55
 elevation: 320
 difficulty: easy

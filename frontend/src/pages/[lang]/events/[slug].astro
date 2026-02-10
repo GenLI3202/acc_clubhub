@@ -1,0 +1,108 @@
+---
+// src/pages/[lang]/events/[slug].astro
+// 慕城日常 - 活动详情页
+
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+
+export async function getStaticPaths() {
+  const allEvents = await getCollection('events');
+  return allEvents.map((entry) => {
+    const lang = getLangFromEntry(entry.filePath, 'events');
+    return {
+      params: { lang, slug: entry.data.slug },
+      props: { entry },
+    };
+  });
+}
+
+type Props = {
+  entry: Awaited<ReturnType<typeof getCollection<'events'>>>[number];
+};
+
+const { entry } = Astro.props;
+const { lang } = Astro.params as { lang: Locale };
+const { Content } = await render(entry);
+
+const registrationLabels: Record<string, string> = {
+  zh: '立即报名',
+  en: 'Register Now',
+  de: 'Jetzt anmelden',
+};
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  date={entry.data.date}
+  cover={entry.data.cover}
+  lang={lang}
+  backLink={`/${lang}/events`}
+  backLabel={t(lang, 'nav.events')}
+>
+  <div class="event-info">
+    {entry.data.eventType && (
+      <span class="event-type-badge">{entry.data.eventType}</span>
+    )}
+    {entry.data.location && (
+      <span class="event-location">📍 {entry.data.location}</span>
+    )}
+  </div>
+
+  {entry.data.registrationLink && (
+    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
+      {registrationLabels[lang] || registrationLabels.en} →
+    </a>
+  )}
+
+  <Content />
+</ArticleLayout>
+
+<style>
+  .event-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-md);
+  }
+
+  .event-type-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: var(--color-primary);
+    color: white;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+  }
+
+  .event-location {
+    font-size: 0.95rem;
+    color: #666;
+  }
+
+  .event-register-btn {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-accent);
+    color: white;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid var(--color-border-rough);
+    border-radius: 4px;
+    text-decoration: none;
+    margin-bottom: var(--space-lg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 3px 3px 0 var(--color-border-rough);
+  }
+
+  .event-register-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--color-primary);
+    text-decoration: none;
+    color: white;
+  }
+</style>

@@ -3,7 +3,7 @@ slug: munich-night-ride
 title: Munich Night Ride
 description: Cycling experience under city lights, exploring Munich at night.
 date: 2025-07-20
-type: 影像
+type: video
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

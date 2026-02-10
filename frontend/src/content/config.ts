@@ -38,8 +38,33 @@ const eventsCollection = defineCollection({
     }),
 });
 
+// Reusable schema for knowledge base content (Gear, Training)
+const knowledgeSchema = z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    author: z.string().optional(),
+    date: z.date(),
+    category: z.string().optional(), // Dynamic filter
+    subcategory: z.string().optional(), // Dynamic filter
+    cover: z.string().optional(),
+    tags: z.array(z.string()).optional(), // Dynamic filter
+    xiaohongshuUrl: z.string().optional(),
+});
+
+const gearCollection = defineCollection({
+    type: 'content',
+    schema: knowledgeSchema
+});
+
+const trainingCollection = defineCollection({
+    type: 'content',
+    schema: knowledgeSchema
+});
+
 export const collections = {
     routes: routesCollection,
     media: mediaCollection,
     events: eventsCollection,
+    gear: gearCollection,
+    training: trainingCollection,
 };

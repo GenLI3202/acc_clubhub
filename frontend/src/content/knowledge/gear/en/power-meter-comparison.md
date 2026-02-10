@@ -2,7 +2,7 @@
 slug: power-meter-comparison
 title: Power Meter Comparison Guide
 description: Comprehensive comparison of crank, pedal, and hub-based power meters.
-author: ACC 器械组
+author: acc-
 date: 2026-01-12
 cover: /images/uploads/尊吗.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

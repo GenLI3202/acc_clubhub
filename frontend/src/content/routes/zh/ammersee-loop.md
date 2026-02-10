@@ -1,7 +1,7 @@
 ---
 slug: ammersee-loop
 name: 安默湖环湖骑行
-region: 慕尼黑西郊
+region: munich-south
 distance: 75
 elevation: 380
 difficulty: easy

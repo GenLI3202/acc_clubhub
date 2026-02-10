@@ -2,7 +2,7 @@
 slug: hill-climbing-tips
 title: Berganfahrt-Tipps & Training
 description: Effizienter klettern und spezifische Trainingsmethoden.
-author: ACC Trainingsteam
+author: acc-trainingsteam
 date: 2026-01-05
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

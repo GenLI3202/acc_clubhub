@@ -2,7 +2,7 @@
 slug: gps-computer-review
 title: GPS 码表横向评测
 description: Garmin、Wahoo、Hammerhead 三大品牌对比。
-author: ACC 器械组
+author: acc-
 date: 2026-01-02
 cover: /images/uploads/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

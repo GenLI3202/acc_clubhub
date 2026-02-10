@@ -1,7 +1,7 @@
 ---
 slug: alps-panorama
 name: Alps Panorama Route
-region: Bavarian Alps
+region: alps-bavaria
 distance: 120
 elevation: 1800
 difficulty: hard

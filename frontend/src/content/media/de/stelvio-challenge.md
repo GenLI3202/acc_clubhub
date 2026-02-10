@@ -3,7 +3,7 @@ slug: stelvio-challenge
 title: Stilfser Joch Herausforderung
 description: Dokumentation der anspruchsvollsten Bergpassbesteigung Italiens.
 date: 2025-06-15
-type: 翻山越岭
+type: adventure
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

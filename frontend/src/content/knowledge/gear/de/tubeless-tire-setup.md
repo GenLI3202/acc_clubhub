@@ -2,7 +2,7 @@
 slug: tubeless-tire-setup
 title: Tubeless-Reifen Einrichtung
 description: Schritt-für-Schritt-Anleitung zur Installation und Wartung von Tubeless-Reifen.
-author: ACC 器械组
+author: acc-
 date: 2026-01-05
 cover: /images/uploads/谁有我多.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

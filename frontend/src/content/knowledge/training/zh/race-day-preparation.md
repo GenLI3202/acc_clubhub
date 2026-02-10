@@ -2,7 +2,7 @@
 slug: race-day-preparation
 title: 比赛日准备指南
 description: 从赛前一周到比赛当天的完整准备流程。
-author: ACC 训练组
+author: acc-
 date: 2025-12-25
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

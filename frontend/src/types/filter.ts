@@ -25,6 +25,7 @@ export interface FilterDefinition {
     label: string;
     type: FilterType;
     options?: FilterOption[]; // For static options like Categories
+    dynamic?: boolean; // If true, populate options from data
     min?: number; // For range sliders
     max?: number; // For range sliders
     step?: number; // For range sliders

@@ -2,7 +2,7 @@
 slug: recovery-techniques
 title: Erholungstechniken nach dem Radfahren
 description: Wissenschaftliche Erholung für schnellere Trainingsbereitschaft.
-author: ACC Trainingsteam
+author: acc-trainingsteam
 date: 2026-01-08
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

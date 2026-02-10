@@ -3,7 +3,7 @@ slug: bike-fitting-workshop
 title: Bike Fitting Workshop
 description: Professioneller Fitter zeigt die optimale Sitzposition.
 date: 2025-03-10
-type: 影像
+type: video
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

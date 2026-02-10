@@ -5,8 +5,10 @@ import { MasonryGrid } from '../ui/MasonryGrid';
 import { MasonryCard } from '../ui/MasonryCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
+import { calculateFacets } from '../../lib/filter/facetUtils';
 import { routesFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
+import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 
 interface RoutesPageProps {
     initialItems: any[];
@@ -21,17 +23,22 @@ export default function RoutesPage({ initialItems, lang, initialFilters = {} }: 
         return filterItems(initialItems, filters, { filters: routesFilters });
     }, [initialItems, filters]);
 
+    const facetConfig = useMemo(() => {
+        return calculateFacets(initialItems, routesFilters);
+    }, [initialItems]);
+
     const filterTitle = lang === 'zh' ? '筛选' : lang === 'de' ? 'Filter' : 'Filters';
 
     return (
         <div class="routes-page-content">
             <FilterPanel
                 title={filterTitle}
-                config={routesFilters}
+                config={facetConfig}
                 filters={filters}
                 onFilterChange={setFilter}
                 onReset={resetFilters}
                 className="mb-8"
+                lang={lang}
             />
 
             {filteredItems.length > 0 ? (
@@ -41,12 +48,7 @@ export default function RoutesPage({ initialItems, lang, initialFilters = {} }: 
                         const href = `/${lang}/routes/${data.slug}`;
 
                         // Format meta for routes: "Distance · Elevation · Difficulty"
-                        const difficultyAppDefaults: Record<string, Record<string, string>> = {
-                            zh: { easy: '简单', medium: '中等', hard: '困难', expert: '专家' },
-                            en: { easy: 'Easy', medium: 'Medium', hard: 'Hard', expert: 'Expert' },
-                            de: { easy: 'Leicht', medium: 'Mittel', hard: 'Schwer', expert: 'Expert' },
-                        };
-                        const diffLabel = (difficultyAppDefaults[lang] && difficultyAppDefaults[lang][data.difficulty]) || data.difficulty;
+                        const diffLabel = getFilterLabel('difficulty', data.difficulty, lang);
                         const meta = `${data.distance}km · ${data.elevation}m ↑ · ${diffLabel}`;
 
                         return (

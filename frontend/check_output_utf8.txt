@@ -1,0 +1,176 @@
+﻿
+> frontend@0.0.1 check
+> astro check
+
+[2m21:57:18[22m [34m[content][39m Syncing content
+[33m[1m21:57:18[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "src\content\events"
+[2m21:57:18[22m [34m[content][39m Synced content
+[2m21:57:18[22m [34m[types][39m Generated [2m800ms[22m
+[2m21:57:18[22m [34m[check][39m Getting diagnostics for Astro files in D:\my_projects\acc_clubhub\frontend...
+[96mfix_media_types.js[0m:[93m2[0m:[93m12[0m - [93mwarning[0m[90m ts(80001): [0mFile is a CommonJS module; it may be converted to an ES module.
+
+[7m2[0m const fs = require('fs');
+[7m [0m [93m           ~~~~~~~~~~~~~[0m
+
+[96msrc/content.config.ts[0m:[93m14[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'REGIONS' is declared but its value is never read.
+
+[7m14[0m const REGIONS = [
+[7m  [0m [93m      ~~~~~~~[0m
+
+[96msrc/components/content/EventsPage.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/content/GearPage.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/content/MediaPage.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/content/RoutesPage.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/content/TrainingPage.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/filter/FilterPanel.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/filter/FilterRangeSlider.tsx[0m:[93m1[0m:[93m31[0m - [93mwarning[0m[90m ts(6133): [0m'useRef' is declared but its value is never read.
+
+[7m1[0m import { useState, useEffect, useRef } from 'preact/hooks';
+[7m [0m [93m                              ~~~~~~[0m
+
+[96msrc/components/search/GlobalSearch.tsx[0m:[93m17[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'inputRef' is declared but its value is never read.
+
+[7m17[0m     const inputRef = useRef<HTMLInputElement>(null);
+[7m  [0m [93m          ~~~~~~~~[0m
+
+[96msrc/components/search/SearchBar.tsx[0m:[93m95[0m:[93m13[0m - [91merror[0m[90m ts(2322): [0mType '"knowledge/gear" | "knowledge/training"' is not assignable to type '"media" | "gear" | "training" | "routes" | "events"'.
+  Type '"knowledge/gear"' is not assignable to type '"media" | "gear" | "training" | "routes" | "events"'.
+
+[7m95[0m             basePath = `knowledge/${collection}`;
+[7m  [0m [91m            ~~~~~~~~[0m
+
+[96msrc/components/ui/MasonryCard.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/ui/MasonryGrid.tsx[0m:[93m1[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'h' is declared but its value is never read.
+
+[7m1[0m import { h } from 'preact';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/index.astro[0m:[93m5[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'defaultLocale' is declared but its value is never read.
+
+[7m5[0m import { defaultLocale } from '../lib/i18n';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/[lang]/knowledge/gear/index.astro[0m:[93m22[0m:[93m37[0m - [91merror[0m[90m ts(2363): [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m22[0m   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+[7m  [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/[lang]/knowledge/gear/index.astro[0m:[93m22[0m:[93m13[0m - [91merror[0m[90m ts(2362): [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m22[0m   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+[7m  [0m [91m            ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/[lang]/knowledge/training/index.astro[0m:[93m22[0m:[93m37[0m - [91merror[0m[90m ts(2363): [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m22[0m   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+[7m  [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/[lang]/knowledge/training/index.astro[0m:[93m22[0m:[93m13[0m - [91merror[0m[90m ts(2362): [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m22[0m   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+[7m  [0m [91m            ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/[lang]/media/[slug].astro[0m:[93m63[0m:[93m11[0m - [93mwarning[0m[90m ts(6385): [0m'frameborder' is deprecated.
+
+[7m63[0m           frameborder="0"
+[7m  [0m [93m          ~~~~~~~~~~~[0m
+
+[96msrc/pages/[lang]/media/index.astro[0m:[93m23[0m:[93m37[0m - [91merror[0m[90m ts(2363): [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m23[0m   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+[7m  [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/[lang]/media/index.astro[0m:[93m23[0m:[93m13[0m - [91merror[0m[90m ts(2362): [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m23[0m   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+[7m  [0m [91m            ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m7[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'filterConfig' is declared but its value is never read.
+
+[7m7[0m const filterConfig: FilterDefinition[] = [
+[7m [0m [93m      ~~~~~~~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m4[0m:[93m33[0m - [93mwarning[0m[90m ts(6196): [0m'FilterState' is declared but never used.
+
+[7m4[0m import type { FilterDefinition, FilterState } from '../../types/filter';
+[7m [0m [93m                                ~~~~~~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'FilterPanel' is declared but its value is never read.
+
+[7m3[0m import { FilterPanel } from '../../components/filter/FilterPanel';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m116[0m:[93m13[0m - [91merror[0m[90m ts(2769): [0mNo overload matches this call.
+  The last overload gave the following error.
+    Type '({ key: string; label: string; type: string; options: { value: string; label: string; count: number; }[]; min?: undefined; max?: undefined; step?: undefined; unit?: undefined; } | { key: string; label: string; ... 5 more ...; options?: undefined; })[]' is not assignable to type 'FilterDefinition[]'.
+      Type '{ key: string; label: string; type: string; options: { value: string; label: string; count: number; }[]; min?: undefined; max?: undefined; step?: undefined; unit?: undefined; } | { key: string; label: string; ... 5 more ...; options?: undefined; }' is not assignable to type 'FilterDefinition'.
+        Type '{ key: string; label: string; type: string; options: { value: string; label: string; count: number; }[]; min?: undefined; max?: undefined; step?: undefined; unit?: undefined; }' is not assignable to type 'FilterDefinition'.
+          Types of property 'type' are incompatible.
+            Type 'string' is not assignable to type 'FilterType'.
+              Type '{ difficulty: never[]; distance: number[]; }' is not assignable to type 'FilterState'.
+                Property 'distance' is incompatible with index signature.
+                  Type 'number[]' is not assignable to type 'string | string[] | [number, number] | undefined'.
+                    Type 'number[]' is not assignable to type 'string[]'.
+                      Type 'number' is not assignable to type 'string'.
+
+[7m116[0m             filters: filters,
+[7m   [0m [91m            ~~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m115[0m:[93m13[0m - [91merror[0m[90m ts(2769): [0mNo overload matches this call.
+  The last overload gave the following error.
+    Type '({ key: string; label: string; type: string; options: { value: string; label: string; count: number; }[]; min?: undefined; max?: undefined; step?: undefined; unit?: undefined; } | { key: string; label: string; ... 5 more ...; options?: undefined; })[]' is not assignable to type 'FilterDefinition[]'.
+      Type '{ key: string; label: string; type: string; options: { value: string; label: string; count: number; }[]; min?: undefined; max?: undefined; step?: undefined; unit?: undefined; } | { key: string; label: string; ... 5 more ...; options?: undefined; }' is not assignable to type 'FilterDefinition'.
+        Type '{ key: string; label: string; type: string; options: { value: string; label: string; count: number; }[]; min?: undefined; max?: undefined; step?: undefined; unit?: undefined; }' is not assignable to type 'FilterDefinition'.
+          Types of property 'type' are incompatible.
+            Type 'string' is not assignable to type 'FilterType'.
+              Type '{ difficulty: never[]; distance: number[]; }' is not assignable to type 'FilterState'.
+                Property 'distance' is incompatible with index signature.
+                  Type 'number[]' is not assignable to type 'string | string[] | [number, number] | undefined'.
+                    Type 'number[]' is not assignable to type 'string[]'.
+                      Type 'number' is not assignable to type 'string'.
+
+[7m115[0m             config: config,
+[7m   [0m [91m            ~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m111[0m:[93m13[0m - [91merror[0m[90m ts(2531): [0mObject is possibly 'null'.
+
+[7m111[0m             document.getElementById('filter-state-display').textContent = "Reset";
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m103[0m:[93m13[0m - [91merror[0m[90m ts(2531): [0mObject is possibly 'null'.
+
+[7m103[0m             document.getElementById('filter-state-display').textContent = JSON.stringify(newFilters, null, 2);
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m98[0m:[93m38[0m - [91merror[0m[90m ts(7006): [0mParameter 'value' implicitly has an 'any' type.
+
+[7m98[0m         const handleChange = (field, value) => {
+[7m  [0m [91m                                     ~~~~~[0m
+[96msrc/pages/en/test-filter-ui.astro[0m:[93m98[0m:[93m31[0m - [91merror[0m[90m ts(7006): [0mParameter 'field' implicitly has an 'any' type.
+
+[7m98[0m         const handleChange = (field, value) => {
+[7m  [0m [91m                              ~~~~~[0m
+
+Result (61 files): 
+- 13 errors
+- 0 warnings
+- 17 hints
+

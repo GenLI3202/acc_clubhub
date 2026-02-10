@@ -1,7 +1,7 @@
 ---
 slug: olympic-park-circuit
 name: Olympiapark Runde
-region: München Stadt
+region: munich-north
 distance: 15
 elevation: 30
 difficulty: easy

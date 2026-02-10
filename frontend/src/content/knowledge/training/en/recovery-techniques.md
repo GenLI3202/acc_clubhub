@@ -2,7 +2,7 @@
 slug: recovery-techniques
 title: Post-Ride Recovery Techniques
 description: Scientific recovery to get you ready for your next training session faster.
-author: ACC Training Team
+author: acc-training-team
 date: 2026-01-08
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

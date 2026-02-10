@@ -2,7 +2,7 @@
 slug: interval-training-guide
 title: Complete Interval Training Guide
 description: How to rapidly improve cycling performance through interval training.
-author: ACC Training Team
+author: acc-training-team
 date: 2026-01-12
 cover: /images/uploads/rr120_2024.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

@@ -3,6 +3,7 @@ slug: club-anniversary
 title: ACC Club Jubiläum
 description: Rückblick auf die Highlights seit der Clubgründung.
 date: 2025-09-01
+author: ''
 type: 影像
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example

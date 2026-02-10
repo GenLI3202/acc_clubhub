@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "check:assets": "node scripts/check-file-size.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",

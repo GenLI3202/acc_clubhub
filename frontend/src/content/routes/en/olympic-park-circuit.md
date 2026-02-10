@@ -1,7 +1,7 @@
 ---
 slug: olympic-park-circuit
 name: Olympic Park Circuit
-region: Munich City
+region: munich-north
 distance: 15
 elevation: 30
 difficulty: easy

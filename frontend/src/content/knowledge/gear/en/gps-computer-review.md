@@ -2,7 +2,7 @@
 slug: gps-computer-review
 title: GPS Computer Comparison Review
 description: Comparing Garmin, Wahoo, and Hammerhead - the big three.
-author: ACC Gear Team
+author: acc-gear-team
 date: 2026-01-02
 cover: /images/uploads/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

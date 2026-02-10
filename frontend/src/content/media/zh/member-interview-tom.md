@@ -3,7 +3,7 @@ slug: member-interview-tom
 title: "会员访谈：Tom 的骑行故事"
 description: 听听资深会员 Tom 分享他的骑行经历。
 date: 2025-04-15
-type: 访谈
+type: interview
 cover: /images/uploads/DSC04622.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

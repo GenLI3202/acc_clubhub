@@ -1,7 +1,7 @@
 ---
 slug: ammersee-loop
 name: Ammersee Lake Loop
-region: Munich West
+region: munich-south
 distance: 75
 elevation: 380
 difficulty: easy

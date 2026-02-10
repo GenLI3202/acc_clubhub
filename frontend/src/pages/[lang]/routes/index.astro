@@ -5,7 +5,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
-import { SearchBar } from '../../../components/search/SearchBar';
+
 import RoutesPage from '../../../components/content/RoutesPage';
 
 export function getStaticPaths() {
@@ -39,17 +39,7 @@ const pageTitle = t(lang, 'nav.routes');
             : 'Searchable Routes, Strava/Komoot Links'}
       </p>
     </div>
-    <div class="inline-search-container">
-      <SearchBar 
-        client:idle 
-        lang={lang} 
-        translations={{
-          placeholder: t(lang, 'search.placeholder'),
-          noResults: t(lang, 'search.noResults')
-        }}
-        placeholder={t(lang, 'search.placeholder')}
-      />
-    </div>
+    <div id="filter-portal-target"></div>
   </div>
 
   <RoutesPage 
@@ -80,31 +70,7 @@ const pageTitle = t(lang, 'nav.routes');
     margin-bottom: 0.5rem;
   }
 
-  .inline-search-container {
-    flex: 0 1 400px; /* Base width 400px, but can shrink */
-    min-width: 300px;
-    padding-top: 0.5rem; /* Align visual center with H1 roughly */
-  }
 
-  /* Override inner search bar styles to fit inline context if needed */
-  .inline-search-container :global(.search-container) {
-    width: 100%;
-    max-width: 100%;
-    box-shadow: none;
-    background: transparent;
-    border: none;
-  }
-
-  /* Responsive: Stack on mobile */
-  @media (max-width: 768px) {
-    .page-title-header {
-      flex-direction: column;
-    }
-    .inline-search-container {
-      width: 100%;
-      flex: none;
-    }
-  }
 
   .empty-state {
     text-align: center;

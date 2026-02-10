@@ -3,8 +3,8 @@ slug: garmisch-to-gardasee
 title: The 300km Epic Expedition from Garmisch to Lake Garda
 description: This is more than just a ride; it is a profound dialogue between endurance and nature.
 date: 2026-01-28T21:22:00
-author: Shane Shen
-type: 翻山越岭
+author: shane-shen
+type: adventure
 cover: /images/uploads/5ef6b60d164050a9ee38afb20fb9b540.HEIC_page-0001.jpg
 videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
