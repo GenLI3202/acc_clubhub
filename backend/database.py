@@ -14,9 +14,21 @@ from typing import Optional
 engine: Optional[object] = None
 SessionLocal: Optional[sessionmaker] = None
 
-if settings.DATABASE_URL:
+def _get_database_url() -> Optional[str]:
+    """Convert DATABASE_URL to use pg8000 driver."""
+    url = settings.DATABASE_URL
+    if not url:
+        return None
+    # pg8000 uses postgresql+pg8000:// scheme
+    url = url.replace("postgresql://", "postgresql+pg8000://")
+    url = url.replace("postgres://", "postgresql+pg8000://")
+    return url
+
+_db_url = _get_database_url()
+
+if _db_url:
     engine = create_engine(
-        settings.DATABASE_URL,
+        _db_url,
         pool_pre_ping=True,
         pool_recycle=300,  # Recycle connections after 5 minutes
         echo=settings.DEBUG  # Log SQL queries in debug mode
