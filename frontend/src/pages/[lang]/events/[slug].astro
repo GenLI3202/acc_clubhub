@@ -46,6 +46,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
   backLabel={t(lang, 'nav.events')}
   hasSidebar={!entry.data.registrationLink}
 >
+  <!-- Fallback: External registration link (if provided) -->
+  {entry.data.registrationLink && (
+    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
+      {registrationLabels[lang] || registrationLabels.en} →
+    </a>
+  )}
+
   <!-- Event Info -->
   <div class="event-info">
     {entry.data.eventType && (
@@ -55,13 +62,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
       <span class="event-location">📍 {entry.data.location}</span>
     )}
   </div>
-
-  <!-- Fallback: External registration link (if provided) -->
-  {entry.data.registrationLink && (
-    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
-      {registrationLabels[lang] || registrationLabels.en} →
-    </a>
-  )}
 
   <!-- Main Content -->
   <Content />
@@ -74,6 +74,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
       data-slug={entry.data.slug}
       data-lang={lang}
       data-api-url={apiUrl}
+      class="sidebar-content"
     >
       <!-- EventRegistrationForm will be hydrated here -->
     </div>
@@ -168,7 +169,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     align-items: center;
     gap: var(--space-sm);
     flex-wrap: wrap;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border-rough);
+  }
+
+  .sidebar-content {
+    /* Empty for now, can add custom styles if needed */
   }
 
   .event-type-badge {

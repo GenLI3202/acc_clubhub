@@ -34,57 +34,70 @@ const formattedDate = isValidDate
 ---
 
 <BaseLayout title={title} lang={lang}>
-  <div class:list={['article-container', { 'with-sidebar': hasSidebar }]}>
-    <article class="article">
-      <header class="article-header">
-        <a href={backLink} class="article-back">
-          ← {backLabel || t(lang, 'content.back')}
-        </a>
+  <div class="article-wrapper">
+    <!-- Header outside grid for better control -->
+    <header class="article-header">
+      <a href={backLink} class="article-back">
+        ← {backLabel || t(lang, 'content.back')}
+      </a>
 
-        <h1>{title}</h1>
+      <h1>{title}</h1>
 
-        <div class="article-meta-row">
-          {(formattedDate || author) && (
-            <div class="article-meta">
-              {formattedDate && <time>{formattedDate}</time>}
-              {author && <span class="article-author">by {author}</span>}
-            </div>
-          )}
+      <div class="article-meta-row">
+        {(formattedDate || author) && (
+          <div class="article-meta">
+            {formattedDate && <time>{formattedDate}</time>}
+            {author && <span class="article-author">by {author}</span>}
+          </div>
+        )}
 
-          {xiaohongshuUrl && (
-            <a href={xiaohongshuUrl} target="_blank" rel="noopener" class="xhs-link">
-              小红书 (Xiaohongshu) ↗
-            </a>
-          )}
-        </div>
-      </header>
-
-      {cover && (
-        <img src={cover} alt={title} class="article-cover" />
-      )}
-
-      <div class="article-content prose">
-        <slot />
+        {xiaohongshuUrl && (
+          <a href={xiaohongshuUrl} target="_blank" rel="noopener" class="xhs-link">
+            小红书 (Xiaohongshu) ↗
+          </a>
+        )}
       </div>
+    </header>
 
-      <WalineComments lang={lang} />
-    </article>
+    <!-- Content grid: cover + content on left, sidebar on right -->
+    <div class:list={['article-container', { 'with-sidebar': hasSidebar }]}>
+      <article class="article">
+        {cover && (
+          <img src={cover} alt={title} class="article-cover" />
+        )}
 
-    {hasSidebar && (
-      <aside class="article-sidebar">
-        <div class="sidebar-sticky">
-          <slot name="sidebar" />
+        <div class="article-content prose">
+          <slot />
         </div>
-      </aside>
-    )}
+
+        <WalineComments lang={lang} />
+      </article>
+
+      {hasSidebar && (
+        <aside class="article-sidebar">
+          <div class="sidebar-sticky">
+            <slot name="sidebar" />
+          </div>
+        </aside>
+      )}
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  .article-container {
+  .article-wrapper {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-md);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-lg);
+    max-width: 800px;
+  }
+
+  .article-container {
+    /* No extra constraints */
   }
 
   .article-container.with-sidebar {
@@ -96,18 +109,18 @@ const formattedDate = isValidDate
 
   .article {
     max-width: 800px;
+    min-width: 0; /* Prevent grid blowout */
   }
 
   /* Sidebar styles */
   .article-sidebar {
-    position: relative;
+    /* No position relative - allows sticky to work */
   }
 
   .sidebar-sticky {
+    position: -webkit-sticky; /* Safari */
     position: sticky;
-    top: calc(var(--space-lg) + 60px); /* Offset for header */
-    max-height: calc(100vh - var(--space-lg) - 80px);
-    overflow-y: auto;
+    top: 80px; /* Distance from viewport top when stuck */
   }
 
   /* Responsive: stack on smaller screens */
@@ -123,12 +136,7 @@ const formattedDate = isValidDate
 
     .sidebar-sticky {
       position: static;
-      max-height: none;
     }
-  }
-
-  .article-header {
-    margin-bottom: var(--space-lg);
   }
 
   .article-back {
