@@ -124,16 +124,21 @@ def get_event_by_id(event_id: int, db: Session = Depends(get_db)):
     return event
 
 
+class EventCreate(BaseModel):
+    """Event creation schema"""
+    title: str
+    slug: str
+    event_date: datetime
+    location: str
+    event_type: str = "social-ride"
+    description: Optional[str] = None
+    max_participants: Optional[int] = None
+    registration_deadline: Optional[datetime] = None
+
+
 @router.post("/api/events", response_model=EventResponse)
 def create_event(
-    title: str,
-    slug: str,
-    event_date: datetime,
-    location: str,
-    event_type: str = "social-ride",
-    description: Optional[str] = None,
-    max_participants: Optional[int] = None,
-    registration_deadline: Optional[datetime] = None,
+    event_data: EventCreate,
     db: Session = Depends(get_db)
 ):
     """
@@ -142,22 +147,22 @@ def create_event(
     Note: In production, this should be protected with admin authentication
     """
     # Check if slug already exists
-    existing = db.query(Event).filter(Event.slug == slug).first()
+    existing = db.query(Event).filter(Event.slug == event_data.slug).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Event with slug '{slug}' already exists"
+            detail=f"Event with slug '{event_data.slug}' already exists"
         )
 
     new_event = Event(
-        slug=slug,
-        title=title,
-        description=description,
-        event_date=event_date,
-        location=location,
-        event_type=event_type,
-        max_participants=max_participants,
-        registration_deadline=registration_deadline,
+        slug=event_data.slug,
+        title=event_data.title,
+        description=event_data.description,
+        event_date=event_data.event_date,
+        location=event_data.location,
+        event_type=event_data.event_type,
+        max_participants=event_data.max_participants,
+        registration_deadline=event_data.registration_deadline,
         current_participants=0
     )
 

@@ -5,6 +5,7 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+.internal/
 
 # Quarto
 _site/
@@ -38,6 +39,11 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
+*_output.txt
+*_output_*.txt
+
+# Test/debug folders
+**/test_docs/
 
 # ignore all .nul and .NUL files, and files named nul or NUL
 *.nul

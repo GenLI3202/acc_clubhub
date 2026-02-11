@@ -65,6 +65,9 @@ const formattedDate = isValidDate
       <slot />
     </div>
 
+    <!-- Slot for inline content (e.g. registration form) before comments -->
+    <slot name="before-comments" />
+
     <WalineComments lang={lang} />
   </article>
 </BaseLayout>

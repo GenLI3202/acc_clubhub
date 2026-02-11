@@ -1,10 +1,12 @@
 ---
 // src/pages/[lang]/events/[slug].astro
-// 慕城日常 - 活动详情页
+// 慕城日常 - 活动详情页 (Phase 4.3: with registration form)
 
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
+import '../../../components/EventRegistrationForm.css';
 
 export async function getStaticPaths() {
   const allEvents = await getCollection('events');
@@ -30,6 +32,9 @@ const registrationLabels: Record<string, string> = {
   en: 'Register Now',
   de: 'Jetzt anmelden',
 };
+
+// API URL from environment
+const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.vercel.app';
 ---
 
 <ArticleLayout
@@ -40,6 +45,14 @@ const registrationLabels: Record<string, string> = {
   backLink={`/${lang}/events`}
   backLabel={t(lang, 'nav.events')}
 >
+  <!-- Fallback: External registration link (if provided) -->
+  {entry.data.registrationLink && (
+    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
+      {registrationLabels[lang] || registrationLabels.en} →
+    </a>
+  )}
+
+  <!-- Event Info -->
   <div class="event-info">
     {entry.data.eventType && (
       <span class="event-type-badge">{entry.data.eventType}</span>
@@ -49,14 +62,97 @@ const registrationLabels: Record<string, string> = {
     )}
   </div>
 
-  {entry.data.registrationLink && (
-    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
-      {registrationLabels[lang] || registrationLabels.en} →
-    </a>
-  )}
-
+  <!-- Main Content -->
   <Content />
+
+  <!-- Registration Form: inline compact, before comments -->
+  {!entry.data.registrationLink && (
+    <div
+      slot="before-comments"
+      id="registration-container"
+      data-slug={entry.data.slug}
+      data-lang={lang}
+      data-api-url={apiUrl}
+    >
+      <!-- EventRegistrationForm will be hydrated here -->
+    </div>
+  )}
 </ArticleLayout>
+
+<!-- Client-side script to hydrate registration form -->
+<script>
+  import { h, render } from 'preact';
+  import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
+
+  async function initRegistrationForm() {
+    const container = document.getElementById('registration-container');
+    if (!container) return;
+
+    const slug = container.dataset.slug;
+    const lang = container.dataset.lang;
+    const apiUrl = container.dataset.apiUrl;
+
+    if (!slug || !lang || !apiUrl) {
+      console.error('Missing data attributes for registration form');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/api/events/${slug}`);
+
+      let eventData;
+      let eventId = 0;
+
+      if (response.ok) {
+        eventData = await response.json();
+        eventId = eventData.id;
+      } else {
+        console.warn('Could not fetch event data from API, showing form anyway');
+        eventData = null;
+      }
+
+      const availableSpots = eventData?.max_participants
+        ? eventData.max_participants - eventData.current_participants
+        : null;
+
+      const isDeadlinePassed = eventData?.registration_deadline
+        ? new Date(eventData.registration_deadline) < new Date()
+        : false;
+
+      render(
+        h(EventRegistrationForm, {
+          eventId,
+          eventSlug: slug,
+          availableSpots,
+          isDeadlinePassed,
+          lang,
+          apiUrl,
+        }),
+        container
+      );
+    } catch (error) {
+      console.error('Failed to initialize registration form:', error);
+
+      render(
+        h(EventRegistrationForm, {
+          eventId: 0,
+          eventSlug: slug,
+          availableSpots: null,
+          isDeadlinePassed: false,
+          lang,
+          apiUrl,
+        }),
+        container
+      );
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRegistrationForm);
+  } else {
+    initRegistrationForm();
+  }
+</script>
 
 <style>
   .event-info {
@@ -64,7 +160,9 @@ const registrationLabels: Record<string, string> = {
     align-items: center;
     gap: var(--space-sm);
     flex-wrap: wrap;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border-rough);
   }
 
   .event-type-badge {

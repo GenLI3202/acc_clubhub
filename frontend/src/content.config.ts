@@ -93,11 +93,11 @@ const mediaCollection = defineCollection({
     tags: z.array(z.string()).default([]),
     date: z.coerce.date(), // Akzeptiert Date oder String
     author: z.string().default('ACC Club'),
-    
+
     // Unterstütze beide Feldnamen
     coverImage: z.string().optional(),
     cover: z.string().optional(),
-    
+
     videoUrl: z.string().optional(),
     xiaohongshuUrl: z.string().optional(),
   }).transform((data) => ({

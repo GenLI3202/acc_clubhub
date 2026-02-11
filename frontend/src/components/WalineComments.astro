@@ -50,53 +50,70 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
 
 <style>
   .comments-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 2px solid var(--color-border-rough);
+    margin-top: var(--space-xl, 2rem);
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--color-border-rough);
+    border-radius: 8px;
+    box-shadow: 3px 3px 0 var(--color-border-rough);
+    transform: scale(0.95);
+    transform-origin: center top;
   }
 
   .comments-section h2 {
     font-family: var(--font-heading);
     color: var(--color-primary);
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-border-rough);
   }
 
   .comments-desc {
     font-family: var(--font-body);
-    font-size: 0.9rem;
-    color: #888;
-    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
   }
 
   .waline-wrapper {
-    margin-top: 1.5rem;
     min-height: 200px;
+    /* Use Waline CSS custom properties for theming */
+    --waline-theme-color: var(--color-primary, #2A5CA6);
+    --waline-active-color: var(--color-accent, #F4A261);
+    --waline-border-color: rgba(42, 92, 166, 0.25);
+    --waline-bgcolor: transparent;
+    --waline-bgcolor-light: rgba(42, 92, 166, 0.04);
+    --waline-color: #444;
+    --waline-font-size: 0.9rem;
   }
 
-  /* Waline 样式覆盖 - 匹配 Blaue Reiter V3 */
-  .waline-wrapper :global(.waline-editor) {
-    --waline-theme-color: var(--color-primary);
-    --waline-active-color: var(--color-accent);
-  }
-
+  /* Submit button styling */
   .waline-wrapper :global(.wl-btn) {
-    background: var(--color-primary);
-    color: white;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    border: 2px solid var(--color-border-rough);
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    background: var(--color-accent) !important;
+    color: white !important;
+    border-color: var(--color-border-rough) !important;
+    border-radius: 4px !important;
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
   }
 
   .waline-wrapper :global(.wl-btn:hover) {
-    background: var(--color-accent);
-    transform: translate(-1px, -1px);
-    box-shadow: 2px 2px 0 var(--color-border-rough);
+    background: var(--color-primary) !important;
   }
 
-  /* 隐藏嵌入式登录区域多余的 OAuth 图标，只保留 GitHub */
+  /* Header inputs row (nickname, email, website) */
+  .waline-wrapper :global(.wl-header-item input) {
+    font-size: 0.90rem !important;
+  }
+
+  .waline-wrapper :global(.wl-header-item label) {
+    font-size: 0.85rem !important;
+  }
+
+  /* Only keep GitHub OAuth */
   .waline-wrapper :global(.wl-login-info a) {
     display: none !important;
   }

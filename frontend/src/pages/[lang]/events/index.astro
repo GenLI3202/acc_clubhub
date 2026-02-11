@@ -4,7 +4,7 @@
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+import { locales, defaultLocale, t, type Locale } from '../../../lib/i18n';
 
 import EventsPage from '../../../components/content/EventsPage';
 
@@ -17,12 +17,27 @@ const pageTitle = t(lang, 'nav.events');
 
 // Fetch events
 const allEvents = await getCollection('events');
-const langEvents = allEvents.filter(
-  (entry) => getLangFromEntry(entry.filePath, 'events') === lang
-);
+
+// Debug: Check what properties are available
+if (allEvents.length > 0) {
+  console.log('[Events Debug] First entry:', allEvents[0]);
+  console.log('[Events Debug] Entry keys:', Object.keys(allEvents[0]));
+  console.log('[Events Debug] ID:', allEvents[0].id);
+}
+
+// Filter by language - use id instead of filePath
+const langEvents = allEvents.filter((entry) => {
+  // ID format is like "zh/summer-alps-2025" or just "summer-alps-2025"
+  const entryLang = entry.id.includes('/') ? entry.id.split('/')[0] : defaultLocale;
+  return entryLang === lang;
+});
+
 const sortedEvents = langEvents.sort(
   (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
 );
+
+// Debug: log event count
+console.log(`[Events Page] Total events: ${allEvents.length}, Lang (${lang}): ${langEvents.length}`);
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
@@ -40,11 +55,18 @@ const sortedEvents = langEvents.sort(
     <div id="filter-portal-target"></div>
   </div>
 
-  <EventsPage 
-    client:load 
-    initialItems={sortedEvents} 
-    lang={lang} 
-  />
+  {sortedEvents.length === 0 ? (
+    <div style="padding: 2rem; text-align: center; color: #666;">
+      <p>Debug: No events found for language "{lang}"</p>
+      <p>Total events in collection: {allEvents.length}</p>
+    </div>
+  ) : (
+    <EventsPage
+      client:load
+      initialItems={sortedEvents}
+      lang={lang}
+    />
+  )}
 </BaseLayout>
 
 <style>

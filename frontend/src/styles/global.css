@@ -26,6 +26,7 @@ html {
   line-height: 1.6;
   color: var(--color-text-main);
   background: var(--color-bg-canvas);
+  overflow-x: hidden; /* Prevents horizontal scroll without breaking sticky */
 }
 
 body {
@@ -33,7 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
+  /* overflow-x: hidden breaks position:sticky — moved to html */
 
   /* V3: Oil Painting Brush Stroke Atmosphere - REPLACED with Image */
   background-color: transparent;

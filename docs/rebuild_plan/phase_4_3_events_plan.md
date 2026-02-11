@@ -1,8 +1,72 @@
 # Phase 4.3: 活动报名系统 (Event Registration) — 详细执行方案
 
 > **目标**: Email-based 活动报名 + 活动订阅通知系统
-> **当前状态**: 后端 API 代码已就绪，Neon 数据库待建表
-> **交付状态**: 用户提交邮箱报名活动，可订阅活动通知，管理员可查看报名列表
+> **当前状态**: Phase 4.3.1 基础功能已完成 (2026-02-11)
+> **实施方案**: 采用简化路径 - 纯邮箱注册，无需 OAuth 认证
+> **待完成**: E2E 测试、前端部署、UI 重设计 (Phase 4.3.2)
+
+---
+
+## 🎯 实施状态总览 (Updated 2026-02-11)
+
+### ✅ Phase 4.3.1: 基础报名功能 (COMPLETE)
+
+**已完成**:
+- ✅ Backend API (FastAPI + Neon Postgres)
+- ✅ Email-based registration (无需 OAuth)
+- ✅ RSVP endpoints (create/cancel/list)
+- ✅ Email notifications (Resend API, 3 languages)
+- ✅ Frontend registration form (Preact component)
+- ✅ Privacy policy pages (zh/en/de)
+- ✅ GDPR compliance (unsubscribe tokens)
+- ✅ Backend deployed to Vercel
+
+**技术选型变更**:
+- ❌ 放弃 Supabase Auth (原计划 Step 11-20)
+- ✅ 采用纯 Email + Name 方式（更简单，更符合实际需求）
+- ✅ 使用 Neon Postgres (不依赖 Supabase)
+
+**文档**:
+- 实施总结: `docs/rebuild_plan/implemented/phase_4_3_implementation_summary.md`
+- 部署指南: `docs/deployment/phase_4_3_1_deployment_guide.md`
+- 部署经验: `docs/rebuild_plan/implemented/phase_4_3_1_deployment_lessons.md`
+
+### ⏳ Phase 4.3.1.5: E2E 测试与验证 (TODO)
+
+**待完成测试清单**:
+- [ ] Normal registration → success + email sent
+- [ ] Waitlist registration → waitlist message
+- [ ] Duplicate email → error rejection
+- [ ] Privacy policy unchecked → validation error
+- [ ] Registration deadline passed → form disabled
+- [ ] Multi-language switching (zh/en/de)
+- [ ] Email delivery verification
+- [ ] Mobile responsive testing
+- [ ] Database triggers verification (current_participants auto-update)
+- [ ] Concurrent registration stress test (防止超额)
+
+**部署验证**:
+- [ ] Frontend 部署到 Vercel
+- [ ] 验证 `PUBLIC_API_URL` 环境变量
+- [ ] 测试生产环境端到端流程
+- [ ] 监控邮件发送成功率
+
+### 🎨 Phase 4.3.2: Events 页面 UI 重设计 (PLANNED)
+
+**设计文档**: `docs/rebuild_plan/phase_4_3_2_event_ui.md`
+
+**核心改进**:
+- Featured events hero section (大屏轮播)
+- Weekly regulars 卡片网格
+- Past events 归档区
+- 响应式设计优化
+
+**待实施**:
+- [ ] Schema 扩展 (featured/isRecurring/icon 字段)
+- [ ] Hero 组件实现
+- [ ] 卡片组件重构
+- [ ] Tailwind 配色调整
+- [ ] 图标库集成
 
 ---
 
@@ -24,9 +88,10 @@
 | # | 问题 | 决策 | 状态 |
 |---|------|------|------|
 | 7 | **数据库选择** | ✅ **Neon 单一数据库** (评论+活动统一存储) | 已确认 |
-| 8 | **认证系统** | ✅ **Supabase Auth** (仅用于认证，不用其数据库) | 已确认 |
+| 8 | **认证系统** | ⚠️ **无认证系统** (纯 Email 注册，不使用 OAuth) | 已变更 |
 | 9 | **评论系统认证** | ✅ **Waline 保持独立 GitHub OAuth** (见下方分析) | 已确认 |
 | 10 | Astro `<script>` 变量传递 | ✅ 使用 `data-*` 属性 (已在 WalineComments 验证) | 已确认 |
+| 11 | **活动报名认证** | ✅ **Email + Name 直接注册** (无需登录) | 已实施 |
 
 ### 修复详情
 
@@ -118,14 +183,24 @@ member_id INTEGER,  -- Legacy: no FK constraint, members table may not exist
 - ✅ Waline 评论系统 — Neon 数据库 + GitHub OAuth 登录
 - ✅ 前端 Astro + Preact 架构 — 静态输出 + 客户端交互
 
-**缺失的关键功能**:
-- ❌ Supabase Auth 项目创建 (Phase 4.4)
-- ❌ 前端 Supabase 客户端 (`src/lib/supabase.ts` 不存在)
-- ❌ 前端登录组件 (无 Auth 组件)
-- ❌ 前端报名按钮组件
-- ❌ Neon 建表 (SQL 已写好，未执行)
-- ❌ 邮件通知服务 (Resend)
-- ❌ 后端 Vercel 部署配置
+**Phase 4.3.1 完成的功能** (Updated 2026-02-11):
+- ✅ Neon 数据库建表 (events, rsvps, subscribers, event_metadata)
+- ✅ 后端 RSVP API (create/cancel/list)
+- ✅ 邮件通知服务 (Resend, 3 languages)
+- ✅ 前端报名表单组件 (Preact)
+- ✅ 隐私政策页面 (zh/en/de)
+- ✅ 后端 Vercel 部署 (https://acc-clubhub-events-ms.vercel.app)
+
+**Phase 4.3.1 跳过的功能** (简化方案):
+- ⏭️ Supabase Auth 集成 (改用纯 Email 注册)
+- ⏭️ OAuth 登录 (Google/GitHub)
+- ⏭️ JWT 验证中间件
+- ⏭️ 前端 Supabase 客户端
+
+**Phase 4.3.1.5 待完成**:
+- ⏳ E2E 功能测试
+- ⏳ 前端生产环境部署
+- ⏳ 邮件发送成功率监控
 
 ### 与其他 Phase 的依赖关系
 
