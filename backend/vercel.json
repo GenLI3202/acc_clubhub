@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "app.py",
@@ -11,10 +10,5 @@
       "src": "/(.*)",
       "dest": "app.py"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "RESEND_API_KEY": "@resend_api_key",
-    "ALLOWED_ORIGINS": "http://localhost:4321,https://acc-clubhub.vercel.app"
-  }
+  ]
 }
