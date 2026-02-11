@@ -98,14 +98,18 @@ def main():
     skipped_count = 0
     error_count = 0
 
-    # Process only Chinese events (to avoid duplicates)
+    # Process only one language (zh) to avoid duplicates
+    # Note: Events are language-neutral in the database,
+    # multi-language is handled in the frontend markdown
     lang_dir = events_dir / 'zh'
 
     if not lang_dir.exists():
         print(f"Error: Chinese events directory not found: {lang_dir}")
+        print("Note: Using 'zh' as the primary language for event sync.")
         return
 
-    print(f"\nProcessing Chinese events from: {lang_dir}")
+    print(f"\nProcessing events from: {lang_dir}")
+    print("Note: Each event slug should be unique across all languages.")
 
     for md_file in lang_dir.glob('*.md'):
         try:

@@ -97,26 +97,33 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     try {
       // Fetch event data from API
       const response = await fetch(`${apiUrl}/api/events/${slug}`);
-      if (!response.ok) {
-        throw new Error('Failed to load event data');
+
+      let eventData;
+      let eventId = 0;
+
+      if (response.ok) {
+        eventData = await response.json();
+        eventId = eventData.id;
+      } else {
+        // Fallback: Show form anyway with limited data
+        console.warn('Could not fetch event data from API, showing form anyway');
+        eventData = null;
       }
 
-      const eventData = await response.json();
-
-      // Calculate available spots
-      const availableSpots = eventData.max_participants
+      // Calculate available spots (null if no data)
+      const availableSpots = eventData?.max_participants
         ? eventData.max_participants - eventData.current_participants
         : null;
 
-      // Check if deadline passed
-      const isDeadlinePassed = eventData.registration_deadline
+      // Check if deadline passed (assume not if no data)
+      const isDeadlinePassed = eventData?.registration_deadline
         ? new Date(eventData.registration_deadline) < new Date()
         : false;
 
       // Render Preact component
       render(
         h(EventRegistrationForm, {
-          eventId: eventData.id,
+          eventId,
           eventSlug: slug,
           availableSpots,
           isDeadlinePassed,
@@ -127,7 +134,19 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
       );
     } catch (error) {
       console.error('Failed to initialize registration form:', error);
-      container.innerHTML = '<p class="error">Registration form unavailable</p>';
+
+      // Still try to render the form
+      render(
+        h(EventRegistrationForm, {
+          eventId: 0,
+          eventSlug: slug,
+          availableSpots: null,
+          isDeadlinePassed: false,
+          lang,
+          apiUrl,
+        }),
+        container
+      );
     }
   }
 
