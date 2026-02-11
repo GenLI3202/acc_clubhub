@@ -11,6 +11,7 @@ from models import Event, RSVP, Subscriber
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timezone
 import secrets
+from services.email import send_confirmation_email, send_waitlist_email
 
 router = APIRouter()
 
@@ -137,8 +138,25 @@ def create_rsvp(
     db.commit()
     db.refresh(new_rsvp)
 
-    # TODO: Phase 4.3.3 - 发送确认邮件
-    # send_confirmation_email(rsvp_data.email, event)
+    # 7. 发送邮件通知
+    if rsvp_status == "confirmed":
+        send_confirmation_email(
+            user_email=rsvp_data.email,
+            user_name=rsvp_data.name,
+            event_title=event.title,
+            event_date=event.event_date,
+            event_location=event.location,
+            event_id=event.id,
+            lang="zh",  # TODO: detect from request or event metadata
+        )
+    else:
+        send_waitlist_email(
+            user_email=rsvp_data.email,
+            user_name=rsvp_data.name,
+            event_title=event.title,
+            waitlist_position=waitlist_pos or 0,
+            lang="zh",
+        )
 
     return RSVPResponse(
         success=True,
