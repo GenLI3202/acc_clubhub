@@ -50,50 +50,76 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
 
 <style>
   .comments-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 2px solid var(--color-border-rough);
+    margin-top: var(--space-xl, 2rem);
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--color-border-rough);
+    border-radius: 8px;
+    box-shadow: 3px 3px 0 var(--color-border-rough);
+    transform: scale(0.95);
+    transform-origin: center top;
   }
 
   .comments-section h2 {
     font-family: var(--font-heading);
     color: var(--color-primary);
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-border-rough);
   }
 
   .comments-desc {
     font-family: var(--font-body);
-    font-size: 0.9rem;
-    color: #888;
-    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
   }
 
   .waline-wrapper {
-    margin-top: 1.5rem;
     min-height: 200px;
   }
 
-  /* Waline 样式覆盖 - 匹配 Blaue Reiter V3 */
+  /* Waline 样式覆盖 - 匹配表单风格 */
   .waline-wrapper :global(.waline-editor) {
     --waline-theme-color: var(--color-primary);
     --waline-active-color: var(--color-accent);
   }
 
-  .waline-wrapper :global(.wl-btn) {
-    background: var(--color-primary);
-    color: white;
-    font-family: var(--font-heading);
-    font-weight: 600;
-    border: 2px solid var(--color-border-rough);
-    border-radius: 4px;
-    transition: all 0.2s ease;
+  /* 统一按钮样式 */
+  .waline-wrapper :global(.wl-btn),
+  .waline-wrapper :global(.wl-btn-submit) {
+    background: var(--color-primary) !important;
+    color: white !important;
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    padding: 0.6rem 1.5rem !important;
+    border: 2px solid var(--color-border-rough) !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
   }
 
-  .waline-wrapper :global(.wl-btn:hover) {
-    background: var(--color-accent);
-    transform: translate(-1px, -1px);
-    box-shadow: 2px 2px 0 var(--color-border-rough);
+  .waline-wrapper :global(.wl-btn:hover),
+  .waline-wrapper :global(.wl-btn-submit:hover) {
+    background: var(--color-accent) !important;
+    transform: translate(-1px, -1px) !important;
+    box-shadow: 2px 2px 0 var(--color-border-rough) !important;
+  }
+
+  /* 输入框样式统一 */
+  .waline-wrapper :global(.wl-input),
+  .waline-wrapper :global(.wl-editor) {
+    border: 2px solid var(--color-border-rough) !important;
+    border-radius: 4px !important;
+    font-size: 0.9rem !important;
+    padding: 0.55rem 0.7rem !important;
+  }
+
+  .waline-wrapper :global(.wl-input:focus),
+  .waline-wrapper :global(.wl-editor:focus) {
+    border-color: var(--color-accent) !important;
   }
 
   /* 隐藏嵌入式登录区域多余的 OAuth 图标，只保留 GitHub */
@@ -103,5 +129,12 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
 
   .waline-wrapper :global(.wl-login-info a[title*="GitHub"]) {
     display: inline-block !important;
+  }
+
+  /* 评论列表样式 */
+  .waline-wrapper :global(.wl-card) {
+    border: 1px solid var(--color-border-rough) !important;
+    border-radius: 4px !important;
+    margin-bottom: 0.75rem !important;
   }
 </style>

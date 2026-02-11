@@ -2,11 +2,13 @@
 .event-registration-form {
   width: 100%;
   margin: var(--space-xl, 2rem) 0;
-  padding: 1.5rem;
-  background: white;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.9); /* 10% transparency */
   border: 2px solid var(--color-border-rough, #2A5CA6);
   border-radius: 8px;
   box-shadow: 3px 3px 0 var(--color-border-rough, #2A5CA6);
+  transform: scale(0.95); /* 95% size for more compact look */
+  transform-origin: center top;
 }
 
 /* Two-column grid for form fields */
@@ -177,11 +179,11 @@
   content: attr(data-title);
   display: block;
   font-family: var(--font-heading, sans-serif);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--color-primary, #2A5CA6);
-  margin-bottom: 1rem;
-  padding-bottom: 0.6rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--color-border-rough, #2A5CA6);
 }
 
