@@ -169,7 +169,12 @@ export function EventRegistrationForm({
                         onChange={(e) => setFormData({ ...formData, privacy_accepted: (e.target as HTMLInputElement).checked })}
                         disabled={loading}
                     />
-                    <span>{t(lang, 'event.privacyAccept')}</span>
+                    <span>
+                        {t(lang, 'event.privacyAcceptPrefix')}{' '}
+                        <a href={`/${lang}/privacy`} target="_blank" rel="noopener" className="privacy-link">
+                            {t(lang, 'event.privacyPolicy')}
+                        </a>
+                    </span>
                 </label>
             </div>
 
