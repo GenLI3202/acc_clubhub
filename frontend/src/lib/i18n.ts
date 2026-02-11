@@ -45,7 +45,7 @@ export const ui = {
         'search.placeholder': '搜索...',
         'search.noResults': '未找到相关内容',
         'comments.title': '评论区',
-        'comments.description': '使用 Google/GitHub 账号或邮箱参与讨论',
+        'comments.description': '使用 GitHub 账号或邮箱参与讨论',
     },
     en: {
         'nav.home': 'Home',
@@ -64,7 +64,7 @@ export const ui = {
         'search.placeholder': 'Search...',
         'search.noResults': 'No results found',
         'comments.title': 'Comments',
-        'comments.description': 'Join with Google/GitHub or email',
+        'comments.description': 'Join with GitHub or email',
     },
     de: {
         'nav.home': 'Startseite',
@@ -83,7 +83,7 @@ export const ui = {
         'search.placeholder': 'Suchen...',
         'search.noResults': 'Nichts gefunden',
         'comments.title': 'Kommentare',
-        'comments.description': 'Nehmen Sie mit Google/GitHub oder E-Mail teil',
+        'comments.description': 'Mit GitHub oder E-Mail teilnehmen',
     },
 } as const;
 

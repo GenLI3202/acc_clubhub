@@ -96,13 +96,12 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
     box-shadow: 2px 2px 0 var(--color-border-rough);
   }
 
-  /* 隐藏多余的登录图标，只保留 GitHub 和 Google */
+  /* 隐藏嵌入式登录区域多余的 OAuth 图标，只保留 GitHub */
   .waline-wrapper :global(.wl-login-info a) {
     display: none !important;
   }
 
-  .waline-wrapper :global(.wl-login-info a[title*="GitHub"]),
-  .waline-wrapper :global(.wl-login-info a[title*="Google"]) {
+  .waline-wrapper :global(.wl-login-info a[title*="GitHub"]) {
     display: inline-block !important;
   }
 </style>
