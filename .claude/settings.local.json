@@ -37,7 +37,9 @@
       "Bash(python -c:*)",
       "Bash(pip install:*)",
       "mcp__claude_ai_Vercel__web_fetch_vercel_url",
-      "mcp__claude_ai_Vercel__get_access_to_vercel_url"
+      "mcp__claude_ai_Vercel__get_access_to_vercel_url",
+      "mcp__claude_ai_Vercel__list_deployments",
+      "mcp__claude_ai_Vercel__search_vercel_documentation"
     ]
   }
 }
