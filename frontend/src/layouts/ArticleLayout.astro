@@ -15,10 +15,9 @@ interface Props {
   backLink: string;
   backLabel?: string;
   xiaohongshuUrl?: string;
-  hasSidebar?: boolean; // 新增：是否显示侧边栏
 }
 
-const { title, date, author, cover, lang, backLink, backLabel, xiaohongshuUrl, hasSidebar = false } = Astro.props;
+const { title, date, author, cover, lang, backLink, backLabel, xiaohongshuUrl } = Astro.props;
 
 // 安全转换日期：支持 Date 对象和字符串
 const dateObj = date ? (date instanceof Date ? date : new Date(date)) : null;
@@ -34,8 +33,7 @@ const formattedDate = isValidDate
 ---
 
 <BaseLayout title={title} lang={lang}>
-  <div class="article-wrapper">
-    <!-- Header outside grid for better control -->
+  <article class="article">
     <header class="article-header">
       <a href={backLink} class="article-back">
         ← {backLabel || t(lang, 'content.back')}
@@ -59,84 +57,29 @@ const formattedDate = isValidDate
       </div>
     </header>
 
-    <!-- Content grid: cover + content on left, sidebar on right -->
-    <div class:list={['article-container', { 'with-sidebar': hasSidebar }]}>
-      <article class="article">
-        {cover && (
-          <img src={cover} alt={title} class="article-cover" />
-        )}
+    {cover && (
+      <img src={cover} alt={title} class="article-cover" />
+    )}
 
-        <div class="article-content prose">
-          <slot />
-        </div>
-
-        <WalineComments lang={lang} />
-      </article>
-
-      {hasSidebar && (
-        <aside class="article-sidebar">
-          <div class="sidebar-sticky">
-            <slot name="sidebar" />
-          </div>
-        </aside>
-      )}
+    <div class="article-content prose">
+      <slot />
     </div>
-  </div>
+
+    <!-- Slot for inline content (e.g. registration form) before comments -->
+    <slot name="before-comments" />
+
+    <WalineComments lang={lang} />
+  </article>
 </BaseLayout>
 
 <style>
-  .article-wrapper {
-    max-width: 1200px;
+  .article {
+    max-width: 800px;
     margin: 0 auto;
-    padding: 0 var(--space-md);
   }
 
   .article-header {
     margin-bottom: var(--space-lg);
-    max-width: 800px;
-  }
-
-  .article-container {
-    /* No extra constraints */
-  }
-
-  .article-container.with-sidebar {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: var(--space-xl);
-    align-items: start;
-  }
-
-  .article {
-    max-width: 800px;
-    min-width: 0; /* Prevent grid blowout */
-  }
-
-  /* Sidebar styles */
-  .article-sidebar {
-    /* No position relative - allows sticky to work */
-  }
-
-  .sidebar-sticky {
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
-    top: 80px; /* Distance from viewport top when stuck */
-  }
-
-  /* Responsive: stack on smaller screens */
-  @media (max-width: 968px) {
-    .article-container.with-sidebar {
-      grid-template-columns: 1fr;
-    }
-
-    .article-sidebar {
-      order: -1; /* Show sidebar above content on mobile */
-      margin-bottom: var(--space-lg);
-    }
-
-    .sidebar-sticky {
-      position: static;
-    }
   }
 
   .article-back {

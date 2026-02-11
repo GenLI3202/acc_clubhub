@@ -1,12 +1,19 @@
-/* Event Registration Form Styles */
+/* Event Registration Form — Compact inline layout */
 .event-registration-form {
   width: 100%;
-  margin: 0;
-  padding: 1.25rem;
+  margin: var(--space-xl, 2rem) 0;
+  padding: 1.5rem;
   background: white;
   border: 2px solid var(--color-border-rough, #2A5CA6);
   border-radius: 8px;
   box-shadow: 3px 3px 0 var(--color-border-rough, #2A5CA6);
+}
+
+/* Two-column grid for form fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .spots-indicator {
@@ -33,10 +40,10 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.35rem;
   font-family: var(--font-heading, sans-serif);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--color-primary, #2A5CA6);
 }
 
@@ -44,7 +51,7 @@
 .form-group input[type="text"],
 .form-group textarea {
   width: 100%;
-  padding: 0.6rem;
+  padding: 0.55rem 0.7rem;
   border: 2px solid var(--color-border-rough, #2A5CA6);
   border-radius: 4px;
   font-family: var(--font-body, sans-serif);
@@ -85,9 +92,28 @@
   color: var(--color-accent, #F4A261);
 }
 
+/* Bottom row: checkboxes + submit in one line */
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-footer-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.form-footer-checks .form-group {
+  margin-bottom: 0;
+}
+
 .submit-btn {
-  width: 100%;
-  padding: 0.75rem;
+  padding: 0.7rem 2rem;
   background: var(--color-primary, #2A5CA6);
   color: white;
   font-family: var(--font-heading, sans-serif);
@@ -97,6 +123,8 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -111,16 +139,18 @@
 }
 
 .error-message {
-  padding: 0.75rem;
+  padding: 0.6rem;
   margin-bottom: 1rem;
   background: #ffebee;
   color: #d32f2f;
   border-radius: 4px;
   border-left: 4px solid #d32f2f;
+  font-size: 0.9rem;
 }
 
 .rsvp-success {
-  padding: 2rem;
+  padding: 1.5rem;
+  margin: var(--space-xl, 2rem) 0;
   background: #e8f5e9;
   border: 2px solid #4CAF50;
   border-radius: 8px;
@@ -133,7 +163,8 @@
 }
 
 .rsvp-closed {
-  padding: 1.5rem;
+  padding: 1.25rem;
+  margin: var(--space-xl, 2rem) 0;
   background: #fff3e0;
   border: 2px solid #F4A261;
   border-radius: 8px;
@@ -141,7 +172,7 @@
   color: #e65100;
 }
 
-/* Add form title */
+/* Form title via CSS pseudo-element */
 .event-registration-form::before {
   content: attr(data-title);
   display: block;
@@ -150,15 +181,22 @@
   font-weight: 700;
   color: var(--color-primary, #2A5CA6);
   margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.6rem;
   border-bottom: 2px solid var(--color-border-rough, #2A5CA6);
 }
 
-/* Responsive */
-@media (max-width: 968px) {
-  .event-registration-form {
-    padding: 1rem;
-    max-width: 500px;
-    margin: 0 auto;
+/* Responsive: stack on mobile */
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .submit-btn {
+    width: 100%;
   }
 }

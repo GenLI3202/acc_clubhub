@@ -44,7 +44,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
   lang={lang}
   backLink={`/${lang}/events`}
   backLabel={t(lang, 'nav.events')}
-  hasSidebar={!entry.data.registrationLink}
 >
   <!-- Fallback: External registration link (if provided) -->
   {entry.data.registrationLink && (
@@ -66,15 +65,14 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
   <!-- Main Content -->
   <Content />
 
-  <!-- Sidebar: Registration Form -->
+  <!-- Registration Form: inline compact, before comments -->
   {!entry.data.registrationLink && (
     <div
-      slot="sidebar"
+      slot="before-comments"
       id="registration-container"
       data-slug={entry.data.slug}
       data-lang={lang}
       data-api-url={apiUrl}
-      class="sidebar-content"
     >
       <!-- EventRegistrationForm will be hydrated here -->
     </div>
@@ -100,7 +98,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     }
 
     try {
-      // Fetch event data from API
       const response = await fetch(`${apiUrl}/api/events/${slug}`);
 
       let eventData;
@@ -110,22 +107,18 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
         eventData = await response.json();
         eventId = eventData.id;
       } else {
-        // Fallback: Show form anyway with limited data
         console.warn('Could not fetch event data from API, showing form anyway');
         eventData = null;
       }
 
-      // Calculate available spots (null if no data)
       const availableSpots = eventData?.max_participants
         ? eventData.max_participants - eventData.current_participants
         : null;
 
-      // Check if deadline passed (assume not if no data)
       const isDeadlinePassed = eventData?.registration_deadline
         ? new Date(eventData.registration_deadline) < new Date()
         : false;
 
-      // Render Preact component
       render(
         h(EventRegistrationForm, {
           eventId,
@@ -140,7 +133,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     } catch (error) {
       console.error('Failed to initialize registration form:', error);
 
-      // Still try to render the form
       render(
         h(EventRegistrationForm, {
           eventId: 0,
@@ -155,7 +147,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     }
   }
 
-  // Initialize on page load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initRegistrationForm);
   } else {
@@ -172,10 +163,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     margin-bottom: var(--space-lg);
     padding-bottom: var(--space-sm);
     border-bottom: 1px solid var(--color-border-rough);
-  }
-
-  .sidebar-content {
-    /* Empty for now, can add custom styles if needed */
   }
 
   .event-type-badge {

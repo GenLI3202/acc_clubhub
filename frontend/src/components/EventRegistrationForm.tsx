@@ -90,9 +90,9 @@ export function EventRegistrationForm({
     if (success) {
         return (
             <div className="rsvp-success">
-                <h3>✓ {t(lang, 'event.success')}</h3>
-                <p>{availableSpots !== null && availableSpots <= 0 
-                    ? t(lang, 'event.waitlistSuccess') 
+                <h3>&#10003; {t(lang, 'event.success')}</h3>
+                <p>{availableSpots !== null && availableSpots <= 0
+                    ? t(lang, 'event.waitlistSuccess')
                     : t(lang, 'event.success')
                 }</p>
             </div>
@@ -115,86 +115,95 @@ export function EventRegistrationForm({
 
     return (
         <form className="event-registration-form" onSubmit={handleSubmit} data-title={formTitle}>
-            <div className="spots-indicator">
-                {availableSpots !== null && (
+            {availableSpots !== null && (
+                <div className="spots-indicator">
                     <span className={availableSpots > 0 ? 'spots-available' : 'spots-full'}>
-                        {availableSpots > 0 
+                        {availableSpots > 0
                             ? `${t(lang, 'event.spotsAvailable')}: ${availableSpots}`
                             : t(lang, 'event.noSpotsLeft')
                         }
                     </span>
-                )}
+                </div>
+            )}
+
+            {/* Row 1: Email + Name side by side */}
+            <div className="form-row">
+                <div className="form-group">
+                    <label htmlFor="reg-email">{t(lang, 'event.formEmail')} *</label>
+                    <input
+                        type="email"
+                        id="reg-email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: (e.target as HTMLInputElement).value })}
+                        required
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="reg-name">{t(lang, 'event.formName')} *</label>
+                    <input
+                        type="text"
+                        id="reg-name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: (e.target as HTMLInputElement).value })}
+                        required
+                        disabled={loading}
+                    />
+                </div>
             </div>
 
+            {/* Row 2: Notes (full width) */}
             <div className="form-group">
-                <label htmlFor="email">{t(lang, 'event.formEmail')} *</label>
-                <input
-                    type="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: (e.target as HTMLInputElement).value })}
-                    required
-                    disabled={loading}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="name">{t(lang, 'event.formName')} *</label>
-                <input
-                    type="text"
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: (e.target as HTMLInputElement).value })}
-                    required
-                    disabled={loading}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="notes">{t(lang, 'event.formNotes')}</label>
+                <label htmlFor="reg-notes">{t(lang, 'event.formNotes')}</label>
                 <textarea
-                    id="notes"
+                    id="reg-notes"
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: (e.target as HTMLTextAreaElement).value })}
-                    rows={3}
+                    rows={2}
                     disabled={loading}
                 />
-            </div>
-
-            <div className="form-group checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={formData.privacy_accepted}
-                        onChange={(e) => setFormData({ ...formData, privacy_accepted: (e.target as HTMLInputElement).checked })}
-                        disabled={loading}
-                    />
-                    <span>
-                        {t(lang, 'event.privacyAcceptPrefix')}{' '}
-                        <a href={`/${lang}/privacy`} target="_blank" rel="noopener" className="privacy-link">
-                            {t(lang, 'event.privacyPolicy')}
-                        </a>
-                    </span>
-                </label>
-            </div>
-
-            <div className="form-group checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={formData.subscribe}
-                        onChange={(e) => setFormData({ ...formData, subscribe: (e.target as HTMLInputElement).checked })}
-                        disabled={loading}
-                    />
-                    <span>{t(lang, 'event.subscribe')}</span>
-                </label>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? t(lang, 'event.registering') : t(lang, 'event.submitBtn')}
-            </button>
+            {/* Footer: checkboxes on left, submit on right */}
+            <div className="form-footer">
+                <div className="form-footer-checks">
+                    <div className="form-group checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={formData.privacy_accepted}
+                                onChange={(e) => setFormData({ ...formData, privacy_accepted: (e.target as HTMLInputElement).checked })}
+                                disabled={loading}
+                            />
+                            <span>
+                                {t(lang, 'event.privacyAcceptPrefix')}{' '}
+                                <a href={`/${lang}/privacy`} target="_blank" rel="noopener" className="privacy-link">
+                                    {t(lang, 'event.privacyPolicy')}
+                                </a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div className="form-group checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={formData.subscribe}
+                                onChange={(e) => setFormData({ ...formData, subscribe: (e.target as HTMLInputElement).checked })}
+                                disabled={loading}
+                            />
+                            <span>{t(lang, 'event.subscribe')}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? t(lang, 'event.registering') : t(lang, 'event.submitBtn')}
+                </button>
+            </div>
         </form>
     );
 }
