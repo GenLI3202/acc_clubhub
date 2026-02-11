@@ -32,7 +32,7 @@ This project is rebuilt with a modern stack to ensure performance and ease of co
 *   **Deployment**: Vercel
 
 ### System Status (Layer 4 - Phase 4.3)
-The **Event Registration System** is in progress.
+The **Event Registration System** is partially complete.
 
 **Completed (Layer 3)**:
 *   ✅ **Decap/Sveltia CMS Integration**: Full content management via `/admin`.
@@ -40,11 +40,23 @@ The **Event Registration System** is in progress.
 *   ✅ **Dynamic Routing**: Automatic page generation from Markdown/MDX content.
 *   ✅ **i18n**: Built-in support for multiple languages (Chinese/English/German).
 
-**Phase 4.3 Progress**:
-*   ✅ **Phase 4.3.1**: Backend API (FastAPI) + Database (Neon Postgres) deployed
-*   ✅ **Phase 4.3.1**: Email-based registration (no OAuth) - Frontend form + Resend integration
-*   ✅ **Phase 4.3.1**: Privacy policy pages (zh/en/de) + GDPR compliance (unsubscribe tokens)
-*   🔄 **Phase 4.3.2**: Events page UI redesign (planning stage - see `docs/rebuild_plan/phase_4_3_2_event_ui.md`)
+**Phase 4.3.1 - Basic Registration** (✅ Complete):
+*   ✅ Backend API (FastAPI + Neon Postgres) deployed to Vercel
+*   ✅ Email-based registration (Email + Name, no OAuth required)
+*   ✅ Multi-language email notifications (Resend API, zh/en/de)
+*   ✅ Frontend Preact registration form component
+*   ✅ Privacy policy pages (zh/en/de) + GDPR compliance
+*   ✅ Database triggers for seat management
+
+**Phase 4.3.1.5 - Testing & Deployment** (⏳ TODO):
+*   ⏳ E2E functional testing (8 test scenarios)
+*   ⏳ Frontend deployment to production
+*   ⏳ Email delivery monitoring
+
+**Phase 4.3.2 - UI Redesign** (📋 Planned):
+*   📋 Featured events hero section (see `docs/rebuild_plan/phase_4_3_2_event_ui.md`)
+*   📋 Weekly regulars card grid
+*   📋 Responsive design improvements
 
 ## Getting Started
 
