@@ -1,36 +1,78 @@
 """
-ACC ClubHub - FastAPI 后端应用
-会员注册、活动管理、报名系统
+ACC ClubHub - FastAPI Backend Application
+Phase 4.3: Event Registration System
 """
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from config import settings, get_allowed_origins
+from routes import events, rsvp
 
 app = FastAPI(
     title="ACC ClubHub API",
-    description="ACC 俱乐部后端服务",
-    version="0.1.0"
+    description="ACC (Across Cycling Club Munich) Backend Services - Event Registration System",
+    version="0.4.3",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
-# CORS 配置
+# ============================================================
+# CORS Configuration
+# ============================================================
+# Dynamically configure CORS origins from environment variable
+allowed_origins = get_allowed_origins()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境需要限制
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/")
+# ============================================================
+# Health Check
+# ============================================================
+@app.get("/", tags=["Root"])
 def read_root():
-    return {"message": "Welcome to ACC ClubHub API"}
+    """Root endpoint - API information"""
+    return {
+        "message": "Welcome to ACC ClubHub API",
+        "version": "0.4.3",
+        "docs": "/docs",
+        "status": "operational"
+    }
 
-@app.get("/health")
+@app.get("/health", tags=["Health"])
 def health_check():
-    return {"status": "healthy"}
+    """Health check endpoint for monitoring"""
+    from config import is_production_mode
 
-# TODO: 导入路由
-# from routes import members, events, rsvp
-# app.include_router(members.router, prefix="/api/members", tags=["members"])
-# app.include_router(events.router, prefix="/api/events", tags=["events"])
-# app.include_router(rsvp.router, prefix="/api/rsvp", tags=["rsvp"])
+    health_status = {
+        "status": "healthy",
+        "service": "acc-cluhab-backend",
+        "version": "0.4.3",
+        "mode": "production" if is_production_mode() else "development"
+    }
+
+    if not is_production_mode():
+        health_status["warning"] = "Running in development mode - some features may not work"
+
+    return health_status
+
+# ============================================================
+# Route Registration
+# ============================================================
+# Events API - 活动管理
+app.include_router(events.router, tags=["Events"])
+
+# RSVP API - 报名管理
+app.include_router(rsvp.router, tags=["RSVP"])
+
+# ============================================================
+# Future Routes (TODO)
+# ============================================================
+# from routes import members, auth
+# app.include_router(members.router, prefix="/api/members", tags=["Members"])
+# app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+

@@ -3,7 +3,7 @@
 // 骑行路线 - 详情页
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import GiscusComments from '../../../components/GiscusComments.astro';
+import WalineComments from '../../../components/WalineComments.astro';
 import { getCollection, render } from 'astro:content';
 import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
 
@@ -105,7 +105,7 @@ const difficultyColors: Record<string, string> = {
       <Content />
     </div>
 
-    <GiscusComments lang={lang} />
+    <WalineComments lang={lang} />
   </article>
 </BaseLayout>
 
