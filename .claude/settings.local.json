@@ -29,7 +29,8 @@
       "Bash(poetry install:*)",
       "Bash(findstr:*)",
       "Bash(poetry:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(xargs:*)"
     ]
   }
 }

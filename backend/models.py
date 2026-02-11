@@ -3,13 +3,19 @@ ACC ClubHub - SQLAlchemy 数据模型
 Phase 4.3: Updated for Supabase Auth integration (UUID user_id instead of Member ID)
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Text, UUID
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
-Base = declarative_base()
+
+def _utcnow() -> datetime:
+    """Return timezone-aware UTC now."""
+    return datetime.now(timezone.utc)
+
+
+class Base(DeclarativeBase):
+    pass
 
 
 class Member(Base):
@@ -22,7 +28,7 @@ class Member(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String(255), unique=True, index=True, nullable=False)
     name = Column(String(100), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=_utcnow)
     is_active = Column(Boolean, default=True)
 
     # 关系
@@ -47,8 +53,8 @@ class Event(Base):
     current_participants = Column(Integer, default=0)  # NEW: track current registrations
     registration_deadline = Column(DateTime(timezone=True), nullable=True)  # NEW
     is_public = Column(Boolean, default=True)  # NEW
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)  # UPDATED
-    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)  # NEW
+    created_at = Column(DateTime(timezone=True), default=_utcnow)  # UPDATED
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)  # NEW
 
     # 关系
     rsvps = relationship("RSVP", back_populates="event", cascade="all, delete-orphan")
@@ -75,7 +81,7 @@ class RSVP(Base):
     member_id = Column(Integer, ForeignKey("members.id"), nullable=True)  # Legacy: 保留过渡期兼容
     status = Column(String(20), default="confirmed", index=True)  # UPDATED: confirmed, cancelled, waitlist
     notes = Column(Text, nullable=True)  # NEW: User notes (dietary restrictions, etc.)
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)  # UPDATED
+    created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)  # UPDATED
 
     # 关系
     member = relationship("Member", back_populates="rsvps")

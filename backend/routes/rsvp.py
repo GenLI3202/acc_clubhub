@@ -9,7 +9,7 @@ from typing import Optional, Dict
 from database import get_db
 from models import Event, RSVP
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
 router = APIRouter()
@@ -50,34 +50,35 @@ def create_rsvp(
 
     Note: In Phase 4.3.1 (no auth), you can pass a temporary user_id for testing
     """
-    # 1. 查询活动
-    event = db.query(Event).filter(Event.id == event_id).first()
+    # 1. 查询活动 (使用 FOR UPDATE 行锁防止并发超额)
+    event = db.query(Event).filter(
+        Event.id == event_id
+    ).with_for_update().first()
     if not event:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event with id {event_id} not found"
+            detail=f"Event with id {event_id} not found",
         )
 
     # TODO: Phase 4.3.2 - Get user_id from authentication
-    # For now, we'll require it to be passed (temporary solution)
-    # user_id = ...  # From JWT token
+    # user_id: UUID = Depends(get_current_user)
 
     # 2. 检查报名截止时间
-    if event.registration_deadline and event.registration_deadline < datetime.utcnow():
+    if event.registration_deadline and event.registration_deadline < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Registration deadline has passed"
+            detail="Registration deadline has passed",
         )
 
     # TODO: Phase 4.3.2 - 检查是否已报名 (需要 user_id)
     # existing_rsvp = db.query(RSVP).filter(
     #     RSVP.event_id == event_id,
-    #     RSVP.user_id == str(user_id)
+    #     RSVP.user_id == user_id,
     # ).first()
     # if existing_rsvp:
     #     raise HTTPException(
     #         status_code=status.HTTP_400_BAD_REQUEST,
-    #         detail="Already registered for this event"
+    #         detail="Already registered for this event",
     #     )
 
     # 3. 检查席位
@@ -88,39 +89,36 @@ def create_rsvp(
         spots_available = event.max_participants - event.current_participants
         if spots_available <= 0:
             rsvp_status = "waitlist"
-            # 计算等待名单位置
             waitlist_pos = db.query(RSVP).filter(
                 RSVP.event_id == event_id,
-                RSVP.status == "waitlist"
+                RSVP.status == "waitlist",
             ).count() + 1
 
     # 4. 创建 RSVP 记录
     # TODO: Phase 4.3.2 - 使用真实的 user_id
     # new_rsvp = RSVP(
     #     event_id=event_id,
-    #     user_id=str(user_id),
+    #     user_id=user_id,
     #     status=rsvp_status,
-    #     notes=rsvp_data.notes
+    #     notes=rsvp_data.notes,
     # )
-
-    # Phase 4.3.1: 临时创建测试 RSVP (需要手动指定 user_id)
-    # 这会在 Phase 4.3.2 集成认证后移除
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="RSVP creation requires authentication. Please implement Phase 4.3.2 (Auth integration) first."
-    )
-
-    # Phase 4.3.2 之后的代码:
     # db.add(new_rsvp)
 
-    # 5. 更新活动参加人数
-    # if rsvp_status == "confirmed":
-    #     event.current_participants += 1
+    # Phase 4.3.1: 需要认证系统才能创建 RSVP
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="RSVP creation requires authentication. Implement Phase 4.3.2 first.",
+    )
+
+    # Phase 4.3.2 之后启用:
+    # NOTE: current_participants 由数据库触发器自动更新
+    # (见 migrations/001_initial_schema.sql: update_event_participants)
+    # 不需要在 Python 代码中手动 event.current_participants += 1
 
     # db.commit()
     # db.refresh(new_rsvp)
 
-    # 6. 发送邮件 (Phase 4.3.3 实现)
+    # 5. 发送邮件 (Phase 4.3.3 实现)
     # send_confirmation_email(user_email, event)
 
     # return RSVPResponse(
@@ -129,13 +127,13 @@ def create_rsvp(
     #     rsvp={
     #         "id": new_rsvp.id,
     #         "status": rsvp_status,
-    #         "registration_date": new_rsvp.created_at.isoformat()
+    #         "registration_date": new_rsvp.created_at.isoformat(),
     #     },
     #     event={
     #         "title": event.title,
-    #         "event_date": event.event_date.isoformat()
+    #         "event_date": event.event_date.isoformat(),
     #     } if rsvp_status == "confirmed" else None,
-    #     waitlist_position=waitlist_pos
+    #     waitlist_position=waitlist_pos,
     # )
 
 

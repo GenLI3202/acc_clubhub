@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS rsvps (
   id SERIAL PRIMARY KEY,
   event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
   user_id UUID NOT NULL,  -- Supabase Auth user ID
-  member_id INTEGER REFERENCES members(id) ON DELETE SET NULL,  -- Legacy: 保留过渡期兼容
+  member_id INTEGER,  -- Legacy: 保留过渡期兼容 (no FK constraint, members table may not exist)
   status VARCHAR(20) DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled', 'waitlist')),
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

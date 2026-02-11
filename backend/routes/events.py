@@ -9,7 +9,7 @@ from typing import List, Optional
 from database import get_db
 from models import Event
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -69,7 +69,7 @@ def get_events(
         query = query.filter(Event.event_type == event_type)
 
     if upcoming_only:
-        query = query.filter(Event.event_date >= datetime.utcnow())
+        query = query.filter(Event.event_date >= datetime.now(timezone.utc))
 
     # Order by date (soonest first)
     query = query.order_by(Event.event_date.asc())

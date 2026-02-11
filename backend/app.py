@@ -50,7 +50,7 @@ def health_check():
 
     health_status = {
         "status": "healthy",
-        "service": "acc-cluhab-backend",
+        "service": "acc-clubhub-backend",
         "version": "0.4.3",
         "mode": "production" if is_production_mode() else "development"
     }

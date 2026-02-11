@@ -6,6 +6,101 @@
 
 ---
 
+## 🔍 代码审查与修复记录 (2026-02-11)
+
+### 已修复的问题
+
+| # | 问题 | 位置 | 修复状态 |
+|---|------|------|---------|
+| 1 | 使用废弃的 `declarative_base()` API | `models.py:8` | ✅ 已修复 → 使用 `DeclarativeBase` |
+| 2 | 使用废弃的 `datetime.utcnow()` | `models.py`, `events.py`, `rsvp.py` | ✅ 已修复 → 使用 `datetime.now(timezone.utc)` |
+| 3 | RSVP 并发竞态条件 | `rsvp.py:54` | ✅ 已修复 → 添加 `with_for_update()` 行锁 |
+| 4 | 数据库触发器 vs Python 重复计数 | `rsvp.py:117`, `001_initial_schema.sql:126` | ✅ 已修复 → 删除 Python 手动计数，使用触发器 |
+| 5 | 健康检查接口拼写错误 | `app.py:53` | ✅ 已修复 → `acc-cluhab` → `acc-clubhub` |
+| 6 | SQL 外键引用不存在的表 | `001_initial_schema.sql:37` | ✅ 已修复 → 移除 `members` 表 FK 约束 |
+
+### 待确认的架构决策
+
+| # | 问题 | 影响范围 | 推荐方案 |
+|---|------|---------|---------|
+| 7 | **数据库选择**: Supabase vs Neon | 整个后端 | **使用 Supabase Postgres** (需要 Auth + RLS) |
+| 8 | `config.py` Optional 设计 | 开发环境配置 | ✅ 当前实现正确 (支持无 Supabase 开发) |
+| 9 | UUID vs String 类型不一致 | `rsvp.py` user_id 处理 | 使用 `UUID` 类型，不转 `str()` |
+| 10 | Astro `<script>` 中使用 `import.meta.env` | 前端组件 | 使用 `define:vars` 或 `data-*` 属性传递 |
+
+### 修复详情
+
+#### 修复 #1-2: 更新为现代 SQLAlchemy 2.0 API
+
+**问题**: SQLAlchemy 2.0 废弃了 `declarative_base()` 和 `datetime.utcnow()`
+
+**修复** (`models.py`):
+```python
+# ❌ 旧代码 (deprecated)
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+Base = declarative_base()
+created_at = Column(DateTime, default=datetime.utcnow)
+
+# ✅ 新代码 (modern)
+from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime, timezone
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+class Base(DeclarativeBase):
+    pass
+
+created_at = Column(DateTime(timezone=True), default=_utcnow)
+```
+
+#### 修复 #3: RSVP 并发安全
+
+**问题**: 两个用户同时报名可能导致超额 (TOCTOU race condition)
+
+**修复** (`rsvp.py:54-56`):
+```python
+# ✅ 使用 SELECT FOR UPDATE 行锁
+event = db.query(Event).filter(
+    Event.id == event_id
+).with_for_update().first()  # 锁定此行直到事务提交
+```
+
+#### 修复 #4: 避免重复计数
+
+**问题**: 数据库触发器已自动更新 `current_participants`，Python 代码不应再手动 `+= 1`
+
+**修复** (`rsvp.py:114-116`):
+```python
+# NOTE: current_participants 由数据库触发器自动更新
+# (见 migrations/001_initial_schema.sql: update_event_participants)
+# 不需要在 Python 代码中手动 event.current_participants += 1
+```
+
+#### 修复 #6: 移除不存在的外键约束
+
+**问题**: `members` 表不在此 migration 中创建，FK 会失败
+
+**修复** (`001_initial_schema.sql:37`):
+```sql
+-- ❌ 旧代码
+member_id INTEGER REFERENCES members(id) ON DELETE SET NULL,
+
+-- ✅ 新代码
+member_id INTEGER,  -- Legacy: no FK constraint, members table may not exist
+```
+
+### 计划文档需更新的部分
+
+以下代码示例在原计划中已过时，实际代码已按上述修复实施：
+- **Step 6** (第 769 行): `models.py` 示例代码
+- **Step 7** (第 925 行): `rsvp.py` 并发逻辑
+- **Step 10** (第 1278 行): 前端组件 `import.meta.env` 问题
+- **Step 11** (第 1141 行): 邮件域名拼写 `acc-clubhub.de` → `acc-clubhub.de`
+
+---
+
 ## Context
 
 ### 当前实现分析
@@ -717,20 +812,45 @@ ALLOWED_ORIGINS=http://localhost:4321,https://your-acc-clubhub.vercel.app
 
 ```python
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 class Settings(BaseSettings):
-    SUPABASE_URL: str
-    SUPABASE_ANON_KEY: str
-    SUPABASE_SERVICE_ROLE_KEY: str
-    DATABASE_URL: str
-    SUPABASE_JWT_SECRET: str
-    RESEND_API_KEY: str
+    """
+    应用配置 - 所有字段为 Optional 以支持开发模式
+    (开发时可不配置 Supabase/Resend，仅使用本地数据库)
+    """
+    # Supabase (Optional for dev mode)
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_ANON_KEY: Optional[str] = None
+    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
+    SUPABASE_JWT_SECRET: Optional[str] = None
+
+    # Database (Optional for dev mode)
+    DATABASE_URL: Optional[str] = None
+
+    # Email Service (Optional for dev mode)
+    RESEND_API_KEY: Optional[str] = None
+
+    # CORS
     ALLOWED_ORIGINS: str = "*"
+
+    # Application
+    APP_NAME: str = "ACC ClubHub API"
+    DEBUG: bool = False
 
     class Config:
         env_file = ".env"
+        case_sensitive = True
 
 settings = Settings()
+
+def is_production_mode() -> bool:
+    """Check if all production services are configured"""
+    return bool(
+        settings.SUPABASE_URL
+        and settings.DATABASE_URL
+        and settings.RESEND_API_KEY
+    )
 ```
 
 #### Step 5: 数据库连接设置
@@ -762,16 +882,23 @@ def get_db() -> Session:
 ```python
 """
 ACC ClubHub - SQLAlchemy 数据模型
+Phase 4.3: Updated for Supabase Auth integration (UUID user_id instead of Member ID)
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Text, UUID
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy.dialects.postgresql import JSONB
-import uuid
 
-Base = declarative_base()
+
+def _utcnow() -> datetime:
+    """Return timezone-aware UTC now (replaces deprecated datetime.utcnow)"""
+    return datetime.now(timezone.utc)
+
+
+class Base(DeclarativeBase):
+    """SQLAlchemy 2.0 declarative base (replaces deprecated declarative_base())"""
+    pass
 
 
 class Event(Base):
@@ -789,8 +916,8 @@ class Event(Base):
     current_participants = Column(Integer, default=0)
     registration_deadline = Column(DateTime(timezone=True), nullable=True)
     is_public = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)  # Fixed: use _utcnow instead of datetime.utcnow
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     # 关系
     rsvps = relationship("RSVP", back_populates="event", cascade="all, delete-orphan")
@@ -802,10 +929,10 @@ class RSVP(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     event_id = Column(Integer, ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
-    user_id = Column(UUID(as_uuid=True), nullable=False)  # Supabase Auth user ID (UUID)
-    status = Column(String(20), default="confirmed")  # confirmed, cancelled, waitlist
+    user_id = Column(UUID(as_uuid=True), nullable=False, index=True)  # Supabase Auth user ID (UUID)
+    status = Column(String(20), default="confirmed", index=True)  # confirmed, cancelled, waitlist
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
 
     # 关系
     event = relationship("Event", back_populates="rsvps")
@@ -911,13 +1038,18 @@ def create_rsvp(
     # user_id: UUID = Depends(get_current_user)  # Phase 4.3.2 添加
 ):
     """创建报名"""
-    # 1. 查询活动
-    event = db.query(Event).filter(Event.id == event_id).first()
+    # 1. 查询活动 (使用 FOR UPDATE 行锁防止并发超额)
+    event = db.query(Event).filter(
+        Event.id == event_id
+    ).with_for_update().first()  # ✅ 添加行锁，防止 TOCTOU race condition
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
     # 2. 检查是否已报名
-    # existing_rsvp = db.query(RSVP).filter(...).first()
+    # existing_rsvp = db.query(RSVP).filter(
+    #     RSVP.event_id == event_id,
+    #     RSVP.user_id == user_id,  # Phase 4.3.2: use actual user_id
+    # ).first()
     # if existing_rsvp:
     #     raise HTTPException(status_code=400, detail="Already registered")
 
@@ -942,15 +1074,16 @@ def create_rsvp(
     # 4. 创建 RSVP 记录
     new_rsvp = RSVP(
         event_id=event_id,
-        # user_id=user_id,  # Phase 4.3.2 添加
+        # user_id=user_id,  # Phase 4.3.2: use UUID from Supabase Auth
         status=rsvp_status,
         notes=rsvp_data.notes
     )
     db.add(new_rsvp)
 
-    # 5. 更新活动参加人数
-    if rsvp_status == "confirmed":
-        event.current_participants += 1
+    # NOTE: ✅ current_participants 由数据库触发器自动更新
+    # (见 migrations/001_initial_schema.sql: update_event_participants)
+    # 不需要在 Python 代码中手动 event.current_participants += 1
+    # 这样避免了触发器和 Python 代码双重计数的问题
 
     db.commit()
     db.refresh(new_rsvp)
@@ -1138,7 +1271,7 @@ def send_confirmation_email(
     """发送报名确认邮件"""
 
     params = {
-        "from": "ACC ClubHub <noreply@acc-cluhab.de>",
+        "from": "ACC ClubHub <noreply@acc-clubhub.de>",
         "to": [user_email],
         "subject": f"报名确认: {event_title}",
         "html": f"""
@@ -1458,7 +1591,16 @@ const registrationLabels: Record<string, string> = {
 </ArticleLayout>
 
 <!-- 客户端脚本：动态加载报名按钮 -->
-<script>
+<script define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL }}>
+  // ⚠️ IMPORTANT: 在 Astro <script> 标签中不能直接使用 import.meta.env
+  // 必须使用 define:vars 指令将服务端变量传递到客户端
+  // 或者使用 data-* 属性通过 DOM 传递
+  //
+  // ❌ 错误方式：const url = import.meta.env.PUBLIC_API_URL  (不会工作)
+  // ✅ 正确方式：使用 define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL }}
+  //
+  // 参考：WalineComments.astro 已使用此模式解决同样问题
+
   import { supabase } from '../../lib/supabase';
   import { EventRegistrationButton } from '../../components/EventRegistrationButton';
 
@@ -1471,7 +1613,7 @@ const registrationLabels: Record<string, string> = {
 
     try {
       // 从 API 获取活动信息（包含 id 和席位信息）
-      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/events/${slug}`);
+      const response = await fetch(`${apiUrl}/api/events/${slug}`);
       if (!response.ok) throw new Error('Failed to load event');
 
       const eventData = await response.json();
@@ -1483,7 +1625,7 @@ const registrationLabels: Record<string, string> = {
       let isRegistered = false;
       if (session) {
         const rsvpResponse = await fetch(
-          `${import.meta.env.PUBLIC_API_URL}/api/user/rsvps`,
+          `${apiUrl}/api/user/rsvps`,
           {
             headers: { 'Authorization': `Bearer ${session.access_token}` }
           }
@@ -2153,8 +2295,45 @@ ORDER BY r.created_at;
 
 ---
 
-**文档版本**: 1.1
+## 附录：数据库架构决策说明
+
+### Supabase vs Neon vs 复用现有 Neon 数据库
+
+当前项目中 Waline 评论系统已使用 **Vercel Postgres (Neon)**。对于活动报名系统，有三种选择：
+
+| 方案 | 优点 | 缺点 | 推荐指数 |
+|------|------|------|---------|
+| **A. 复用 Neon** | 单一数据库，简化管理 | 无 RLS，需手动实现权限 | ⭐⭐ |
+| **B. 新建 Supabase** | Auth + RLS + Realtime 开箱即用 | 多服务管理 | ⭐⭐⭐⭐⭐ |
+| **C. Neon + Supabase Auth** | Auth 免费，数据库统一 | 需手动集成 RLS | ⭐⭐⭐ |
+
+**当前计划采用方案 B (Supabase Postgres)**，原因：
+1. Supabase Auth 是 Phase 4.4 的核心需求
+2. RLS (Row Level Security) 简化权限管理
+3. 自动触发器 `auth.uid()` 函数可直接使用
+4. Realtime 订阅功能可用于席位实时更新
+5. 免费额度足够小型项目
+
+**数据库分离策略**:
+- **Waline 评论** → Neon (Vercel Postgres) — 已部署
+- **活动报名** → Supabase Postgres — 待部署
+- 未来可考虑迁移 Waline 到 Supabase 统一管理（可选）
+
+**环境变量配置**:
+```bash
+# Waline (已配置)
+POSTGRES_HOST=...
+POSTGRES_DATABASE=...
+
+# 活动报名系统 (待配置)
+SUPABASE_URL=https://your-project.supabase.co
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[project].supabase.co:5432/postgres
+```
+
+---
+
+**文档版本**: 1.2
 **创建日期**: 2026-02-10
-**最后更新**: 2026-02-10
+**最后更新**: 2026-02-11
 **作者**: Claude (Anthropic)
-**状态**: 已修复所有已知问题，待用户审核
+**状态**: ✅ 代码修复完成，计划文档已更新，待执行 Phase 4.3.1
