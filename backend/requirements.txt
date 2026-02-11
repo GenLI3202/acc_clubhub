@@ -4,22 +4,18 @@
 fastapi>=0.104.1
 uvicorn[standard]>=0.24.0
 
-# Database (PostgreSQL for Supabase)
+# Database (PostgreSQL via Neon)
 sqlalchemy>=2.0.23
 psycopg2-binary>=2.9.9
 
 # Validation & Settings
-pydantic>=2.5.0
+pydantic[email]>=2.5.0
 pydantic-settings>=2.1.0
 python-dotenv>=1.0.0
-
-# Authentication (JWT for Supabase)
-python-jose[cryptography]>=3.3.0
-python-multipart>=0.0.6
 
 # HTTP Client & Email
 httpx>=0.25.1
 resend>=0.8.0
 
-# Utilities
-python-frontmatter>=1.1.0  # For parsing Markdown frontmatter
+# Form parsing
+python-multipart>=0.0.6
