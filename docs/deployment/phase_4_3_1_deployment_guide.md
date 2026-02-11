@@ -44,6 +44,7 @@ ORDER BY table_name;
 ```
 
 **预期输出**:
+
 ```
 table_name
 -------------------
@@ -54,6 +55,7 @@ subscribers
 ```
 
 如果还看到 Waline 的表，这是正常的:
+
 ```
 event_metadata
 events
@@ -113,13 +115,14 @@ WHERE slug = 'test-event-2026';
 1. 进入项目 Settings → Environment Variables
 2. 添加以下变量:
 
-| Key | Value | 说明 |
-|-----|-------|------|
-| `DATABASE_URL` | `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require` | 从 Neon Dashboard → Connection String 复制 |
-| `RESEND_API_KEY` | `re_xxxxxxxxx` | 从 https://resend.com/api-keys 获取（需注册账号）|
-| `ALLOWED_ORIGINS` | `http://localhost:4321,https://acc-clubhub.vercel.app` | CORS 配置 |
+| Key                 | Value                                                              | 说明                                              |
+| ------------------- | ------------------------------------------------------------------ | ------------------------------------------------- |
+| `DATABASE_URL`    | `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require` | 从 Neon Dashboard → Connection String 复制       |
+| `RESEND_API_KEY`  | `re_xxxxxxxxx`                                                   | 从 https://resend.com/api-keys 获取（需注册账号） |
+| `ALLOWED_ORIGINS` | `http://localhost:4321,https://acc-clubhub.vercel.app`           | CORS 配置                                         |
 
 **注意**:
+
 - `DATABASE_URL` 使用 Waline 同一个数据库的连接字符串
 - `RESEND_API_KEY` 如果还没有，可以暂时留空（Phase 4.3.3 再配置）
 
@@ -129,14 +132,16 @@ WHERE slug = 'test-event-2026';
 
 ### 2.4 验证部署成功
 
-访问部署的 URL（例如 `https://acc-clubhub-backend.vercel.app`）:
+访问部署的 URL（例如 `https://acc-clubhub-events-ms.vercel.app`）:
 
 **测试 Root 端点**:
+
 ```
-https://acc-clubhub-backend.vercel.app/
+acc-clubhub-events-ms.vercel.app
 ```
 
 **预期返回**:
+
 ```json
 {
   "message": "Welcome to ACC ClubHub API",
@@ -147,11 +152,13 @@ https://acc-clubhub-backend.vercel.app/
 ```
 
 **测试 Health 端点**:
+
 ```
-https://acc-clubhub-backend.vercel.app/health
+acc-clubhub-events-ms.vercel.apphealth
 ```
 
 **预期返回** (如果 RESEND_API_KEY 未配置):
+
 ```json
 {
   "status": "healthy",
@@ -163,6 +170,7 @@ https://acc-clubhub-backend.vercel.app/health
 ```
 
 **预期返回** (如果 RESEND_API_KEY 已配置):
+
 ```json
 {
   "status": "healthy",
@@ -174,9 +182,10 @@ https://acc-clubhub-backend.vercel.app/health
 
 ### 2.5 测试 API 文档
 
-访问: `https://acc-clubhub-backend.vercel.app/docs`
+访问: `acc-clubhub-events-ms.vercel.appdocs`
 
 应该看到 FastAPI 自动生成的 Swagger UI 文档，包含:
+
 - GET `/` - Root
 - GET `/health` - Health Check
 - GET `/api/events` - List Events
@@ -207,6 +216,7 @@ https://acc-clubhub-backend.vercel.app/health
 3. 点击 **Execute**
 
 **预期返回 200**:
+
 ```json
 {
   "success": true,
@@ -230,7 +240,7 @@ https://acc-clubhub-backend.vercel.app/health
 PUBLIC_WALINE_SERVER_URL=https://acc-clubhub-waline.vercel.app
 
 # 新增: 后端 API URL
-PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
+PUBLIC_API_URL=https://acc-clubhub-events-ms.vercel.app
 ```
 
 ### 3.2 Vercel 生产环境
@@ -240,7 +250,7 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
 1. Settings → Environment Variables
 2. 添加:
    - Key: `PUBLIC_API_URL`
-   - Value: `https://acc-clubhub-backend.vercel.app`
+   - Value: `https://acc-clubhub-events-ms.vercel.app`
 3. 点击 **Save**
 4. 重新部署前端
 
@@ -248,12 +258,12 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
 
 ## 验证清单
 
-- [ ] Neon 数据库中成功创建 4 张表 (events, rsvps, subscribers, event_metadata)
-- [ ] 触发器正常工作 (插入 RSVP 后 `current_participants` 自动增加)
-- [ ] 后端部署到 Vercel 成功
-- [ ] `/` 和 `/health` 端点返回正常
-- [ ] `/docs` 可以访问 Swagger UI
-- [ ] 可以通过 API 创建 RSVP (如果有测试活动数据)
+- [x] Neon 数据库中成功创建 4 张表 (events, rsvps, subscribers, event_metadata)
+- [x] 触发器正常工作 (插入 RSVP 后 `current_participants` 自动增加)
+- [x] 后端部署到 Vercel 成功
+- [x] `/` 和 `/health` 端点返回正常
+- [x] `/docs` 可以访问 Swagger UI
+- [x] 可以通过 API 创建 RSVP (如果有测试活动数据)
 - [ ] 前端环境变量 `PUBLIC_API_URL` 已配置
 
 ---
@@ -265,6 +275,7 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
 **原因**: Root Directory 设置错误
 
 **解决**:
+
 1. Vercel Dashboard → Settings → General
 2. **Root Directory**: 设置为 `backend`
 3. Save → Redeploy
@@ -274,6 +285,7 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
 **原因**: `DATABASE_URL` 环境变量未配置或格式错误
 
 **解决**:
+
 1. 检查 Vercel 环境变量中 `DATABASE_URL` 是否存在
 2. 从 Neon Dashboard 复制正确的连接字符串
 3. 确保字符串包含 `?sslmode=require`
@@ -283,6 +295,7 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
 **原因**: 数据库触发器未创建
 
 **解决**:
+
 1. 在 Neon SQL Editor 重新运行 `001_initial_schema.sql`
 2. 手动验证触发器:
    ```sql
@@ -290,6 +303,7 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
    FROM information_schema.triggers
    WHERE event_object_table = 'rsvps';
    ```
+
    应该看到 `update_participants_on_rsvp_change` 触发器
 
 ---
@@ -299,6 +313,7 @@ PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
 ✅ **Phase 4.3.1 完成！**
 
 下一阶段:
+
 - **Phase 4.3.2**: 创建前端报名表单 (Preact 组件)
 - **Phase 4.3.3**: 集成 Resend 邮件服务
 
