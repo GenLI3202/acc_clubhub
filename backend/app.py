@@ -69,3 +69,9 @@ app.include_router(events.router, tags=["Events"])
 # RSVP + Subscription API - 报名管理 + 活动订阅
 app.include_router(rsvp.router, tags=["RSVP & Subscription"])
 
+# ============================================================
+# Vercel Serverless Handler
+# ============================================================
+# This is required for Vercel's Python runtime
+handler = app
+
