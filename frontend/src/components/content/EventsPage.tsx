@@ -41,28 +41,28 @@ export default function EventsPage({ initialItems, lang, initialFilters = {} }: 
                 lang={lang}
             />
 
-            {filteredItems.length > 0 ? (
-                <MasonryGrid>
-                    {filteredItems.map((entry) => {
-                        const data = entry.data || entry;
-                        const href = `/${lang}/events/${data.slug}`;
+            <MasonryGrid>
+                {filteredItems.map((entry) => {
+                    const data = entry.data || entry;
+                    const href = `/${lang}/events/${data.slug}`;
 
-                        return (
-                            <MasonryCard
-                                key={data.slug}
-                                href={href}
-                                title={data.title}
-                                description={data.description}
-                                cover={data.cover}
-                                date={data.date}
-                                seed={data.slug}
-                                lang={lang}
-                                meta={getFilterLabel('eventType', data.eventType, lang)}
-                            />
-                        );
-                    })}
-                </MasonryGrid>
-            ) : (
+                    return (
+                        <MasonryCard
+                            key={data.slug}
+                            href={href}
+                            title={data.title}
+                            description={data.description}
+                            cover={data.cover}
+                            date={data.date}
+                            seed={data.slug}
+                            lang={lang}
+                            meta={getFilterLabel('eventType', data.eventType, lang)}
+                        />
+                    );
+                })}
+            </MasonryGrid>
+
+            {filteredItems.length === 0 && Object.keys(filters).length > 0 && (
                 <div class="empty-state" style={{
                     textAlign: 'center',
                     padding: '4rem',
