@@ -31,12 +31,20 @@ This project is rebuilt with a modern stack to ensure performance and ease of co
 *   **Styling**: TailwindCSS & Custom Design System
 *   **Deployment**: Vercel
 
-### System Status (Layer 3)
-The **Content System** is currently active.
+### System Status (Layer 4 - Phase 4.3)
+The **Event Registration System** is in progress.
+
+**Completed (Layer 3)**:
 *   ✅ **Decap/Sveltia CMS Integration**: Full content management via `/admin`.
 *   ✅ **Content Collections**: Type-safe schemas for Media, Knowledge, and Routes.
 *   ✅ **Dynamic Routing**: Automatic page generation from Markdown/MDX content.
 *   ✅ **i18n**: Built-in support for multiple languages (Chinese/English/German).
+
+**Phase 4.3 Progress**:
+*   ✅ **Phase 4.3.1**: Backend API (FastAPI) + Database (Neon Postgres) deployed
+*   ✅ **Phase 4.3.1**: Email-based registration (no OAuth) - Frontend form + Resend integration
+*   ✅ **Phase 4.3.1**: Privacy policy pages (zh/en/de) + GDPR compliance (unsubscribe tokens)
+*   🔄 **Phase 4.3.2**: Events page UI redesign (planning stage - see `docs/rebuild_plan/phase_4_3_2_event_ui.md`)
 
 ## Getting Started
 
