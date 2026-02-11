@@ -5,7 +5,7 @@ description: 轻松的下班后社交骑行，适合所有级别的骑友
 location: 英国花园南门
 date: 2025-06-20
 eventType: social-ride
-cover: /images/uploads/social.jpg
+cover: /images/red_logo.png
 ---
 
 # 每周五社交骑

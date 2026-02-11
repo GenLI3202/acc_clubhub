@@ -5,7 +5,7 @@ description: 为期3天的阿尔卑斯山地骑行，体验壮丽的山景和挑
 location: 慕尼黑中央火车站集合
 date: 2025-07-15
 eventType: training-camp
-cover: /images/uploads/alps.jpg
+cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 ---
 
 # 2025 阿尔卑斯夏日骑行

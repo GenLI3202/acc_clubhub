@@ -5,9 +5,8 @@ description: 学习基础的自行车维修保养技能
 location: ACC Club House
 date: 2025-06-10
 eventType: workshop
-cover: /images/uploads/workshop.jpg
+cover: /images/uploads/DSC04622.jpg
 ---
-
 # 单车维修工作坊
 
 ## 工作坊介绍
