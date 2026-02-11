@@ -44,7 +44,9 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
   lang={lang}
   backLink={`/${lang}/events`}
   backLabel={t(lang, 'nav.events')}
+  hasSidebar={!entry.data.registrationLink}
 >
+  <!-- Event Info -->
   <div class="event-info">
     {entry.data.eventType && (
       <span class="event-type-badge">{entry.data.eventType}</span>
@@ -54,9 +56,20 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
     )}
   </div>
 
-  <!-- Registration Form (if no external link) -->
+  <!-- Fallback: External registration link (if provided) -->
+  {entry.data.registrationLink && (
+    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
+      {registrationLabels[lang] || registrationLabels.en} →
+    </a>
+  )}
+
+  <!-- Main Content -->
+  <Content />
+
+  <!-- Sidebar: Registration Form -->
   {!entry.data.registrationLink && (
     <div
+      slot="sidebar"
       id="registration-container"
       data-slug={entry.data.slug}
       data-lang={lang}
@@ -65,15 +78,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
       <!-- EventRegistrationForm will be hydrated here -->
     </div>
   )}
-
-  <!-- Fallback: External registration link -->
-  {entry.data.registrationLink && (
-    <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
-      {registrationLabels[lang] || registrationLabels.en} →
-    </a>
-  )}
-
-  <Content />
 </ArticleLayout>
 
 <!-- Client-side script to hydrate registration form -->

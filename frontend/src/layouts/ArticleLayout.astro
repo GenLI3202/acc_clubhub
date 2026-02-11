@@ -15,9 +15,10 @@ interface Props {
   backLink: string;
   backLabel?: string;
   xiaohongshuUrl?: string;
+  hasSidebar?: boolean; // 新增：是否显示侧边栏
 }
 
-const { title, date, author, cover, lang, backLink, backLabel, xiaohongshuUrl } = Astro.props;
+const { title, date, author, cover, lang, backLink, backLabel, xiaohongshuUrl, hasSidebar = false } = Astro.props;
 
 // 安全转换日期：支持 Date 对象和字符串
 const dateObj = date ? (date instanceof Date ? date : new Date(date)) : null;
@@ -33,46 +34,97 @@ const formattedDate = isValidDate
 ---
 
 <BaseLayout title={title} lang={lang}>
-  <article class="article">
-    <header class="article-header">
-      <a href={backLink} class="article-back">
-        ← {backLabel || t(lang, 'content.back')}
-      </a>
+  <div class:list={['article-container', { 'with-sidebar': hasSidebar }]}>
+    <article class="article">
+      <header class="article-header">
+        <a href={backLink} class="article-back">
+          ← {backLabel || t(lang, 'content.back')}
+        </a>
 
-      <h1>{title}</h1>
+        <h1>{title}</h1>
 
-      <div class="article-meta-row">
-        {(formattedDate || author) && (
-          <div class="article-meta">
-            {formattedDate && <time>{formattedDate}</time>}
-            {author && <span class="article-author">by {author}</span>}
-          </div>
-        )}
+        <div class="article-meta-row">
+          {(formattedDate || author) && (
+            <div class="article-meta">
+              {formattedDate && <time>{formattedDate}</time>}
+              {author && <span class="article-author">by {author}</span>}
+            </div>
+          )}
 
-        {xiaohongshuUrl && (
-          <a href={xiaohongshuUrl} target="_blank" rel="noopener" class="xhs-link">
-            小红书 (Xiaohongshu) ↗
-          </a>
-        )}
+          {xiaohongshuUrl && (
+            <a href={xiaohongshuUrl} target="_blank" rel="noopener" class="xhs-link">
+              小红书 (Xiaohongshu) ↗
+            </a>
+          )}
+        </div>
+      </header>
+
+      {cover && (
+        <img src={cover} alt={title} class="article-cover" />
+      )}
+
+      <div class="article-content prose">
+        <slot />
       </div>
-    </header>
 
-    {cover && (
-      <img src={cover} alt={title} class="article-cover" />
+      <WalineComments lang={lang} />
+    </article>
+
+    {hasSidebar && (
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <slot name="sidebar" />
+        </div>
+      </aside>
     )}
-
-    <div class="article-content prose">
-      <slot />
-    </div>
-
-    <WalineComments lang={lang} />
-  </article>
+  </div>
 </BaseLayout>
 
 <style>
+  .article-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .article-container.with-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
   .article {
     max-width: 800px;
-    margin: 0 auto;
+  }
+
+  /* Sidebar styles */
+  .article-sidebar {
+    position: relative;
+  }
+
+  .sidebar-sticky {
+    position: sticky;
+    top: calc(var(--space-lg) + 60px); /* Offset for header */
+    max-height: calc(100vh - var(--space-lg) - 80px);
+    overflow-y: auto;
+  }
+
+  /* Responsive: stack on smaller screens */
+  @media (max-width: 968px) {
+    .article-container.with-sidebar {
+      grid-template-columns: 1fr;
+    }
+
+    .article-sidebar {
+      order: -1; /* Show sidebar above content on mobile */
+      margin-bottom: var(--space-lg);
+    }
+
+    .sidebar-sticky {
+      position: static;
+      max-height: none;
+    }
   }
 
   .article-header {

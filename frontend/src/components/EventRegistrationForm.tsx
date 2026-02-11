@@ -107,8 +107,14 @@ export function EventRegistrationForm({
         );
     }
 
+    const formTitle = {
+        zh: '活动报名',
+        en: 'Event Registration',
+        de: 'Anmeldung',
+    }[lang] || 'Registration';
+
     return (
-        <form className="event-registration-form" onSubmit={handleSubmit}>
+        <form className="event-registration-form" onSubmit={handleSubmit} data-title={formTitle}>
             <div className="spots-indicator">
                 {availableSpots !== null && (
                     <span className={availableSpots > 0 ? 'spots-available' : 'spots-full'}>
