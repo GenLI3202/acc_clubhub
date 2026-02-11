@@ -1,29 +1,131 @@
 # Phase 4.3: 活动报名系统 (Event Registration) — 详细执行方案
 
-> **目标**: 实现完整的内部活动报名系统，支持用户认证、席位管理、邮件通知
-> **当前状态**: 静态页面已完成，仅支持外部报名链接
-> **交付状态**: 用户可登录网站报名活动，管理员可查看报名列表，系统自动发送邮件通知
+> **目标**: Email-based 活动报名 + 活动订阅通知系统
+> **当前状态**: 后端 API 代码已就绪，Neon 数据库待建表
+> **交付状态**: 用户提交邮箱报名活动，可订阅活动通知，管理员可查看报名列表
+
+---
+
+## 🔍 代码审查与修复记录 (2026-02-11)
+
+### 已修复的问题
+
+| # | 问题 | 位置 | 修复状态 |
+|---|------|------|---------|
+| 1 | 使用废弃的 `declarative_base()` API | `models.py:8` | ✅ 已修复 → 使用 `DeclarativeBase` |
+| 2 | 使用废弃的 `datetime.utcnow()` | `models.py`, `events.py`, `rsvp.py` | ✅ 已修复 → 使用 `datetime.now(timezone.utc)` |
+| 3 | RSVP 并发竞态条件 | `rsvp.py:54` | ✅ 已修复 → 添加 `with_for_update()` 行锁 |
+| 4 | 数据库触发器 vs Python 重复计数 | `rsvp.py:117`, `001_initial_schema.sql:126` | ✅ 已修复 → 删除 Python 手动计数，使用触发器 |
+| 5 | 健康检查接口拼写错误 | `app.py:53` | ✅ 已修复 → `acc-cluhab` → `acc-clubhub` |
+| 6 | SQL 外键引用不存在的表 | `001_initial_schema.sql:37` | ✅ 已修复 → 移除 `members` 表 FK 约束 |
+
+### 架构决策 (已确认 2026-02-11)
+
+| # | 问题 | 决策 | 状态 |
+|---|------|------|------|
+| 7 | **数据库选择** | ✅ **Neon 单一数据库** (评论+活动统一存储) | 已确认 |
+| 8 | **认证系统** | ✅ **Supabase Auth** (仅用于认证，不用其数据库) | 已确认 |
+| 9 | **评论系统认证** | ✅ **Waline 保持独立 GitHub OAuth** (见下方分析) | 已确认 |
+| 10 | Astro `<script>` 变量传递 | ✅ 使用 `data-*` 属性 (已在 WalineComments 验证) | 已确认 |
+
+### 修复详情
+
+#### 修复 #1-2: 更新为现代 SQLAlchemy 2.0 API
+
+**问题**: SQLAlchemy 2.0 废弃了 `declarative_base()` 和 `datetime.utcnow()`
+
+**修复** (`models.py`):
+```python
+# ❌ 旧代码 (deprecated)
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+Base = declarative_base()
+created_at = Column(DateTime, default=datetime.utcnow)
+
+# ✅ 新代码 (modern)
+from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime, timezone
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+class Base(DeclarativeBase):
+    pass
+
+created_at = Column(DateTime(timezone=True), default=_utcnow)
+```
+
+#### 修复 #3: RSVP 并发安全
+
+**问题**: 两个用户同时报名可能导致超额 (TOCTOU race condition)
+
+**修复** (`rsvp.py:54-56`):
+```python
+# ✅ 使用 SELECT FOR UPDATE 行锁
+event = db.query(Event).filter(
+    Event.id == event_id
+).with_for_update().first()  # 锁定此行直到事务提交
+```
+
+#### 修复 #4: 避免重复计数
+
+**问题**: 数据库触发器已自动更新 `current_participants`，Python 代码不应再手动 `+= 1`
+
+**修复** (`rsvp.py:114-116`):
+```python
+# NOTE: current_participants 由数据库触发器自动更新
+# (见 migrations/001_initial_schema.sql: update_event_participants)
+# 不需要在 Python 代码中手动 event.current_participants += 1
+```
+
+#### 修复 #6: 移除不存在的外键约束
+
+**问题**: `members` 表不在此 migration 中创建，FK 会失败
+
+**修复** (`001_initial_schema.sql:37`):
+```sql
+-- ❌ 旧代码
+member_id INTEGER REFERENCES members(id) ON DELETE SET NULL,
+
+-- ✅ 新代码
+member_id INTEGER,  -- Legacy: no FK constraint, members table may not exist
+```
+
+### 计划文档需更新的部分
+
+以下代码示例在原计划中已过时，实际代码已按上述修复实施：
+- **Step 6** (第 769 行): `models.py` 示例代码
+- **Step 7** (第 925 行): `rsvp.py` 并发逻辑
+- **Step 10** (第 1278 行): 前端组件 `import.meta.env` 问题
+- **Step 11** (第 1141 行): 邮件域名拼写 `acc-clubhub.de` → `acc-clubhub.de`
 
 ---
 
 ## Context
 
-### 当前实现分析
+### 当前实现分析 (Updated 2026-02-11)
 
 **已完成的基础设施**:
-- ✅ 前端活动列表页 (`EventsPage.tsx`) + 筛选功能 (Phase 4.1)
+- ✅ 前端活动列表页 (`EventsPage.tsx` Preact) + 筛选功能 (Phase 4.1)
 - ✅ 前端活动详情页 (`events/[slug].astro`) + 外部报名按钮
 - ✅ 活动内容集合 Schema (`content.config.ts`) — `eventsCollection`
-- ✅ 后端数据模型定义 (`backend/models.py`) — `Event`, `Member`, `RSVP`
-- ✅ FastAPI 应用骨架 (`backend/app.py`) — CORS 已配置
+- ✅ 后端数据模型 (`backend/models.py`) — SQLAlchemy 2.0 + timezone-aware
+- ✅ 后端 Events API (`backend/routes/events.py`) — CRUD 已实现
+- ✅ 后端 RSVP API (`backend/routes/rsvp.py`) — 结构完成，等待认证
+- ✅ FastAPI 应用 (`backend/app.py`) — CORS、健康检查已配置
+- ✅ 数据库连接 (`backend/database.py`) — 连接池 + serverless 优化
+- ✅ SQL Migration (`001_initial_schema.sql`) — 适配 Neon (无 RLS)
+- ✅ Waline 评论系统 — Neon 数据库 + GitHub OAuth 登录
+- ✅ 前端 Astro + Preact 架构 — 静态输出 + 客户端交互
 
 **缺失的关键功能**:
-- ❌ 用户认证系统 (Phase 4.4 依赖)
-- ❌ 后端 API 路由实现
-- ❌ 数据库连接与初始化
-- ❌ 前端报名表单组件
-- ❌ 邮件通知服务
-- ❌ 席位管理与等待名单
+- ❌ Supabase Auth 项目创建 (Phase 4.4)
+- ❌ 前端 Supabase 客户端 (`src/lib/supabase.ts` 不存在)
+- ❌ 前端登录组件 (无 Auth 组件)
+- ❌ 前端报名按钮组件
+- ❌ Neon 建表 (SQL 已写好，未执行)
+- ❌ 邮件通知服务 (Resend)
+- ❌ 后端 Vercel 部署配置
 
 ### 与其他 Phase 的依赖关系
 
@@ -61,14 +163,14 @@ graph TB
         G[email.py - 邮件服务]
     end
 
-    subgraph "数据库 Supabase Postgres"
+    subgraph "数据库 Neon (Vercel Postgres)"
         H[(events 表)]
         I[(rsvps 表)]
-        J[(auth.users 表)]
+        J[(wl_* 表 - Waline)]
     end
 
     subgraph "外部服务"
-        K[Supabase Auth]
+        K[Supabase Auth - 仅认证]
         L[Resend Email]
     end
 
@@ -717,20 +819,45 @@ ALLOWED_ORIGINS=http://localhost:4321,https://your-acc-clubhub.vercel.app
 
 ```python
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 class Settings(BaseSettings):
-    SUPABASE_URL: str
-    SUPABASE_ANON_KEY: str
-    SUPABASE_SERVICE_ROLE_KEY: str
-    DATABASE_URL: str
-    SUPABASE_JWT_SECRET: str
-    RESEND_API_KEY: str
+    """
+    应用配置 - 所有字段为 Optional 以支持开发模式
+    (开发时可不配置 Supabase/Resend，仅使用本地数据库)
+    """
+    # Supabase (Optional for dev mode)
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_ANON_KEY: Optional[str] = None
+    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
+    SUPABASE_JWT_SECRET: Optional[str] = None
+
+    # Database (Optional for dev mode)
+    DATABASE_URL: Optional[str] = None
+
+    # Email Service (Optional for dev mode)
+    RESEND_API_KEY: Optional[str] = None
+
+    # CORS
     ALLOWED_ORIGINS: str = "*"
+
+    # Application
+    APP_NAME: str = "ACC ClubHub API"
+    DEBUG: bool = False
 
     class Config:
         env_file = ".env"
+        case_sensitive = True
 
 settings = Settings()
+
+def is_production_mode() -> bool:
+    """Check if all production services are configured"""
+    return bool(
+        settings.SUPABASE_URL
+        and settings.DATABASE_URL
+        and settings.RESEND_API_KEY
+    )
 ```
 
 #### Step 5: 数据库连接设置
@@ -762,16 +889,23 @@ def get_db() -> Session:
 ```python
 """
 ACC ClubHub - SQLAlchemy 数据模型
+Phase 4.3: Updated for Supabase Auth integration (UUID user_id instead of Member ID)
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Text, UUID
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy.dialects.postgresql import JSONB
-import uuid
 
-Base = declarative_base()
+
+def _utcnow() -> datetime:
+    """Return timezone-aware UTC now (replaces deprecated datetime.utcnow)"""
+    return datetime.now(timezone.utc)
+
+
+class Base(DeclarativeBase):
+    """SQLAlchemy 2.0 declarative base (replaces deprecated declarative_base())"""
+    pass
 
 
 class Event(Base):
@@ -789,8 +923,8 @@ class Event(Base):
     current_participants = Column(Integer, default=0)
     registration_deadline = Column(DateTime(timezone=True), nullable=True)
     is_public = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
-    updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)  # Fixed: use _utcnow instead of datetime.utcnow
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     # 关系
     rsvps = relationship("RSVP", back_populates="event", cascade="all, delete-orphan")
@@ -802,10 +936,10 @@ class RSVP(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     event_id = Column(Integer, ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
-    user_id = Column(UUID(as_uuid=True), nullable=False)  # Supabase Auth user ID (UUID)
-    status = Column(String(20), default="confirmed")  # confirmed, cancelled, waitlist
+    user_id = Column(UUID(as_uuid=True), nullable=False, index=True)  # Supabase Auth user ID (UUID)
+    status = Column(String(20), default="confirmed", index=True)  # confirmed, cancelled, waitlist
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
 
     # 关系
     event = relationship("Event", back_populates="rsvps")
@@ -911,13 +1045,18 @@ def create_rsvp(
     # user_id: UUID = Depends(get_current_user)  # Phase 4.3.2 添加
 ):
     """创建报名"""
-    # 1. 查询活动
-    event = db.query(Event).filter(Event.id == event_id).first()
+    # 1. 查询活动 (使用 FOR UPDATE 行锁防止并发超额)
+    event = db.query(Event).filter(
+        Event.id == event_id
+    ).with_for_update().first()  # ✅ 添加行锁，防止 TOCTOU race condition
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
     # 2. 检查是否已报名
-    # existing_rsvp = db.query(RSVP).filter(...).first()
+    # existing_rsvp = db.query(RSVP).filter(
+    #     RSVP.event_id == event_id,
+    #     RSVP.user_id == user_id,  # Phase 4.3.2: use actual user_id
+    # ).first()
     # if existing_rsvp:
     #     raise HTTPException(status_code=400, detail="Already registered")
 
@@ -942,15 +1081,16 @@ def create_rsvp(
     # 4. 创建 RSVP 记录
     new_rsvp = RSVP(
         event_id=event_id,
-        # user_id=user_id,  # Phase 4.3.2 添加
+        # user_id=user_id,  # Phase 4.3.2: use UUID from Supabase Auth
         status=rsvp_status,
         notes=rsvp_data.notes
     )
     db.add(new_rsvp)
 
-    # 5. 更新活动参加人数
-    if rsvp_status == "confirmed":
-        event.current_participants += 1
+    # NOTE: ✅ current_participants 由数据库触发器自动更新
+    # (见 migrations/001_initial_schema.sql: update_event_participants)
+    # 不需要在 Python 代码中手动 event.current_participants += 1
+    # 这样避免了触发器和 Python 代码双重计数的问题
 
     db.commit()
     db.refresh(new_rsvp)
@@ -1138,7 +1278,7 @@ def send_confirmation_email(
     """发送报名确认邮件"""
 
     params = {
-        "from": "ACC ClubHub <noreply@acc-cluhab.de>",
+        "from": "ACC ClubHub <noreply@acc-clubhub.de>",
         "to": [user_email],
         "subject": f"报名确认: {event_title}",
         "html": f"""
@@ -1458,7 +1598,16 @@ const registrationLabels: Record<string, string> = {
 </ArticleLayout>
 
 <!-- 客户端脚本：动态加载报名按钮 -->
-<script>
+<script define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL }}>
+  // ⚠️ IMPORTANT: 在 Astro <script> 标签中不能直接使用 import.meta.env
+  // 必须使用 define:vars 指令将服务端变量传递到客户端
+  // 或者使用 data-* 属性通过 DOM 传递
+  //
+  // ❌ 错误方式：const url = import.meta.env.PUBLIC_API_URL  (不会工作)
+  // ✅ 正确方式：使用 define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL }}
+  //
+  // 参考：WalineComments.astro 已使用此模式解决同样问题
+
   import { supabase } from '../../lib/supabase';
   import { EventRegistrationButton } from '../../components/EventRegistrationButton';
 
@@ -1471,7 +1620,7 @@ const registrationLabels: Record<string, string> = {
 
     try {
       // 从 API 获取活动信息（包含 id 和席位信息）
-      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/events/${slug}`);
+      const response = await fetch(`${apiUrl}/api/events/${slug}`);
       if (!response.ok) throw new Error('Failed to load event');
 
       const eventData = await response.json();
@@ -1483,7 +1632,7 @@ const registrationLabels: Record<string, string> = {
       let isRegistered = false;
       if (session) {
         const rsvpResponse = await fetch(
-          `${import.meta.env.PUBLIC_API_URL}/api/user/rsvps`,
+          `${apiUrl}/api/user/rsvps`,
           {
             headers: { 'Authorization': `Bearer ${session.access_token}` }
           }
@@ -2144,17 +2293,184 @@ UPDATE events SET current_participants = current_participants - 1
 WHERE id = (SELECT event_id FROM rsvps WHERE id = 123);
 
 -- 查看等待名单
-SELECT r.id, u.email, r.created_at
+SELECT r.id, r.name, r.email, r.created_at
 FROM rsvps r
-JOIN auth.users u ON r.user_id = u.id
 WHERE r.event_id = 1 AND r.status = 'waitlist'
 ORDER BY r.created_at;
+
+-- 查看活动订阅者
+SELECT email, name, lang FROM subscribers WHERE is_active = true;
 ```
 
 ---
 
-**文档版本**: 1.1
+## 附录 F：最终架构决策 (2026-02-11 v3)
+
+### 架构总览
+
+```
+┌──────────────────────────────────────────────┐
+│ 前端 Astro (Static) + Preact 交互组件         │
+│                                               │
+│  ┌─────────────┐  ┌─────────────────────────┐ │
+│  │ Waline 评论  │  │ 报名表单 (Preact)       │ │
+│  │ (GitHub登录) │  │ 姓名+邮箱+☑订阅+☑隐私  │ │
+│  └──────┬──────┘  └────────────┬────────────┘ │
+└─────────┼──────────────────────┼──────────────┘
+          │                      │
+          ▼                      ▼
+┌──────────────┐        ┌──────────────┐
+│ Waline 服务端 │        │ FastAPI 后端  │
+│ (Vercel)     │        │ (Vercel)     │
+│ 自带用户管理  │        │ 无需 OAuth   │
+└──────┬───────┘        └──────┬───────┘
+       │                       │
+       ▼                       ▼
+┌─────────────────────────────────────┐
+│ Neon (Vercel Postgres) 统一数据库    │
+│ ├─ wl_comment    (Waline 评论)      │
+│ ├─ wl_users      (Waline 用户)      │
+│ ├─ wl_counter    (Waline 计数)      │
+│ ├─ events        (活动)             │
+│ ├─ rsvps         (报名: email+name) │
+│ └─ subscribers   (订阅者)           │
+└─────────────────────────────────────┘
+
+         ┌──────────────┐
+         │ Resend       │  ← 邮件通知
+         │ (Email API)  │
+         └──────────────┘
+```
+
+### 核心设计：Email-based 报名 (无需 OAuth)
+
+**用户报名流程**:
+```
+活动详情页
+  ↓
+报名表单:
+  ├─ 姓名 *
+  ├─ 邮箱 *
+  ├─ 备注 (可选，如饮食禁忌等)
+  ├─ ☑ 我同意隐私政策 *
+  └─ ☑ 订阅 ACC 活动通知 (可选)
+  ↓
+POST /api/events/{id}/rsvp
+  ↓
+┌─ 报名成功 → 发送确认邮件
+├─ 名额已满 → 加入等待名单
+└─ 已报名   → 提示重复报名
+```
+
+**订阅流程**:
+```
+订阅者 → 收到活动通知邮件
+  ↓
+邮件底部: [退订链接] → GET /api/unsubscribe/{token}
+  ↓
+一键退订，无需登录
+```
+
+### 为什么不用 OAuth / Supabase Auth？
+
+| | Email-based (采用) | OAuth (放弃) |
+|---|---|---|
+| **用户体验** | 填邮箱即可，零门槛 | 需要 GitHub/Google 账号 |
+| **目标用户** | 骑行俱乐部成员，非程序员 | 程序员友好，普通用户困惑 |
+| **依赖服务** | 无额外服务 | 需要 Supabase 项目 |
+| **隐私** | 只收集必要信息 | OAuth 获取过多权限 |
+| **维护成本** | 几乎为零 | 需要管理 OAuth 应用 |
+
+### 数据库表设计
+
+| 表 | 用途 | 关键字段 |
+|---|---|---|
+| `events` | 活动信息 | slug, title, event_date, max_participants |
+| `rsvps` | 报名记录 | event_id, **email**, **name**, status, privacy_accepted |
+| `subscribers` | 订阅者 | **email**, name, lang, **unsubscribe_token**, is_active |
+| `event_metadata` | 活动元数据 | cover_image, xiaohongshu_url |
+
+### API 端点
+
+| Method | Path | 功能 | 认证 |
+|--------|------|------|------|
+| GET | `/api/events` | 活动列表 | 无 |
+| GET | `/api/events/{slug}` | 活动详情 | 无 |
+| POST | `/api/events/{id}/rsvp` | **报名** | 无 (email-based) |
+| DELETE | `/api/events/{id}/rsvp?email=` | 取消报名 | 无 |
+| GET | `/api/events/{id}/rsvps` | 报名列表 | TODO: Admin |
+| POST | `/api/subscribe` | **订阅通知** | 无 |
+| GET | `/api/unsubscribe/{token}` | **退订** | Token |
+
+### 隐私保护设计
+
+1. **最小数据收集**: 只收集 email + name，不收集其他个人信息
+2. **明确同意**: `privacy_accepted` 字段强制勾选
+3. **一键退订**: 每个订阅者有唯一 `unsubscribe_token`
+4. **邮件底部**: 每封通知邮件包含退订链接
+5. **GDPR 合规**: 退订后 `is_active = false`，不删除记录（审计追踪）
+
+### 前端框架确认
+
+**Preact** (非 React):
+- 组件: `import { useState } from 'preact/hooks'`
+- Astro 指令: `client:idle`, `client:load`
+- 输出: `static` (SSG)
+- 环境变量: Preact 组件内用 `import.meta.env.PUBLIC_*`
+- Astro `<script>` 标签: 用 `data-*` 属性传递变量
+
+### 环境变量配置
+
+**前端** (`frontend/.env`):
+```bash
+# Waline 评论 (已配置)
+PUBLIC_WALINE_SERVER_URL=https://acc-clubhub-waline.vercel.app
+
+# 后端 API (待配置)
+PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
+```
+
+**后端** (`backend/.env`):
+```bash
+# Neon 数据库 (使用 Waline 同一个数据库)
+DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+
+# Resend 邮件 (待配置)
+RESEND_API_KEY=re_xxxxxxxxx
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:4321,https://acc-clubhub.vercel.app
+```
+
+### 成本分析
+
+| 服务 | 用途 | 免费额度 | 预计用量 |
+|------|------|---------|---------|
+| **Neon** | 统一数据库 | 0.5 GB 存储 | < 100 MB |
+| **Vercel** | 前端+Waline+后端 | 100 GB 流量 | < 5 GB |
+| **Resend** | 邮件通知 | 3,000 封/月 | < 100 封 |
+| **总计** | | | **$0/月** |
+
+> 注意: 不再需要 Supabase，减少一个外部服务依赖！
+
+### 实施顺序
+
+```
+Phase 4.3.1 ── Neon 建表 + 后端部署到 Vercel       ✅ 代码已就绪
+     ↓
+Phase 4.3.2 ── 前端报名表单 (Preact 组件)
+     ↓
+Phase 4.3.3 ── Resend 邮件通知 + 订阅者通知
+     ↓
+Phase 4.3.4 ── 管理员功能 (查看报名/管理订阅)
+```
+
+> Phase 4.4 (Supabase Auth) 不再是前置依赖！报名系统可以独立完成。
+
+---
+
+**文档版本**: 3.0
 **创建日期**: 2026-02-10
-**最后更新**: 2026-02-10
+**最后更新**: 2026-02-11
 **作者**: Claude (Anthropic)
-**状态**: 已修复所有已知问题，待用户审核
+**状态**: ✅ 架构简化完成，Email-based 报名 + 订阅系统，待 Neon 建表

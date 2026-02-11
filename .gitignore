@@ -25,6 +25,7 @@ _site/
 # IDE
 .vscode/
 .idea/
+.claude/
 *.swp
 
 # OS

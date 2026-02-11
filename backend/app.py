@@ -1,6 +1,6 @@
 """
 ACC ClubHub - FastAPI Backend Application
-Phase 4.3: Event Registration System
+Phase 4.3: Email-based event registration + subscription
 """
 
 from fastapi import FastAPI
@@ -50,7 +50,7 @@ def health_check():
 
     health_status = {
         "status": "healthy",
-        "service": "acc-cluhab-backend",
+        "service": "acc-clubhub-backend",
         "version": "0.4.3",
         "mode": "production" if is_production_mode() else "development"
     }
@@ -66,13 +66,6 @@ def health_check():
 # Events API - 活动管理
 app.include_router(events.router, tags=["Events"])
 
-# RSVP API - 报名管理
-app.include_router(rsvp.router, tags=["RSVP"])
-
-# ============================================================
-# Future Routes (TODO)
-# ============================================================
-# from routes import members, auth
-# app.include_router(members.router, prefix="/api/members", tags=["Members"])
-# app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+# RSVP + Subscription API - 报名管理 + 活动订阅
+app.include_router(rsvp.router, tags=["RSVP & Subscription"])
 

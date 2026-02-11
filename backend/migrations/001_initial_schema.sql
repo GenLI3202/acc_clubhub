@@ -1,9 +1,9 @@
 -- ============================================================
--- ACC ClubHub - Events & RSVP Database Schema
--- Phase 4.3: Event Registration System
+-- ACC ClubHub - Events, RSVP & Subscription Database Schema
+-- Phase 4.3: Email-based Event Registration System
 -- ============================================================
--- This migration creates the tables needed for the event registration system
--- with Supabase Auth integration and Row Level Security (RLS)
+-- Database: Neon (Vercel Postgres)
+-- Auth: Email-based (no OAuth required)
 -- ============================================================
 
 -- Events 表 - 活动表
@@ -29,24 +29,41 @@ CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date);
 CREATE INDEX IF NOT EXISTS idx_events_type ON events(event_type);
 CREATE INDEX IF NOT EXISTS idx_events_public ON events(is_public);
 
--- RSVPs 表 - 报名记录表
+-- RSVPs 表 - 报名记录表 (Email-based, 不需要 OAuth)
 CREATE TABLE IF NOT EXISTS rsvps (
   id SERIAL PRIMARY KEY,
   event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL,  -- Supabase Auth user ID
-  member_id INTEGER REFERENCES members(id) ON DELETE SET NULL,  -- Legacy: 保留过渡期兼容
-  status VARCHAR(20) DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled', 'waitlist')),
+  email VARCHAR(255) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  status VARCHAR(20) DEFAULT 'confirmed'
+    CHECK (status IN ('confirmed', 'cancelled', 'waitlist')),
   notes TEXT,
+  privacy_accepted BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
-  UNIQUE(event_id, user_id)  -- 防止重复报名
+  UNIQUE(event_id, email)  -- 同一邮箱只能报名一次同一活动
 );
 
 -- Indexes for rsvps
 CREATE INDEX IF NOT EXISTS idx_rsvps_event_id ON rsvps(event_id);
-CREATE INDEX IF NOT EXISTS idx_rsvps_user_id ON rsvps(user_id);
+CREATE INDEX IF NOT EXISTS idx_rsvps_email ON rsvps(email);
 CREATE INDEX IF NOT EXISTS idx_rsvps_status ON rsvps(status);
-CREATE INDEX IF NOT EXISTS idx_rsvps_created_at ON rsvps(created_at);
+
+-- Subscribers 表 - 活动订阅者
+CREATE TABLE IF NOT EXISTS subscribers (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  lang VARCHAR(10) DEFAULT 'zh',
+  privacy_accepted BOOLEAN DEFAULT false,
+  unsubscribe_token VARCHAR(64) UNIQUE NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_active ON subscribers(is_active);
+CREATE INDEX IF NOT EXISTS idx_subscribers_token ON subscribers(unsubscribe_token);
 
 -- Event Metadata 表 (可选，用于存储 Markdown frontmatter 额外数据)
 CREATE TABLE IF NOT EXISTS event_metadata (
@@ -56,51 +73,6 @@ CREATE TABLE IF NOT EXISTS event_metadata (
   lang VARCHAR(10) DEFAULT 'de',
   additional_data JSONB
 );
-
--- ============================================================
--- Row Level Security (RLS) Policies
--- ============================================================
-
--- Enable RLS on events table
-ALTER TABLE events ENABLE ROW LEVEL SECURITY;
-
--- Public can read public events
-CREATE POLICY "Events are publicly viewable"
-  ON events FOR SELECT
-  USING (is_public = true);
-
--- Authenticated users can create events (admin functionality)
-CREATE POLICY "Authenticated users can create events"
-  ON events FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
-
--- Event creators can update their own events
-CREATE POLICY "Users can update their own events"
-  ON events FOR UPDATE
-  USING (auth.role() = 'authenticated');
-
--- Enable RLS on rsvps table
-ALTER TABLE rsvps ENABLE ROW LEVEL SECURITY;
-
--- Users can view their own RSVPs
-CREATE POLICY "Users can view their own RSVPs"
-  ON rsvps FOR SELECT
-  USING (auth.uid() = user_id);
-
--- Users can insert their own RSVPs
-CREATE POLICY "Users can insert their own RSVPs"
-  ON rsvps FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
--- Users can update their own RSVPs
-CREATE POLICY "Users can update their own RSVPs"
-  ON rsvps FOR UPDATE
-  USING (auth.uid() = user_id);
-
--- Users can delete their own RSVPs
-CREATE POLICY "Users can delete their own RSVPs"
-  ON rsvps FOR DELETE
-  USING (auth.uid() = user_id);
 
 -- ============================================================
 -- Functions and Triggers
@@ -133,11 +105,9 @@ BEGIN
         UPDATE events SET current_participants = current_participants - 1
         WHERE id = OLD.event_id;
     ELSIF TG_OP = 'UPDATE' THEN
-        -- If status changed from waitlist to confirmed
         IF OLD.status = 'waitlist' AND NEW.status = 'confirmed' THEN
             UPDATE events SET current_participants = current_participants + 1
             WHERE id = NEW.event_id;
-        -- If status changed from confirmed to cancelled/waitlist
         ELSIF OLD.status = 'confirmed' AND NEW.status != 'confirmed' THEN
             UPDATE events SET current_participants = current_participants - 1
             WHERE id = NEW.event_id;
@@ -158,20 +128,7 @@ CREATE TRIGGER update_participants_on_rsvp_change
 -- Verification Queries
 -- ============================================================
 
--- Check if tables were created successfully
 -- SELECT table_name, column_name, data_type
 -- FROM information_schema.columns
--- WHERE table_name IN ('events', 'rsvps', 'event_metadata')
+-- WHERE table_name IN ('events', 'rsvps', 'subscribers', 'event_metadata')
 -- ORDER BY table_name, ordinal_position;
-
--- Check if RLS is enabled
--- SELECT tablename, rowsecurity
--- FROM pg_tables
--- WHERE schemaname = 'public'
--- AND tablename IN ('events', 'rsvps');
-
--- Check if indexes were created
--- SELECT indexname, tablename
--- FROM pg_indexes
--- WHERE tablename IN ('events', 'rsvps')
--- ORDER BY tablename, indexname;
