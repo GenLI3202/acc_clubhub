@@ -79,116 +79,46 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
 
   .waline-wrapper {
     min-height: 200px;
+    /* Use Waline CSS custom properties for theming */
+    --waline-theme-color: var(--color-primary, #2A5CA6);
+    --waline-active-color: var(--color-accent, #F4A261);
+    --waline-border-color: rgba(42, 92, 166, 0.25);
+    --waline-bgcolor: transparent;
+    --waline-bgcolor-light: rgba(42, 92, 166, 0.04);
+    --waline-color: #444;
+    --waline-font-size: 0.9rem;
   }
 
-  /* Waline 样式覆盖 - 匹配表单风格 */
-  .waline-wrapper :global(.waline-editor) {
-    --waline-theme-color: var(--color-primary);
-    --waline-active-color: var(--color-accent);
-  }
-
-  /* 统一按钮样式 */
-  .waline-wrapper :global(.wl-btn),
-  .waline-wrapper :global(.wl-btn-submit) {
-    background: var(--color-primary) !important;
+  /* Submit button styling */
+  .waline-wrapper :global(.wl-btn) {
+    background: var(--color-accent) !important;
     color: white !important;
+    border-color: var(--color-border-rough) !important;
+    border-radius: 4px !important;
     font-family: var(--font-heading) !important;
     font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    padding: 0.6rem 1.5rem !important;
-    border: 2px solid var(--color-border-rough) !important;
-    border-radius: 4px !important;
-    transition: all 0.2s ease !important;
+    font-size: 0.8rem !important;
   }
 
-  .waline-wrapper :global(.wl-btn:hover),
-  .waline-wrapper :global(.wl-btn-submit:hover) {
-    background: var(--color-accent) !important;
-    transform: translate(-1px, -1px) !important;
-    box-shadow: 2px 2px 0 var(--color-border-rough) !important;
+  .waline-wrapper :global(.wl-btn:hover) {
+    background: var(--color-primary) !important;
   }
 
-  /* 输入框样式统一 - 移除黑色边框 */
-  .waline-wrapper :global(.wl-input),
-  .waline-wrapper :global(.wl-editor),
-  .waline-wrapper :global(input[type="text"]),
-  .waline-wrapper :global(input[type="email"]),
-  .waline-wrapper :global(textarea) {
-    border: 2px solid var(--color-border-rough) !important;
-    border-radius: 4px !important;
-    font-size: 0.9rem !important;
-    padding: 0.55rem 0.7rem !important;
-    background: white !important;
+  /* Header inputs row (nickname, email, website) */
+  .waline-wrapper :global(.wl-header-item input) {
+    font-size: 0.90rem !important;
   }
 
-  .waline-wrapper :global(.wl-input:focus),
-  .waline-wrapper :global(.wl-editor:focus),
-  .waline-wrapper :global(input:focus),
-  .waline-wrapper :global(textarea:focus) {
-    border-color: var(--color-accent) !important;
-    outline: none !important;
+  .waline-wrapper :global(.wl-header-item label) {
+    font-size: 0.85rem !important;
   }
 
-  /* 移除所有虚线边框 */
-  .waline-wrapper :global(*) {
-    border-style: solid !important;
-  }
-
-  .waline-wrapper :global(.wl-panel) {
-    border: none !important;
-  }
-
-  .waline-wrapper :global(.wl-header) {
-    border-bottom: 1px solid rgba(42, 92, 166, 0.2) !important;
-  }
-
-  .waline-wrapper :global(.wl-header-item) {
-    border: none !important;
-  }
-
-  /* 隐藏嵌入式登录区域多余的 OAuth 图标，只保留 GitHub */
+  /* Only keep GitHub OAuth */
   .waline-wrapper :global(.wl-login-info a) {
     display: none !important;
   }
 
   .waline-wrapper :global(.wl-login-info a[title*="GitHub"]) {
     display: inline-block !important;
-  }
-
-  /* 评论列表样式 */
-  .waline-wrapper :global(.wl-card) {
-    border: 1px solid rgba(42, 92, 166, 0.2) !important;
-    border-radius: 4px !important;
-    margin-bottom: 0.75rem !important;
-    background: rgba(255, 255, 255, 0.5) !important;
-  }
-
-  /* 移除 meta 信息区域的虚线 */
-  .waline-wrapper :global(.wl-meta) {
-    border: none !important;
-  }
-
-  /* 用户信息输入区域 */
-  .waline-wrapper :global(.wl-header-item input) {
-    border: 2px solid var(--color-border-rough) !important;
-    border-radius: 4px !important;
-    padding: 0.5rem !important;
-    font-size: 0.85rem !important;
-  }
-
-  /* 评论编辑器容器 */
-  .waline-wrapper :global(.wl-editor-wrapper) {
-    border: 2px solid var(--color-border-rough) !important;
-    border-radius: 4px !important;
-  }
-
-  .waline-wrapper :global(.wl-editor-wrapper:focus-within) {
-    border-color: var(--color-accent) !important;
-  }
-
-  /* 工具栏 */
-  .waline-wrapper :global(.wl-editor-toolbar) {
-    border-bottom: 1px solid rgba(42, 92, 166, 0.15) !important;
-    padding: 0.5rem !important;
   }
 </style>
