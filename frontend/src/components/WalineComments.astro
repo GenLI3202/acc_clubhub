@@ -25,20 +25,24 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
 <section class="comments-section">
   <h2>{t(lang, 'comments.title')}</h2>
   <p class="comments-desc">{t(lang, 'comments.description')}</p>
-  <div class="waline-wrapper" id="waline"></div>
+  <div class="waline-wrapper" id="waline" data-server-url={walineServerUrl} data-lang={walineLang}></div>
 </section>
 
 <!-- Waline 客户端脚本 -->
 <script>
   import { init } from '@waline/client';
+  import '@waline/client/style';  // ✅ 引入 Waline 默认样式 (v3 版本)
 
-  const walineServerURL = '{walineServerUrl}';
-  const walineLang = '{walineLang}';
+  const walineContainer = document.getElementById('waline');
+  const serverURL = walineContainer?.dataset.serverUrl || 'https://acc-clubhub-waline.vercel.app';
+  const lang = walineContainer?.dataset.lang || 'en';
+  const path = window.location.pathname;
 
   init({
     el: '#waline',
-    serverURL: walineServerURL,
-    lang: walineLang,
+    serverURL,
+    lang,
+    path,
     requiredMeta: ['nick', 'mail'],
     dark: 'html[data-theme="dark"]',
   });
@@ -90,5 +94,15 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
     background: var(--color-accent);
     transform: translate(-1px, -1px);
     box-shadow: 2px 2px 0 var(--color-border-rough);
+  }
+
+  /* 隐藏多余的登录图标，只保留 GitHub 和 Google */
+  .waline-wrapper :global(.wl-login-info a) {
+    display: none !important;
+  }
+
+  .waline-wrapper :global(.wl-login-info a[title*="GitHub"]),
+  .waline-wrapper :global(.wl-login-info a[title*="Google"]) {
+    display: inline-block !important;
   }
 </style>
