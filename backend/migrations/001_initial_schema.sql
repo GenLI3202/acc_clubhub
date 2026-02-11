@@ -60,47 +60,20 @@ CREATE TABLE IF NOT EXISTS event_metadata (
 -- ============================================================
 -- Row Level Security (RLS) Policies
 -- ============================================================
+-- NOTE: RLS policies are DISABLED for Neon database
+-- Neon doesn't have Supabase's auth.uid() and auth.role() functions
+-- Authorization will be handled at the application level (FastAPI middleware)
 
--- Enable RLS on events table
-ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+-- For reference, if using Supabase Postgres, you would enable:
+-- ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+-- CREATE POLICY "Events are publicly viewable" ON events FOR SELECT USING (is_public = true);
+-- etc.
 
--- Public can read public events
-CREATE POLICY "Events are publicly viewable"
-  ON events FOR SELECT
-  USING (is_public = true);
-
--- Authenticated users can create events (admin functionality)
-CREATE POLICY "Authenticated users can create events"
-  ON events FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
-
--- Event creators can update their own events
-CREATE POLICY "Users can update their own events"
-  ON events FOR UPDATE
-  USING (auth.role() = 'authenticated');
-
--- Enable RLS on rsvps table
-ALTER TABLE rsvps ENABLE ROW LEVEL SECURITY;
-
--- Users can view their own RSVPs
-CREATE POLICY "Users can view their own RSVPs"
-  ON rsvps FOR SELECT
-  USING (auth.uid() = user_id);
-
--- Users can insert their own RSVPs
-CREATE POLICY "Users can insert their own RSVPs"
-  ON rsvps FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
--- Users can update their own RSVPs
-CREATE POLICY "Users can update their own RSVPs"
-  ON rsvps FOR UPDATE
-  USING (auth.uid() = user_id);
-
--- Users can delete their own RSVPs
-CREATE POLICY "Users can delete their own RSVPs"
-  ON rsvps FOR DELETE
-  USING (auth.uid() = user_id);
+-- For Neon: Tables are accessible via backend API only (no direct client access)
+-- FastAPI will enforce:
+--   - Public can read public events
+--   - Authenticated users can create events (admin check in code)
+--   - Users can only manage their own RSVPs (JWT user_id validation)
 
 -- ============================================================
 -- Functions and Triggers

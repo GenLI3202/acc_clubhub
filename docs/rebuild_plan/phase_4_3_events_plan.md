@@ -19,14 +19,14 @@
 | 5 | 健康检查接口拼写错误 | `app.py:53` | ✅ 已修复 → `acc-cluhab` → `acc-clubhub` |
 | 6 | SQL 外键引用不存在的表 | `001_initial_schema.sql:37` | ✅ 已修复 → 移除 `members` 表 FK 约束 |
 
-### 待确认的架构决策
+### 架构决策 (已确认 2026-02-11)
 
-| # | 问题 | 影响范围 | 推荐方案 |
-|---|------|---------|---------|
-| 7 | **数据库选择**: Supabase vs Neon | 整个后端 | **使用 Supabase Postgres** (需要 Auth + RLS) |
-| 8 | `config.py` Optional 设计 | 开发环境配置 | ✅ 当前实现正确 (支持无 Supabase 开发) |
-| 9 | UUID vs String 类型不一致 | `rsvp.py` user_id 处理 | 使用 `UUID` 类型，不转 `str()` |
-| 10 | Astro `<script>` 中使用 `import.meta.env` | 前端组件 | 使用 `define:vars` 或 `data-*` 属性传递 |
+| # | 问题 | 决策 | 状态 |
+|---|------|------|------|
+| 7 | **数据库选择** | ✅ **Neon 单一数据库** (评论+活动统一存储) | 已确认 |
+| 8 | **认证系统** | ✅ **Supabase Auth** (仅用于认证，不用其数据库) | 已确认 |
+| 9 | **评论系统认证** | ✅ **Waline 保持独立 GitHub OAuth** (见下方分析) | 已确认 |
+| 10 | Astro `<script>` 变量传递 | ✅ 使用 `data-*` 属性 (已在 WalineComments 验证) | 已确认 |
 
 ### 修复详情
 
@@ -103,22 +103,29 @@ member_id INTEGER,  -- Legacy: no FK constraint, members table may not exist
 
 ## Context
 
-### 当前实现分析
+### 当前实现分析 (Updated 2026-02-11)
 
 **已完成的基础设施**:
-- ✅ 前端活动列表页 (`EventsPage.tsx`) + 筛选功能 (Phase 4.1)
+- ✅ 前端活动列表页 (`EventsPage.tsx` Preact) + 筛选功能 (Phase 4.1)
 - ✅ 前端活动详情页 (`events/[slug].astro`) + 外部报名按钮
 - ✅ 活动内容集合 Schema (`content.config.ts`) — `eventsCollection`
-- ✅ 后端数据模型定义 (`backend/models.py`) — `Event`, `Member`, `RSVP`
-- ✅ FastAPI 应用骨架 (`backend/app.py`) — CORS 已配置
+- ✅ 后端数据模型 (`backend/models.py`) — SQLAlchemy 2.0 + timezone-aware
+- ✅ 后端 Events API (`backend/routes/events.py`) — CRUD 已实现
+- ✅ 后端 RSVP API (`backend/routes/rsvp.py`) — 结构完成，等待认证
+- ✅ FastAPI 应用 (`backend/app.py`) — CORS、健康检查已配置
+- ✅ 数据库连接 (`backend/database.py`) — 连接池 + serverless 优化
+- ✅ SQL Migration (`001_initial_schema.sql`) — 适配 Neon (无 RLS)
+- ✅ Waline 评论系统 — Neon 数据库 + GitHub OAuth 登录
+- ✅ 前端 Astro + Preact 架构 — 静态输出 + 客户端交互
 
 **缺失的关键功能**:
-- ❌ 用户认证系统 (Phase 4.4 依赖)
-- ❌ 后端 API 路由实现
-- ❌ 数据库连接与初始化
-- ❌ 前端报名表单组件
-- ❌ 邮件通知服务
-- ❌ 席位管理与等待名单
+- ❌ Supabase Auth 项目创建 (Phase 4.4)
+- ❌ 前端 Supabase 客户端 (`src/lib/supabase.ts` 不存在)
+- ❌ 前端登录组件 (无 Auth 组件)
+- ❌ 前端报名按钮组件
+- ❌ Neon 建表 (SQL 已写好，未执行)
+- ❌ 邮件通知服务 (Resend)
+- ❌ 后端 Vercel 部署配置
 
 ### 与其他 Phase 的依赖关系
 
@@ -156,14 +163,14 @@ graph TB
         G[email.py - 邮件服务]
     end
 
-    subgraph "数据库 Supabase Postgres"
+    subgraph "数据库 Neon (Vercel Postgres)"
         H[(events 表)]
         I[(rsvps 表)]
-        J[(auth.users 表)]
+        J[(wl_* 表 - Waline)]
     end
 
     subgraph "外部服务"
-        K[Supabase Auth]
+        K[Supabase Auth - 仅认证]
         L[Resend Email]
     end
 
@@ -2286,54 +2293,198 @@ UPDATE events SET current_participants = current_participants - 1
 WHERE id = (SELECT event_id FROM rsvps WHERE id = 123);
 
 -- 查看等待名单
-SELECT r.id, u.email, r.created_at
+-- NOTE: Neon 没有 auth.users 表，user_id 是 Supabase Auth 的 UUID
+-- 用户信息需通过 Supabase Admin API 查询
+SELECT r.id, r.user_id, r.created_at
 FROM rsvps r
-JOIN auth.users u ON r.user_id = u.id
 WHERE r.event_id = 1 AND r.status = 'waitlist'
 ORDER BY r.created_at;
 ```
 
 ---
 
-## 附录：数据库架构决策说明
+## 附录 F：最终架构决策 (2026-02-11)
 
-### Supabase vs Neon vs 复用现有 Neon 数据库
+### 架构总览
 
-当前项目中 Waline 评论系统已使用 **Vercel Postgres (Neon)**。对于活动报名系统，有三种选择：
+```
+┌───────────────────────────────────────────────────┐
+│ 前端 Astro (Static) + Preact 交互组件              │
+│                                                    │
+│  ┌─────────────┐  ┌───────────────┐                │
+│  │ Waline 评论  │  │ 活动报名组件   │               │
+│  │ (GitHub登录) │  │ (Supabase登录) │               │
+│  └──────┬──────┘  └───────┬───────┘                │
+└─────────┼─────────────────┼────────────────────────┘
+          │                 │
+          ▼                 ▼
+┌──────────────┐   ┌──────────────┐
+│ Waline 服务端 │   │ FastAPI 后端  │
+│ (Vercel)     │   │ (Vercel)     │
+│ 自带用户管理  │   │ JWT 验证      │
+└──────┬───────┘   └──────┬───────┘
+       │                  │
+       ▼                  ▼
+┌──────────────────────────────────┐
+│ Neon (Vercel Postgres) 统一数据库 │
+│ ├─ wl_comment (Waline 评论)      │
+│ ├─ wl_users   (Waline 用户)      │
+│ ├─ wl_counter (Waline 计数)      │
+│ ├─ events     (活动)             │
+│ ├─ rsvps      (报名记录)         │
+│ └─ event_metadata (活动元数据)    │
+└──────────────────────────────────┘
 
-| 方案 | 优点 | 缺点 | 推荐指数 |
-|------|------|------|---------|
-| **A. 复用 Neon** | 单一数据库，简化管理 | 无 RLS，需手动实现权限 | ⭐⭐ |
-| **B. 新建 Supabase** | Auth + RLS + Realtime 开箱即用 | 多服务管理 | ⭐⭐⭐⭐⭐ |
-| **C. Neon + Supabase Auth** | Auth 免费，数据库统一 | 需手动集成 RLS | ⭐⭐⭐ |
+         ┌──────────────┐
+         │ Supabase     │  ← 仅用于 Auth，不用其数据库
+         │ (Auth Only)  │
+         └──────────────┘
+```
 
-**当前计划采用方案 B (Supabase Postgres)**，原因：
-1. Supabase Auth 是 Phase 4.4 的核心需求
-2. RLS (Row Level Security) 简化权限管理
-3. 自动触发器 `auth.uid()` 函数可直接使用
-4. Realtime 订阅功能可用于席位实时更新
-5. 免费额度足够小型项目
+### 决策 1：数据库 → Neon 统一存储
 
-**数据库分离策略**:
-- **Waline 评论** → Neon (Vercel Postgres) — 已部署
-- **活动报名** → Supabase Postgres — 待部署
-- 未来可考虑迁移 Waline 到 Supabase 统一管理（可选）
+**最终方案**: 复用现有 Neon 数据库存储所有数据
 
-**环境变量配置**:
+**理由**:
+1. Waline 已在 Neon 上运行，评论表已存在
+2. 活动/RSVP 表部署到同一数据库，减少一个服务
+3. Neon 免费额度 (0.5 GB) 对小型项目绰绰有余
+4. 单一 `DATABASE_URL` 简化配置
+
+**影响**:
+- ✅ SQL migration (`001_initial_schema.sql`) 可直接在 Neon Console 执行
+- ❌ 无法使用 Supabase RLS → 权限控制在 FastAPI 应用层实现
+- ❌ 无法使用 `auth.uid()` 函数 → 已从 migration 中移除 RLS 策略
+
+### 决策 2：认证 → Supabase Auth (仅 Auth)
+
+**最终方案**: 使用 Supabase Auth 服务，但不使用 Supabase Postgres
+
+**理由**:
+1. Supabase Auth 免费额度 50,000 MAU
+2. 开箱即用的 GitHub/Google OAuth + Email/Password
+3. JWT token 可被 FastAPI 后端验证
+4. 前端 SDK (`@supabase/supabase-js`) 成熟稳定
+
+**用途**:
+- 活动报名：登录 → JWT → FastAPI 验证 → Neon 数据库
+- 管理员功能：验证用户角色
+
+### 决策 3：评论系统 → Waline 保持独立
+
+**最终方案**: Waline 保留自己的 GitHub OAuth 登录，不与 Supabase Auth 统一
+
+**这是经过深入技术调研后的务实决策，原因如下**:
+
+#### 为什么不统一？
+
+| 方案 | 可行性 | 问题 |
+|------|--------|------|
+| Waline `init()` 预填用户信息 | ❌ 不可行 | Waline v3 API 不支持 `author`/`email` 预填选项 |
+| DOM 操作填充表单字段 | ⚠️ 脆弱 | Waline 渲染时机不确定，版本更新可能破坏选择器 |
+| 替换 Waline 为自建评论 | ❌ 成本过高 | 需要重建整个评论 UI、存储、防垃圾等功能 |
+| Waline 接受外部 JWT | ❌ 不支持 | Waline 有自己的认证系统，不接受第三方 token |
+
+#### 实际用户体验分析
+
+对于 ACC 骑行俱乐部的实际使用场景：
+
+```
+评论区 (Waline):
+  ├─ 访客模式: 填昵称+邮箱 → 直接评论 (无需注册)
+  └─ GitHub 登录: 一键登录 → 自动填充 (已实现)
+
+活动报名 (Supabase Auth):
+  └─ GitHub/Google/Email 登录 → 报名活动
+```
+
+**关键认识**: 评论是低门槛的社交互动（访客即可评论），活动报名需要身份验证（需要联系方式发通知）。
+两者的认证需求天然不同，强行统一反而增加复杂度。
+
+**对用户的实际影响**:
+- 评论：大多数用户使用访客模式（填昵称+邮箱），不需要登录
+- 如果用 GitHub 登录评论：一次点击即可，和活动报名的 GitHub 登录体验一样
+- 两个系统都支持 GitHub OAuth → 用户用同一个 GitHub 账号，体验流畅
+
+### 决策 4：前端框架 → Preact (非 React)
+
+**确认**: 项目使用 `@astrojs/preact`，所有交互组件使用 Preact
+
+**影响**:
+- 前端组件 import: `import { useState } from 'preact/hooks'` (非 `react`)
+- Astro 指令: `client:idle`, `client:load`, `client:visible`
+- 输出模式: `static` (SSG)，非 SSR
+- 组件内可以使用 `import.meta.env.PUBLIC_*` (Vite 编译时替换)
+- Astro `<script>` 标签中**不能**使用 `import.meta.env` → 用 `data-*` 属性传递
+
+### 环境变量配置
+
+**前端** (`frontend/.env`):
 ```bash
-# Waline (已配置)
-POSTGRES_HOST=...
-POSTGRES_DATABASE=...
+# Waline 评论 (已配置)
+PUBLIC_WALINE_SERVER_URL=https://acc-clubhub-waline.vercel.app
 
-# 活动报名系统 (待配置)
+# Supabase Auth (待配置 - Phase 4.4)
+PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+
+# 后端 API (待配置 - Phase 4.3.2)
+PUBLIC_API_URL=https://acc-clubhub-backend.vercel.app
+```
+
+**后端** (`backend/.env`):
+```bash
+# Supabase Auth - 仅用于 JWT 验证 (待配置)
 SUPABASE_URL=https://your-project.supabase.co
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[project].supabase.co:5432/postgres
+SUPABASE_JWT_SECRET=your_jwt_secret
+
+# Neon 数据库 - 活动报名数据 (使用 Waline 同一个数据库)
+DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+
+# Email (待配置)
+RESEND_API_KEY=re_xxxxxxxxx
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:4321,https://acc-clubhub.vercel.app
+```
+
+**Waline 服务端** (`acc-clubhub-waline` Vercel 项目，已配置):
+```bash
+# 数据库连接 (已配置)
+PG_HOST=ep-xxx.us-east-2.aws.neon.tech
+PG_DB=neondb
+PG_USER=...
+PG_PASSWORD=...
+PG_PORT=5432
+PG_SSL=true
+```
+
+### 成本分析
+
+| 服务 | 用途 | 免费额度 | 预计用量 |
+|------|------|---------|---------|
+| **Neon** | 统一数据库 | 0.5 GB 存储, 190h/月计算 | < 100 MB |
+| **Supabase** | Auth 认证 | 50,000 MAU | < 100 用户 |
+| **Vercel** | 前端+Waline+后端 | 100 GB 流量 | < 5 GB |
+| **Resend** | 邮件通知 | 3,000 封/月 | < 100 封 |
+| **总计** | | | **$0/月** |
+
+### 实施顺序
+
+```
+Phase 4.3.1 (当前) ── 后端 API + Neon 数据库  ✅ 代码已就绪
+         ↓
+Phase 4.4 ────────── Supabase Auth 项目创建 + 前端登录组件
+         ↓
+Phase 4.3.2 ──────── 集成认证到报名 API + 前端报名按钮
+         ↓
+Phase 4.3.3 ──────── 邮件通知 (Resend)
 ```
 
 ---
 
-**文档版本**: 1.2
+**文档版本**: 2.0
 **创建日期**: 2026-02-10
 **最后更新**: 2026-02-11
 **作者**: Claude (Anthropic)
-**状态**: ✅ 代码修复完成，计划文档已更新，待执行 Phase 4.3.1
+**状态**: ✅ 架构决策已确认，待执行 Phase 4.3.1 (Neon 建表)
