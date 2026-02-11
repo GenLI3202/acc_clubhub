@@ -6,7 +6,7 @@ uvicorn[standard]>=0.24.0
 
 # Database (PostgreSQL via Neon)
 sqlalchemy>=2.0.23
-psycopg2-binary>=2.9.9
+pg8000>=1.30.0
 
 # Validation & Settings
 pydantic[email]>=2.5.0
