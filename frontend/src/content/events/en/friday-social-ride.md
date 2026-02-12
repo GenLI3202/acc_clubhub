@@ -5,9 +5,8 @@ description: Relaxed after-work social ride for all levels
 location: English Garden South Gate
 date: 2025-06-20
 eventType: social-ride
-cover: /images/uploads/social.jpg
+cover: /images/red_logo.png
 ---
-
 # Friday Social Ride
 
 ## About

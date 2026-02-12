@@ -7,7 +7,6 @@ date: 2025-07-15
 eventType: training-camp
 cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 ---
-
 # 2025 阿尔卑斯夏日骑行
 
 加入我们为期3天的阿尔卑斯山地骑行之旅！
@@ -23,14 +22,17 @@ cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 ## 行程安排
 
 ### Day 1: 慕尼黑 → 加米施
+
 - 距离: 90km
 - 爬升: 1200m
 
 ### Day 2: 楚格峰环线
+
 - 距离: 100km
 - 爬升: 1800m
 
 ### Day 3: 返回慕尼黑
+
 - 距离: 90km
 - 爬升: 1500m
 

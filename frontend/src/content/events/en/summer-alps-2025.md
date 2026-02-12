@@ -5,9 +5,8 @@ description: 3-day Alpine cycling adventure with stunning mountain views
 location: Munich Central Station
 date: 2025-07-15
 eventType: training-camp
-cover: /images/uploads/alps.jpg
+cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 ---
-
 # 2025 Summer Alps Cycling Tour
 
 Join us for a 3-day Alpine cycling adventure!
@@ -23,14 +22,17 @@ Join us for a 3-day Alpine cycling adventure!
 ## Itinerary
 
 ### Day 1: Munich → Garmisch
+
 - Distance: 90km
 - Elevation: 1200m
 
 ### Day 2: Zugspitze Loop
+
 - Distance: 100km
 - Elevation: 1800m
 
 ### Day 3: Return to Munich
+
 - Distance: 90km
 - Elevation: 1500m
 

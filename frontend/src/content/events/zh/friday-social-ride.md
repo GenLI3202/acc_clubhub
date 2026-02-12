@@ -7,7 +7,6 @@ date: 2025-06-20
 eventType: social-ride
 cover: /images/red_logo.png
 ---
-
 # 每周五社交骑
 
 ## 活动介绍

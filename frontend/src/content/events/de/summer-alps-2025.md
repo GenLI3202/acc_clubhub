@@ -5,9 +5,8 @@ description: 3-tägige Alpenradtour mit atemberaubenden Bergpanoramen
 location: München Hauptbahnhof
 date: 2025-07-15
 eventType: training-camp
-cover: /images/uploads/alps.jpg
+cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 ---
-
 # 2025 Sommer Alpen Radtour
 
 Begleite uns auf einer 3-tägigen Alpen-Radtour!
@@ -23,14 +22,17 @@ Begleite uns auf einer 3-tägigen Alpen-Radtour!
 ## Routenplan
 
 ### Tag 1: München → Garmisch
+
 - Distanz: 90km
 - Höhenmeter: 1200m
 
 ### Tag 2: Zugspitz-Runde
+
 - Distanz: 100km
 - Höhenmeter: 1800m
 
 ### Tag 3: Rückfahrt nach München
+
 - Distanz: 90km
 - Höhenmeter: 1500m
 

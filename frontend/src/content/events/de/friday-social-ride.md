@@ -5,9 +5,8 @@ description: Entspannte Feierabend-Runde für alle Level
 location: Englischer Garten Südeingang
 date: 2025-06-20
 eventType: social-ride
-cover: /images/uploads/social.jpg
+cover: /images/red_logo.png
 ---
-
 # Freitag Social Ride
 
 ## Über die Tour
