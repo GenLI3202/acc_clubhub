@@ -6,7 +6,7 @@ import { MasonryCard } from '../ui/MasonryCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
 import { calculateFacets } from '../../lib/filter/facetUtils';
-import { mediaFilters } from '../../lib/filter/filterConfig';
+import { mediaFilters, sortFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
 
 interface MediaPageProps {
@@ -20,14 +20,16 @@ import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 export default function MediaPage({ initialItems, lang, initialFilters = {} }: MediaPageProps) {
     const { filters, setFilter, resetFilters } = useFilterState(initialFilters);
 
+    const combinedFilters = useMemo(() => [...mediaFilters, ...sortFilters], []);
+
     const filteredItems = useMemo(() => {
-        return filterItems(initialItems, filters, { filters: mediaFilters });
-    }, [initialItems, filters]);
+        return filterItems(initialItems, filters, { filters: combinedFilters });
+    }, [initialItems, filters, combinedFilters]);
 
     // Calculate facets based on initial items (Global Counts) to ensure options are populated
     const facetConfig = useMemo(() => {
-        return calculateFacets(initialItems, mediaFilters);
-    }, [initialItems]);
+        return calculateFacets(initialItems, combinedFilters);
+    }, [initialItems, combinedFilters]);
 
     const filterTitle = lang === 'zh' ? '筛选' : lang === 'de' ? 'Filter' : 'Filters';
 

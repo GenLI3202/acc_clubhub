@@ -114,14 +114,30 @@ export function FilterPanel({
                             });
                         }
 
+                        // Translate section title if it's 'sort'
+                        let sectionTitle = def.label;
+                        if (def.key === 'sort') {
+                            sectionTitle = lang === 'zh' ? '排序' : lang === 'de' ? 'Sortieren' : 'Sort By';
+                        }
+
                         return (
-                            <FilterSection key={def.key} title={def.label}>
+                            <FilterSection key={def.key} title={sectionTitle}>
                                 {def.type === 'multiselect' || def.type === 'select' ? (
                                     <FilterCheckboxGroup
                                         field={def.key}
                                         options={options}
-                                        selectedValues={(value as string[]) || []}
-                                        onChange={onFilterChange}
+                                        selectedValues={
+                                            Array.isArray(value) ? value :
+                                            value !== undefined ? [value as string] : []
+                                        }
+                                        onChange={(field, newValues) => {
+                                            if (def.type === 'select') {
+                                                // For 'select', treat it as a single value or toggle
+                                                onFilterChange(field, newValues.length > 0 ? newValues[newValues.length - 1] : undefined);
+                                            } else {
+                                                onFilterChange(field, newValues);
+                                            }
+                                        }}
                                         lang={lang}
                                     />
                                 ) : def.type === 'range' ? (

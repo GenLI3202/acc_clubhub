@@ -159,6 +159,20 @@ export const eventsFilters: FilterDefinition[] = [
     }
 ];
 
+export const sortFilters: FilterDefinition[] = [
+    {
+        key: 'sort',
+        label: 'Sort By',
+        type: 'select',
+        options: [
+            { value: 'date-desc', label: 'Newest First' },
+            { value: 'date-asc', label: 'Oldest First' },
+            { value: 'name-asc', label: 'Name (A-Z)' },
+            { value: 'name-desc', label: 'Name (Z-A)' }
+        ]
+    }
+];
+
 export const allFilterConfigs = {
     media: mediaFilters,
     gear: gearFilters,

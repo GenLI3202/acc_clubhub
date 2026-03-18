@@ -14,10 +14,16 @@ export function filterItems<T extends Record<string, any>>(
     filters: FilterState,
     config: FilterConfig
 ): T[] {
-    return items.filter((item) => {
+    let result = items.filter((item) => {
         // Iterate through each configured filter
         for (const filterDef of config.filters) {
             const filterKey = filterDef.key;
+
+            // Skip the sort filter because it is not an attribute match
+            if (filterKey === 'sort') {
+                continue;
+            }
+
             const filterValue = filters[filterKey];
 
             // Skip if no filter value is set
@@ -68,6 +74,36 @@ export function filterItems<T extends Record<string, any>>(
 
         return true;
     });
+
+    // Apply sorting logic if the 'sort' filter key is defined in state
+    if (filters['sort']) {
+        const sortValue = Array.isArray(filters['sort']) ? filters['sort'][0] : filters['sort'];
+        result = result.sort((a, b) => {
+            if (sortValue === 'date-desc') {
+                const dateA = new Date(getFilterableValue(a, 'date') || 0).getTime();
+                const dateB = new Date(getFilterableValue(b, 'date') || 0).getTime();
+                return dateB - dateA;
+            }
+            if (sortValue === 'date-asc') {
+                const dateA = new Date(getFilterableValue(a, 'date') || 0).getTime();
+                const dateB = new Date(getFilterableValue(b, 'date') || 0).getTime();
+                return dateA - dateB;
+            }
+            if (sortValue === 'name-asc') {
+                const nameA = String(getFilterableValue(a, 'title') || getFilterableValue(a, 'name') || '').toLowerCase();
+                const nameB = String(getFilterableValue(b, 'title') || getFilterableValue(b, 'name') || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            }
+            if (sortValue === 'name-desc') {
+                const nameA = String(getFilterableValue(a, 'title') || getFilterableValue(a, 'name') || '').toLowerCase();
+                const nameB = String(getFilterableValue(b, 'title') || getFilterableValue(b, 'name') || '').toLowerCase();
+                return nameB.localeCompare(nameA);
+            }
+            return 0;
+        });
+    }
+
+    return result;
 }
 
 /**
