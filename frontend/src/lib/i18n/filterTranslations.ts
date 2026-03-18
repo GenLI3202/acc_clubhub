@@ -42,6 +42,12 @@ export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, s
         'alps-austria': { zh: '奥地利阿尔卑斯', de: 'Österreichische Alpen', en: 'Austrian Alps' },
         'alps-italy': { zh: '多洛米蒂', de: 'Dolomiten', en: 'Dolomites' },
         'island-spain': { zh: '西班牙海岛', de: 'Spanische Inseln', en: 'Spanish Islands' }
+    },
+    sort: {
+        'date-desc': { zh: '最新发布', de: 'Neueste zuerst', en: 'Newest First' },
+        'date-asc': { zh: '最早发布', de: 'Älteste zuerst', en: 'Oldest First' },
+        'name-asc': { zh: '名称 (A-Z)', de: 'Name (A-Z)', en: 'Name (A-Z)' },
+        'name-desc': { zh: '名称 (Z-A)', de: 'Name (Z-A)', en: 'Name (Z-A)' }
     }
 };
 

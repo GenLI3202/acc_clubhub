@@ -6,7 +6,7 @@ import { MasonryCard } from '../ui/MasonryCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
 import { calculateFacets } from '../../lib/filter/facetUtils';
-import { trainingFilters } from '../../lib/filter/filterConfig';
+import { trainingFilters, sortFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
 import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 
@@ -19,13 +19,15 @@ interface TrainingPageProps {
 export default function TrainingPage({ initialItems, lang, initialFilters = {} }: TrainingPageProps) {
     const { filters, setFilter, resetFilters } = useFilterState(initialFilters);
 
+    const combinedFilters = useMemo(() => [...trainingFilters, ...sortFilters], []);
+
     const filteredItems = useMemo(() => {
-        return filterItems(initialItems, filters, { filters: trainingFilters });
-    }, [initialItems, filters]);
+        return filterItems(initialItems, filters, { filters: combinedFilters });
+    }, [initialItems, filters, combinedFilters]);
 
     const facetConfig = useMemo(() => {
-        return calculateFacets(initialItems, trainingFilters);
-    }, [initialItems]);
+        return calculateFacets(initialItems, combinedFilters);
+    }, [initialItems, combinedFilters]);
 
     const filterTitle = lang === 'zh' ? '筛选' : lang === 'de' ? 'Filter' : 'Filters';
 

@@ -6,7 +6,7 @@ import { MasonryCard } from '../ui/MasonryCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
 import { calculateFacets } from '../../lib/filter/facetUtils';
-import { gearFilters } from '../../lib/filter/filterConfig';
+import { gearFilters, sortFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
 import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 
@@ -19,13 +19,15 @@ interface GearPageProps {
 export default function GearPage({ initialItems, lang, initialFilters = {} }: GearPageProps) {
     const { filters, setFilter, resetFilters } = useFilterState(initialFilters);
 
+    const combinedFilters = useMemo(() => [...gearFilters, ...sortFilters], []);
+
     const filteredItems = useMemo(() => {
-        return filterItems(initialItems, filters, { filters: gearFilters });
-    }, [initialItems, filters]);
+        return filterItems(initialItems, filters, { filters: combinedFilters });
+    }, [initialItems, filters, combinedFilters]);
 
     const facetConfig = useMemo(() => {
-        return calculateFacets(initialItems, gearFilters);
-    }, [initialItems]);
+        return calculateFacets(initialItems, combinedFilters);
+    }, [initialItems, combinedFilters]);
 
     const filterTitle = lang === 'zh' ? '筛选' : lang === 'de' ? 'Filter' : 'Filters';
 

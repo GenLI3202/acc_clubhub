@@ -38,19 +38,23 @@ export function FilterCheckboxGroup({ field, options, selectedValues, onChange, 
 
     return (
         <div className="filter-checkbox-group">
-            {visibleOptions.map((option) => (
-                <label key={String(option.value)} className="checkbox-label">
-                    <input
-                        type="checkbox"
-                        className="checkbox-input"
-                        value={String(option.value)}
-                        checked={selectedValues.includes(String(option.value))}
-                        onChange={(e) => handleChange(String(option.value), (e.target as HTMLInputElement).checked)}
-                    />
-                    <span className="checkbox-text">{getFilterLabel(field, option.value, lang)}</span>
-                    <span className="checkbox-count">({option.count || 0})</span>
-                </label>
-            ))}
+            {visibleOptions.map((option) => {
+                const isSortField = field === 'sort';
+                return (
+                    <label key={String(option.value)} className="checkbox-label">
+                        <input
+                            type={isSortField ? "radio" : "checkbox"}
+                            className={isSortField ? "radio-input" : "checkbox-input"}
+                            name={`filter-${field}`}
+                            value={String(option.value)}
+                            checked={selectedValues.includes(String(option.value))}
+                            onChange={(e) => handleChange(String(option.value), (e.target as HTMLInputElement).checked)}
+                        />
+                        <span className="checkbox-text">{getFilterLabel(field, option.value, lang)}</span>
+                        {!isSortField && <span className="checkbox-count">({option.count || 0})</span>}
+                    </label>
+                );
+            })}
 
             {hasMore && (
                 <button
