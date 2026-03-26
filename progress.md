@@ -38,10 +38,18 @@
   - [x] Preact registration form component
   - [x] Privacy policy pages (zh/en/de) — GDPR compliant
   - [x] Database triggers for seat management
+- [x] **Event Registration Error Handling** (2026-03-26)
+  - [x] Global exception handler in FastAPI — ensures CORS headers on all 500 errors
+  - [x] Safe JSON parse in frontend form (`EventRegistrationForm.tsx`)
+  - [x] Localized error messages: network error, server error, form init failure (zh/en/de)
+  - [x] `eventId=0` guard — shows error UI + reload button instead of broken form
+  - [x] `lang` passed in RSVP POST body so backend sends emails in correct language
+  - [x] German email templates added to `email.py` (confirmation + waitlist)
+  - [x] `_ensure_subscriber` now receives `lang` from RSVP flow
 
 ## In Progress
 
-- [ ] **Phase 4.3.1.5 — Testing & Deployment**
+- [ ] **E2E Testing & Deployment**
   - [ ] E2E functional testing (8 test scenarios)
   - [ ] Frontend deployment to production
   - [ ] Email delivery monitoring
