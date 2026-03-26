@@ -54,6 +54,18 @@ def send_confirmation_email(
 <p>Enjoy your ride!</p>
 <p>—— ACC ClubHub Team</p>""",
         },
+        "de": {
+            "subject": f"Anmeldung bestätigt: {event_title}",
+            "body": f"""<p>Hallo {user_name},</p>
+<p>Sie haben sich erfolgreich angemeldet für:</p>
+<ul>
+    <li><strong>Veranstaltung:</strong> {event_title}</li>
+    <li><strong>Datum:</strong> {date_str}</li>
+    <li><strong>Ort:</strong> {event_location or "TBD"}</li>
+</ul>
+<p>Viel Spaß beim Radfahren!</p>
+<p>—— ACC ClubHub Team</p>""",
+        },
     }
 
     template = templates.get(lang, templates["zh"])
@@ -93,7 +105,12 @@ def send_waitlist_email(
     }
     
     template = templates.get(lang, templates["zh"])
-    html_body = f"""<p>Hello {user_name}, you are #{ waitlist_position} on the waitlist for {event_title}</p>"""
+    body_templates = {
+        "zh": f"<p>\u60a8\u597d {user_name}\uff0c\u60a8\u5728 {event_title} \u7684\u7b49\u5f85\u540d\u5355\u4e2d\u6392\u7b2c {waitlist_position} \u4f4d\u3002</p>",
+        "en": f"<p>Hello {user_name}, you are #{waitlist_position} on the waitlist for {event_title}.</p>",
+        "de": f"<p>Hallo {user_name}, Sie sind Nr. {waitlist_position} auf der Warteliste f\u00fcr {event_title}.</p>",
+    }
+    html_body = body_templates.get(lang, body_templates["en"])
 
     params = {
         "from": "ACC ClubHub <noreply@acc-clubhub.de>",
