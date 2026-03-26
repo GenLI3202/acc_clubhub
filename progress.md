@@ -1,0 +1,76 @@
+# ACC ClubHub — Progress
+
+> Single source of truth for project status. Update after every task.
+
+## Project Overview
+
+- **Created**: 2026-01-01 (revitalized)
+- **Tech Stack**: Astro 5 (SSG) · Preact · TypeScript · FastAPI · SQLAlchemy · PostgreSQL (Neon) · Vercel · Sveltia CMS · Resend · Waline
+- **Status**: 🟡 Layer 4 — Event Registration in progress
+
+## Current Architecture
+
+| Layer | Responsibility | Key Files |
+|-------|---------------|-----------|
+| **Frontend (Astro)** | Static site generation, i18n routing, content collections | `frontend/src/pages/`, `frontend/src/content/` |
+| **CMS (Sveltia)** | Git-based content management via `/admin` | `frontend/public/admin/` |
+| **Backend (FastAPI)** | Event registration API, email notifications | `backend/app.py`, `backend/routes/` |
+| **Database (Neon/Postgres)** | Events, RSVPs, subscribers | `backend/models.py`, `backend/database.py` |
+| **Email (Resend)** | Multilingual registration confirmations (zh/en/de) | `backend/services/email.py` |
+| **Comments (Waline)** | Community discussion on articles | External Waline deployment |
+
+## Completed Features
+
+- [x] **Layer 1 — Base Setup**: Astro project scaffold, basic routing, Vercel deployment
+- [x] **Layer 2 — Design & Polish**: TailwindCSS design system, responsive layout, typography
+- [x] **Layer 3 — CMS + i18n**
+  - [x] Sveltia CMS integration with GitHub OAuth (`/admin`)
+  - [x] Content collections: Media, Knowledge (Gear/Training), Routes
+  - [x] Dynamic routing from Markdown/MDX content
+  - [x] i18n: Chinese (default) / English / German with prefix routing
+- [x] **Phase 4.1 — Search & Filter**: Fuse.js fuzzy search, tag/category filtering
+- [x] **Phase 4.2 — Comments**: Waline comments system integration
+- [x] **Phase 4.3.1 — Basic Event Registration**
+  - [x] FastAPI backend deployed to Vercel (`acc-clubhub-events-ms.vercel.app`)
+  - [x] Neon Postgres database with event + RSVP schema
+  - [x] Email-based registration (Name + Email, no OAuth)
+  - [x] Multilingual email notifications via Resend (zh/en/de)
+  - [x] Preact registration form component
+  - [x] Privacy policy pages (zh/en/de) — GDPR compliant
+  - [x] Database triggers for seat management
+
+## In Progress
+
+- [ ] **Phase 4.3.1.5 — Testing & Deployment**
+  - [ ] E2E functional testing (8 test scenarios)
+  - [ ] Frontend deployment to production
+  - [ ] Email delivery monitoring
+
+## Planned
+
+- [ ] **Phase 4.3.2 — Event UI Redesign** (`docs/rebuild_plan/phase_4_3_2_event_ui.md`)
+  - [ ] Featured events hero section
+  - [ ] Weekly regulars card grid
+  - [ ] Responsive design improvements
+
+- [ ] **Phase 4.4 — Authentication** (future)
+- [ ] **Phase 4.2.2 — WeChat Integration** (`docs/rebuild_plan/future_add_on/phase_4_2_2_wechat_plan.md`)
+
+## Known Issues
+
+<!-- Track bugs and tech debt as they arise. -->
+<!-- Format: - [ ] Issue — severity (low/med/high) -->
+
+- [ ] E2E tests not yet written for registration flow — med
+
+## Architecture Decisions
+
+| Decision | Rationale | Date |
+|----------|-----------|------|
+| Email-based registration (no OAuth) | Lower friction for event sign-ups; GDPR simpler without social login | 2026-01 |
+| FastAPI as separate Vercel deployment | Decoupled from static frontend; independent scaling and deployment | 2026-01 |
+| Waline over Giscus for comments | Giscus requires GitHub account (friction for Chinese users); Waline self-hosted, no account needed | 2026-01 |
+| Neon Postgres (same DB as Waline) | Reuse existing database instance; reduce Vercel storage costs | 2026-01 |
+| Sveltia CMS over Decap CMS | Better UX for content editors; same Git-based approach | 2026-01 |
+| pg8000 over psycopg2 for backend | Pure Python driver — works on Vercel's serverless runtime without native libs | 2026-01 |
+| Applied `fullstack` archetype (AGENTS.md) | Enforces layer separation, API contract sync, and component organization rules for combined frontend + backend repo | 2026-03-26 |

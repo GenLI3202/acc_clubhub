@@ -1,0 +1,380 @@
+# Layer 4: 功能模块 (Features) — 实施总纲
+
+> **目标**: 完成网站的核心交互功能，从静态展示升级为动态应用。
+> **状态**: 待实施
+> **前置依赖**: Layer 3 (CMS + i18n) 已完成 ✅
+
+---
+
+## 一、模块概览
+
+本层级分为 5 个子阶段，**按实施顺序排列**：
+
+| 实施顺序 | 阶段 | 模块 | 核心技术 | 依赖 | 状态 |
+|:--------:|------|------|----------|------|------|
+| 1 | **4.1** | **全站搜索与筛选** | Fuse.js, Astro Islands | Layer 3 ✅ | 待实施 |
+| 2 | **4.2** | **评论系统** | Giscus (GitHub Discussions) | 独立 | 待实施 |
+| 3 | **4.3** | **视频增强** | ~~YouTube/Bilibili API~~ | - | ✅ 基础已完成 |
+| 4 | **4.4** | **认证系统** | Supabase Auth, Preact | Layer 1 | 待实施 |
+| 5 | **4.5** | **后端重构 & 活动** | FastAPI, SQLAlchemy 2.0 | 4.4 | 待实施 |
+
+### 排序逻辑
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Phase 4.1 (搜索筛选)  ──► 纯前端，无依赖，立即可做              │
+│          ↓                                                      │
+│  Phase 4.2 (评论)      ──► 独立模块，可与 4.1 并行              │
+│          ↓                                                      │
+│  Phase 4.3 (视频)      ──► ✅ 已完成基础功能                    │
+├─────────────────────────────────────────────────────────────────┤
+│  Phase 4.4 (认证)      ──► 需要 Supabase 配置                   │
+│          ↓                                                      │
+│  Phase 4.5 (后端)      ──► 依赖 4.4 认证，工作量最大            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 二、详细实施方案
+
+### Phase 4.1: 全站搜索与筛选系统 (Search & Filter) 🚀 优先
+
+> **目标**: 为所有五大内容板块提供统一的搜索、分类、筛选功能。
+> **类型**: 纯前端
+> **预计工作量**: 中等
+
+#### 覆盖板块
+
+| 板块 | Collection | 搜索字段 | 筛选维度 |
+|------|------------|----------|----------|
+| **车影骑踪** | `media` | title, description | type (影像/访谈/翻山越岭), date |
+| **器械知识** | `gear` | title, description, author | author, date |
+| **科学训练** | `training` | title, description, author | author, date |
+| **骑行路线** | `routes` | name, region | difficulty, distance range, elevation range |
+| **慕城日常** | `events` | title, location | date range, event type |
+
+#### 技术方案
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Build Time                           │
+├─────────────────────────────────────────────────────────┤
+│  Astro Content Collections                              │
+│           ↓                                             │
+│  /api/search-index.json  (静态生成的搜索索引)            │
+│           ↓                                             │
+│  包含所有板块的 metadata + 可搜索字段                    │
+└─────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────┐
+│                    Runtime (Client)                     │
+├─────────────────────────────────────────────────────────┤
+│  Fuse.js (轻量模糊搜索库, ~5KB gzipped)                  │
+│           ↓                                             │
+│  SearchBar.tsx (Preact Island)                          │
+│  - 全局搜索入口 (Header)                                │
+│  - 实时搜索建议                                         │
+│  - 键盘导航 (↑↓ Enter Esc)                              │
+│           ↓                                             │
+│  FilterPanel.tsx (各板块列表页)                          │
+│  - 多选筛选器                                           │
+│  - URL 参数同步 (?difficulty=easy&region=Munich)        │
+│  - 筛选结果计数                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### 任务清单
+
+##### 4.1.1 搜索索引生成
+
+1. [ ] `src/pages/api/search-index.json.ts`: 构建时生成全站搜索索引
+   ```typescript
+   // 输出结构
+   {
+     "media": [{ slug, title, description, type, date, lang }],
+     "gear": [{ slug, title, description, author, date, lang }],
+     "training": [{ slug, title, description, author, date, lang }],
+     "routes": [{ slug, name, region, difficulty, distance, elevation, lang }],
+     "events": [{ slug, title, location, date, lang }]
+   }
+   ```
+
+##### 4.1.2 全局搜索组件
+
+2. [ ] `src/components/search/SearchBar.tsx` (Preact Island)
+   - 搜索框 UI (带图标)
+   - Fuse.js 实例初始化
+   - 实时搜索结果下拉
+   - 结果分组显示 (按板块)
+   - 键盘导航支持
+   - 多语言搜索结果链接
+
+3. [ ] `src/components/search/SearchResult.tsx`
+   - 单条搜索结果渲染
+   - 高亮匹配文本
+   - 显示板块标签
+
+##### 4.1.3 板块筛选组件
+
+4. [ ] `src/components/filter/FilterPanel.tsx` (通用筛选面板)
+   - 接收筛选配置 props
+   - 多选 checkbox 组
+   - 范围滑块 (距离/爬升)
+   - 日期范围选择
+
+5. [ ] `src/components/filter/FilterChip.tsx`
+   - 已选筛选条件标签
+   - 可点击移除
+
+##### 4.1.4 各板块集成
+
+6. [ ] 更新 `[lang]/media/index.astro`:
+   - 添加 type 筛选
+   - 添加日期排序
+
+7. [ ] 更新 `[lang]/knowledge/gear/index.astro`:
+   - 添加 author 筛选
+
+8. [ ] 更新 `[lang]/knowledge/training/index.astro`:
+   - 添加 author 筛选
+
+9. [ ] 更新 `[lang]/routes/index.astro`:
+   - 添加 difficulty 筛选 (多选)
+   - 添加 distance 范围筛选
+   - 添加 elevation 范围筛选
+   - 添加 region 筛选
+
+10. [ ] 更新 `[lang]/events/index.astro`:
+    - 添加日期范围筛选
+    - 添加 "即将举行" / "已结束" 切换
+
+##### 4.1.5 URL 状态同步
+
+11. [ ] `src/lib/filterState.ts`:
+    - 筛选状态 ↔ URL 参数双向同步
+    - 支持浏览器前进/后退
+    - 支持分享筛选后的链接
+
+#### 交付物
+
+* `frontend/src/pages/api/search-index.json.ts`
+* `frontend/src/components/search/*`
+* `frontend/src/components/filter/*`
+* `frontend/src/lib/filterState.ts`
+* 更新后的各板块列表页
+
+#### 验收标准
+
+- [ ] 全局搜索可搜索所有板块内容
+- [ ] 搜索结果按板块分组，点击可跳转
+- [ ] 各板块筛选器工作正常
+- [ ] 筛选状态反映在 URL 中
+- [ ] 刷新页面保持筛选状态
+- [ ] 移动端筛选面板可折叠
+
+---
+
+### Phase 4.2: 评论系统 (Comments)
+
+> **目标**: 为内容页面添加评论功能。
+> **类型**: 前端 + 第三方服务
+> **预计工作量**: 小
+
+#### 技术方案
+
+* **服务**: Giscus (基于 GitHub Discussions，免费)
+* **优点**:
+  - 无需自建后端
+  - 支持 Markdown
+  - 与 GitHub 生态集成
+  - 支持多语言
+
+#### 任务清单
+
+1. [ ] **GitHub 配置**:
+   - 在 repo 启用 Discussions
+   - 安装 Giscus App
+   - 获取配置参数
+
+2. [ ] **组件开发**:
+   * `src/components/Comments.astro`:
+     - 封装 Giscus script
+     - 支持主题切换
+     - 支持多语言映射
+
+3. [ ] **集成到内容页**:
+   - `[lang]/media/[slug].astro`
+   - `[lang]/knowledge/gear/[slug].astro`
+   - `[lang]/knowledge/training/[slug].astro`
+   - `[lang]/routes/[slug].astro`
+
+#### 交付物
+
+* `frontend/src/components/Comments.astro`
+* 更新后的内容详情页
+
+#### 验收标准
+
+- [ ] Giscus 评论框加载成功
+- [ ] 可提交评论
+- [ ] 评论显示在 GitHub Discussions
+
+---
+
+### Phase 4.3: 视频增强 (Video Enhancement)
+
+> **状态**: ✅ 基础功能已完成
+
+#### 已完成功能
+
+- [x] YouTube 视频嵌入 (`[lang]/media/[slug].astro:45-47`)
+- [x] Bilibili 视频嵌入 (`[lang]/media/[slug].astro:49-56`)
+- [x] 响应式 16:9 容器
+- [x] 自动 URL 转换为 embed URL
+
+#### 可选增强 (低优先级，移至 Layer 5)
+
+1. [ ] **抽取为可复用组件**: `VideoEmbed.astro`
+2. [ ] **视频元数据 API** (通过 YouTube/Bilibili API 获取):
+   - 视频缩略图 (用于列表页预览)
+   - 视频时长
+   - 播放量统计
+3. [ ] **懒加载优化**: 视频 iframe 仅在进入视口时加载
+
+#### 决策
+
+基础功能已满足需求，此阶段标记为完成。可选增强移至 Layer 5 (优化层)。
+
+---
+
+### Phase 4.4: 认证系统 (Authentication)
+
+> **目标**: 前端实现用户登录，后端准备好 Token 验证基础。
+> **类型**: 前端 + 后端
+> **预计工作量**: 中等
+
+#### 技术方案
+
+* **服务**: Supabase Auth (免费 tier)
+* **前端 SDK**: `@supabase/supabase-js`
+* **认证流**: PKCE Flow (更安全)
+
+#### 任务清单
+
+1. [ ] **Supabase 初始化**: 获取 Project URL & Key。
+2. [ ] **前端集成**:
+   * `src/lib/supabase.ts`: 单例客户端。
+   * `AuthButton.tsx`: 显示登录/头像。
+   * `LoginForm.tsx`: 处理 OAuth (Google/GitHub) 和 邮箱登录。
+3. [ ] **后端基础 (Critical)**:
+   * 安装 `PyJWT`, `cryptography`。
+   * 编写 `backend/core/security.py`: 验证 Supabase JWT 签名的依赖函数 (`verify_token`)。
+
+#### 交付物
+
+* `frontend/src/lib/supabase.ts`
+* `frontend/src/components/auth/*`
+* `backend/core/security.py`
+
+#### 验收标准
+
+- [ ] 前端 `supabase.auth.getUser()` 能获取用户信息
+- [ ] 后端能解析 JWT 并拒绝无效 Token
+
+---
+
+### Phase 4.5: 后端重构 & 活动报名 (Backend Rebuild & Events)
+
+> **目标**: 按生产标准重写后端，实现活动报名功能。
+> **类型**: 后端
+> **依赖**: Phase 4.4 (认证系统)
+> **预计工作量**: 大
+
+#### 重构重点 (Critical Review)
+
+1. **数据库驱动**: 替换 `aiosqlite` 为 **`asyncpg`** (生产环境标准)。
+2. **ORM 模式**: 升级 `models.py` 为 **SQLAlchemy 2.0 Async** 风格。
+3. **用户模型**: `Member` 表 ID 必须兼容 Supabase 的 **UUID**，而不是自增 Integer。
+4. **架构分层**: 引入 Pydantic Schemas (`schemas.py`) 分离请求/响应数据模型。
+
+#### 任务清单
+
+1. [ ] **基础设施重建**:
+   * `requirements.txt`: 添加 `asyncpg`, `pydantic-settings`。
+   * `database.py`: 配置 `AsyncSession` 和连接池。
+2. [ ] **模型重定义 (models.py)**:
+   * `Member`: ID 为 UUID (兼容 Supabase)。
+   * `Event`: `date` (UTC), `max_participants`。
+   * `RSVP`: 关联 Member UUID 和 Event ID。
+3. [ ] **环境配置**:
+   * 设置 `DATABASE_URL` (Supabase Connection String) 到 `.env` 和生产环境。
+4. [ ] **FastAPI 路由开发**:
+   * `POST /api/events`: 管理员创建活动。
+   * `POST /api/events/{id}/rsvp`: 用户报名 (依赖 `verify_token`)。
+   * `GET /api/me/rsvps`: 我的报名记录。
+5. [ ] **邮件服务**: 集成 Resend 发送报名回执。
+
+#### 交付物
+
+* 重构后的 `backend/` 目录结构
+* `backend/routes/events.py`
+* `backend/schemas/event.py`
+
+#### 验收标准
+
+- [ ] **Refactor Check**: 代码中使用 `await session.execute(select(...))` 等异步语法
+- [ ] Member ID 为 UUID 格式
+- [ ] 报名流程：用户点击报名 → API 200 OK → 数据库 RSVP 表新增记录 → 邮箱收到邮件
+
+---
+
+## 三、实施时间线
+
+```
+Week 1-2: Phase 4.1 (搜索筛选) ─────────────────────────────────┐
+                                                                 │ 可并行
+Week 1:   Phase 4.2 (评论) ─────────────────────────────────────┘
+
+Week 2:   Phase 4.3 (视频) ✅ 已完成
+
+Week 3:   Phase 4.4 (认证) ─────────────────────────────────────┐
+                                                                 │ 串行依赖
+Week 4-5: Phase 4.5 (后端) ─────────────────────────────────────┘
+```
+
+---
+
+## 四、验证标准汇总
+
+| 阶段 | 验证项 |
+|------|--------|
+| 4.1 | 全局搜索返回跨板块结果；各板块筛选器正常工作；URL 参数同步筛选状态。 |
+| 4.2 | Giscus 评论框加载成功；可提交评论；评论显示在 GitHub Discussions。 |
+| 4.3 | ✅ YouTube/Bilibili 视频正常播放。 |
+| 4.4 | 前端 `supabase.auth.getUser()` 能获取用户信息；后端能解析 JWT 并拒绝无效 Token。 |
+| 4.5 | 报名流程：用户点击报名 → API 200 OK → 数据库 RSVP 表新增记录 → 邮箱收到邮件。 |
+
+---
+
+## 五、技术栈补充
+
+### 新增依赖
+
+```json
+// frontend/package.json
+{
+  "dependencies": {
+    "fuse.js": "^7.0.0",
+    "@supabase/supabase-js": "^2.x"
+  }
+}
+```
+
+```txt
+# backend/requirements.txt
+asyncpg>=0.29.0
+pydantic-settings>=2.0.0
+PyJWT>=2.8.0
+resend>=0.7.0
+```

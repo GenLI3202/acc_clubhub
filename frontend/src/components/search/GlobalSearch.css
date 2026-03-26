@@ -1,0 +1,115 @@
+.global-search-trigger {
+    background: none;
+    border: none;
+    color: var(--color-text-main);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.global-search-trigger:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--color-primary);
+}
+
+.global-search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 9999;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.global-search-content {
+    width: 100%;
+    max-width: 600px;
+    padding: 0 1rem;
+    position: relative;
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Override SearchBar interactions styles for the overlay context */
+.global-search-content :global(.search-container) {
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.global-search-content :global(.search-input) {
+    height: 64px;
+    font-size: 1.25rem;
+    padding-left: 3.5rem;
+}
+
+.global-search-content :global(.search-icon) {
+    width: 24px;
+    height: 24px;
+    left: 1.25rem;
+}
+
+.global-search-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-text-light);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.global-search-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--color-danger);
+}
+
+.global-search-hint {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+}
+
+kbd {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.75rem;
+    font-family: inherit;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

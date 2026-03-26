@@ -1,0 +1,124 @@
+---
+// src/components/WalineComments.astro
+// Phase 4.2: Waline 评论组件
+
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+// Waline 语言映射
+const walineLangMap: Record<string, string> = {
+  zh: 'zh-CN',
+  en: 'en',
+  de: 'de',
+};
+const walineLang = walineLangMap[lang] || 'en';
+
+// Waline 服务端 URL（从环境变量读取，默认为开发环境）
+const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc-clubhub-waline.vercel.app';
+---
+
+<section class="comments-section">
+  <h2>{t(lang, 'comments.title')}</h2>
+  <p class="comments-desc">{t(lang, 'comments.description')}</p>
+  <div class="waline-wrapper" id="waline" data-server-url={walineServerUrl} data-lang={walineLang}></div>
+</section>
+
+<!-- Waline 客户端脚本 -->
+<script>
+  import { init } from '@waline/client';
+  import '@waline/client/style';  // ✅ 引入 Waline 默认样式 (v3 版本)
+
+  const walineContainer = document.getElementById('waline');
+  const serverURL = walineContainer?.dataset.serverUrl || 'https://acc-clubhub-waline.vercel.app';
+  const lang = walineContainer?.dataset.lang || 'en';
+  const path = window.location.pathname;
+
+  init({
+    el: '#waline',
+    serverURL,
+    lang,
+    path,
+    requiredMeta: ['nick', 'mail'],
+    dark: 'html[data-theme="dark"]',
+  });
+</script>
+
+<style>
+  .comments-section {
+    margin-top: var(--space-xl, 2rem);
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--color-border-rough);
+    border-radius: 8px;
+    box-shadow: 3px 3px 0 var(--color-border-rough);
+    transform: scale(0.95);
+    transform-origin: center top;
+  }
+
+  .comments-section h2 {
+    font-family: var(--font-heading);
+    color: var(--color-primary);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-border-rough);
+  }
+
+  .comments-desc {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
+  }
+
+  .waline-wrapper {
+    min-height: 200px;
+    /* Use Waline CSS custom properties for theming */
+    --waline-theme-color: var(--color-primary, #2A5CA6);
+    --waline-active-color: var(--color-accent, #F4A261);
+    --waline-border-color: rgba(42, 92, 166, 0.25);
+    --waline-bgcolor: transparent;
+    --waline-bgcolor-light: rgba(42, 92, 166, 0.04);
+    --waline-color: #444;
+    --waline-font-size: 0.9rem;
+  }
+
+  /* Submit button styling */
+  .waline-wrapper :global(.wl-btn) {
+    background: var(--color-accent) !important;
+    color: white !important;
+    border-color: var(--color-border-rough) !important;
+    border-radius: 4px !important;
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+  }
+
+  .waline-wrapper :global(.wl-btn:hover) {
+    background: var(--color-primary) !important;
+  }
+
+  /* Header inputs row (nickname, email, website) */
+  .waline-wrapper :global(.wl-header-item input) {
+    font-size: 0.90rem !important;
+  }
+
+  .waline-wrapper :global(.wl-header-item label) {
+    font-size: 0.85rem !important;
+  }
+
+  /* Only keep GitHub OAuth */
+  .waline-wrapper :global(.wl-login-info a) {
+    display: none !important;
+  }
+
+  .waline-wrapper :global(.wl-login-info a[title*="GitHub"]) {
+    display: inline-block !important;
+  }
+</style>

@@ -1,0 +1,37 @@
+name: Sync Events to Database
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'frontend/src/content/events/**/*.md'
+
+jobs:
+  sync-events:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Sync events to database
+        env:
+          API_BASE_URL: https://acc-clubhub-events-ms.vercel.app
+        run: |
+          cd backend
+          python scripts/populate_events_via_api.py
+
+      - name: Report sync status
+        run: |
+          echo "✅ Events synced to production database"

@@ -1,0 +1,9 @@
+---
+// src/pages/index.astro
+// 根页面重定向到默认语言
+
+import { defaultLocale } from '../lib/i18n';
+
+// 重定向到默认语言首页
+return Astro.redirect(`/${defaultLocale}`);
+---

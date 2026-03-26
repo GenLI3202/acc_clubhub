@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { FilterPanel } from '../../components/filter/FilterPanel';
+import type { FilterDefinition, FilterState } from '../../types/filter';
+
+// Mock Config
+const filterConfig: FilterDefinition[] = [
+    {
+        key: 'difficulty',
+        label: 'Difficulty',
+        type: 'multiselect',
+        options: [
+            { value: 'easy', label: 'Easy' },
+            { value: 'intermediate', label: 'Intermediate' },
+            { value: 'hard', label: 'Hard' },
+            { value: 'expert', label: 'Expert' },
+        ]
+    },
+    {
+        key: 'distance',
+        label: 'Distance (km)',
+        type: 'range',
+        min: 0,
+        max: 200,
+        step: 5,
+        unit: 'km'
+    },
+    {
+        key: 'elevation',
+        label: 'Elevation (m)',
+        type: 'range',
+        min: 0,
+        max: 3000,
+        step: 100,
+        unit: 'm'
+    }
+];
+
+// Initial mock state - handled by FilterTestWrapper in React
+---
+
+<BaseLayout title="Filter UI Test">
+    <div class="container" style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1>Filter UI Component Test</h1>
+        <p>Testing the look and feel of the reusable filter components.</p>
+        
+        <div class="test-layout">
+            <aside class="sidebar">
+               <div id="filter-root"></div>
+            </aside>
+            <main class="content">
+                <div class="results-placeholder">
+                    <h3>Filtered Results</h3>
+                    <p>Select filters to see updates below.</p>
+                    <pre id="filter-state-display">
+                        State will appear here...
+                    </pre>
+                </div>
+            </main>
+        </div>
+    </div>
+</BaseLayout>
+
+<script>
+    import { h, render } from 'preact';
+    import { useState } from 'preact/hooks';
+    import { FilterPanel } from '../../components/filter/FilterPanel';
+
+    const config = [
+        {
+            key: 'difficulty',
+            label: 'Difficulty',
+            type: 'multiselect',
+            options: [
+                { value: 'easy', label: 'Easy', count: 12 },
+                { value: 'intermediate', label: 'Intermediate', count: 8 },
+                { value: 'hard', label: 'Hard', count: 3 },
+                { value: 'expert', label: 'Expert', count: 1 },
+            ]
+        },
+        {
+            key: 'distance',
+            label: 'Distance (km)',
+            type: 'range',
+            min: 0,
+            max: 200,
+            step: 5,
+            unit: 'km'
+        }
+    ];
+
+    function TestWrapper() {
+        const [filters, setFilters] = useState({
+            difficulty: [],
+            distance: [0, 200]
+        });
+
+        const handleChange = (field, value) => {
+            const newFilters = { ...filters, [field]: value };
+            setFilters(newFilters);
+            
+            // Update display
+            document.getElementById('filter-state-display').textContent = JSON.stringify(newFilters, null, 2);
+        };
+
+        const handleReset = () => {
+            setFilters({
+                 difficulty: [],
+                 distance: [0, 200]
+            });
+            document.getElementById('filter-state-display').textContent = "Reset";
+        };
+
+        return h(FilterPanel, {
+            config: config,
+            filters: filters,
+            onFilterChange: handleChange,
+            onReset: handleReset
+        });
+    }
+
+    const root = document.getElementById('filter-root');
+    if (root) {
+        render(h(TestWrapper, {}), root);
+    }
+</script>
+
+<style>
+    .test-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .sidebar {
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .results-placeholder {
+        padding: 2rem;
+        background: #fff;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        min-height: 400px;
+    }
+</style>

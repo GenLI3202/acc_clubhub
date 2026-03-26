@@ -1,0 +1,84 @@
+---
+// src/pages/[lang]/routes/index.astro
+// 骑行路线 - 列表页 (瀑布流布局)
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+
+import RoutesPage from '../../../components/content/RoutesPage';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+const allRoutes = await getCollection('routes');
+const langRoutes = allRoutes.filter(
+  (entry) => getLangFromEntry(entry.filePath, 'routes') === lang
+);
+// 按难度排序
+const difficultyOrder = { easy: 1, medium: 2, hard: 3, expert: 4 };
+const sortedRoutes = langRoutes.sort(
+  (a, b) => difficultyOrder[a.data.difficulty] - difficultyOrder[b.data.difficulty]
+);
+
+const pageTitle = t(lang, 'nav.routes');
+---
+
+<BaseLayout title={pageTitle} lang={lang}>
+  <div class="page-title-header">
+    <div class="title-content">
+      <h1>🗺️ {pageTitle}</h1>
+      <p class="page-subtitle">
+        {lang === 'zh'
+          ? '可搜索路线数据库、Strava/Komoot 链接'
+          : lang === 'de'
+            ? 'Suchbare Routen, Strava/Komoot Links'
+            : 'Searchable Routes, Strava/Komoot Links'}
+      </p>
+    </div>
+    <div id="filter-portal-target"></div>
+  </div>
+
+  <RoutesPage 
+    client:load 
+    initialItems={sortedRoutes} 
+    lang={lang} 
+  />
+</BaseLayout>
+
+<style>
+  .page-title-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--color-border-rough);
+    padding-bottom: var(--space-md);
+  }
+
+  .title-content {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .title-content h1 {
+    margin-bottom: 0.5rem;
+  }
+
+
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px dashed var(--color-border-rough);
+    border-radius: var(--radius-aero);
+    margin-top: var(--space-lg);
+  }
+</style>

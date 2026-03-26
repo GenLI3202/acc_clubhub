@@ -1,0 +1,75 @@
+---
+import { getLocaleFromUrl } from '../lib/i18n';
+
+const year = new Date().getFullYear();
+const lang = getLocaleFromUrl(Astro.url);
+
+const privacyText = {
+  zh: '隐私政策',
+  en: 'Privacy Policy',
+  de: 'Datenschutz',
+}[lang] || 'Privacy';
+
+const aboutText = {
+  zh: '关于我们',
+  en: 'About',
+  de: 'Über uns',
+}[lang] || 'About';
+---
+
+<footer>
+  <div class="footer-content">
+    <p>&copy; {year} <strong>ACC</strong> — Across Cycling Club Munich</p>
+    <nav>
+      <a href="https://github.com/GenLI3202/acc_clubhub" target="_blank" rel="noopener">GitHub</a>
+      <span class="divider">&middot;</span>
+      <a href={`/${lang}/privacy`}>{privacyText}</a>
+      <span class="divider">&middot;</span>
+      <a href="/about">{aboutText}</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: transparent;
+    border-top: 2px solid var(--color-border-rough);
+    padding: 1.5rem 2rem;
+    margin-top: auto;
+  }
+
+  .footer-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .footer-content strong {
+    font-family: var(--font-heading);
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  nav {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  nav a {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  .divider {
+    color: #ccc;
+  }
+</style>

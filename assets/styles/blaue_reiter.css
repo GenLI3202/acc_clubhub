@@ -1,0 +1,237 @@
+/* 
+ * Der Blaue Reiter 2.0 - ACC ClubHub Theme
+ * Based on Atomic Design Guide (Kandinsky Inspired)
+ */
+
+/* -------------------------------------------
+   T0: Design Tokens (Variables)
+------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Jost:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+:root {
+    /* Color Palette */
+    --color-bg-canvas: #E8E4D9;
+    /*米灰白 - Canvas base */
+    --color-primary: #2A5CA6;
+    /* 群青蓝 - Motion Blue */
+    --color-accent: #D94F30;
+    /* 朱砂红 - Sun Red */
+    --color-secondary: #5F8C4A;
+    /* 苔藓绿 - Nature Green */
+    --color-text-main: #1A1A1A;
+    /* 深褐 - Ink */
+    --color-text-light: #F9F7F2;
+    /* Off-white text for dark backgrounds */
+
+    /* Functional Colors */
+    --color-border-rough: #1A1A1A;
+    /* Charcoal for rough edges */
+
+    /* Typography */
+    --font-heading: 'Jost', 'Futura', sans-serif;
+    /* Geometric, German Precision */
+    --font-body: 'Inter', system-ui, sans-serif;
+    /* Readable, Functional */
+
+    /* Angles & Shapes */
+    --angle-motion: -2deg;
+    /* Subtle tilt for components */
+    --angle-section: -3deg;
+    /* Larger tilt for sections */
+}
+
+/* -------------------------------------------
+   Global Reset & Canvas
+------------------------------------------- */
+body {
+    background-color: var(--color-bg-canvas);
+    color: var(--color-text-main);
+    font-family: var(--font-body);
+    /* Noise Texture Injection via pseudo-element generally handled better in specific containers or html */
+    position: relative;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll from tilted elements */
+}
+
+/* Simulate Canvas Texture globally */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Use a base64 or url for noise if available, otherwise fallback to color */
+    /* background-image: url('noise.png'); */
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: -1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-main);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-accent);
+}
+
+/* -------------------------------------------
+   T1: Functional Primitives (Components)
+------------------------------------------- */
+
+/* --- Navbar (The Central Hub) --- */
+.navbar {
+    background-color: transparent !important;
+    /* Let canvas show through */
+    border-bottom: 2px solid var(--color-border-rough);
+    padding: 1rem 2rem;
+    backdrop-filter: blur(5px);
+}
+
+.navbar-brand {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-accent) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    font-family: var(--font-heading);
+    color: var(--color-text-main) !important;
+    font-weight: 500;
+    position: relative;
+    margin: 0 0.5rem;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--color-primary) !important;
+}
+
+/* Nav Link Underline Effect - Rough Stroke */
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease;
+    transform: rotate(-1deg);
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%;
+}
+
+/* --- Buttons (The Impulse) --- */
+.btn {
+    border-radius: 2px;
+    /* Slight rounding but mostly sharp */
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    transform: rotate(var(--angle-motion));
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--color-accent);
+    color: var(--color-text-light);
+    box-shadow: 4px 4px 0px var(--color-border-rough);
+    /* Hard shadow */
+}
+
+.btn-primary:hover {
+    background-color: var(--color-accent);
+    /* Keep same color */
+    transform: translate(-2px, -2px) rotate(0deg);
+    /* Move up and straighten */
+    box-shadow: 6px 6px 0px var(--color-border-rough);
+    /* Extend shadow */
+}
+
+.btn-secondary,
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--color-text-main);
+    border: 2px solid var(--color-text-main);
+    box-shadow: none;
+}
+
+.btn-secondary:hover,
+.btn-outline-primary:hover {
+    background-color: var(--color-text-main);
+    color: var(--color-text-light);
+    transform: rotate(0deg);
+}
+
+/* --- Cards (The Layout) --- */
+.card {
+    background-color: rgba(255, 255, 255, 0.6);
+    /* Semi-transparent white */
+    border: 2px solid var(--color-border-rough);
+    border-radius: 0;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
+    /* Hard shadow, softer color */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: visible;
+    /* Allow elements to pop out */
+}
+
+.card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 10px 10px 0px var(--color-primary);
+    /* Color shadow on hover */
+    z-index: 10;
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--color-border-rough);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.card-body {
+    font-family: var(--font-body);
+}
+
+/* --- Diagonal Sections --- */
+.section-diagonal {
+    position: relative;
+    padding: 4rem 0;
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+    margin: 2rem 0;
+}
+
+.section-diagonal h1,
+.section-diagonal h2 {
+    color: var(--color-text-light);
+}

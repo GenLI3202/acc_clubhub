@@ -1,0 +1,82 @@
+---
+// src/pages/[lang]/knowledge/training/index.astro
+// 科学训练 - 列表页 (瀑布流布局)
+
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { locales, getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
+
+import TrainingPage from '../../../../components/content/TrainingPage';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+const allTraining = await getCollection('training');
+const langTraining = allTraining.filter(
+  (entry) => getLangFromEntry(entry.filePath, 'training') === lang
+);
+const sortedTraining = langTraining.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const pageTitle = t(lang, 'nav.training');
+---
+
+<BaseLayout title={pageTitle} lang={lang}>
+  <div class="page-title-header">
+    <div class="title-content">
+      <h1>📊 {pageTitle}</h1>
+      <p class="page-subtitle">
+        {lang === 'zh'
+          ? '训练方法论、安全科普'
+          : lang === 'de'
+            ? 'Trainingsmethoden, Sicherheit'
+            : 'Training Methods, Safety Tips'}
+      </p>
+    </div>
+    <div id="filter-portal-target"></div>
+  </div>
+
+  <TrainingPage 
+    client:load 
+    initialItems={sortedTraining} 
+    lang={lang} 
+  />
+</BaseLayout>
+
+<style>
+  .page-title-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--color-border-rough);
+    padding-bottom: var(--space-md);
+  }
+
+  .title-content {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .title-content h1 {
+    margin-bottom: 0.5rem;
+  }
+
+
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-xl);
+    color: #666;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px dashed var(--color-border-rough);
+    border-radius: var(--radius-aero);
+    margin-top: var(--space-lg);
+  }
+</style>

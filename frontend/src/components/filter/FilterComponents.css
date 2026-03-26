@@ -1,0 +1,295 @@
+/* Basic variables */
+:root {
+    --filter-panel-bg: rgba(255, 255, 255, 0.9);
+    --filter-panel-blur: 20px;
+    --filter-border-color: rgba(0, 0, 0, 0.08);
+    --filter-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    --filter-header-bg: #e0e0e0;
+    /* High contrast gray */
+    --filter-header-hover: #d4d4d4;
+    --filter-active-color: #ff4d00;
+}
+
+/* Wrapper to establish positioning context */
+.filter-panel-wrapper {
+    position: relative;
+    margin-bottom: 2rem;
+    z-index: 20;
+}
+
+/* Toggle Button */
+.filter-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 99px;
+    background: #ffffff;
+    border: 1px solid var(--filter-border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-toggle-btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.filter-toggle-btn.is-active {
+    background: var(--filter-active-color);
+    color: white;
+    border-color: transparent;
+}
+
+.filter-count-badge {
+    background: #333;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.filter-toggle-btn.is-active .filter-count-badge {
+    background: white;
+    color: var(--filter-active-color);
+}
+
+/* Floating Overlay */
+.filter-panel-overlay {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    left: auto;
+    width: max-content;
+    min-width: 300px;
+    max-width: 90vw;
+    background: var(--filter-panel-bg);
+    backdrop-filter: blur(var(--filter-panel-blur));
+    -webkit-backdrop-filter: blur(var(--filter-panel-blur));
+    border: 1px solid var(--filter-border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--filter-shadow);
+
+    /* Animation state: Hidden */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.98);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+/* Animation state: Visible */
+.filter-panel-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Header inside panel */
+.filter-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--filter-border-color);
+}
+
+.filter-panel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.close-filter-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #666;
+    transition: background 0.2s;
+}
+
+.close-filter-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.reset-all-btn {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--filter-active-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.reset-all-btn:hover {
+    background: rgba(255, 77, 0, 0.05);
+}
+
+/* Filter Content Grid */
+.filter-panel-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+/* Filter Section Styles */
+.filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.filter-header {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+    max-width: 100%;
+    padding: 6px 14px;
+    background: var(--filter-header-bg);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.filter-header:hover {
+    background: var(--filter-header-hover);
+}
+
+.filter-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    /* Smaller font size requested */
+    color: #222;
+}
+
+.filter-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-content.closed {
+    display: none;
+}
+
+/* Checkbox Items Styles */
+.filter-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    /* Smaller font for items */
+    color: #444;
+    padding: 2px 0;
+}
+
+.checkbox-text {
+    line-height: 1.4;
+}
+
+.checkbox-count {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+.show-more-btn {
+    background: none;
+    border: none;
+    text-align: left;
+    color: var(--filter-active-color);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-top: 4px;
+}
+
+/* Responsive adjustments */
+/* Responsive adjustments - Bottom Sheet Style */
+@media (max-width: 768px) {
+    .filter-panel-overlay {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        height: auto;
+        max-height: 85vh;
+        overflow-y: auto;
+
+        border-radius: 24px 24px 0 0;
+        padding: 24px;
+        margin: 0;
+
+        /* Animation: Slide up from bottom */
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+
+        /* Ensure it sits on top */
+        z-index: 1000;
+        border-bottom: none;
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .filter-panel-overlay.is-open {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .filter-panel-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding-bottom: 40px;
+        /* Extra padding for bottom safe area */
+    }
+
+    .filter-header {
+        width: 100%;
+        justify-content: space-between;
+        padding: 12px 14px;
+        /* Larger touch target */
+    }
+}
