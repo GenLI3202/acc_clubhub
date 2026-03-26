@@ -3,8 +3,9 @@ ACC ClubHub - FastAPI Backend Application
 Phase 4.3: Email-based event registration + subscription
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from config import settings, get_allowed_origins
 from routes import events, rsvp
 
@@ -62,6 +63,18 @@ def health_check():
         )
 
     return health_status
+
+
+# ============================================================
+# Global Exception Handler
+# ============================================================
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    """Catch all unhandled exceptions and return JSON so CORS headers are preserved."""
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+    )
 
 
 # ============================================================
