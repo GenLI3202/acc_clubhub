@@ -22,6 +22,7 @@ _site/
 # Environment
 .env
 .env.local
+.claude/settings.local.json
 
 # IDE
 .vscode/
