@@ -19,6 +19,7 @@ interface FormData {
     notes: string;
     privacy_accepted: boolean;
     subscribe: boolean;
+    lang: string;
 }
 
 export function EventRegistrationForm({
@@ -35,6 +36,7 @@ export function EventRegistrationForm({
         notes: '',
         privacy_accepted: false,
         subscribe: false,
+        lang,
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,12 @@ export function EventRegistrationForm({
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.json();
+            let data: any;
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error(t(lang, 'event.errorServer'));
+            }
 
             if (!response.ok) {
                 if (data.detail?.includes('already registered')) {
@@ -68,7 +75,7 @@ export function EventRegistrationForm({
                 } else if (data.detail?.includes('deadline')) {
                     throw new Error(t(lang, 'event.errorDeadline'));
                 } else {
-                    throw new Error(data.detail || 'Registration failed');
+                    throw new Error(data.detail || t(lang, 'event.errorServer'));
                 }
             }
 
@@ -79,13 +86,29 @@ export function EventRegistrationForm({
                 notes: '',
                 privacy_accepted: false,
                 subscribe: false,
+                lang,
             });
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Unknown error');
+            if (err instanceof TypeError && err.message === 'Failed to fetch') {
+                setError(t(lang, 'event.errorNetwork'));
+            } else {
+                setError(err instanceof Error ? err.message : t(lang, 'event.errorServer'));
+            }
         } finally {
             setLoading(false);
         }
     };
+
+    if (eventId === 0) {
+        return (
+            <div className="rsvp-error">
+                <p>{t(lang, 'event.errorInit')}</p>
+                <button className="submit-btn" onClick={() => window.location.reload()}>
+                    &#8635; Reload
+                </button>
+            </div>
+        );
+    }
 
     if (success) {
         return (
