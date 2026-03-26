@@ -26,6 +26,7 @@ class RSVPCreate(BaseModel):
     notes: Optional[str] = None
     privacy_accepted: bool = False
     subscribe: bool = False  # 勾选"订阅 ACC 活动通知"
+    lang: str = "zh"  # User's locale for email notifications
 
 
 class RSVPResponse(BaseModel):
@@ -133,7 +134,7 @@ def create_rsvp(
 
     # 6. 处理订阅
     if rsvp_data.subscribe:
-        _ensure_subscriber(db, rsvp_data.email, rsvp_data.name)
+        _ensure_subscriber(db, rsvp_data.email, rsvp_data.name, rsvp_data.lang)
 
     db.commit()
     db.refresh(new_rsvp)
@@ -147,7 +148,7 @@ def create_rsvp(
             event_date=event.event_date,
             event_location=event.location,
             event_id=event.id,
-            lang="zh",  # TODO: detect from request or event metadata
+            lang=rsvp_data.lang,
         )
     else:
         send_waitlist_email(
@@ -155,7 +156,7 @@ def create_rsvp(
             user_name=rsvp_data.name,
             event_title=event.title,
             waitlist_position=waitlist_pos or 0,
-            lang="zh",
+            lang=rsvp_data.lang,
         )
 
     return RSVPResponse(
