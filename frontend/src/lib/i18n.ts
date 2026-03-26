@@ -65,6 +65,9 @@ export const ui = {
         'event.errorDuplicate': '该邮箱已报名此活动',
         'event.errorDeadline': '报名已截止',
         'event.errorPrivacy': '请先同意隐私政策',
+        'event.errorNetwork': '无法连接报名服务器，请稍后重试',
+        'event.errorServer': '服务器错误，请稍后重试',
+        'event.errorInit': '无法加载报名表单，请刷新页面重试',
     },
     en: {
         'nav.home': 'Home',
@@ -103,6 +106,9 @@ export const ui = {
         'event.errorDuplicate': 'This email is already registered',
         'event.errorDeadline': 'Registration deadline has passed',
         'event.errorPrivacy': 'Please accept the privacy policy',
+        'event.errorNetwork': 'Unable to connect to the server. Please try again later.',
+        'event.errorServer': 'Server error. Please try again later.',
+        'event.errorInit': 'Unable to load registration form. Please refresh the page.',
     },
     de: {
         'nav.home': 'Startseite',
@@ -141,6 +147,9 @@ export const ui = {
         'event.errorDuplicate': 'Diese E-Mail ist bereits registriert',
         'event.errorDeadline': 'Anmeldefrist abgelaufen',
         'event.errorPrivacy': 'Bitte akzeptieren Sie die Datenschutzerklärung',
+        'event.errorNetwork': 'Keine Verbindung zum Server. Bitte versuchen Sie es später erneut.',
+        'event.errorServer': 'Serverfehler. Bitte versuchen Sie es später erneut.',
+        'event.errorInit': 'Anmeldeformular konnte nicht geladen werden. Bitte laden Sie die Seite neu.',
     },
 } as const;
 
