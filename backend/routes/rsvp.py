@@ -298,25 +298,29 @@ def create_rsvp_v2(
     db.commit()
     db.refresh(new_rsvp)
 
-    # 7. Send email notification
-    if rsvp_status == "confirmed":
-        send_confirmation_email(
-            user_email=data.email,
-            user_name=data.name,
-            event_title=event.title,
-            event_date=event.event_date,
-            event_location=event.location,
-            event_id=event.id,
-            lang=data.lang,
-        )
-    else:
-        send_waitlist_email(
-            user_email=data.email,
-            user_name=data.name,
-            event_title=event.title,
-            waitlist_position=waitlist_pos or 0,
-            lang=data.lang,
-        )
+    # 7. Send email notification (non-fatal — RSVP is already committed)
+    import logging
+    try:
+        if rsvp_status == "confirmed":
+            send_confirmation_email(
+                user_email=data.email,
+                user_name=data.name,
+                event_title=event.title,
+                event_date=event.event_date,
+                event_location=event.location,
+                event_id=event.id,
+                lang=data.lang,
+            )
+        else:
+            send_waitlist_email(
+                user_email=data.email,
+                user_name=data.name,
+                event_title=event.title,
+                waitlist_position=waitlist_pos or 0,
+                lang=data.lang,
+            )
+    except Exception as email_err:
+        logging.error("Email send failed (RSVP still saved): %s", email_err)
 
     return RSVPResponse(
         success=True,

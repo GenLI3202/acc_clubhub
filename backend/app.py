@@ -70,11 +70,23 @@ def health_check():
 # ============================================================
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Catch all unhandled exceptions and return JSON so CORS headers are preserved."""
-    return JSONResponse(
+    """Catch all unhandled exceptions and return JSON with CORS headers preserved.
+
+    CORSMiddleware does not reliably inject headers onto exception handler
+    responses in all Starlette versions, so we add them manually here.
+    """
+    import logging
+    logging.error("Unhandled exception: %s: %s", type(exc).__name__, exc, exc_info=True)
+
+    response = JSONResponse(
         status_code=500,
         content={"detail": "Internal server error"},
     )
+    origin = request.headers.get("origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
 
 
 # ============================================================
