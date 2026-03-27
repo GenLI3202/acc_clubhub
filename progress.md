@@ -6,7 +6,7 @@
 
 - **Created**: 2026-01-01 (revitalized)
 - **Tech Stack**: Astro 5 (SSG) · Preact · TypeScript · FastAPI · SQLAlchemy · PostgreSQL (Neon) · Vercel · Sveltia CMS · Resend · Waline
-- **Status**: 🟡 Layer 4 — Event Registration in progress
+- **Status**: 🟢 Phase 4.3.3 complete — CMS-driven registration live
 
 ## Current Architecture
 
@@ -46,6 +46,13 @@
   - [x] `lang` passed in RSVP POST body so backend sends emails in correct language
   - [x] German email templates added to `email.py` (confirmation + waitlist)
   - [x] `_ensure_subscriber` now receives `lang` from RSVP flow
+- [x] **Phase 4.3.3 — CMS-Driven Event Registration** (2026-03-27)
+  - [x] Events schema extended: `maxParticipants`, `registrationDeadline`, `registrationLink` fields in frontmatter
+  - [x] `POST /api/rsvp` endpoint — slug-based, auto-creates DB event record on first RSVP
+  - [x] Frontend passes markdown metadata as `data-*` attributes; form hydrates without any API fetch
+  - [x] Deadline check moved to frontend (no backend round-trip needed)
+  - [x] Deleted `populate_events_via_api.py` and `sync_events.py` — zero manual DB work per new event
+  - [x] Old `POST /api/events/{event_id}/rsvp` kept intact (no breaking change)
 
 ## In Progress
 
@@ -82,3 +89,4 @@
 | Sveltia CMS over Decap CMS | Better UX for content editors; same Git-based approach | 2026-01 |
 | pg8000 over psycopg2 for backend | Pure Python driver — works on Vercel's serverless runtime without native libs | 2026-01 |
 | Applied `fullstack` archetype (AGENTS.md) | Enforces layer separation, API contract sync, and component organization rules for combined frontend + backend repo | 2026-03-26 |
+| CMS as single source of truth for events (AD #10) | Markdown frontmatter drives event metadata; DB only stores RSVP interaction data; backend auto-creates event on first registration — eliminates manual SQL per new event | 2026-03-27 |
