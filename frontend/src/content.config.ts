@@ -229,6 +229,9 @@ const eventsCollection = defineCollection({
     coverImage: z.string().optional(),
     cover: z.string().optional(),
     xiaohongshuUrl: z.string().optional(),
+    maxParticipants: z.number().optional(),
+    registrationDeadline: z.coerce.date().optional(),
+    registrationLink: z.string().optional(),
   }).transform((data) => ({
     ...data,
     coverImage: data.coverImage || data.cover,
@@ -236,6 +239,7 @@ const eventsCollection = defineCollection({
     lang: data.lang || 'de' as const,
     eventType: data.eventType || 'social-ride' as const,
     description: data.description || '',
+    registrationDeadline: data.registrationDeadline?.toISOString() ?? null,
   })),
 });
 
