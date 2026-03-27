@@ -75,8 +75,9 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
     CORSMiddleware does not reliably inject headers onto exception handler
     responses in all Starlette versions, so we add them manually here.
     """
-    import logging
-    logging.error("Unhandled exception: %s: %s", type(exc).__name__, exc, exc_info=True)
+    import logging, traceback
+    tb_oneline = traceback.format_exc().replace("\n", " | ")
+    logging.error("UNHANDLED %s: %s | TRACE: %s", type(exc).__name__, exc, tb_oneline)
 
     response = JSONResponse(
         status_code=500,
