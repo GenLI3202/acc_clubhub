@@ -246,15 +246,16 @@ def create_rsvp_v2(
         db.add(event)
         db.flush()  # populate event.id before RSVP insert
 
-    # 2. Check registration deadline
-    if (
-        event.registration_deadline
-        and event.registration_deadline < datetime.now(timezone.utc)
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Registration deadline has passed",
-        )
+    # 2. Check registration deadline (guard against naive vs aware mismatch)
+    if event.registration_deadline is not None:
+        deadline = event.registration_deadline
+        if deadline.tzinfo is None:
+            deadline = deadline.replace(tzinfo=timezone.utc)
+        if deadline < datetime.now(timezone.utc):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Registration deadline has passed",
+            )
 
     # 3. Check for duplicate registration
     existing = db.query(RSVP).filter(
@@ -272,7 +273,8 @@ def create_rsvp_v2(
     waitlist_pos = None
 
     if event.max_participants is not None:
-        spots = event.max_participants - event.current_participants
+        current = event.current_participants or 0
+        spots = event.max_participants - current
         if spots <= 0:
             rsvp_status = "waitlist"
             waitlist_pos = db.query(RSVP).filter(
