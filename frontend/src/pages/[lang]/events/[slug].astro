@@ -71,6 +71,12 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
       slot="before-comments"
       id="registration-container"
       data-slug={entry.data.slug}
+      data-title={entry.data.title}
+      data-location={entry.data.location}
+      data-event-date={entry.data.date}
+      data-event-type={entry.data.eventType}
+      data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
+      data-registration-deadline={entry.data.registrationDeadline ?? ''}
       data-lang={lang}
       data-api-url={apiUrl}
     >
@@ -83,72 +89,42 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
 <script>
   import { h, render } from 'preact';
   import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
+  import type { Locale } from '../../../lib/i18n';
 
-  async function initRegistrationForm() {
+  function initRegistrationForm() {
     const container = document.getElementById('registration-container');
     if (!container) return;
 
     const slug = container.dataset.slug;
-    const lang = container.dataset.lang;
-    const apiUrl = container.dataset.apiUrl;
+    const title = container.dataset.title ?? '';
+    const location = container.dataset.location ?? '';
+    const eventDate = container.dataset.eventDate ?? '';
+    const eventType = container.dataset.eventType ?? 'social-ride';
+    const maxParticipantsRaw = container.dataset.maxParticipants;
+    const maxParticipants = maxParticipantsRaw ? parseInt(maxParticipantsRaw, 10) : null;
+    const registrationDeadline = container.dataset.registrationDeadline || null;
+    const lang = (container.dataset.lang ?? 'zh') as Locale;
+    const apiUrl = container.dataset.apiUrl ?? '';
 
-    if (!slug || !lang || !apiUrl) {
+    if (!slug || !apiUrl) {
       console.error('Missing data attributes for registration form');
       return;
     }
 
-    try {
-      const response = await fetch(`${apiUrl}/api/events/${slug}`);
-
-      let eventData;
-      let eventId = 0;
-
-      if (response.ok) {
-        try {
-          eventData = await response.json();
-          eventId = eventData.id;
-        } catch {
-          console.error('Invalid JSON from events API');
-          eventData = null;
-        }
-      } else {
-        console.warn('Could not fetch event data from API, showing error');
-        eventData = null;
-      }
-
-      const availableSpots = eventData?.max_participants
-        ? eventData.max_participants - eventData.current_participants
-        : null;
-
-      const isDeadlinePassed = eventData?.registration_deadline
-        ? new Date(eventData.registration_deadline) < new Date()
-        : false;
-
-      render(
-        h(EventRegistrationForm, {
-          eventId,
-          eventSlug: slug,
-          availableSpots,
-          isDeadlinePassed,
-          lang,
-          apiUrl,
-        }),
-        container
-      );
-    } catch (error) {
-      console.error('Failed to initialize registration form:', error);
-      const errorMessages: Record<string, string> = {
-        zh: '\u65e0\u6cd5\u52a0\u8f7d\u62a5\u540d\u8868\u5355\uff0c\u8bf7\u5237\u65b0\u9875\u9762\u91cd\u8bd5',
-        en: 'Unable to load registration form. Please refresh the page.',
-        de: 'Anmeldeformular konnte nicht geladen werden. Bitte laden Sie die Seite neu.',
-      };
-      container.innerHTML = `
-        <div class="rsvp-error">
-          <p>${errorMessages[lang!] || errorMessages.en}</p>
-          <button class="submit-btn" onclick="window.location.reload()">&#8635; Reload</button>
-        </div>
-      `;
-    }
+    render(
+      h(EventRegistrationForm, {
+        eventSlug: slug,
+        eventTitle: title,
+        eventLocation: location,
+        eventDate,
+        eventType,
+        maxParticipants,
+        registrationDeadline,
+        lang,
+        apiUrl,
+      }),
+      container
+    );
   }
 
   if (document.readyState === 'loading') {

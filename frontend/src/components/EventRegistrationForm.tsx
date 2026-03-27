@@ -5,10 +5,13 @@ import type { Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
 
 interface EventRegistrationFormProps {
-    eventId: number;
     eventSlug: string;
-    availableSpots: number | null;
-    isDeadlinePassed: boolean;
+    eventTitle: string;
+    eventLocation: string;
+    eventDate: string;
+    eventType: string;
+    maxParticipants: number | null;
+    registrationDeadline: string | null;
     lang: Locale;
     apiUrl: string;
 }
@@ -23,13 +26,20 @@ interface FormData {
 }
 
 export function EventRegistrationForm({
-    eventId,
     eventSlug,
-    availableSpots,
-    isDeadlinePassed,
+    eventTitle,
+    eventLocation,
+    eventDate,
+    eventType,
+    maxParticipants,
+    registrationDeadline,
     lang,
     apiUrl,
 }: EventRegistrationFormProps): VNode {
+    const isDeadlinePassed = registrationDeadline
+        ? new Date(registrationDeadline) < new Date()
+        : false;
+
     const [formData, setFormData] = useState<FormData>({
         email: '',
         name: '',
@@ -41,6 +51,7 @@ export function EventRegistrationForm({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const [isWaitlist, setIsWaitlist] = useState(false);
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
@@ -54,12 +65,21 @@ export function EventRegistrationForm({
         }
 
         try {
-            const response = await fetch(`${apiUrl}/api/events/${eventId}/rsvp`, {
+            const response = await fetch(`${apiUrl}/api/rsvp`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    event_slug: eventSlug,
+                    event_title: eventTitle,
+                    event_location: eventLocation,
+                    event_date: eventDate,
+                    event_type: eventType,
+                    max_participants: maxParticipants,
+                    registration_deadline: registrationDeadline,
+                }),
             });
 
             let data: any;
@@ -79,6 +99,7 @@ export function EventRegistrationForm({
                 }
             }
 
+            setIsWaitlist(data.status === 'waitlist');
             setSuccess(true);
             setFormData({
                 email: '',
@@ -99,25 +120,10 @@ export function EventRegistrationForm({
         }
     };
 
-    if (eventId === 0) {
-        return (
-            <div className="rsvp-error">
-                <p>{t(lang, 'event.errorInit')}</p>
-                <button className="submit-btn" onClick={() => window.location.reload()}>
-                    &#8635; Reload
-                </button>
-            </div>
-        );
-    }
-
     if (success) {
         return (
             <div className="rsvp-success">
-                <h3>&#10003; {t(lang, 'event.success')}</h3>
-                <p>{availableSpots !== null && availableSpots <= 0
-                    ? t(lang, 'event.waitlistSuccess')
-                    : t(lang, 'event.success')
-                }</p>
+                <h3>&#10003; {isWaitlist ? t(lang, 'event.waitlistSuccess') : t(lang, 'event.success')}</h3>
             </div>
         );
     }
@@ -138,13 +144,10 @@ export function EventRegistrationForm({
 
     return (
         <form className="event-registration-form" onSubmit={handleSubmit} data-title={formTitle}>
-            {availableSpots !== null && (
+            {maxParticipants !== null && (
                 <div className="spots-indicator">
-                    <span className={availableSpots > 0 ? 'spots-available' : 'spots-full'}>
-                        {availableSpots > 0
-                            ? `${t(lang, 'event.spotsAvailable')}: ${availableSpots}`
-                            : t(lang, 'event.noSpotsLeft')
-                        }
+                    <span className="spots-available">
+                        {t(lang, 'event.spotsAvailable')}: {maxParticipants}
                     </span>
                 </div>
             )}
