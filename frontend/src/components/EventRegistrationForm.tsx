@@ -52,6 +52,7 @@ export function EventRegistrationForm({
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     const [isWaitlist, setIsWaitlist] = useState(false);
+    const [submittedEmail, setSubmittedEmail] = useState('');
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
@@ -100,6 +101,7 @@ export function EventRegistrationForm({
             }
 
             setIsWaitlist(data.status === 'waitlist');
+            setSubmittedEmail(formData.email);
             setSuccess(true);
             setFormData({
                 email: '',
@@ -123,7 +125,7 @@ export function EventRegistrationForm({
     if (success) {
         return (
             <div className="rsvp-success">
-                <h3>&#10003; {isWaitlist ? t(lang, 'event.waitlistSuccess') : t(lang, 'event.success')}</h3>
+                <h3>&#10003; {isWaitlist ? t(lang, 'event.waitlistSuccess') : `${t(lang, 'event.success')}${submittedEmail}`}</h3>
             </div>
         );
     }
