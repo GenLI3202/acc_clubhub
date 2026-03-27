@@ -13,6 +13,19 @@ from datetime import datetime, timezone
 import secrets
 from services.email import send_confirmation_email, send_waitlist_email
 
+
+def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
+    """Parse ISO date/datetime string to timezone-aware datetime, or return None."""
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(value)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except (ValueError, TypeError):
+        return None
+
 router = APIRouter()
 
 
@@ -37,6 +50,27 @@ class RSVPResponse(BaseModel):
     rsvp_id: int
     status: str
     waitlist_position: Optional[int] = None
+
+
+class RSVPCreateV2(BaseModel):
+    """CMS-driven RSVP request — includes event metadata for auto-creation"""
+
+    # User info
+    email: EmailStr
+    name: str
+    notes: Optional[str] = None
+    privacy_accepted: bool = False
+    subscribe: bool = False
+    lang: str = "zh"
+
+    # Event metadata (from markdown frontmatter)
+    event_slug: str
+    event_title: str
+    event_location: str = ""
+    event_date: str              # ISO date string
+    event_type: str = "social-ride"
+    max_participants: Optional[int] = None
+    registration_deadline: Optional[str] = None
 
 
 class SubscribeRequest(BaseModel):
@@ -157,6 +191,131 @@ def create_rsvp(
             event_title=event.title,
             waitlist_position=waitlist_pos or 0,
             lang=rsvp_data.lang,
+        )
+
+    return RSVPResponse(
+        success=True,
+        message=(
+            "报名成功！" if rsvp_status == "confirmed"
+            else "已加入等待名单"
+        ),
+        rsvp_id=new_rsvp.id,
+        status=rsvp_status,
+        waitlist_position=waitlist_pos,
+    )
+
+
+@router.post("/api/rsvp", response_model=RSVPResponse)
+def create_rsvp_v2(
+    data: RSVPCreateV2,
+    db: Session = Depends(get_db),
+) -> RSVPResponse:
+    """
+    CMS-driven RSVP — slug-based, auto-creates event record if absent.
+
+    Frontend passes event metadata from markdown frontmatter so no
+    manual DB pre-seeding is required per new event.
+    """
+    if not data.privacy_accepted:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please accept the privacy policy",
+        )
+
+    # 1. Get or auto-create event by slug (row lock for concurrency safety)
+    event = db.query(Event).filter(
+        Event.slug == data.event_slug,
+    ).with_for_update().first()
+
+    if not event:
+        event_date_dt = _parse_datetime(data.event_date)
+        if not event_date_dt:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid event_date format",
+            )
+        event = Event(
+            slug=data.event_slug,
+            title=data.event_title,
+            location=data.event_location,
+            event_date=event_date_dt,
+            event_type=data.event_type,
+            max_participants=data.max_participants,
+            registration_deadline=_parse_datetime(data.registration_deadline),
+        )
+        db.add(event)
+        db.flush()  # populate event.id before RSVP insert
+
+    # 2. Check registration deadline
+    if (
+        event.registration_deadline
+        and event.registration_deadline < datetime.now(timezone.utc)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Registration deadline has passed",
+        )
+
+    # 3. Check for duplicate registration
+    existing = db.query(RSVP).filter(
+        RSVP.event_id == event.id,
+        RSVP.email == data.email,
+    ).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This email is already registered for this event",
+        )
+
+    # 4. Determine status (confirmed vs waitlist)
+    rsvp_status = "confirmed"
+    waitlist_pos = None
+
+    if event.max_participants is not None:
+        spots = event.max_participants - event.current_participants
+        if spots <= 0:
+            rsvp_status = "waitlist"
+            waitlist_pos = db.query(RSVP).filter(
+                RSVP.event_id == event.id,
+                RSVP.status == "waitlist",
+            ).count() + 1
+
+    # 5. Create RSVP
+    new_rsvp = RSVP(
+        event_id=event.id,
+        email=data.email,
+        name=data.name,
+        status=rsvp_status,
+        notes=data.notes,
+        privacy_accepted=data.privacy_accepted,
+    )
+    db.add(new_rsvp)
+
+    # 6. Handle subscription
+    if data.subscribe:
+        _ensure_subscriber(db, data.email, data.name, data.lang)
+
+    db.commit()
+    db.refresh(new_rsvp)
+
+    # 7. Send email notification
+    if rsvp_status == "confirmed":
+        send_confirmation_email(
+            user_email=data.email,
+            user_name=data.name,
+            event_title=event.title,
+            event_date=event.event_date,
+            event_location=event.location,
+            event_id=event.id,
+            lang=data.lang,
+        )
+    else:
+        send_waitlist_email(
+            user_email=data.email,
+            user_name=data.name,
+            event_title=event.title,
+            waitlist_position=waitlist_pos or 0,
+            lang=data.lang,
         )
 
     return RSVPResponse(
