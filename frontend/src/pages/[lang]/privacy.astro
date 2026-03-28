@@ -4,6 +4,7 @@
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { t, type Locale, locales } from '../../lib/i18n';
+import { marked } from 'marked';
 
 export async function getStaticPaths() {
   return locales.map((lang) => ({
@@ -298,7 +299,7 @@ const pageContent = content[lang];
       {pageContent.sections.map((section) => (
         <section class="privacy-section">
           <h2>{section.title}</h2>
-          <div class="section-content" set:html={section.content.trim().replace(/\n/g, '<br>')} />
+          <div class="section-content" set:html={marked.parse(section.content.trim())} />
         </section>
       ))}
     </div>
