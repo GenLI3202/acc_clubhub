@@ -78,6 +78,12 @@
   - [ ] Unsubscribe link in every broadcast email
   - [ ] Protected by admin token
 
+- [ ] **Phase 4.3.5 — Admin Dashboard** (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53))
+  - [ ] View registrations per event (confirmed / waitlist / spots remaining)
+  - [ ] Manage email subscriber list (view, export, unsubscribe)
+  - [ ] Simple read-only web UI — no SQL editor required
+  - [ ] Protected by admin token
+
 - [ ] **Phase 4.3.2 — Event UI Redesign** (`docs/rebuild_plan/phase_4_3_2_event_ui.md`)
   - [ ] Featured events hero section
   - [ ] Weekly regulars card grid
