@@ -96,8 +96,16 @@
 
 <!-- Track bugs and tech debt as they arise. -->
 <!-- Format: - [ ] Issue — severity (low/med/high) -->
+<!-- Full triage with agent work order: docs/issues_sorted_for_agents.md -->
+
+> Full issue triage (priority tiers + agent work order): **[docs/issues_sorted_for_agents.md](docs/issues_sorted_for_agents.md)**
 
 - [ ] E2E tests not yet written for registration flow — med
+- [ ] Android frame drops on Mechanical Knowledge section — high (Issue [#19](https://github.com/GenLI3202/acc_clubhub/issues/19))
+- [ ] HEIC image upload not supported — med (Issue [#13](https://github.com/GenLI3202/acc_clubhub/issues/13))
+- [ ] Filter cannot search by Author — med (Issue [#22](https://github.com/GenLI3202/acc_clubhub/issues/22))
+- [ ] Author field missing in CMS content creation — med (Issue [#8](https://github.com/GenLI3202/acc_clubhub/issues/8))
+- [ ] Contact email missing from Privacy Policy / About Us — low (Issue [#39](https://github.com/GenLI3202/acc_clubhub/issues/39))
 
 ## Architecture Decisions
 
