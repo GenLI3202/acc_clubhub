@@ -1,6 +1,5 @@
 /* ===================================================
-   T1: Buttons — "The Speed Trigger"
-   Edition: V3 (Sporty Polish)
+   Buttons — ACC ClubHub V4
    =================================================== */
 
 .btn {
@@ -8,55 +7,47 @@
   border-radius: var(--radius-btn);
   font-family: var(--font-heading);
   font-weight: 700;
-  font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.6rem 1.5rem;
-  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  padding: 0.65rem 1.6rem;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all var(--transition-base);
   position: relative;
-  /* Aggressive skew */
-  transform: skewX(-12deg);
   border: none;
   text-decoration: none;
-}
-
-/* Counter-skew text */
-.btn>span {
-  display: block;
-  transform: skewX(12deg);
+  white-space: nowrap;
 }
 
 .btn:hover {
   text-decoration: none;
 }
 
-/* Primary — Mountain Blue base, Red interaction */
+/* Primary — Wine red */
 .btn-primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-accent);
   color: var(--color-text-light);
-  box-shadow: 4px 4px 0px var(--color-border-rough);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent);
-  /* Switch to Red on hover */
+  background-color: #a81f1f;
   color: var(--color-text-light);
-  transform: skewX(-12deg) translate(-2px, -2px);
-  box-shadow: 6px 6px 0px var(--color-border-rough);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 /* Ghost — Charcoal outline */
 .btn-ghost {
   background-color: transparent;
-  color: var(--color-text-main);
-  border: 2px solid var(--color-text-main);
-  box-shadow: none;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-border-strong);
 }
 
 .btn-ghost:hover {
-  background-color: var(--color-text-main);
+  background-color: var(--color-primary);
   color: var(--color-text-light);
-  box-shadow: 3px 3px 0px var(--color-highlight);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
