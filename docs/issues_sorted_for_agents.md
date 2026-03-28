@@ -5,6 +5,8 @@
 >
 > This document organises all open issues by implementation difficulty and who/what is needed to proceed.
 > Agents should pick up tasks from the top tiers first.
+>
+> ✅ = closed/resolved
 
 ---
 
@@ -23,10 +25,10 @@ All of these have a clear root cause and a contained fix. An agent can open a PR
 | # | Title | Fix Scope | Notes |
 |---|-------|-----------|-------|
 | [#39](https://github.com/GenLI3202/acc_clubhub/issues/39) | ACC contact email missing | Content only | Add email to Privacy Policy + About Us pages |
-| [#8](https://github.com/GenLI3202/acc_clubhub/issues/8) | Author field missing in content creation | CMS schema + DB | Add `author` field to content frontmatter and CMS config |
-| [#22](https://github.com/GenLI3202/acc_clubhub/issues/22) | Filter cannot extract Author info | Frontend filter logic + API query | Extend Fuse.js index and backend filter param to include `author` |
+| ✅ [#8](https://github.com/GenLI3202/acc_clubhub/issues/8) | Author field missing in content creation | ~~CMS schema + DB~~ | Added `author: z.string().default('ACC Club')` to events schema; backfilled 9 event md files. All collections now track author. `commit 9d27462` |
+| ✅ [#22](https://github.com/GenLI3202/acc_clubhub/issues/22) | Filter cannot extract Author info | ~~Frontend filter logic~~ | Added `author` dynamic filter to `mediaFilters` in `filterConfig.ts`. `commit 75a90a6` |
 | [#13](https://github.com/GenLI3202/acc_clubhub/issues/13) | HEIC image format not supported on upload | Upload component | Convert HEIC→JPEG client-side (`heic2any`) or server-side (Pillow) before storing |
-| [#25](https://github.com/GenLI3202/acc_clubhub/issues/25) | No image size limit on Admin upload | Upload component validation | Add `max_size` check (e.g. 5 MB) with user-facing error message |
+| ✅ [#25](https://github.com/GenLI3202/acc_clubhub/issues/25) | No image size limit on Admin upload | ~~Upload component validation~~ | Already implemented: `media_library.max_file_size: 5242880` in `config.yml`. Closed. |
 | [#30](https://github.com/GenLI3202/acc_clubhub/issues/30) | Comment feature bugs (silent fail + wrong OAuth options) | Two sub-bugs | ① Show error/toast on unauthenticated submit; ② restrict OAuth provider list to Google + GitHub only |
 
 ---
@@ -37,10 +39,10 @@ Direction is agreed; no design review needed before starting.
 
 | # | Title | Complexity | Notes |
 |---|-------|-----------|-------|
-| [#47](https://github.com/GenLI3202/acc_clubhub/issues/47) | Add ACC Strava group link to webpage | Very low | Add link/button in footer or About Us |
+| ✅ [#47](https://github.com/GenLI3202/acc_clubhub/issues/47) | Add ACC Strava group link to webpage | ~~Very low~~ | Added to `Footer.astro` → `strava.com/clubs/accmunich`. `commit 195ae1a` |
 | [#51](https://github.com/GenLI3202/acc_clubhub/issues/51) | Auto-broadcast email to subscribers on event publish | Medium | New `POST /api/admin/broadcast/{event_slug}`; reuses existing Resend email service; spec fully written in issue; already tracked as **Phase 4.3.4** in `progress.md` |
 | [#27](https://github.com/GenLI3202/acc_clubhub/issues/27) | Authorization expansion (non-GitHub users as Admin) | Medium | Add role-based manual grant in backend; decouple Admin rights from GitHub collaborator status |
-| [#14](https://github.com/GenLI3202/acc_clubhub/issues/14) | Draft mode in CMS editor | Medium | Add `status: draft\|published` to content schema; CMS UI toggle; frontend filters out drafts |
+| ✅ [#14](https://github.com/GenLI3202/acc_clubhub/issues/14) | Draft mode in CMS editor | ~~Medium~~ | `status: draft\|published` added to all 5 Zod schemas + 4 CMS collections; all 5 index pages filter drafts at build time. `commit 39164eb` |
 
 ---
 
@@ -51,7 +53,7 @@ These are valid features but cannot be implemented until a designer or the produ
 | # | Title | What's Missing |
 |---|-------|---------------|
 | [#43](https://github.com/GenLI3202/acc_clubhub/issues/43) | ACC growth timeline graph | Data structure (milestones list) + chart style confirmation |
-| [#9](https://github.com/GenLI3202/acc_clubhub/issues/9) | Content card redesign (waterfall / Xiaohongshu style) | Final layout spec: column count, card proportions, breakpoints |
+| ✅ [#9](https://github.com/GenLI3202/acc_clubhub/issues/9) | Content card redesign (waterfall / Xiaohongshu style) | Implemented: MasonryGrid waterfall layout + Fuse.js search + filter panels (Phase 4.1). Closed. |
 | [#44](https://github.com/GenLI3202/acc_clubhub/issues/44) | Progressive disclosure in Knowledge section | Define which content levels collapse; interaction spec |
 | [#7](https://github.com/GenLI3202/acc_clubhub/issues/7) | About Us hero card / 3D character style | Member photos or 3D character assets required |
 | [#15](https://github.com/GenLI3202/acc_clubhub/issues/15) | Homepage background redesign (team photo + overlay) | Real group photo in team kit required |
@@ -87,9 +89,9 @@ These span multiple layers of the stack or introduce new subsystems.
 
 ```
 Immediate  ── #19 (P1 mobile performance)
-Bug sweep  ── #39 → #8 → #22 → #13 → #25 → #30
-Features   ── #47 → #51 (Phase 4.3.4) → #27 → #14
-Design req ── #43, #9, #44, #7, #15, #5  (unblock with design first)
+Bug sweep  ── #39 → #13 → #30          (✅ #8 #22 #25 done)
+Features   ── #51 (Phase 4.3.4) → #27  (✅ #47 #14 done)
+Design req ── #43, #44, #7, #15, #5    (✅ #9 done)
 Research   ── #50, #17, #41, #6
 Roadmap    ── #48, #20  (define phases before starting)
 ```
