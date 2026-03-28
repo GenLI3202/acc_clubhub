@@ -182,7 +182,7 @@ def create_rsvp(
             event_date=event.event_date,
             event_location=event.location,
             event_id=event.id,
-            lang=rsvp_data.lang,
+            lang="en",
         )
     else:
         send_waitlist_email(
@@ -190,7 +190,7 @@ def create_rsvp(
             user_name=rsvp_data.name,
             event_title=event.title,
             waitlist_position=waitlist_pos or 0,
-            lang=rsvp_data.lang,
+            lang="en",
         )
 
     return RSVPResponse(
@@ -311,7 +311,7 @@ def create_rsvp_v2(
                 event_date=event.event_date,
                 event_location=event.location,
                 event_id=event.id,
-                lang=data.lang,
+                lang="en",
             )
         else:
             send_waitlist_email(
@@ -319,7 +319,7 @@ def create_rsvp_v2(
                 user_name=data.name,
                 event_title=event.title,
                 waitlist_position=waitlist_pos or 0,
-                lang=data.lang,
+                lang="en",
             )
     except Exception as email_err:
         logging.error("Email send failed (RSVP still saved): %s", email_err)
