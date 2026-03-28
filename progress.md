@@ -70,6 +70,12 @@
 
 ## Planned
 
+- [ ] **Phase 4.3.4 — Subscriber Broadcast** (Issue [#51](https://github.com/GenLI3202/acc_clubhub/issues/51))
+  - [ ] `POST /api/admin/broadcast/{event_slug}` endpoint
+  - [ ] Sends multilingual announcement to all active subscribers
+  - [ ] Unsubscribe link in every broadcast email
+  - [ ] Protected by admin token
+
 - [ ] **Phase 4.3.2 — Event UI Redesign** (`docs/rebuild_plan/phase_4_3_2_event_ui.md`)
   - [ ] Featured events hero section
   - [ ] Weekly regulars card grid
