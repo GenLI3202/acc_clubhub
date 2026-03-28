@@ -4,6 +4,16 @@ Digital platform for **Across Cycling Club Munich** — events, media, knowledge
 
 **Live site:** [www.accross-cc.de](https://www.accross-cc.de) 
 
+## Site Sections
+
+| Section | Route | Description |
+|---------|-------|-------------|
+| 🎬 Media | `/media` | Videos, interviews, ride records |
+| 🚴 Events | `/events` | Social rides, training days, event registration |
+| 🔧 Gear | `/knowledge/gear` | Gear guides, maintenance, reviews |
+| 📊 Training | `/knowledge/training` | Training methodology, safety |
+| 🗺️ Routes | `/routes` | Searchable route database with Strava/Komoot links |
+
 ## Quick Start
 
 ```bash
