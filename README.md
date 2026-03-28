@@ -2,9 +2,7 @@
 
 Digital platform for **Across Cycling Club Munich** — events, media, knowledge, routes. Multilingual (zh/en/de).
 
-**Live site:** [www.accross-cc.de](https://www.accross-cc.de) · **API:** [acc-clubhub-events-ms.vercel.app](https://acc-clubhub-events-ms.vercel.app/docs)
-
----
+**Live site:** [www.accross-cc.de](https://www.accross-cc.de) 
 
 ## Quick Start
 
@@ -22,13 +20,13 @@ uvicorn app:app --reload --port 8000          # → http://localhost:8000/docs
 
 ## Documentation
 
-| Doc | Purpose |
-|-----|---------|
-| [progress.md](progress.md) | Project status — what's done, in progress, planned |
-| [MAINTENANCE.md](MAINTENANCE.md) | Day-to-day ops: DB queries, publishing events, email, deployments |
-| [AGENTS.md](AGENTS.md) | Coding rules and architecture for AI assistants |
-| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | Full dev environment setup |
-| [docs/ENV.md](docs/ENV.md) | All environment variables |
+| Doc                                       | Purpose                                                           |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| [progress.md](progress.md)                   | Project status — what's done, in progress, planned               |
+| [MAINTENANCE.md](MAINTENANCE.md)             | Day-to-day ops: DB queries, publishing events, email, deployments |
+| [AGENTS.md](AGENTS.md)                       | Coding rules and architecture for AI assistants                   |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | Full dev environment setup                                        |
+| [docs/ENV.md](docs/ENV.md)                   | All environment variables                                         |
 
 ---
 
