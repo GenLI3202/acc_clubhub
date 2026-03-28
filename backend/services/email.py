@@ -75,7 +75,7 @@ def send_confirmation_email(
 </div>"""
 
     params = {
-        "from": "ACC ClubHub <noreply@acc-clubhub.de>",
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
@@ -113,7 +113,7 @@ def send_waitlist_email(
     html_body = body_templates.get(lang, body_templates["en"])
 
     params = {
-        "from": "ACC ClubHub <noreply@acc-clubhub.de>",
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
