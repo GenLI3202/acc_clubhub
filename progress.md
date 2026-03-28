@@ -6,7 +6,8 @@
 
 - **Created**: 2026-01-01 (revitalized)
 - **Tech Stack**: Astro 5 (SSG) · Preact · TypeScript · FastAPI · SQLAlchemy · PostgreSQL (Neon) · Vercel · Sveltia CMS · Resend · Waline
-- **Status**: 🟢 Phase 4.3.3 complete — CMS-driven registration + email delivery live
+- **Live Site**: [www.accross-cc.de](https://www.accross-cc.de) · **API**: [acc-clubhub-events-ms.vercel.app](https://acc-clubhub-events-ms.vercel.app/docs)
+- **Status**: 🟢 Registration + email delivery live — custom domain active
 
 ## Current Architecture
 
@@ -46,13 +47,15 @@
   - [x] `lang` passed in RSVP POST body so backend sends emails in correct language
   - [x] German email templates added to `email.py` (confirmation + waitlist)
   - [x] `_ensure_subscriber` now receives `lang` from RSVP flow
-- [x] **Email Infrastructure Setup** (2026-03-28)
-  - [x] Registered domain `accross-cc.de` via IONOS (Domain-only plan)
-  - [x] Resend sending domain: `events.accross-cc.de` (EU Frankfurt region) — DNS verified
-  - [x] IONOS DNS records added: DKIM TXT, SPF MX, SPF TXT for `events.accross-cc.de`
+- [x] **Production Domain + Email Infrastructure** (2026-03-28)
+  - [x] Registered `accross-cc.de` via IONOS (Domain-only plan)
+  - [x] Custom domain live: `www.accross-cc.de` → Vercel frontend (DNS: A `216.198.79.1`, CNAME `www`)
+  - [x] Resend sending domain `events.accross-cc.de` verified (EU Frankfurt); IONOS DNS: DKIM TXT, SPF MX, SPF TXT
   - [x] Fixed `database.py`: strip libpq URL params (`sslmode`, `channel_binding`); use `ssl_context` via `connect_args` — resolves pg8000 TypeError on Neon connection
   - [x] Updated `email.py` from address: `noreply@events.accross-cc.de`
-  - [x] Success message now shows submitted email address
+  - [x] Confirmation emails fixed to English-only regardless of UI language (Issue [#52](https://github.com/GenLI3202/acc_clubhub/issues/52))
+  - [x] Success message shows submitted email address
+  - [x] Fixed privacy policy page: markdown now rendered as HTML via `marked`
 - [x] **Phase 4.3.3 — CMS-Driven Event Registration** (2026-03-27)
   - [x] Events schema extended: `maxParticipants`, `registrationDeadline`, `registrationLink` fields in frontmatter
   - [x] `POST /api/rsvp` endpoint — slug-based, auto-creates DB event record on first RSVP
@@ -63,10 +66,9 @@
 
 ## In Progress
 
-- [ ] **E2E Testing & Deployment**
-  - [ ] E2E functional testing (8 test scenarios)
-  - [ ] Frontend deployment to production
-  - [ ] Verify end-to-end email delivery in production (push pending)
+- [ ] **E2E Testing**
+  - [ ] E2E functional testing for registration flow (8 test scenarios)
+  - [ ] Email delivery monitoring
 
 ## Planned
 
@@ -104,3 +106,4 @@
 | Applied `fullstack` archetype (AGENTS.md) | Enforces layer separation, API contract sync, and component organization rules for combined frontend + backend repo | 2026-03-26 |
 | CMS as single source of truth for events (AD #10) | Markdown frontmatter drives event metadata; DB only stores RSVP interaction data; backend auto-creates event on first registration — eliminates manual SQL per new event | 2026-03-27 |
 | Resend subdomain `events.accross-cc.de` for transactional email (AD #11) | Subdomain isolates email reputation from root domain; verified via IONOS DNS; pg8000 SSL fixed by stripping libpq URL params and using `connect_args={"ssl_context": ...}` | 2026-03-28 |
+| English-only confirmation emails (AD #12) | Single language avoids partial-translation issues; English works across all user locales; UI language does not affect email language | 2026-03-28 |

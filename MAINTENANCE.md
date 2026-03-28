@@ -1,6 +1,8 @@
 # ACC ClubHub — Maintenance Guide
 
-Quick reference for maintainers. Covers database queries, publishing events, email subscriptions, and deployment.
+Quick reference for maintainers. Covers database queries, publishing events, email, domains, and deployment.
+
+**Live site:** [www.accross-cc.de](https://www.accross-cc.de) · **API + Swagger:** [acc-clubhub-events-ms.vercel.app/docs](https://acc-clubhub-events-ms.vercel.app/docs)
 
 ---
 
@@ -149,6 +151,7 @@ This is a GET request — clicking the link deactivates the subscriber instantly
 ## 5. API Endpoints (Backend)
 
 Base URL: `https://acc-clubhub-events-ms.vercel.app`
+Interactive docs: [acc-clubhub-events-ms.vercel.app/docs](https://acc-clubhub-events-ms.vercel.app/docs)
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -169,48 +172,60 @@ The interactive Swagger UI at `/docs` lets you test all endpoints in the browser
 
 ### Frontend (Astro)
 
-- Repo: `acc-clubhub` on GitHub
-- Vercel project: `acc-clubhub`
-- Auto-deploys on push to `master`
-- CMS edits also auto-trigger a deploy via GitHub commit
+- **Live URL:** [www.accross-cc.de](https://www.accross-cc.de)
+- **Vercel project:** `acc-clubhub`
+- **GitHub repo:** `GenLI3202/acc_clubhub`
+- Auto-deploys on push to `master`; CMS edits also trigger deploys via GitHub commit
 
 ### Backend (FastAPI)
 
-- Vercel project: `acc-clubhub-backend`
+- **Live URL:** [acc-clubhub-events-ms.vercel.app](https://acc-clubhub-events-ms.vercel.app)
+- **Vercel project:** `acc-clubhub-backend`
 - Auto-deploys on push to `master`
 - Entry point: `backend/app.py`
 
 ### Environment Variables
 
-| Variable | Where | Purpose |
-|----------|-------|---------|
-| `DATABASE_URL` | Vercel backend | Neon Postgres connection string |
-| `RESEND_API_KEY` | Vercel backend | Resend email API key |
-| `ALLOWED_ORIGINS` | Vercel backend | CORS allowed origins |
-| `PUBLIC_API_URL` | Vercel frontend | Backend base URL |
+| Variable | Project | Purpose |
+|----------|---------|---------|
+| `DATABASE_URL` | backend | Neon Postgres — includes `?sslmode=require` (stripped at runtime by `database.py`) |
+| `RESEND_API_KEY` | backend | Resend email API key |
+| `ALLOWED_ORIGINS` | backend | CORS allowed origins (comma-separated) |
+| `PUBLIC_API_URL` | frontend | Backend base URL |
 
 ### To redeploy manually
 
-Push any commit to `master`, or go to Vercel → project → **Deployments** → **Redeploy**.
+Push any commit to `master`, or: Vercel → project → **Deployments** → **Redeploy**.
 
 ---
 
-## 7. Email Configuration
+## 7. Domain & DNS
 
-- **Provider:** Resend ([resend.com](https://resend.com))
-- **Sending domain:** `events.accross-cc.de` (verified via IONOS DNS)
+All DNS is managed at **IONOS** ([ionos.de](https://ionos.de)) → Domains & SSL → `accross-cc.de` → DNS tab.
+
+| Record | Type | Hostname | Value | Purpose |
+|--------|------|----------|-------|---------|
+| Site (apex) | A | `@` | `216.198.79.1` | Vercel frontend |
+| Site (www) | CNAME | `www` | `dfc7627abbb7145b.vercel-dns-017.com.` | Vercel frontend |
+| Email DKIM | TXT | `resend._domainkey.events` | `p=MIGfMA0G...` | Resend signing |
+| Email SPF MX | MX | `send.events` | `feedback-smtp.eu-west-1.amazonses.com` | Resend bounce routing |
+| Email SPF TXT | TXT | `send.events` | `v=spf1 include:amazonses.com ~all` | Resend sending auth |
+
+## 8. Email Configuration
+
+- **Provider:** Resend ([resend.com](https://resend.com)) — sending domain `events.accross-cc.de` (verified)
 - **From address:** `noreply@events.accross-cc.de`
-- **Domain DNS managed at:** IONOS ([ionos.de](https://ionos.de))
+- **Language:** Always English, regardless of registrant's UI language
 
-Emails sent on:
+Emails sent automatically:
 - Confirmed RSVP → confirmation email to registrant
-- Waitlist RSVP → waitlist notification to registrant
+- Waitlist RSVP → waitlist position notification to registrant
 
-Emails are multilingual (zh / en / de) based on the `lang` field submitted with the RSVP.
+> New event announcements to subscribers are **not yet automated** — see Section 4 and Issue [#51](https://github.com/GenLI3202/acc_clubhub/issues/51).
 
 ---
 
-## 8. Planned Features (not yet implemented)
+## 9. Planned Features (not yet implemented)
 
 - [ ] Auto-broadcast to subscribers when new event is published
 - [ ] Admin UI for subscriber management
