@@ -225,6 +225,7 @@ const eventsCollection = defineCollection({
     description: z.string().optional(),
     location: z.string(),
     date: z.coerce.date(),
+    author: z.string().default('ACC Club'),
     eventType: z.enum(EVENT_TYPES).optional(),
     coverImage: z.string().optional(),
     cover: z.string().optional(),

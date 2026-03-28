@@ -3,6 +3,7 @@ slug: bike-maintenance-workshop
 title: 单车维修工作坊
 description: 学习基础的自行车维修保养技能
 location: ACC Club House
+author: ACC Club
 date: 2025-06-10
 eventType: workshop
 cover: /images/uploads/DSC04622.jpg

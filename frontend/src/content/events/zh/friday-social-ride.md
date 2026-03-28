@@ -3,6 +3,7 @@ slug: friday-social-ride
 title: 每周五社交骑
 description: 轻松的下班后社交骑行，适合所有级别的骑友
 location: 英国花园南门
+author: ACC Club
 date: 2025-06-20
 eventType: social-ride
 cover: /images/red_logo.png

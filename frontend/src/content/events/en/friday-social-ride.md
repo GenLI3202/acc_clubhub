@@ -3,6 +3,7 @@ slug: friday-social-ride
 title: Friday Social Ride
 description: Relaxed after-work social ride for all levels
 location: English Garden South Gate
+author: ACC Club
 date: 2025-06-20
 eventType: social-ride
 cover: /images/red_logo.png

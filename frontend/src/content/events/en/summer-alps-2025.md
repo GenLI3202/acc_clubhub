@@ -3,6 +3,7 @@ slug: summer-alps-2025
 title: 2025 Summer Alps Cycling Tour
 description: 3-day Alpine cycling adventure with stunning mountain views
 location: Munich Central Station
+author: ACC Club
 date: 2025-07-15
 eventType: training-camp
 cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg

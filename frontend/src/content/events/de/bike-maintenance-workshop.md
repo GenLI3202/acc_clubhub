@@ -3,6 +3,7 @@ slug: bike-maintenance-workshop
 title: Fahrrad Wartungs-Workshop
 description: Grundlegende Fahrradreparatur und Wartung lernen
 location: ACC Club House
+author: ACC Club
 date: 2025-06-10
 eventType: workshop
 cover: /images/uploads/DSC04622.jpg

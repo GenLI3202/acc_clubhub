@@ -3,6 +3,7 @@ slug: bike-maintenance-workshop
 title: Bike Maintenance Workshop
 description: Learn essential bicycle repair and maintenance skills
 location: ACC Club House
+author: ACC Club
 date: 2025-06-10
 eventType: workshop
 cover: /images/uploads/DSC04622.jpg

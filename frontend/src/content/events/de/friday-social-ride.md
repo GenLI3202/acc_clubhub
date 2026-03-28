@@ -3,6 +3,7 @@ slug: friday-social-ride
 title: Freitag Social Ride
 description: Entspannte Feierabend-Runde für alle Level
 location: Englischer Garten Südeingang
+author: ACC Club
 date: 2025-06-20
 eventType: social-ride
 cover: /images/red_logo.png
