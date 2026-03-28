@@ -29,7 +29,7 @@ if (allEvents.length > 0) {
 const langEvents = allEvents.filter((entry) => {
   // ID format is like "zh/summer-alps-2025" or just "summer-alps-2025"
   const entryLang = entry.id.includes('/') ? entry.id.split('/')[0] : defaultLocale;
-  return entryLang === lang;
+  return entryLang === lang && entry.data.status !== 'draft';
 });
 
 const sortedEvents = langEvents.sort(

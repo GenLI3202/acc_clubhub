@@ -16,7 +16,7 @@ const { lang } = Astro.params as { lang: Locale };
 
 const allGear = await getCollection('gear');
 const langGear = allGear.filter(
-  (entry) => getLangFromEntry(entry.filePath, 'gear') === lang
+  (entry) => getLangFromEntry(entry.filePath, 'gear') === lang && entry.data.status !== 'draft'
 );
 const sortedGear = langGear.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()

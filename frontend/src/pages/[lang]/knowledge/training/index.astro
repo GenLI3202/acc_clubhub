@@ -16,7 +16,7 @@ const { lang } = Astro.params as { lang: Locale };
 
 const allTraining = await getCollection('training');
 const langTraining = allTraining.filter(
-  (entry) => getLangFromEntry(entry.filePath, 'training') === lang
+  (entry) => getLangFromEntry(entry.filePath, 'training') === lang && entry.data.status !== 'draft'
 );
 const sortedTraining = langTraining.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()

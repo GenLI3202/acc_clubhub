@@ -93,6 +93,7 @@ const mediaCollection = defineCollection({
     tags: z.array(z.string()).default([]),
     date: z.coerce.date(), // Akzeptiert Date oder String
     author: z.string().default('ACC Club'),
+    status: z.enum(['draft', 'published']).default('published'),
 
     // Unterstütze beide Feldnamen
     coverImage: z.string().optional(),
@@ -128,6 +129,7 @@ const gearCollection = defineCollection({
     category: z.enum(GEAR_CATEGORIES).optional(),
     subcategory: z.string().optional(),
     author: z.string(),
+    status: z.enum(['draft', 'published']).default('published'),
     date: z.coerce.date(),
     coverImage: z.string().optional(),
     cover: z.string().optional(),
@@ -158,6 +160,7 @@ const trainingCollection = defineCollection({
     category: z.enum(TRAINING_CATEGORIES).optional(),
     tags: z.array(z.string()).default([]),
     author: z.string(),
+    status: z.enum(['draft', 'published']).default('published'),
     date: z.coerce.date(),
     coverImage: z.string().optional(),
     cover: z.string().optional(),
@@ -191,6 +194,7 @@ const routesCollection = defineCollection({
     elevation: z.number(),
     surface: z.enum(SURFACES).optional(),
     author: z.string().default('ACC Club'),
+    status: z.enum(['draft', 'published']).default('published'),
     coverImage: z.string().optional(),
     cover: z.string().optional(),
     gpxFile: z.string().optional(),
@@ -226,6 +230,7 @@ const eventsCollection = defineCollection({
     location: z.string(),
     date: z.coerce.date(),
     author: z.string().default('ACC Club'),
+    status: z.enum(['draft', 'published']).default('published'),
     eventType: z.enum(EVENT_TYPES).optional(),
     coverImage: z.string().optional(),
     cover: z.string().optional(),

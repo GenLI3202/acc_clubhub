@@ -17,7 +17,7 @@ const { lang } = Astro.params as { lang: Locale };
 // 使用 filePath 过滤语言 (稳健方式)
 const allMedia = await getCollection('media');
 const langMedia = allMedia.filter(
-  (entry) => getLangFromEntry(entry.filePath, 'media') === lang
+  (entry) => getLangFromEntry(entry.filePath, 'media') === lang && entry.data.status !== 'draft'
 );
 const sortedMedia = langMedia.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
