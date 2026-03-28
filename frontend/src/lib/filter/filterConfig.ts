@@ -16,6 +16,13 @@ export const mediaFilters: FilterDefinition[] = [
         ]
     },
     {
+        key: 'author',
+        label: 'Author',
+        type: 'select',
+        dynamic: true,
+        options: [] // Populated dynamically from content
+    },
+    {
         key: 'tags',
         label: 'Tags',
         type: 'multiselect',
