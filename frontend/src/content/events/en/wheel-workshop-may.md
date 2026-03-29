@@ -6,6 +6,7 @@ location: ACC Club House
 author: ACC Club
 date: 2026-05-09
 eventType: workshop
+featured: true
 coverImage: /images/uploads/DSC04622.jpg
 maxParticipants: 12
 registrationDeadline: 2026-05-02

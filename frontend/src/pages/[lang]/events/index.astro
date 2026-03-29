@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import { locales, defaultLocale, t, type Locale } from '../../../lib/i18n';
 import { splitEvents, getRegulars } from '../../../lib/events/eventHelpers';
 import EventHero from '../../../components/events/EventHero.astro';
+import UpcomingEvents from '../../../components/events/UpcomingEvents.astro';
 import WeeklyRegulars from '../../../components/events/WeeklyRegulars.astro';
 import PastEvents from '../../../components/events/PastEvents.astro';
 
@@ -22,10 +23,15 @@ const langEvents = allEvents.filter((e) => {
 });
 
 const { upcoming, past } = splitEvents(langEvents);
-// Carousel: non-social-ride upcoming events (featured first, then by date)
+
+// Carousel hero: featured upcoming events, sorted by date
 const carouselEvents = upcoming
-  .filter((e) => e.data.eventType !== 'social-ride')
-  .sort((a, b) => (b.data.featured ? 1 : 0) - (a.data.featured ? 1 : 0));
+  .filter((e) => e.data.featured && e.data.eventType !== 'social-ride')
+  .sort((a, b) => new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf());
+
+// Upcoming cards: non-featured, non-social-ride upcoming events
+const upcomingCards = upcoming.filter((e) => !e.data.featured && e.data.eventType !== 'social-ride');
+
 const regulars = getRegulars(upcoming);
 ---
 
@@ -37,6 +43,7 @@ const regulars = getRegulars(upcoming);
 >
   <EventHero slot="hero" events={carouselEvents} lang={lang} />
 
+  <UpcomingEvents events={upcomingCards} lang={lang} />
   <WeeklyRegulars events={regulars} lang={lang} />
   <PastEvents events={past} lang={lang} />
 </BaseLayout>
