@@ -1,6 +1,6 @@
 # Issues Sorted for Agents
 
-> Last updated: 2026-03-29
+> Last updated: 2026-03-30
 > Source: [GitHub Issues](https://github.com/GenLI3202/acc_clubhub/issues)
 >
 > This document organises all open issues by implementation difficulty and who/what is needed to proceed.
@@ -42,6 +42,7 @@ Direction is agreed; no design review needed before starting.
 | ✅ [#47](https://github.com/GenLI3202/acc_clubhub/issues/47) | Add ACC Strava group link to webpage | ~~Very low~~ | Added to `Footer.astro` → `strava.com/clubs/accmunich`. `commit 195ae1a` |
 | [#51](https://github.com/GenLI3202/acc_clubhub/issues/51) | Auto-broadcast email to subscribers on event publish | Medium | New `POST /api/admin/broadcast/{event_slug}`; reuses existing Resend email service; spec fully written in issue; already tracked as **Phase 4.3.4** in `progress.md` |
 | [#55](https://github.com/GenLI3202/acc_clubhub/issues/55) | Dark mode (`prefers-color-scheme: dark`) | Low | Add dark-mode overrides to `variables.css`; update hardcoded `rgba(255,255,255,...)` in Header + EventHero; system-preference only (no manual toggle) |
+| [#60](https://github.com/GenLI3202/acc_clubhub/issues/60) | Content authoring standards: `displaySection`, templates, past-event gate | Medium | ① Replace `featured` boolean with `displaySection: hero\|upcoming\|regular` in events schema; ② close registration form on past events; ③ add `_template.md` to all 5 content folders; ④ update `MAINTENANCE.md` with authoring guide |
 | [#27](https://github.com/GenLI3202/acc_clubhub/issues/27) | Authorization expansion (non-GitHub users as Admin) | Medium | Add role-based manual grant in backend; decouple Admin rights from GitHub collaborator status |
 | ✅ [#14](https://github.com/GenLI3202/acc_clubhub/issues/14) | Draft mode in CMS editor | ~~Medium~~ | `status: draft\|published` added to all 5 Zod schemas + 4 CMS collections; all 5 index pages filter drafts at build time. `commit 39164eb` |
 
@@ -91,7 +92,7 @@ These span multiple layers of the stack or introduce new subsystems.
 ```
 Immediate  ── #19 (P1 mobile performance)
 Bug sweep  ── #13 → #30                         (✅ #8 #22 #25 #39 done)
-Features   ── #51 (Phase 4.3.4) → #55 → #27    (✅ #47 #14 done)
+Features   ── #51 (Phase 4.3.4) → #60 (authoring standards) → #55 → #27    (✅ #47 #14 done)
 Design req ── #43, #44, #7, #15, #5             (✅ #9 done)
 Research   ── #50, #17, #41, #6
 Roadmap    ── #48, #20  (define phases before starting)
