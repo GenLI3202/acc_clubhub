@@ -3,11 +3,11 @@
   width: 100%;
   margin: var(--space-xl, 2rem) 0;
   padding: 1.2rem;
-  background: rgba(255, 255, 255, 0.9); /* 10% transparency */
-  border: 2px solid var(--color-border-rough, #2A5CA6);
-  border-radius: 8px;
-  box-shadow: 3px 3px 0 var(--color-border-rough, #2A5CA6);
-  transform: scale(0.95); /* 95% size for more compact look */
+  background: var(--color-bg-canvas, #ffffff);
+  border: 1px solid var(--color-border, #E5E7EB);
+  border-radius: var(--radius-card, 16px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.1));
+  transform: scale(0.95);
   transform-origin: center top;
 }
 
@@ -24,7 +24,7 @@
   font-size: 0.9rem;
   text-align: center;
   padding: 0.5rem;
-  background: rgba(42, 92, 166, 0.05);
+  background: var(--color-bg-secondary);
   border-radius: 4px;
 }
 
@@ -46,7 +46,7 @@
   font-family: var(--font-heading, sans-serif);
   font-weight: 600;
   font-size: 0.85rem;
-  color: var(--color-primary, #2A5CA6);
+  color: var(--color-primary, #C62828);
 }
 
 .form-group input[type="email"],
@@ -54,7 +54,7 @@
 .form-group textarea {
   width: 100%;
   padding: 0.55rem 0.7rem;
-  border: 2px solid var(--color-border-rough, #2A5CA6);
+  border: 2px solid var(--color-border, #C62828);
   border-radius: 4px;
   font-family: var(--font-body, sans-serif);
   font-size: 0.9rem;
@@ -85,7 +85,7 @@
 }
 
 .form-group.checkbox .privacy-link {
-  color: var(--color-primary, #2A5CA6);
+  color: var(--color-primary, #C62828);
   text-decoration: underline;
   font-weight: 600;
 }
@@ -116,12 +116,12 @@
 
 .submit-btn {
   padding: 0.7rem 2rem;
-  background: var(--color-primary, #2A5CA6);
+  background: var(--color-primary, #C62828);
   color: white;
   font-family: var(--font-heading, sans-serif);
   font-size: 0.95rem;
   font-weight: 600;
-  border: 2px solid var(--color-border-rough, #2A5CA6);
+  border: 2px solid var(--color-border, #C62828);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -132,7 +132,7 @@
 .submit-btn:hover:not(:disabled) {
   background: var(--color-accent, #F4A261);
   transform: translate(-1px, -1px);
-  box-shadow: 2px 2px 0 var(--color-border-rough, #2A5CA6);
+  box-shadow: 2px 2px 0 var(--color-border, #C62828);
 }
 
 .submit-btn:disabled {
@@ -181,10 +181,10 @@
   font-family: var(--font-heading, sans-serif);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-primary, #2A5CA6);
+  color: var(--color-primary, #C62828);
   margin-bottom: 0.9rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--color-border-rough, #2A5CA6);
+  border-bottom: 2px solid var(--color-border, #C62828);
 }
 
 /* Responsive: stack on mobile */
