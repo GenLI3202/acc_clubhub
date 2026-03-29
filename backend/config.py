@@ -33,13 +33,8 @@ settings = Settings()
 
 
 def get_allowed_origins() -> list[str]:
-    """Parse ALLOWED_ORIGINS string into a list."""
-    if settings.ALLOWED_ORIGINS == "*":
-        return ["*"]
-    return [
-        origin.strip()
-        for origin in settings.ALLOWED_ORIGINS.split(",")
-    ]
+    """Force wildcard CORS since this is a public API and allow_credentials=False."""
+    return ["*"]
 
 
 def is_production_mode() -> bool:
