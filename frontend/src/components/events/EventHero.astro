@@ -3,58 +3,119 @@ import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../../lib/i18n';
 
 interface Props {
-  event: CollectionEntry<'events'> | null;
+  events: CollectionEntry<'events'>[];
   lang: Locale;
 }
 
-const { event, lang } = Astro.props;
+const { events, lang } = Astro.props;
 
-const labels = {
-  fallbackTitle: lang === 'zh' ? '敬请期待' : lang === 'de' ? 'Demnächst' : 'Coming Soon',
-  fallbackSub: lang === 'zh' ? '更多活动即将公布，敬请关注' : lang === 'de' ? 'Weitere Events folgen in Kürze' : 'More events coming soon — stay tuned',
-  register: lang === 'zh' ? '立即报名 →' : lang === 'de' ? 'Jetzt anmelden →' : 'Register Now →',
-  details: lang === 'zh' ? '活动详情 →' : lang === 'de' ? 'Details →' : 'View Details →',
-  typeLabels: {
-    'training-camp': lang === 'zh' ? '训练营' : lang === 'de' ? 'Trainingslager' : 'Training Camp',
-    'social-ride': lang === 'zh' ? '社交骑' : lang === 'de' ? 'Social Ride' : 'Social Ride',
-    'race': lang === 'zh' ? '比赛' : lang === 'de' ? 'Rennen' : 'Race',
-    'workshop': lang === 'zh' ? '工作坊' : lang === 'de' ? 'Workshop' : 'Workshop',
-  },
+const typeLabels: Record<string, string> = {
+  'training-camp': lang === 'zh' ? '训练营' : lang === 'de' ? 'Trainingslager' : 'Training Camp',
+  'social-ride':   lang === 'zh' ? '社交骑' : lang === 'de' ? 'Social Ride'    : 'Social Ride',
+  'race':          lang === 'zh' ? '比赛'   : lang === 'de' ? 'Rennen'         : 'Race',
+  'workshop':      lang === 'zh' ? '工作坊' : lang === 'de' ? 'Workshop'       : 'Workshop',
 };
 
-function formatDate(dateStr: string, lang: Locale): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(
+const registerLabel = lang === 'zh' ? '立即报名 →' : lang === 'de' ? 'Jetzt anmelden →' : 'Register Now →';
+const detailsLabel  = lang === 'zh' ? '活动详情 →' : lang === 'de' ? 'Details →'        : 'View Details →';
+const fallbackTitle = lang === 'zh' ? '敬请期待'   : lang === 'de' ? 'Demnächst'        : 'Coming Soon';
+const fallbackSub   = lang === 'zh' ? '更多活动即将公布'
+                    : lang === 'de' ? 'Weitere Events folgen in Kürze'
+                    : 'More events coming soon — stay tuned';
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString(
     lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
     { year: 'numeric', month: 'long', day: 'numeric' }
   );
 }
 ---
 
-<section class="event-hero" style={event?.data.coverImage ? `background-image: url('${event.data.coverImage}')` : undefined}>
-  <div class="event-hero-overlay"></div>
-  <div class="event-hero-content">
-    {event ? (
-      <>
-        <span class="event-type-badge">{labels.typeLabels[event.data.eventType] ?? event.data.eventType}</span>
-        <h1 class="event-hero-title">{event.data.title}</h1>
-        <p class="event-hero-meta">{formatDate(event.data.date, lang)} · {event.data.location}</p>
-        {event.data.description && <p class="event-hero-desc">{event.data.description}</p>}
-        <div class="event-hero-actions">
-          {event.data.registrationDeadline
-            ? <a href={`/${lang}/events/${event.id.split('/').pop()}`} class="btn-hero-primary">{labels.register}</a>
-            : <a href={`/${lang}/events/${event.id.split('/').pop()}`} class="btn-hero-ghost">{labels.details}</a>
-          }
+{events.length === 0 ? (
+  <section class="event-hero event-hero--fallback">
+    <div class="event-hero-overlay"></div>
+    <div class="event-hero-content">
+      <h1 class="event-hero-title">{fallbackTitle}</h1>
+      <p class="event-hero-desc">{fallbackSub}</p>
+    </div>
+  </section>
+) : (
+  <section class="event-hero" id="eventHero">
+    {/* Slides — stacked, only active one visible */}
+    {events.map((event, i) => (
+      <div
+        class:list={['slide', { active: i === 0 }]}
+        data-slide={i}
+        style={event.data.coverImage ? `background-image: url('${event.data.coverImage}')` : undefined}
+        aria-hidden={i !== 0}
+      >
+        <div class="event-hero-overlay"></div>
+      </div>
+    ))}
+
+    {/* Content layer — updates via JS */}
+    <div class="event-hero-content" id="heroContent">
+      {events.map((event, i) => {
+        const slug = event.id.split('/').pop();
+        return (
+          <div class:list={['slide-content', { active: i === 0 }]} data-content={i}>
+            <span class="event-type-badge">{typeLabels[event.data.eventType] ?? event.data.eventType}</span>
+            <h1 class="event-hero-title">{event.data.title}</h1>
+            <p class="event-hero-meta">{formatDate(event.data.date)} · {event.data.location}</p>
+            {event.data.description && <p class="event-hero-desc">{event.data.description}</p>}
+            <div class="event-hero-actions">
+              {event.data.registrationDeadline
+                ? <a href={`/${lang}/events/${slug}`} class="btn-hero-primary">{registerLabel}</a>
+                : <a href={`/${lang}/events/${slug}`} class="btn-hero-ghost">{detailsLabel}</a>
+              }
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Controls */}
+    {events.length > 1 && (
+      <div class="hero-controls">
+        <button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Previous event">&#8592;</button>
+        <div class="hero-dots" id="heroDots">
+          {events.map((_, i) => (
+            <button
+              class:list={['hero-dot', { active: i === 0 }]}
+              data-dot={i}
+              aria-label={`Event ${i + 1}`}
+            ></button>
+          ))}
         </div>
-      </>
-    ) : (
-      <>
-        <h1 class="event-hero-title">{labels.fallbackTitle}</h1>
-        <p class="event-hero-desc">{labels.fallbackSub}</p>
-      </>
+        <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Next event">&#8594;</button>
+      </div>
     )}
-  </div>
-</section>
+  </section>
+)}
+
+<script>
+  const hero = document.getElementById('eventHero');
+  if (hero) {
+    const slides = hero.querySelectorAll<HTMLElement>('.slide');
+    const contents = hero.querySelectorAll<HTMLElement>('.slide-content');
+    const dots = hero.querySelectorAll<HTMLElement>('.hero-dot');
+    let current = 0;
+
+    function goTo(index: number) {
+      slides[current].classList.remove('active');
+      contents[current].classList.remove('active');
+      dots[current]?.classList.remove('active');
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      contents[current].classList.add('active');
+      dots[current]?.classList.add('active');
+    }
+
+    document.getElementById('heroPrev')?.addEventListener('click', () => goTo(current - 1));
+    document.getElementById('heroNext')?.addEventListener('click', () => goTo(current + 1));
+    dots.forEach((dot) => dot.addEventListener('click', () => goTo(Number(dot.dataset.dot))));
+  }
+</script>
 
 <style>
   .event-hero {
@@ -63,12 +124,24 @@ function formatDate(dateStr: string, lang: Locale): string {
     height: 70vh;
     min-height: 420px;
     max-height: 680px;
+    overflow: hidden;
     background-color: var(--color-primary);
-    background-size: cover;
-    background-position: center 35%;
     display: flex;
     align-items: flex-end;
   }
+
+  /* Background slides */
+  .slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 35%;
+    background-color: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .slide.active { opacity: 1; }
 
   .event-hero-overlay {
     position: absolute;
@@ -76,13 +149,35 @@ function formatDate(dateStr: string, lang: Locale): string {
     background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.30) 60%, rgba(0,0,0,0.10) 100%);
   }
 
+  /* Fallback (no events) */
+  .event-hero--fallback {
+    background-color: var(--color-primary);
+  }
+  .event-hero--fallback .event-hero-overlay {
+    background: rgba(0,0,0,0.4);
+  }
+
+  /* Content */
   .event-hero-content {
     position: relative;
-    z-index: 1;
-    padding: 3rem 2rem;
+    z-index: 2;
+    padding: 3rem 2rem 5rem;
     max-width: var(--max-width);
     margin: 0 auto;
     width: 100%;
+  }
+
+  .slide-content {
+    display: none;
+  }
+  .slide-content.active {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .event-type-badge {
@@ -110,14 +205,12 @@ function formatDate(dateStr: string, lang: Locale): string {
   }
 
   .event-hero-meta {
-    font-family: var(--font-body);
     font-size: 0.95rem;
     color: rgba(255,255,255,0.75);
     margin-bottom: 0.75rem;
   }
 
   .event-hero-desc {
-    font-family: var(--font-body);
     font-size: 1rem;
     color: rgba(255,255,255,0.85);
     max-width: 520px;
@@ -141,26 +234,54 @@ function formatDate(dateStr: string, lang: Locale): string {
     transition: background var(--transition-fast), transform var(--transition-fast);
   }
 
-  .btn-hero-primary {
-    background: var(--color-accent);
-    color: #ffffff;
-  }
-  .btn-hero-primary:hover {
-    background: var(--color-accent-dark);
-    transform: translateY(-2px);
-    color: #ffffff;
-    text-decoration: none;
+  .btn-hero-primary { background: var(--color-accent); color: #ffffff; }
+  .btn-hero-primary:hover { background: var(--color-accent-dark); transform: translateY(-2px); color: #ffffff; text-decoration: none; }
+
+  .btn-hero-ghost { background: rgba(255,255,255,0.15); color: #ffffff; border: 1.5px solid rgba(255,255,255,0.5); backdrop-filter: blur(4px); }
+  .btn-hero-ghost:hover { background: rgba(255,255,255,0.25); color: #ffffff; text-decoration: none; }
+
+  /* Controls */
+  .hero-controls {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 2rem;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
-  .btn-hero-ghost {
+  .hero-arrow {
     background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.4);
     color: #ffffff;
-    border: 1.5px solid rgba(255,255,255,0.5);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-fast);
     backdrop-filter: blur(4px);
   }
-  .btn-hero-ghost:hover {
-    background: rgba(255,255,255,0.25);
-    color: #ffffff;
-    text-decoration: none;
+  .hero-arrow:hover { background: rgba(255,255,255,0.30); }
+
+  .hero-dots { display: flex; gap: 0.4rem; align-items: center; }
+
+  .hero-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+  .hero-dot.active {
+    background: #ffffff;
+    transform: scale(1.3);
   }
 </style>

@@ -6,7 +6,7 @@ location: 慕尼黑英国花园南门
 author: ACC Club
 date: 2026-04-19
 eventType: training-camp
-coverImage: /images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg
+coverImage: /images/uploads/rr120_2024.jpg
 featured: true
 maxParticipants: 30
 registrationDeadline: 2026-04-12

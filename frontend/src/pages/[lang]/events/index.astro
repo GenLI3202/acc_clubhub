@@ -3,9 +3,8 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, defaultLocale, t, type Locale } from '../../../lib/i18n';
-import { getHeroEvent, splitEvents, getRegulars } from '../../../lib/events/eventHelpers';
+import { splitEvents, getRegulars } from '../../../lib/events/eventHelpers';
 import EventHero from '../../../components/events/EventHero.astro';
-import UpcomingEvents from '../../../components/events/UpcomingEvents.astro';
 import WeeklyRegulars from '../../../components/events/WeeklyRegulars.astro';
 import PastEvents from '../../../components/events/PastEvents.astro';
 
@@ -22,8 +21,11 @@ const langEvents = allEvents.filter((e) => {
   return entryLang === lang && e.data.status !== 'draft';
 });
 
-const heroEvent = getHeroEvent(langEvents);
 const { upcoming, past } = splitEvents(langEvents);
+// Carousel: non-social-ride upcoming events (featured first, then by date)
+const carouselEvents = upcoming
+  .filter((e) => e.data.eventType !== 'social-ride')
+  .sort((a, b) => (b.data.featured ? 1 : 0) - (a.data.featured ? 1 : 0));
 const regulars = getRegulars(upcoming);
 ---
 
@@ -31,11 +33,10 @@ const regulars = getRegulars(upcoming);
   title={pageTitle}
   lang={lang}
   headerTransparent={true}
-  heroImagePreload={heroEvent?.data.coverImage}
+  heroImagePreload={carouselEvents[0]?.data.coverImage}
 >
-  <EventHero slot="hero" event={heroEvent} lang={lang} />
+  <EventHero slot="hero" events={carouselEvents} lang={lang} />
 
-  <UpcomingEvents events={upcoming} lang={lang} heroEventId={heroEvent?.id} />
   <WeeklyRegulars events={regulars} lang={lang} />
   <PastEvents events={past} lang={lang} />
 </BaseLayout>
