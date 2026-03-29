@@ -77,8 +77,12 @@ function formatDate(dateStr: string): string {
     {/* Left / right arrows — sit on the edges, vertically centred */}
     {events.length > 1 && (
       <>
-        <button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Previous event">&#8592;</button>
-        <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Next event">&#8594;</button>
+        <button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Previous event">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Next event">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
 
         {/* Dots — centred at the bottom */}
         <div class="hero-dots" id="heroDots">
@@ -242,33 +246,30 @@ function formatDate(dateStr: string): string {
   .btn-hero-ghost { background: rgba(255,255,255,0.15); color: #ffffff; border: 1.5px solid rgba(255,255,255,0.5); backdrop-filter: blur(4px); }
   .btn-hero-ghost:hover { background: rgba(255,255,255,0.25); color: #ffffff; text-decoration: none; }
 
-  /* Arrows — left/right edges, vertically centred */
+  /* Bare chevron arrows — no background, no border */
   .hero-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 3;
-    background: rgba(255,255,255,0.12);
-    border: 1.5px solid rgba(255,255,255,0.35);
-    color: #ffffff;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    padding: 0.75rem;
     cursor: pointer;
-    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--transition-fast), border-color var(--transition-fast);
-    backdrop-filter: blur(6px);
+    filter: drop-shadow(0 1px 6px rgba(0,0,0,0.6));
+    transition: color var(--transition-fast), transform var(--transition-fast), filter var(--transition-fast);
   }
-  /* Align with content edges (max-width 960px → half = 480px, arrows sit ~32px outside) */
+  /* Align with content edges (max-width 960px → half = 480px) */
   .hero-arrow--prev { left: max(0.75rem, calc(50% - 512px)); }
   .hero-arrow--next { right: max(0.75rem, calc(50% - 512px)); }
-  .hero-arrow:hover {
-    background: rgba(255,255,255,0.28);
-    border-color: rgba(255,255,255,0.6);
-  }
+
+  .hero-arrow:hover { color: #ffffff; filter: drop-shadow(0 1px 8px rgba(0,0,0,0.8)); }
+  .hero-arrow--prev:hover { transform: translateY(-50%) translateX(-4px); }
+  .hero-arrow--next:hover { transform: translateY(-50%) translateX(4px); }
 
   /* Dots — centred at the bottom */
   .hero-dots {
