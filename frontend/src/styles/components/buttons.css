@@ -31,7 +31,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #a81f1f;
+  background-color: var(--color-accent-dark);
   color: var(--color-text-light);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);

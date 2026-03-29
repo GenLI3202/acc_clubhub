@@ -225,22 +225,6 @@ main {
 }
 
 /* -------------------------------------------
-   Diagonal Section (for future use)
-------------------------------------------- */
-.section-diagonal {
-  position: relative;
-  padding: var(--space-xl) 0;
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  margin: var(--space-lg) 0;
-}
-
-.section-diagonal h1,
-.section-diagonal h2 {
-  color: var(--color-text-light);
-}
-
-/* -------------------------------------------
    Status badge
 ------------------------------------------- */
 .status-badge {

@@ -21,34 +21,8 @@ const ctaLabel =
 
 const sections = [
   {
-    label: lang === 'zh' ? '活动' : lang === 'de' ? 'Events' : 'Events',
-    href: `/${lang}/events`,
     icon: '🚴',
-  },
-  {
-    label: lang === 'zh' ? '媒体' : lang === 'de' ? 'Medien' : 'Media',
-    href: `/${lang}/media`,
-    icon: '🎬',
-  },
-  {
-    label: lang === 'zh' ? '装备' : lang === 'de' ? 'Ausrüstung' : 'Gear',
-    href: `/${lang}/knowledge/gear`,
-    icon: '🔧',
-  },
-  {
-    label: lang === 'zh' ? '训练' : lang === 'de' ? 'Training' : 'Training',
-    href: `/${lang}/knowledge/training`,
-    icon: '📊',
-  },
-  {
-    label: lang === 'zh' ? '路线' : lang === 'de' ? 'Routen' : 'Routes',
-    href: `/${lang}/routes`,
-    icon: '🗺️',
-  },
-];
-
-const sectionDetails = [
-  {
+    label: lang === 'zh' ? '活动' : lang === 'de' ? 'Events' : 'Events',
     title: lang === 'zh' ? '慕城日常' : lang === 'de' ? 'Münchner Alltag' : 'Munich Daily',
     href: `/${lang}/events`,
     description:
@@ -57,6 +31,8 @@ const sectionDetails = [
       : 'Social Ride, Training Day, Registration',
   },
   {
+    icon: '🎬',
+    label: lang === 'zh' ? '媒体' : lang === 'de' ? 'Medien' : 'Media',
     title: lang === 'zh' ? '车影骑踪' : lang === 'de' ? 'Medien Archiv' : 'Media Archive',
     href: `/${lang}/media`,
     description:
@@ -65,6 +41,8 @@ const sectionDetails = [
       : 'Videos, Interviews, Mountain Adventures',
   },
   {
+    icon: '🔧',
+    label: lang === 'zh' ? '装备' : lang === 'de' ? 'Ausrüstung' : 'Gear',
     title: lang === 'zh' ? '器械知识' : lang === 'de' ? 'Ausrüstung' : 'Gear Guide',
     href: `/${lang}/knowledge/gear`,
     description:
@@ -73,6 +51,8 @@ const sectionDetails = [
       : 'Buying Guide, Workshops, New Products',
   },
   {
+    icon: '📊',
+    label: lang === 'zh' ? '训练' : lang === 'de' ? 'Training' : 'Training',
     title: lang === 'zh' ? '科学训练' : lang === 'de' ? 'Wissenschaft' : 'Science Training',
     href: `/${lang}/knowledge/training`,
     description:
@@ -81,6 +61,8 @@ const sectionDetails = [
       : 'Training Methods, Safety Tips',
   },
   {
+    icon: '🗺️',
+    label: lang === 'zh' ? '路线' : lang === 'de' ? 'Routen' : 'Routes',
     title: lang === 'zh' ? '骑行路线库' : lang === 'de' ? 'Routendatenbank' : 'Route Database',
     href: `/${lang}/routes`,
     description:
@@ -91,7 +73,7 @@ const sectionDetails = [
 ];
 ---
 
-<BaseLayout title={t(lang, 'nav.home')} lang={lang} headerTransparent={true}>
+<BaseLayout title={t(lang, 'nav.home')} lang={lang} headerTransparent={true} heroImagePreload="/images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg">
 
   <!-- Hero: full-width, breaks out of main's max-width -->
   <section slot="hero" class="homepage-hero">
@@ -116,7 +98,7 @@ const sectionDetails = [
 
   <!-- Section cards grid -->
   <div class="hub-grid">
-    {sectionDetails.map((section) => (
+    {sections.map((section) => (
       <a href={section.href} class="hub-card">
         <h3>{section.title}</h3>
         <p>{section.description}</p>
@@ -208,7 +190,7 @@ const sectionDetails = [
   }
 
   .hero-cta:hover {
-    background: #a81f1f;
+    background: var(--color-accent-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     color: #ffffff;
@@ -266,7 +248,7 @@ const sectionDetails = [
   }
 
   /* ---- Hub grid spacing ---- */
-  :global(.hub-grid) {
+  .hub-grid {
     margin-top: var(--space-xl);
     margin-bottom: var(--space-xl);
   }

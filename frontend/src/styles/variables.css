@@ -15,6 +15,7 @@
   --color-primary: #1A1A1A;          /* Near-black — dominant text & UI color */
   --color-secondary: #C62828;        /* Wine red — family with logo */
   --color-accent: #C62828;           /* Wine red — CTA buttons, highlights */
+  --color-accent-dark: #a81f1f;      /* Darker red — hover states */
   --color-text-main: #111111;        /* Body text */
   --color-text-secondary: #6B7280;   /* Secondary text (replaces #666, #555) */
   --color-text-muted: #9CA3AF;       /* Muted text (replaces #888, #999) */
