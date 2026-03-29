@@ -74,10 +74,13 @@ function formatDate(dateStr: string): string {
       })}
     </div>
 
-    {/* Controls */}
+    {/* Left / right arrows — sit on the edges, vertically centred */}
     {events.length > 1 && (
-      <div class="hero-controls">
+      <>
         <button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Previous event">&#8592;</button>
+        <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Next event">&#8594;</button>
+
+        {/* Dots — centred at the bottom */}
         <div class="hero-dots" id="heroDots">
           {events.map((_, i) => (
             <button
@@ -87,8 +90,7 @@ function formatDate(dateStr: string): string {
             ></button>
           ))}
         </div>
-        <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Next event">&#8594;</button>
-      </div>
+      </>
     )}
   </section>
 )}
@@ -240,35 +242,44 @@ function formatDate(dateStr: string): string {
   .btn-hero-ghost { background: rgba(255,255,255,0.15); color: #ffffff; border: 1.5px solid rgba(255,255,255,0.5); backdrop-filter: blur(4px); }
   .btn-hero-ghost:hover { background: rgba(255,255,255,0.25); color: #ffffff; text-decoration: none; }
 
-  /* Controls */
-  .hero-controls {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 2rem;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
+  /* Arrows — left/right edges, vertically centred */
   .hero-arrow {
-    background: rgba(255,255,255,0.15);
-    border: 1.5px solid rgba(255,255,255,0.4);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.35);
     color: #ffffff;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--transition-fast);
-    backdrop-filter: blur(4px);
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+    backdrop-filter: blur(6px);
   }
-  .hero-arrow:hover { background: rgba(255,255,255,0.30); }
+  .hero-arrow--prev { left: 1.5rem; }
+  .hero-arrow--next { right: 1.5rem; }
+  .hero-arrow:hover {
+    background: rgba(255,255,255,0.28);
+    border-color: rgba(255,255,255,0.6);
+  }
 
-  .hero-dots { display: flex; gap: 0.4rem; align-items: center; }
+  /* Dots — centred at the bottom */
+  .hero-dots {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
 
   .hero-dot {
     width: 8px;
@@ -282,6 +293,6 @@ function formatDate(dateStr: string): string {
   }
   .hero-dot.active {
     background: #ffffff;
-    transform: scale(1.3);
+    transform: scale(1.35);
   }
 </style>
