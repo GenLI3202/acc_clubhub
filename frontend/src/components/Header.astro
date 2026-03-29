@@ -105,6 +105,16 @@ function getLangSwitchUrl(targetLang: Locale): string {
     });
     document.addEventListener('click', () => dropdown.classList.remove('open'));
   }
+
+  // Mobile nav: add .nav-open to <header> when checkbox is checked
+  // (fallback for browsers without :has() support)
+  const navToggle = document.getElementById('nav-toggle') as HTMLInputElement | null;
+  const header = document.querySelector('header');
+  if (navToggle && header) {
+    navToggle.addEventListener('change', () => {
+      header.classList.toggle('nav-open', navToggle.checked);
+    });
+  }
 </script>
 
 <style>
@@ -308,6 +318,40 @@ function getLangSwitchUrl(targetLang: Locale): string {
     .header-actions {
       margin-left: auto;
       margin-right: 1rem;
+    }
+
+    /* ── Mobile nav open: force solid background over hero ── */
+    header:has(#nav-toggle:checked),
+    header.nav-open {
+      background: rgba(255, 255, 255, 0.98) !important;
+      backdrop-filter: blur(12px);
+      border-bottom-color: var(--color-border) !important;
+      z-index: 10000 !important;
+    }
+
+    header:has(#nav-toggle:checked) .logo,
+    header.nav-open .logo {
+      color: var(--color-accent) !important;
+    }
+
+    header:has(#nav-toggle:checked) li a,
+    header.nav-open li a {
+      color: var(--color-text-main) !important;
+    }
+
+    header:has(#nav-toggle:checked) li a.active,
+    header.nav-open li a.active {
+      color: var(--color-accent) !important;
+    }
+
+    header:has(#nav-toggle:checked) .nav-toggle-label span,
+    header.nav-open .nav-toggle-label span {
+      background: var(--color-text-main) !important;
+    }
+
+    header:has(#nav-toggle:checked) .lang-toggle,
+    header.nav-open .lang-toggle {
+      color: var(--color-text-main) !important;
     }
   }
 

@@ -89,7 +89,9 @@ WHERE email = 'user@example.com'
 
 ## 3. Publishing a New Event
 
-Events are managed entirely through the CMS — no SQL required.
+Events are managed entirely through the CMS — no SQL required. Or one can simply add a new markdown file in the `docs/events` folder.
+
+> **Template:** `docs/content-templates/events.md` — copy this file when creating a new event.
 
 ### Steps
 
@@ -97,35 +99,33 @@ Events are managed entirely through the CMS — no SQL required.
 2. Navigate to **Events** → **New Event**
 3. Fill in the frontmatter fields:
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `title` | ✅ | Event name (shown in form + emails) |
-| `date` | ✅ | ISO format e.g. `2026-04-19` |
-| `location` | ✅ | Shown in confirmation email |
-| `slug` | ✅ | URL path, e.g. `spring-classic-2026` |
-| `eventType` | ✅ | `social-ride` · `training-camp` · `race` · `workshop` |
-| `displaySection` | ✅ | Where this event appears on the events page — see table below |
-| `coverImage` | recommended | Path to hero image e.g. `/images/uploads/photo.jpg` |
-| `maxParticipants` | optional | Leave blank for unlimited |
-| `registrationDeadline` | optional | ISO date; registration form closes after this date |
-| `author` | optional | Defaults to `"ACC Club"` |
+| Field                    | Required    | Notes                                                            |
+| ------------------------ | ----------- | ---------------------------------------------------------------- |
+| `title`                | ✅          | Event name (shown in form + emails)                              |
+| `date`                 | ✅          | ISO format e.g.`2026-04-19`                                    |
+| `location`             | ✅          | Shown in confirmation email                                      |
+| `slug`                 | ✅          | URL path, e.g.`spring-classic-2026`                            |
+| `eventType`            | ✅          | `social-ride` · `training-camp` · `race` · `workshop` |
+| `displaySection`       | ✅          | Where this event appears on the events page — see table below   |
+| `coverImage`           | recommended | Path to hero image e.g.`/images/uploads/photo.jpg`             |
+| `maxParticipants`      | optional    | Leave blank for unlimited                                        |
+| `registrationDeadline` | optional    | ISO date; registration form closes after this date               |
+| `author`               | optional    | Defaults to `"ACC Club"`                                       |
 
 **`displaySection` values:**
 
-| Value | Where it appears | When to use |
-|-------|-----------------|-------------|
-| `hero` | Full-width carousel at the top of the events page | Flagship events only — keep to 2–3 max |
-| `upcoming` | Upcoming events card grid | Default for most events |
-| `regular` | Weekly Regulars compact list | Recurring social rides |
+| Value        | Where it appears                                  | When to use                              |
+| ------------ | ------------------------------------------------- | ---------------------------------------- |
+| `hero`     | Full-width carousel at the top of the events page | Flagship events only — keep to 2–3 max |
+| `upcoming` | Upcoming events card grid                         | Default for most events                  |
+| `regular`  | Weekly Regulars compact list                      | Recurring social rides                   |
 
 > Past events (date < today) always appear in the **Past Archive** section regardless of `displaySection`.
 > Registration is automatically disabled on past events — no manual action needed.
 
 **`eventType`** controls the badge colour/label only (training-camp, race, workshop, social-ride). It is independent of `displaySection`.
 
-> **Template:** `docs/content-templates/events.md` — copy this file when creating a new event.
-
-4. Save → Sveltia CMS commits to GitHub → Vercel rebuilds automatically (~2 min)
+1. Save → Sveltia CMS commits to GitHub → Vercel rebuilds automatically (~2 min)
 
 The event page is live at `/zh/events/[slug]` (and `/en/`, `/de/` variants).
 
@@ -171,16 +171,16 @@ This is a GET request — clicking the link deactivates the subscriber instantly
 Base URL: `https://acc-clubhub-events-ms.vercel.app`
 Interactive docs: [acc-clubhub-events-ms.vercel.app/docs](https://acc-clubhub-events-ms.vercel.app/docs)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | Health check / API info |
-| GET | `/health` | Detailed health status |
-| GET | `/docs` | Interactive API docs (Swagger) |
-| POST | `/api/rsvp` | Submit event registration (CMS-driven) |
-| POST | `/api/subscribe` | Subscribe to event notifications |
-| GET | `/api/unsubscribe/{token}` | Unsubscribe via token |
-| GET | `/api/events/{id}/rsvps` | List RSVPs for an event (admin) |
-| DELETE | `/api/events/{id}/rsvp?email=...` | Cancel an RSVP |
+| Method | Path                                | Description                            |
+| ------ | ----------------------------------- | -------------------------------------- |
+| GET    | `/`                               | Health check / API info                |
+| GET    | `/health`                         | Detailed health status                 |
+| GET    | `/docs`                           | Interactive API docs (Swagger)         |
+| POST   | `/api/rsvp`                       | Submit event registration (CMS-driven) |
+| POST   | `/api/subscribe`                  | Subscribe to event notifications       |
+| GET    | `/api/unsubscribe/{token}`        | Unsubscribe via token                  |
+| GET    | `/api/events/{id}/rsvps`          | List RSVPs for an event (admin)        |
+| DELETE | `/api/events/{id}/rsvp?email=...` | Cancel an RSVP                         |
 
 The interactive Swagger UI at `/docs` lets you test all endpoints in the browser.
 
@@ -204,12 +204,12 @@ The interactive Swagger UI at `/docs` lets you test all endpoints in the browser
 
 ### Environment Variables
 
-| Variable | Project | Purpose |
-|----------|---------|---------|
-| `DATABASE_URL` | backend | Neon Postgres — includes `?sslmode=require` (stripped at runtime by `database.py`) |
-| `RESEND_API_KEY` | backend | Resend email API key |
-| `ALLOWED_ORIGINS` | backend | CORS allowed origins (comma-separated) |
-| `PUBLIC_API_URL` | frontend | Backend base URL |
+| Variable            | Project  | Purpose                                                                                 |
+| ------------------- | -------- | --------------------------------------------------------------------------------------- |
+| `DATABASE_URL`    | backend  | Neon Postgres — includes `?sslmode=require` (stripped at runtime by `database.py`) |
+| `RESEND_API_KEY`  | backend  | Resend email API key                                                                    |
+| `ALLOWED_ORIGINS` | backend  | CORS allowed origins (comma-separated)                                                  |
+| `PUBLIC_API_URL`  | frontend | Backend base URL                                                                        |
 
 ### To redeploy manually
 
@@ -221,13 +221,13 @@ Push any commit to `master`, or: Vercel → project → **Deployments** → **Re
 
 All DNS is managed at **IONOS** ([ionos.de](https://ionos.de)) → Domains & SSL → `accross-cc.de` → DNS tab.
 
-| Record | Type | Hostname | Value | Purpose |
-|--------|------|----------|-------|---------|
-| Site (apex) | A | `@` | `216.198.79.1` | Vercel frontend |
-| Site (www) | CNAME | `www` | `dfc7627abbb7145b.vercel-dns-017.com.` | Vercel frontend |
-| Email DKIM | TXT | `resend._domainkey.events` | `p=MIGfMA0G...` | Resend signing |
-| Email SPF MX | MX | `send.events` | `feedback-smtp.eu-west-1.amazonses.com` | Resend bounce routing |
-| Email SPF TXT | TXT | `send.events` | `v=spf1 include:amazonses.com ~all` | Resend sending auth |
+| Record        | Type  | Hostname                     | Value                                     | Purpose               |
+| ------------- | ----- | ---------------------------- | ----------------------------------------- | --------------------- |
+| Site (apex)   | A     | `@`                        | `216.198.79.1`                          | Vercel frontend       |
+| Site (www)    | CNAME | `www`                      | `dfc7627abbb7145b.vercel-dns-017.com.`  | Vercel frontend       |
+| Email DKIM    | TXT   | `resend._domainkey.events` | `p=MIGfMA0G...`                         | Resend signing        |
+| Email SPF MX  | MX    | `send.events`              | `feedback-smtp.eu-west-1.amazonses.com` | Resend bounce routing |
+| Email SPF TXT | TXT   | `send.events`              | `v=spf1 include:amazonses.com ~all`     | Resend sending auth   |
 
 ## 8. Email Configuration
 
@@ -236,6 +236,7 @@ All DNS is managed at **IONOS** ([ionos.de](https://ionos.de)) → Domains & SSL
 - **Language:** Always English, regardless of registrant's UI language
 
 Emails sent automatically:
+
 - Confirmed RSVP → confirmation email to registrant
 - Waitlist RSVP → waitlist position notification to registrant
 
@@ -255,13 +256,13 @@ frontend/src/styles/components/     ← buttons.css, cards.css
 
 Key tokens:
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-accent` | `#C62828` | Wine-red primary CTA colour |
-| `--color-accent-dark` | `#a81f1f` | Hover state for accent |
-| `--color-bg-canvas` | `#FFFFFF` | Page background |
-| `--color-primary` | `#1A1A1A` | Dark text / dark backgrounds |
-| `--color-border` | `#E5E7EB` | Dividers, card borders |
+| Token                   | Value       | Usage                        |
+| ----------------------- | ----------- | ---------------------------- |
+| `--color-accent`      | `#C62828` | Wine-red primary CTA colour  |
+| `--color-accent-dark` | `#a81f1f` | Hover state for accent       |
+| `--color-bg-canvas`   | `#FFFFFF` | Page background              |
+| `--color-primary`     | `#1A1A1A` | Dark text / dark backgrounds |
+| `--color-border`      | `#E5E7EB` | Dividers, card borders       |
 
 **Transparent header:** Pages pass `headerTransparent={true}` to `BaseLayout`. The header uses `position: fixed` and `background: transparent` until the user scrolls 40px, then transitions to white with blur. Currently used on: homepage (`/[lang]/index.astro`) and events index (`/[lang]/events/index.astro`).
 
@@ -271,13 +272,13 @@ Key tokens:
 
 Each content collection has a `_template.md` that lists every available field with comments. **Copy the template** when creating new content — do not reverse-engineer from existing files.
 
-| Collection | Template path | URL pattern |
-|------------|--------------|-------------|
-| Events | `docs/content-templates/events.md` | `/[lang]/events/[slug]` |
-| Gear knowledge | `docs/content-templates/knowledge-gear.md` | `/[lang]/knowledge/gear/[slug]` |
+| Collection         | Template path                                    | URL pattern                           |
+| ------------------ | ------------------------------------------------ | ------------------------------------- |
+| Events             | `docs/content-templates/events.md`             | `/[lang]/events/[slug]`             |
+| Gear knowledge     | `docs/content-templates/knowledge-gear.md`     | `/[lang]/knowledge/gear/[slug]`     |
 | Training knowledge | `docs/content-templates/knowledge-training.md` | `/[lang]/knowledge/training/[slug]` |
-| Media | `docs/content-templates/media.md` | `/[lang]/media/[slug]` |
-| Routes | `docs/content-templates/routes.md` | `/[lang]/routes/[slug]` |
+| Media              | `docs/content-templates/media.md`              | `/[lang]/media/[slug]`              |
+| Routes             | `docs/content-templates/routes.md`             | `/[lang]/routes/[slug]`             |
 
 ### File naming
 
