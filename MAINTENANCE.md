@@ -123,7 +123,7 @@ Events are managed entirely through the CMS — no SQL required.
 
 **`eventType`** controls the badge colour/label only (training-camp, race, workshop, social-ride). It is independent of `displaySection`.
 
-> **Template:** `frontend/src/content/events/_template.md` — copy this file when creating a new event.
+> **Template:** `docs/content-templates/events.md` — copy this file when creating a new event.
 
 4. Save → Sveltia CMS commits to GitHub → Vercel rebuilds automatically (~2 min)
 
@@ -273,11 +273,11 @@ Each content collection has a `_template.md` that lists every available field wi
 
 | Collection | Template path | URL pattern |
 |------------|--------------|-------------|
-| Events | `frontend/src/content/events/_template.md` | `/[lang]/events/[slug]` |
-| Gear knowledge | `frontend/src/content/knowledge/gear/_template.md` | `/[lang]/knowledge/gear/[slug]` |
-| Training knowledge | `frontend/src/content/knowledge/training/_template.md` | `/[lang]/knowledge/training/[slug]` |
-| Media | `frontend/src/content/media/_template.md` | `/[lang]/media/[slug]` |
-| Routes | `frontend/src/content/routes/_template.md` | `/[lang]/routes/[slug]` |
+| Events | `docs/content-templates/events.md` | `/[lang]/events/[slug]` |
+| Gear knowledge | `docs/content-templates/knowledge-gear.md` | `/[lang]/knowledge/gear/[slug]` |
+| Training knowledge | `docs/content-templates/knowledge-training.md` | `/[lang]/knowledge/training/[slug]` |
+| Media | `docs/content-templates/media.md` | `/[lang]/media/[slug]` |
+| Routes | `docs/content-templates/routes.md` | `/[lang]/routes/[slug]` |
 
 ### File naming
 
