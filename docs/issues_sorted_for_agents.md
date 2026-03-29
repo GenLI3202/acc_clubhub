@@ -24,7 +24,7 @@ All of these have a clear root cause and a contained fix. An agent can open a PR
 
 | # | Title | Fix Scope | Notes |
 |---|-------|-----------|-------|
-| [#39](https://github.com/GenLI3202/acc_clubhub/issues/39) | ACC contact email missing | Content only | Add email to Privacy Policy + About Us pages |
+| ✅ [#39](https://github.com/GenLI3202/acc_cubhub/issues/39) | ACC contact email missing | ~~Content only~~ | Set to `letusride@accross-cc.de` in `privacy.astro` (3×) and `about.astro`. `commit e419cc0` |
 | ✅ [#8](https://github.com/GenLI3202/acc_clubhub/issues/8) | Author field missing in content creation | ~~CMS schema + DB~~ | Added `author: z.string().default('ACC Club')` to events schema; backfilled 9 event md files. All collections now track author. `commit 9d27462` |
 | ✅ [#22](https://github.com/GenLI3202/acc_clubhub/issues/22) | Filter cannot extract Author info | ~~Frontend filter logic~~ | Added `author` dynamic filter to `mediaFilters` in `filterConfig.ts`. `commit 75a90a6` |
 | [#13](https://github.com/GenLI3202/acc_clubhub/issues/13) | HEIC image format not supported on upload | Upload component | Convert HEIC→JPEG client-side (`heic2any`) or server-side (Pillow) before storing |
@@ -89,7 +89,7 @@ These span multiple layers of the stack or introduce new subsystems.
 
 ```
 Immediate  ── #19 (P1 mobile performance)
-Bug sweep  ── #39 → #13 → #30          (✅ #8 #22 #25 done)
+Bug sweep  ── #13 → #30                 (✅ #8 #22 #25 #39 done)
 Features   ── #51 (Phase 4.3.4) → #27  (✅ #47 #14 done)
 Design req ── #43, #44, #7, #15, #5    (✅ #9 done)
 Research   ── #50, #17, #41, #6
