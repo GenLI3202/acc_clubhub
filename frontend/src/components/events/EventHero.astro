@@ -1,0 +1,300 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  events: CollectionEntry<'events'>[];
+  lang: Locale;
+}
+
+const { events, lang } = Astro.props;
+
+const typeLabels: Record<string, string> = {
+  'training-camp': lang === 'zh' ? '训练营' : lang === 'de' ? 'Trainingslager' : 'Training Camp',
+  'social-ride':   lang === 'zh' ? '社交骑' : lang === 'de' ? 'Social Ride'    : 'Social Ride',
+  'race':          lang === 'zh' ? '比赛'   : lang === 'de' ? 'Rennen'         : 'Race',
+  'workshop':      lang === 'zh' ? '工作坊' : lang === 'de' ? 'Workshop'       : 'Workshop',
+};
+
+const registerLabel = lang === 'zh' ? '立即报名 →' : lang === 'de' ? 'Jetzt anmelden →' : 'Register Now →';
+const detailsLabel  = lang === 'zh' ? '活动详情 →' : lang === 'de' ? 'Details →'        : 'View Details →';
+const fallbackTitle = lang === 'zh' ? '敬请期待'   : lang === 'de' ? 'Demnächst'        : 'Coming Soon';
+const fallbackSub   = lang === 'zh' ? '更多活动即将公布'
+                    : lang === 'de' ? 'Weitere Events folgen in Kürze'
+                    : 'More events coming soon — stay tuned';
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString(
+    lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
+}
+---
+
+{events.length === 0 ? (
+  <section class="event-hero event-hero--fallback">
+    <div class="event-hero-overlay"></div>
+    <div class="event-hero-content">
+      <h1 class="event-hero-title">{fallbackTitle}</h1>
+      <p class="event-hero-desc">{fallbackSub}</p>
+    </div>
+  </section>
+) : (
+  <section class="event-hero" id="eventHero">
+    {/* Slides — stacked, only active one visible */}
+    {events.map((event, i) => (
+      <div
+        class:list={['slide', { active: i === 0 }]}
+        data-slide={i}
+        style={event.data.coverImage ? `background-image: url('${event.data.coverImage}')` : undefined}
+        aria-hidden={i !== 0}
+      >
+        <div class="event-hero-overlay"></div>
+      </div>
+    ))}
+
+    {/* Content layer — updates via JS */}
+    <div class="event-hero-content" id="heroContent">
+      {events.map((event, i) => {
+        const slug = event.id.split('/').pop();
+        return (
+          <div class:list={['slide-content', { active: i === 0 }]} data-content={i}>
+            <span class="event-type-badge">{typeLabels[event.data.eventType] ?? event.data.eventType}</span>
+            <h1 class="event-hero-title">{event.data.title}</h1>
+            <p class="event-hero-meta">{formatDate(event.data.date)} · {event.data.location}</p>
+            {event.data.description && <p class="event-hero-desc">{event.data.description}</p>}
+            <div class="event-hero-actions">
+              {event.data.registrationDeadline
+                ? <a href={`/${lang}/events/${slug}`} class="btn-hero-primary">{registerLabel}</a>
+                : <a href={`/${lang}/events/${slug}`} class="btn-hero-ghost">{detailsLabel}</a>
+              }
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Left / right arrows — sit on the edges, vertically centred */}
+    {events.length > 1 && (
+      <>
+        <button class="hero-arrow hero-arrow--prev" id="heroPrev" aria-label="Previous event">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="hero-arrow hero-arrow--next" id="heroNext" aria-label="Next event">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        {/* Dots — centred at the bottom */}
+        <div class="hero-dots" id="heroDots">
+          {events.map((_, i) => (
+            <button
+              class:list={['hero-dot', { active: i === 0 }]}
+              data-dot={i}
+              aria-label={`Event ${i + 1}`}
+            ></button>
+          ))}
+        </div>
+      </>
+    )}
+  </section>
+)}
+
+<script>
+  const hero = document.getElementById('eventHero');
+  if (hero) {
+    const slides = hero.querySelectorAll<HTMLElement>('.slide');
+    const contents = hero.querySelectorAll<HTMLElement>('.slide-content');
+    const dots = hero.querySelectorAll<HTMLElement>('.hero-dot');
+    let current = 0;
+
+    function goTo(index: number) {
+      slides[current].classList.remove('active');
+      contents[current].classList.remove('active');
+      dots[current]?.classList.remove('active');
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      contents[current].classList.add('active');
+      dots[current]?.classList.add('active');
+    }
+
+    document.getElementById('heroPrev')?.addEventListener('click', () => goTo(current - 1));
+    document.getElementById('heroNext')?.addEventListener('click', () => goTo(current + 1));
+    dots.forEach((dot) => dot.addEventListener('click', () => goTo(Number(dot.dataset.dot))));
+  }
+</script>
+
+<style>
+  .event-hero {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 420px;
+    max-height: 680px;
+    overflow: hidden;
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  /* Background slides */
+  .slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 35%;
+    background-color: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .slide.active { opacity: 1; }
+
+  .event-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.30) 60%, rgba(0,0,0,0.10) 100%);
+  }
+
+  /* Fallback (no events) */
+  .event-hero--fallback {
+    background-color: var(--color-primary);
+  }
+  .event-hero--fallback .event-hero-overlay {
+    background: rgba(0,0,0,0.4);
+  }
+
+  /* Content */
+  .event-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 3rem 2rem 5rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .slide-content {
+    display: none;
+  }
+  .slide-content.active {
+    display: block;
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .event-type-badge {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    background: var(--color-accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    margin-bottom: 1rem;
+  }
+
+  .event-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .event-hero-meta {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 0.75rem;
+  }
+
+  .event-hero-desc {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    max-width: 520px;
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  .event-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-hero-primary,
+  .btn-hero-ghost {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .btn-hero-primary { background: var(--color-accent); color: #ffffff; }
+  .btn-hero-primary:hover { background: var(--color-accent-dark); transform: translateY(-2px); color: #ffffff; text-decoration: none; }
+
+  .btn-hero-ghost { background: rgba(255,255,255,0.15); color: #ffffff; border: 1.5px solid rgba(255,255,255,0.5); backdrop-filter: blur(4px); }
+  .btn-hero-ghost:hover { background: rgba(255,255,255,0.25); color: #ffffff; text-decoration: none; }
+
+  /* Bare chevron arrows — no background, no border */
+  .hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    padding: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 1px 6px rgba(0,0,0,0.6));
+    transition: color var(--transition-fast), transform var(--transition-fast), filter var(--transition-fast);
+  }
+  /* Align with content edges (max-width 960px → half = 480px) */
+  .hero-arrow--prev { left: max(0.75rem, calc(50% - 512px)); }
+  .hero-arrow--next { right: max(0.75rem, calc(50% - 512px)); }
+
+  .hero-arrow:hover { color: #ffffff; filter: drop-shadow(0 1px 8px rgba(0,0,0,0.8)); }
+  .hero-arrow--prev:hover { transform: translateY(-50%) translateX(-4px); }
+  .hero-arrow--next:hover { transform: translateY(-50%) translateX(4px); }
+
+  /* Dots — centred at the bottom */
+  .hero-dots {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .hero-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+  .hero-dot.active {
+    background: #ffffff;
+    transform: scale(1.35);
+  }
+</style>

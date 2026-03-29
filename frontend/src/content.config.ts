@@ -238,6 +238,7 @@ const eventsCollection = defineCollection({
     maxParticipants: z.number().optional(),
     registrationDeadline: z.coerce.date().optional(),
     registrationLink: z.string().optional(),
+    featured: z.boolean().optional().default(false),
   }).transform((data) => ({
     ...data,
     coverImage: data.coverImage || data.cover,

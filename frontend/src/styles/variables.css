@@ -1,40 +1,76 @@
 /* ===================================================
-   T0: Design Tokens — Der Blaue Reiter 2.0
-   Edition: V3 (Kandinsky's Blue Mountain)
+   T0: Design Tokens — ACC ClubHub
+   Edition: V4 (Rapha-Inspired Modern)
    =================================================== */
 
 /* Google Fonts: Jost (heading) + Inter (body) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Jost:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
 :root {
-  /* Color Palette — Extracted from 'Der blaue Berg' */
-  --color-bg-canvas: #F0F4F5;    /* Mist White */
-  --color-primary: #2D5D9B;      /* Mountain Blue */
-  --color-secondary: #5CA042;    /* Brush Green */
-  --color-accent: #D63E33;       /* Arch Red */
-  --color-highlight: #F2C94C;    /* Sun Yellow */
-  --color-text-main: #111111;    /* Charcoal (High Contrast) */
-  --color-text-light: #FFFFFF;   /* Pure White */
-  --color-border-rough: #111111; /* Charcoal */
+  /* -----------------------------------------------
+     Color Palette — Modern Cycling Premium
+  ----------------------------------------------- */
+  --color-bg-canvas: #FFFFFF;        /* Clean white */
+  --color-bg-secondary: #F7F7F8;     /* Subtle off-white for section backgrounds */
+  --color-primary: #1A1A1A;          /* Near-black — dominant text & UI color */
+  --color-secondary: #C62828;        /* Wine red — family with logo */
+  --color-accent: #C62828;           /* Wine red — CTA buttons, highlights */
+  --color-accent-dark: #a81f1f;      /* Darker red — hover states */
+  --color-text-main: #111111;        /* Body text */
+  --color-text-secondary: #6B7280;   /* Secondary text (replaces #666, #555) */
+  --color-text-muted: #9CA3AF;       /* Muted text (replaces #888, #999) */
+  --color-text-light: #FFFFFF;       /* Text on dark backgrounds */
+  --color-border: #E5E7EB;           /* Subtle borders (replaces #111 border-rough) */
+  --color-border-strong: #D1D5DB;    /* Stronger border for emphasis */
 
-  /* Typography */
+  /* -----------------------------------------------
+     Typography
+  ----------------------------------------------- */
   --font-heading: 'Jost', 'Futura', sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
 
-  /* Angles & Shapes — Sporty Aerodynamics */
-  --angle-motion: -4deg;   /* Faster tilt */
-  --angle-section: -3deg;
-  
-  --radius-aero: 12px;     /* Smooth aerodynamic corners */
-  --radius-btn: 4px;
+  /* -----------------------------------------------
+     Shadows — Layered depth system
+  ----------------------------------------------- */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg:  0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl:  0 16px 40px rgba(0, 0, 0, 0.14);
 
-  /* Spacing */
+  /* -----------------------------------------------
+     Border Radius
+  ----------------------------------------------- */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-aero: 12px;    /* smooth corners */
+  --radius-btn:  8px;     /* buttons */
+  --radius-card: 16px;    /* content cards */
+  --radius-full: 9999px;  /* pills */
+
+  /* -----------------------------------------------
+     Geometry — NO skew (clean modern layout)
+  ----------------------------------------------- */
+  --angle-motion:  0deg;
+  --angle-section: 0deg;
+
+  /* -----------------------------------------------
+     Spacing
+  ----------------------------------------------- */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 2rem;
   --space-xl: 4rem;
 
-  /* Layout */
+  /* -----------------------------------------------
+     Layout
+  ----------------------------------------------- */
   --max-width: 960px;
+
+  /* -----------------------------------------------
+     Transitions
+  ----------------------------------------------- */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
 }

@@ -7,9 +7,11 @@ import type { Locale } from '../lib/i18n';
 interface Props {
   title: string;
   lang?: Locale;
+  headerTransparent?: boolean;
+  heroImagePreload?: string;
 }
 
-const { title, lang = 'zh' } = Astro.props;
+const { title, lang = 'zh', headerTransparent = false, heroImagePreload } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,10 +20,12 @@ const { title, lang = 'zh' } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | ACC ClubHub</title>
-    <link rel="icon" type="image/jpeg" href="/images/red_logo.png" />
+    <link rel="icon" type="image/jpeg" href="/images/transparent_red_logo.png" />
+    {heroImagePreload && <link rel="preload" as="image" href={heroImagePreload} />}
   </head>
   <body>
-    <Header lang={lang} />
+    <Header lang={lang} transparent={headerTransparent} />
+    <slot name="hero" />
     <main>
       <slot />
     </main>

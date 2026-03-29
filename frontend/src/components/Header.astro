@@ -5,23 +5,23 @@ import { GlobalSearch } from './search/GlobalSearch';
 
 interface Props {
   lang?: Locale;
+  transparent?: boolean;
 }
 
-const { lang = 'zh' } = Astro.props;
+const { lang = 'zh', transparent = false } = Astro.props;
 const navLinks = getNavLinks(lang);
 const currentPath = Astro.url.pathname;
 
-// 生成语言切换链接 (保持当前路径，只换语言)
 function getLangSwitchUrl(targetLang: Locale): string {
   const pathWithoutLang = currentPath.replace(/^\/(zh|en|de)/, '');
   return `/${targetLang}${pathWithoutLang || ''}`;
 }
 ---
 
-<header>
+<header class:list={[{ 'header-transparent': transparent }]}>
   <nav>
     <a href={`/${lang}`} class="logo">
-      <img src="/images/red_logo.png" alt="ACC ClubHub" width="40" height="40" />
+      <img src="/images/transparent_red_logo.png" alt="ACC ClubHub" width="40" height="40" />
       <span>ACC ClubHub</span>
     </a>
 
@@ -46,9 +46,9 @@ function getLangSwitchUrl(targetLang: Locale): string {
     </ul>
 
     <div class="header-actions">
-      <GlobalSearch 
-        client:idle 
-        lang={lang} 
+      <GlobalSearch
+        client:idle
+        lang={lang}
         translations={{
           searchPlaceholder: t(lang, 'search.placeholder'),
           noResults: t(lang, 'search.noResults')
@@ -77,16 +77,67 @@ function getLangSwitchUrl(targetLang: Locale): string {
   </nav>
 </header>
 
+{transparent && (
+  <script>
+    const header = document.querySelector('header');
+    if (header) {
+      const onScroll = () => {
+        if (window.scrollY > 40) {
+          header.classList.add('header-scrolled');
+        } else {
+          header.classList.remove('header-scrolled');
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+  </script>
+)}
+
+<script>
+  // Language dropdown: click-toggle so mouse movement can't accidentally close it
+  const dropdown = document.querySelector('.lang-dropdown');
+  const toggle = dropdown?.querySelector('.lang-toggle');
+  if (dropdown && toggle) {
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', () => dropdown.classList.remove('open'));
+  }
+</script>
+
 <style>
   header {
-    background-color: transparent;
-    border-bottom: 2px solid var(--color-border-rough);
     padding: 1rem 2rem;
-    backdrop-filter: blur(5px);
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(232, 228, 217, 0.9);
+    /* Default: solid white */
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  /* Transparent mode: fixed so hero slides behind it */
+  header.header-transparent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
+    box-shadow: none;
+  }
+
+  /* After scrolling: fade in white */
+  header.header-transparent.header-scrolled {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(12px);
+    border-bottom-color: var(--color-border);
+    box-shadow: var(--shadow-sm);
   }
 
   nav {
@@ -120,7 +171,14 @@ function getLangSwitchUrl(targetLang: Locale): string {
     border-radius: 4px;
   }
 
-  /* Header Actions (Search + Lang) */
+  /* Transparent mode: white logo text */
+  header.header-transparent .logo {
+    color: #ffffff;
+  }
+  header.header-transparent.header-scrolled .logo {
+    color: var(--color-accent);
+  }
+
   .header-actions {
     display: flex;
     align-items: center;
@@ -144,25 +202,40 @@ function getLangSwitchUrl(targetLang: Locale): string {
     color: var(--color-text-main);
     padding: 0.25rem 0.5rem;
     position: relative;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
+  }
+
+  /* Transparent mode: white nav links */
+  header.header-transparent li a {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  header.header-transparent.header-scrolled li a {
+    color: var(--color-text-main);
   }
 
   li a:hover {
-    color: var(--color-primary);
+    color: var(--color-accent);
     text-decoration: none;
   }
 
-  /* Hover underline — rough stroke effect */
+  header.header-transparent li a:hover {
+    color: #ffffff;
+  }
+  header.header-transparent.header-scrolled li a:hover {
+    color: var(--color-accent);
+  }
+
+  /* Hover/active underline */
   li a::after {
     content: '';
     position: absolute;
     bottom: -3px;
     left: 0;
     width: 0%;
-    height: 3px;
+    height: 2px;
     background-color: var(--color-accent);
-    transition: width 0.3s ease;
-    transform: rotate(-1deg);
+    border-radius: 1px;
+    transition: width var(--transition-base);
   }
 
   li a:hover::after,
@@ -171,13 +244,19 @@ function getLangSwitchUrl(targetLang: Locale): string {
   }
 
   li a.active {
-    color: var(--color-primary);
+    color: var(--color-accent);
+    font-weight: 600;
   }
 
-  /* Mobile hamburger toggle */
-  .nav-toggle {
-    display: none;
+  header.header-transparent li a.active {
+    color: #ffffff;
   }
+  header.header-transparent.header-scrolled li a.active {
+    color: var(--color-accent);
+  }
+
+  /* Mobile hamburger */
+  .nav-toggle { display: none; }
 
   .nav-toggle-label {
     display: none;
@@ -192,13 +271,18 @@ function getLangSwitchUrl(targetLang: Locale): string {
     width: 24px;
     height: 2px;
     background: var(--color-text-main);
-    transition: all 0.3s ease;
+    transition: all var(--transition-base);
+  }
+
+  header.header-transparent .nav-toggle-label span {
+    background: #ffffff;
+  }
+  header.header-transparent.header-scrolled .nav-toggle-label span {
+    background: var(--color-text-main);
   }
 
   @media (max-width: 768px) {
-    .nav-toggle-label {
-      display: flex;
-    }
+    .nav-toggle-label { display: flex; }
 
     ul {
       display: none;
@@ -206,38 +290,30 @@ function getLangSwitchUrl(targetLang: Locale): string {
       flex-direction: column;
       gap: 0;
       padding-top: 1rem;
-      border-top: 1px solid rgba(26, 26, 26, 0.1);
+      border-top: 1px solid var(--color-border);
     }
 
-    .nav-toggle:checked ~ ul {
-      display: flex;
-    }
+    .nav-toggle:checked ~ ul { display: flex; }
 
-    li a {
-      display: block;
-      padding: 0.5rem 0;
-    }
+    li a { display: block; padding: 0.5rem 0; }
 
     .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
       transform: rotate(45deg) translate(5px, 5px);
     }
-    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
-      opacity: 0;
-    }
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) { opacity: 0; }
     .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
       transform: rotate(-45deg) translate(5px, -5px);
     }
-    
+
     .header-actions {
-      margin-left: auto; /* Push to right on mobile */
-      margin-right: 1rem; /* Space before hamburger */
+      margin-left: auto;
+      margin-right: 1rem;
     }
   }
 
-  /* Compact Language Switcher with Text + Arrow */
+  /* Language switcher */
   .lang-dropdown {
     position: relative;
-    /* margin-left: 1rem; Removed as it's in header-actions now */
     height: 100%;
     display: flex;
     align-items: center;
@@ -255,64 +331,59 @@ function getLangSwitchUrl(targetLang: Locale): string {
     font-family: var(--font-heading);
     font-weight: 600;
     font-size: 0.9rem;
-    opacity: 1; /* Always fully visible as it is active */
-    transition: opacity 0.2s ease;
-    position: relative; /* For underline */
+    transition: color var(--transition-fast);
   }
 
-  /* Active/Hover underline — rough stroke effect (Match Nav) */
-  .lang-toggle::after {
-    content: '';
-    position: absolute;
-    bottom: 0px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-1deg); /* Center it */
-    width: 60%; /* Short underline as requested */
-    height: 3px;
-    background-color: var(--color-accent);
-    transition: width 0.3s ease;
+  header.header-transparent .lang-toggle {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  header.header-transparent.header-scrolled .lang-toggle {
+    color: var(--color-text-main);
   }
 
-  .lang-toggle:hover::after {
-    width: 80%; /* Grow slightly on hover */
+  /* Search icon: white in transparent mode */
+  header.header-transparent :global(.global-search-trigger) {
+    color: rgba(255, 255, 255, 0.9);
   }
-
-  .lang-toggle:hover {
-    opacity: 1;
+  header.header-transparent :global(.global-search-trigger:hover) {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  header.header-transparent.header-scrolled :global(.global-search-trigger) {
+    color: var(--color-text-main);
+  }
+  header.header-transparent.header-scrolled :global(.global-search-trigger:hover) {
+    color: var(--color-primary);
+    background: rgba(0, 0, 0, 0.05);
   }
 
   .arrow-icon {
     width: 12px;
     height: 12px;
-    transition: transform 0.2s ease;
+    transition: transform var(--transition-fast);
     margin-top: 1px;
     opacity: 0.7;
   }
 
-  /* Rotate arrow on hover */
-  .lang-dropdown:hover .arrow-icon {
-    transform: rotate(180deg);
-  }
+  .lang-dropdown.open .arrow-icon { transform: rotate(180deg); }
 
   .lang-menu {
     position: absolute;
     top: 100%;
     right: 0;
     background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 4px; /* Sharper corners like reference */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    padding: 0.25rem 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    /* top padding bridges the visual gap so no hover dead-zone */
+    padding: 0.5rem 0 0.25rem;
     display: none;
     flex-direction: column;
-    min-width: 60px; /* Slimmer */
+    min-width: 60px;
     z-index: 101;
   }
 
-  /* Show menu on hover */
-  .lang-dropdown:hover .lang-menu {
-    display: flex;
-  }
+  .lang-dropdown.open .lang-menu { display: flex; }
 
   .lang-link {
     display: block;
@@ -322,17 +393,16 @@ function getLangSwitchUrl(targetLang: Locale): string {
     color: var(--color-text-main);
     text-decoration: none;
     text-align: center;
-    transition: background 0.2s, color 0.2s;
+    transition: background var(--transition-fast), color var(--transition-fast);
   }
 
   .lang-link:hover {
-    background: rgba(0,0,0,0.05); /* Subtle hover */
-    color: var(--color-primary);
+    background: var(--color-bg-secondary);
+    color: var(--color-accent);
   }
 
   .lang-link.active {
-    color: var(--color-primary);
+    color: var(--color-accent);
     font-weight: 700;
-    background: rgba(0,0,0,0.03);
   }
 </style>

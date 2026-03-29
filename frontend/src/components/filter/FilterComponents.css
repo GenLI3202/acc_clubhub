@@ -1,13 +1,12 @@
-/* Basic variables */
+/* Basic variables — aligned to global design tokens */
 :root {
-    --filter-panel-bg: rgba(255, 255, 255, 0.9);
+    --filter-panel-bg: rgba(255, 255, 255, 0.97);
     --filter-panel-blur: 20px;
-    --filter-border-color: rgba(0, 0, 0, 0.08);
-    --filter-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    --filter-header-bg: #e0e0e0;
-    /* High contrast gray */
-    --filter-header-hover: #d4d4d4;
-    --filter-active-color: #ff4d00;
+    --filter-border-color: var(--color-border, #E5E7EB);
+    --filter-shadow: var(--shadow-xl, 0 16px 40px rgba(0,0,0,0.14));
+    --filter-header-bg: var(--color-bg-secondary, #F7F7F8);
+    --filter-header-hover: var(--color-border, #E5E7EB);
+    --filter-active-color: var(--color-accent, #C62828);
 }
 
 /* Wrapper to establish positioning context */
@@ -29,7 +28,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     font-size: 0.9rem;
     font-weight: 500;
-    color: #333;
+    color: var(--color-text-main, #111);
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -46,7 +45,7 @@
 }
 
 .filter-count-badge {
-    background: #333;
+    background: var(--color-primary, #1A1A1A);
     color: white;
     border-radius: 50%;
     width: 20px;
@@ -110,7 +109,7 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
-    color: #1a1a1a;
+    color: var(--color-text-main, #111);
 }
 
 .filter-actions {
@@ -120,7 +119,7 @@
 }
 
 .close-filter-btn {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--color-bg-secondary, #F7F7F8);
     border: none;
     width: 32px;
     height: 32px;
@@ -131,13 +130,13 @@
     font-size: 1.2rem;
     line-height: 1;
     cursor: pointer;
-    color: #666;
+    color: var(--color-text-secondary, #6B7280);
     transition: background 0.2s;
 }
 
 .close-filter-btn:hover {
-    background: rgba(0, 0, 0, 0.1);
-    color: #333;
+    background: var(--color-border, #E5E7EB);
+    color: var(--color-text-main, #111);
 }
 
 .reset-all-btn {
@@ -152,7 +151,7 @@
 }
 
 .reset-all-btn:hover {
-    background: rgba(255, 77, 0, 0.05);
+    background: rgba(198, 40, 40, 0.06);
 }
 
 /* Filter Content Grid */
@@ -191,8 +190,7 @@
 .filter-title {
     font-weight: 600;
     font-size: 0.85rem;
-    /* Smaller font size requested */
-    color: #222;
+    color: var(--color-text-main, #111);
 }
 
 .filter-content {
@@ -218,8 +216,7 @@
     gap: 8px;
     cursor: pointer;
     font-size: 0.85rem;
-    /* Smaller font for items */
-    color: #444;
+    color: var(--color-text-main, #111);
     padding: 2px 0;
 }
 
@@ -229,7 +226,7 @@
 
 .checkbox-count {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--color-text-muted, #9CA3AF);
 }
 
 .show-more-btn {
