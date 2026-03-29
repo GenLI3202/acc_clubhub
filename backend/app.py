@@ -25,7 +25,7 @@ allowed_origins = get_allowed_origins()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_credentials=False,  # No cookies/sessions — wildcard origins + True violates CORS spec
     allow_methods=["*"],
     allow_headers=["*"],
 )
