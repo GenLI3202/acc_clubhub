@@ -68,7 +68,8 @@
 - [x] **Content Authoring Standards** (2026-03-30) — Issue [#60](https://github.com/GenLI3202/acc_clubhub/issues/60)
   - [x] `displaySection` field replaces `featured` in events schema; all event md files backfilled
   - [x] Past event registration gate: detail page shows "ended" notice instead of form for past events
-  - [x] `_template.md` added to all 5 content collections (events, gear, training, media, routes)
+  - [x] Templates added for all 5 content collections — stored in `docs/content-templates/` (not inside content dirs, to prevent Astro generating fake pages)
+  - [x] `getTodayAtMidnight()` extracted to `eventHelpers.ts`; removes duplicate date logic in `[slug].astro`
   - [x] `MAINTENANCE.md` Section 10 added: content authoring guide with template reference table
 - [x] **Production Domain + Email Infrastructure** (2026-03-28)
   - [x] Registered `accross-cc.de` via IONOS (Domain-only plan)
