@@ -1,12 +1,13 @@
 ---
 // src/pages/[lang]/events/index.astro
-// 慕城日常 - 活动页面 (Layer 4 实现)
-
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, defaultLocale, t, type Locale } from '../../../lib/i18n';
-
-import EventsPage from '../../../components/content/EventsPage';
+import { getHeroEvent, splitEvents, getRegulars } from '../../../lib/events/eventHelpers';
+import EventHero from '../../../components/events/EventHero.astro';
+import UpcomingEvents from '../../../components/events/UpcomingEvents.astro';
+import WeeklyRegulars from '../../../components/events/WeeklyRegulars.astro';
+import PastEvents from '../../../components/events/PastEvents.astro';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -15,80 +16,26 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Locale };
 const pageTitle = t(lang, 'nav.events');
 
-// Fetch events
 const allEvents = await getCollection('events');
-
-// Debug: Check what properties are available
-if (allEvents.length > 0) {
-  console.log('[Events Debug] First entry:', allEvents[0]);
-  console.log('[Events Debug] Entry keys:', Object.keys(allEvents[0]));
-  console.log('[Events Debug] ID:', allEvents[0].id);
-}
-
-// Filter by language - use id instead of filePath
-const langEvents = allEvents.filter((entry) => {
-  // ID format is like "zh/summer-alps-2025" or just "summer-alps-2025"
-  const entryLang = entry.id.includes('/') ? entry.id.split('/')[0] : defaultLocale;
-  return entryLang === lang && entry.data.status !== 'draft';
+const langEvents = allEvents.filter((e) => {
+  const entryLang = e.id.includes('/') ? e.id.split('/')[0] : defaultLocale;
+  return entryLang === lang && e.data.status !== 'draft';
 });
 
-const sortedEvents = langEvents.sort(
-  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
-);
-
-// Debug: log event count
-console.log(`[Events Page] Total events: ${allEvents.length}, Lang (${lang}): ${langEvents.length}`);
+const heroEvent = getHeroEvent(langEvents);
+const { upcoming, past } = splitEvents(langEvents);
+const regulars = getRegulars(upcoming);
 ---
 
-<BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title-header">
-    <div class="title-content">
-      <h1>🚴 {pageTitle}</h1>
-      <p class="page-subtitle">
-        {lang === 'zh'
-          ? 'Social Ride、Training Day、活动报名'
-          : lang === 'de'
-            ? 'Social Ride, Training Day, Anmeldung'
-            : 'Social Ride, Training Day, Registration'}
-      </p>
-    </div>
-    <div id="filter-portal-target"></div>
-  </div>
+<BaseLayout
+  title={pageTitle}
+  lang={lang}
+  headerTransparent={true}
+  heroImagePreload={heroEvent?.data.coverImage}
+>
+  <EventHero slot="hero" event={heroEvent} lang={lang} />
 
-  {sortedEvents.length === 0 ? (
-    <div style="padding: 2rem; text-align: center; color: #666;">
-      <p>Debug: No events found for language "{lang}"</p>
-      <p>Total events in collection: {allEvents.length}</p>
-    </div>
-  ) : (
-    <EventsPage
-      client:load
-      initialItems={sortedEvents}
-      lang={lang}
-    />
-  )}
+  <UpcomingEvents events={upcoming} lang={lang} heroEventId={heroEvent?.id} />
+  <WeeklyRegulars events={regulars} lang={lang} />
+  <PastEvents events={past} lang={lang} />
 </BaseLayout>
-
-<style>
-  .page-title-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--color-border-rough);
-    padding-bottom: var(--space-md);
-  }
-
-  .title-content {
-    flex: 1;
-    min-width: 280px;
-  }
-
-  .title-content h1 {
-    margin-bottom: 0.5rem;
-  }
-
-
-</style>

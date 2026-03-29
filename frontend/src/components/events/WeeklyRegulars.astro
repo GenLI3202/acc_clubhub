@@ -1,0 +1,126 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  events: CollectionEntry<'events'>[];
+  lang: Locale;
+}
+
+const { events, lang } = Astro.props;
+
+const heading = lang === 'zh' ? '固定活动' : lang === 'de' ? 'Regelmäßige Ausfahrten' : 'Weekly Regulars';
+const badge = lang === 'zh' ? '每周' : lang === 'de' ? 'Wöchentlich' : 'Weekly';
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(
+    lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+    { weekday: 'long', month: 'short', day: 'numeric' }
+  );
+}
+---
+
+{events.length > 0 && (
+  <section class="regulars-section">
+    <h2 class="section-heading">{heading}</h2>
+    <div class="regulars-list">
+      {events.map((event) => {
+        const slug = event.id.split('/').pop();
+        return (
+          <a href={`/${lang}/events/${slug}`} class="regular-row">
+            <span class="regular-badge">{badge}</span>
+            <div class="regular-info">
+              <span class="regular-title">{event.data.title}</span>
+              <span class="regular-meta">{formatDate(event.data.date)} · {event.data.location}</span>
+            </div>
+            <span class="regular-arrow">→</span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<style>
+  .regulars-section {
+    padding: var(--space-lg) 0;
+  }
+
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .regulars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .regular-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+    color: var(--color-text-main);
+    transition: color var(--transition-fast);
+  }
+
+  .regular-row:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .regular-badge {
+    flex-shrink: 0;
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    border: 1.5px solid var(--color-accent);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  .regular-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .regular-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .regular-meta {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+
+  .regular-arrow {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    transition: transform var(--transition-fast);
+  }
+
+  .regular-row:hover .regular-arrow {
+    color: var(--color-accent);
+    transform: translateX(3px);
+  }
+</style>

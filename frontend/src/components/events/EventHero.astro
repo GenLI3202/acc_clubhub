@@ -1,0 +1,166 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  event: CollectionEntry<'events'> | null;
+  lang: Locale;
+}
+
+const { event, lang } = Astro.props;
+
+const labels = {
+  fallbackTitle: lang === 'zh' ? '敬请期待' : lang === 'de' ? 'Demnächst' : 'Coming Soon',
+  fallbackSub: lang === 'zh' ? '更多活动即将公布，敬请关注' : lang === 'de' ? 'Weitere Events folgen in Kürze' : 'More events coming soon — stay tuned',
+  register: lang === 'zh' ? '立即报名 →' : lang === 'de' ? 'Jetzt anmelden →' : 'Register Now →',
+  details: lang === 'zh' ? '活动详情 →' : lang === 'de' ? 'Details →' : 'View Details →',
+  typeLabels: {
+    'training-camp': lang === 'zh' ? '训练营' : lang === 'de' ? 'Trainingslager' : 'Training Camp',
+    'social-ride': lang === 'zh' ? '社交骑' : lang === 'de' ? 'Social Ride' : 'Social Ride',
+    'race': lang === 'zh' ? '比赛' : lang === 'de' ? 'Rennen' : 'Race',
+    'workshop': lang === 'zh' ? '工作坊' : lang === 'de' ? 'Workshop' : 'Workshop',
+  },
+};
+
+function formatDate(dateStr: string, lang: Locale): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(
+    lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
+}
+---
+
+<section class="event-hero" style={event?.data.coverImage ? `background-image: url('${event.data.coverImage}')` : undefined}>
+  <div class="event-hero-overlay"></div>
+  <div class="event-hero-content">
+    {event ? (
+      <>
+        <span class="event-type-badge">{labels.typeLabels[event.data.eventType] ?? event.data.eventType}</span>
+        <h1 class="event-hero-title">{event.data.title}</h1>
+        <p class="event-hero-meta">{formatDate(event.data.date, lang)} · {event.data.location}</p>
+        {event.data.description && <p class="event-hero-desc">{event.data.description}</p>}
+        <div class="event-hero-actions">
+          {event.data.registrationDeadline
+            ? <a href={`/${lang}/events/${event.id.split('/').pop()}`} class="btn-hero-primary">{labels.register}</a>
+            : <a href={`/${lang}/events/${event.id.split('/').pop()}`} class="btn-hero-ghost">{labels.details}</a>
+          }
+        </div>
+      </>
+    ) : (
+      <>
+        <h1 class="event-hero-title">{labels.fallbackTitle}</h1>
+        <p class="event-hero-desc">{labels.fallbackSub}</p>
+      </>
+    )}
+  </div>
+</section>
+
+<style>
+  .event-hero {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 420px;
+    max-height: 680px;
+    background-color: var(--color-primary);
+    background-size: cover;
+    background-position: center 35%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .event-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.30) 60%, rgba(0,0,0,0.10) 100%);
+  }
+
+  .event-hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 2rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .event-type-badge {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    background: var(--color-accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    margin-bottom: 1rem;
+  }
+
+  .event-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .event-hero-meta {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 0.75rem;
+  }
+
+  .event-hero-desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    max-width: 520px;
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  .event-hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-hero-primary,
+  .btn-hero-ghost {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .btn-hero-primary {
+    background: var(--color-accent);
+    color: #ffffff;
+  }
+  .btn-hero-primary:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-2px);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .btn-hero-ghost {
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    backdrop-filter: blur(4px);
+  }
+  .btn-hero-ghost:hover {
+    background: rgba(255,255,255,0.25);
+    color: #ffffff;
+    text-decoration: none;
+  }
+</style>

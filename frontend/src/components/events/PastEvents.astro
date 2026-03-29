@@ -1,0 +1,119 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  events: CollectionEntry<'events'>[];
+  lang: Locale;
+}
+
+const { events, lang } = Astro.props;
+
+const heading = lang === 'zh' ? '往期回顾' : lang === 'de' ? 'Vergangene Events' : 'Past Events';
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(
+    lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+    { year: 'numeric', month: 'short', day: 'numeric' }
+  );
+}
+---
+
+{events.length > 0 && (
+  <section class="past-section">
+    <h2 class="section-heading">{heading}</h2>
+    <div class="past-grid">
+      {events.map((event) => {
+        const slug = event.id.split('/').pop();
+        return (
+          <a href={`/${lang}/events/${slug}`} class="past-card">
+            {event.data.coverImage && (
+              <div class="past-card-img" style={`background-image: url('${event.data.coverImage}')`}></div>
+            )}
+            <div class="past-card-body">
+              <h3>{event.data.title}</h3>
+              <p class="past-meta">{formatDate(event.data.date)}</p>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<style>
+  .past-section {
+    padding: var(--space-lg) 0 var(--space-xl);
+  }
+
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .past-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .past-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    transition: opacity var(--transition-base), box-shadow var(--transition-base);
+    opacity: 0.7;
+  }
+
+  .past-card:hover {
+    opacity: 1;
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: var(--color-text-main);
+  }
+
+  .past-card-img {
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--color-bg-secondary);
+    filter: grayscale(100%);
+    transition: filter var(--transition-base);
+  }
+
+  .past-card:hover .past-card-img {
+    filter: grayscale(0%);
+  }
+
+  .past-card-body {
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .past-card h3 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: inherit;
+    line-height: 1.3;
+  }
+
+  .past-meta {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+</style>
