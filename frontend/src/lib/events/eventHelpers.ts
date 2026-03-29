@@ -2,9 +2,14 @@ import type { CollectionEntry } from 'astro:content';
 
 type EventEntry = CollectionEntry<'events'>;
 
+export function getTodayAtMidnight(): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export function splitEvents(events: EventEntry[]): { upcoming: EventEntry[]; past: EventEntry[] } {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = getTodayAtMidnight();
   const upcoming: EventEntry[] = [];
   const past: EventEntry[] = [];
   for (const e of events) {

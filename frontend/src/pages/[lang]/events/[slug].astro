@@ -5,6 +5,7 @@
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 
@@ -36,10 +37,7 @@ const registrationLabels: Record<string, string> = {
 // API URL from environment
 const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.vercel.app';
 
-// Disable registration for past events
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-const isPastEvent = new Date(entry.data.date) < today;
+const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
 const endedLabels: Record<string, string> = {
   zh: '该活动已结束，报名通道已关闭。',
