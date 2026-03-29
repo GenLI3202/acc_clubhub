@@ -54,6 +54,13 @@ class Event(Base):
         "RSVP", back_populates="event", cascade="all, delete-orphan",
     )
 
+    @property
+    def available_spots(self) -> int | None:
+        """Remaining registration spots; None means unlimited."""
+        if self.max_participants is None:
+            return None
+        return max(0, self.max_participants - (self.current_participants or 0))
+
     def __repr__(self) -> str:
         return (
             f"<Event(id={self.id}, slug='{self.slug}', "
