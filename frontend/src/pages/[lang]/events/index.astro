@@ -24,13 +24,13 @@ const langEvents = allEvents.filter((e) => {
 
 const { upcoming, past } = splitEvents(langEvents);
 
-// Carousel hero: featured upcoming events, sorted by date
+// Carousel hero: events with displaySection === 'hero', sorted by date
 const carouselEvents = upcoming
-  .filter((e) => e.data.featured && e.data.eventType !== 'social-ride')
+  .filter((e) => e.data.displaySection === 'hero')
   .sort((a, b) => new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf());
 
-// Upcoming cards: non-featured, non-social-ride upcoming events
-const upcomingCards = upcoming.filter((e) => !e.data.featured && e.data.eventType !== 'social-ride');
+// Upcoming cards: events with displaySection === 'upcoming'
+const upcomingCards = upcoming.filter((e) => e.data.displaySection === 'upcoming');
 
 const regulars = getRegulars(upcoming);
 ---

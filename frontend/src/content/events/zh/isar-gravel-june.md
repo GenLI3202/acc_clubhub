@@ -6,6 +6,7 @@ location: 慕尼黑 Thalkirchen 停车场
 author: ACC Club
 date: 2026-06-07
 eventType: training-camp
+displaySection: upcoming
 coverImage: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
 ---
 约60km砾石路段，爬升400m，适合Gravel/MTB车型。轻松配速，中途补给。

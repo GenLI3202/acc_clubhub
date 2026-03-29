@@ -7,7 +7,7 @@ author: ACC Club
 date: 2026-04-19
 eventType: training-camp
 coverImage: /images/uploads/rr120_2024.jpg
-featured: true
+displaySection: hero
 maxParticipants: 30
 registrationDeadline: 2026-04-12
 ---

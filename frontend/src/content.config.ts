@@ -238,7 +238,14 @@ const eventsCollection = defineCollection({
     maxParticipants: z.number().optional(),
     registrationDeadline: z.coerce.date().optional(),
     registrationLink: z.string().optional(),
-    featured: z.boolean().optional().default(false),
+    // displaySection controls which section of the events page this event appears in.
+    // 'hero'     → featured carousel at the top (max 2-3 events)
+    // 'upcoming' → upcoming events card grid
+    // 'regular'  → weekly regulars compact list (recurring rides)
+    // Past events (date < today) always appear in the archive regardless of this field.
+    displaySection: z.enum(['hero', 'upcoming', 'regular']).optional().default('upcoming'),
+    // featured is deprecated — use displaySection: 'hero' instead. Kept for parse compatibility.
+    featured: z.boolean().optional(),
   }).transform((data) => ({
     ...data,
     coverImage: data.coverImage || data.cover,

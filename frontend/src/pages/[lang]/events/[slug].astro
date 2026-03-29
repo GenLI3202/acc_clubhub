@@ -35,6 +35,17 @@ const registrationLabels: Record<string, string> = {
 
 // API URL from environment
 const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.vercel.app';
+
+// Disable registration for past events
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const isPastEvent = new Date(entry.data.date) < today;
+
+const endedLabels: Record<string, string> = {
+  zh: '该活动已结束，报名通道已关闭。',
+  en: 'This event has ended. Registration is closed.',
+  de: 'Diese Veranstaltung ist beendet. Die Anmeldung ist geschlossen.',
+};
 ---
 
 <ArticleLayout
@@ -66,7 +77,12 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.
   <Content />
 
   <!-- Registration Form: inline compact, before comments -->
-  {!entry.data.registrationLink && (
+  {isPastEvent && (
+    <div slot="before-comments" class="event-ended-notice">
+      {endedLabels[lang] ?? endedLabels.en}
+    </div>
+  )}
+  {!isPastEvent && !entry.data.registrationLink && (
     <div
       slot="before-comments"
       id="registration-container"

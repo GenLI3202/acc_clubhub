@@ -104,13 +104,26 @@ Events are managed entirely through the CMS — no SQL required.
 | `location` | ✅ | Shown in confirmation email |
 | `slug` | ✅ | URL path, e.g. `spring-classic-2026` |
 | `eventType` | ✅ | `social-ride` · `training-camp` · `race` · `workshop` |
+| `displaySection` | ✅ | Where this event appears on the events page — see table below |
 | `coverImage` | recommended | Path to hero image e.g. `/images/uploads/photo.jpg` |
-| `featured` | optional | `true` → appears in events page carousel hero |
 | `maxParticipants` | optional | Leave blank for unlimited |
 | `registrationDeadline` | optional | ISO date; registration form closes after this date |
 | `author` | optional | Defaults to `"ACC Club"` |
 
-**Carousel logic:** Events with `featured: true` (and `eventType ≠ social-ride`) appear in the hero carousel on the Events page, sorted by date. Set at most 2–3 events as featured at a time for best UX. Non-featured upcoming events appear in the **Upcoming** card grid below. Social rides always appear in the **Weekly Regulars** list regardless of `featured`.
+**`displaySection` values:**
+
+| Value | Where it appears | When to use |
+|-------|-----------------|-------------|
+| `hero` | Full-width carousel at the top of the events page | Flagship events only — keep to 2–3 max |
+| `upcoming` | Upcoming events card grid | Default for most events |
+| `regular` | Weekly Regulars compact list | Recurring social rides |
+
+> Past events (date < today) always appear in the **Past Archive** section regardless of `displaySection`.
+> Registration is automatically disabled on past events — no manual action needed.
+
+**`eventType`** controls the badge colour/label only (training-camp, race, workshop, social-ride). It is independent of `displaySection`.
+
+> **Template:** `frontend/src/content/events/_template.md` — copy this file when creating a new event.
 
 4. Save → Sveltia CMS commits to GitHub → Vercel rebuilds automatically (~2 min)
 
@@ -254,7 +267,31 @@ Key tokens:
 
 ---
 
-## 10. Planned Features (not yet implemented)
+## 10. Content Authoring Guide
+
+Each content collection has a `_template.md` that lists every available field with comments. **Copy the template** when creating new content — do not reverse-engineer from existing files.
+
+| Collection | Template path | URL pattern |
+|------------|--------------|-------------|
+| Events | `frontend/src/content/events/_template.md` | `/[lang]/events/[slug]` |
+| Gear knowledge | `frontend/src/content/knowledge/gear/_template.md` | `/[lang]/knowledge/gear/[slug]` |
+| Training knowledge | `frontend/src/content/knowledge/training/_template.md` | `/[lang]/knowledge/training/[slug]` |
+| Media | `frontend/src/content/media/_template.md` | `/[lang]/media/[slug]` |
+| Routes | `frontend/src/content/routes/_template.md` | `/[lang]/routes/[slug]` |
+
+### File naming
+
+- Use **kebab-case** for file names: `spring-classic-2026.md`
+- Multilingual content: create the same file in `zh/`, `en/`, and `de/` subdirectories with the same filename
+- The `slug` field in frontmatter must match across all language versions
+
+### Draft workflow
+
+Set `status: draft` to hide content from the live site without deleting it. Switch to `status: published` when ready. The CMS **draft** toggle maps to this field.
+
+---
+
+## 11. Planned Features (not yet implemented)
 
 - [ ] Auto-broadcast to subscribers when new event is published (Issue [#51](https://github.com/GenLI3202/acc_clubhub/issues/51))
 - [ ] Admin UI for subscriber management (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53))

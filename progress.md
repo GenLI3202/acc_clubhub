@@ -60,11 +60,16 @@
   - [x] `UpcomingEvents.astro` — card grid for non-featured upcoming non-social-ride events
   - [x] `WeeklyRegulars.astro` — compact list rows for recurring social-ride events
   - [x] `PastEvents.astro` — grayscale archive, colour on hover
-  - [x] `eventHelpers.ts` — pure functions: `getHeroEvent`, `splitEvents`, `getRegulars`
-  - [x] `featured` field added to events content schema (boolean, default false)
+  - [x] `eventHelpers.ts` — pure functions: `splitEvents`, `getRegulars`
+  - [x] `displaySection: hero|upcoming|regular` added to events schema; replaces `featured` boolean (Issue [#60](https://github.com/GenLI3202/acc_clubhub/issues/60))
   - [x] 4 dummy events added (zh/en/de): spring-classic-2026, stadtpark-social-april, wheel-workshop-may, isar-gravel-june
   - [x] Events `index.astro` rewritten: transparent header, hero slot, drops legacy EventsPage/FilterPanel
   - [x] Events page also uses transparent header with hero preload hint
+- [x] **Content Authoring Standards** (2026-03-30) — Issue [#60](https://github.com/GenLI3202/acc_clubhub/issues/60)
+  - [x] `displaySection` field replaces `featured` in events schema; all event md files backfilled
+  - [x] Past event registration gate: detail page shows "ended" notice instead of form for past events
+  - [x] `_template.md` added to all 5 content collections (events, gear, training, media, routes)
+  - [x] `MAINTENANCE.md` Section 10 added: content authoring guide with template reference table
 - [x] **Production Domain + Email Infrastructure** (2026-03-28)
   - [x] Registered `accross-cc.de` via IONOS (Domain-only plan)
   - [x] Custom domain live: `www.accross-cc.de` → Vercel frontend (DNS: A `216.198.79.1`, CNAME `www`)
@@ -116,8 +121,6 @@
 - [ ] E2E tests not yet written for registration flow — med
 - [ ] Android frame drops on Mechanical Knowledge section — high (Issue [#19](https://github.com/GenLI3202/acc_clubhub/issues/19))
 - [ ] HEIC image upload not supported — med (Issue [#13](https://github.com/GenLI3202/acc_clubhub/issues/13))
-- [ ] Filter cannot search by Author — med (Issue [#22](https://github.com/GenLI3202/acc_clubhub/issues/22))
-- [ ] Author field missing in CMS content creation — med (Issue [#8](https://github.com/GenLI3202/acc_clubhub/issues/8))
 - [ ] Dark mode (`prefers-color-scheme: dark`) not implemented — low (Issue [#55](https://github.com/GenLI3202/acc_clubhub/issues/55))
 
 ## Architecture Decisions
