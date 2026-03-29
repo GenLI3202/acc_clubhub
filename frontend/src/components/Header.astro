@@ -328,6 +328,22 @@ function getLangSwitchUrl(targetLang: Locale): string {
     color: var(--color-text-main);
   }
 
+  /* Search icon: white in transparent mode */
+  header.header-transparent :global(.global-search-trigger) {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  header.header-transparent :global(.global-search-trigger:hover) {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  header.header-transparent.header-scrolled :global(.global-search-trigger) {
+    color: var(--color-text-main);
+  }
+  header.header-transparent.header-scrolled :global(.global-search-trigger:hover) {
+    color: var(--color-primary);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
   .arrow-icon {
     width: 12px;
     height: 12px;
