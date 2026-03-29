@@ -100,12 +100,17 @@ Events are managed entirely through the CMS — no SQL required.
 | Field | Required | Notes |
 |-------|----------|-------|
 | `title` | ✅ | Event name (shown in form + emails) |
-| `date` | ✅ | ISO format e.g. `2025-08-15T09:00:00` |
+| `date` | ✅ | ISO format e.g. `2026-04-19` |
 | `location` | ✅ | Shown in confirmation email |
-| `slug` | ✅ | URL path, e.g. `summer-alps-2025` |
-| `eventType` | ✅ | e.g. `social-ride`, `training-camp`, `race` |
+| `slug` | ✅ | URL path, e.g. `spring-classic-2026` |
+| `eventType` | ✅ | `social-ride` · `training-camp` · `race` · `workshop` |
+| `coverImage` | recommended | Path to hero image e.g. `/images/uploads/photo.jpg` |
+| `featured` | optional | `true` → appears in events page carousel hero |
 | `maxParticipants` | optional | Leave blank for unlimited |
-| `registrationDeadline` | optional | ISO format; form closes after this date |
+| `registrationDeadline` | optional | ISO date; registration form closes after this date |
+| `author` | optional | Defaults to `"ACC Club"` |
+
+**Carousel logic:** Events with `featured: true` (and `eventType ≠ social-ride`) appear in the hero carousel on the Events page, sorted by date. Set at most 2–3 events as featured at a time for best UX. Non-featured upcoming events appear in the **Upcoming** card grid below. Social rides always appear in the **Weekly Regulars** list regardless of `featured`.
 
 4. Save → Sveltia CMS commits to GitHub → Vercel rebuilds automatically (~2 min)
 
@@ -225,9 +230,33 @@ Emails sent automatically:
 
 ---
 
-## 9. Planned Features (not yet implemented)
+## 9. Frontend Design System
 
-- [ ] Auto-broadcast to subscribers when new event is published
-- [ ] Admin UI for subscriber management
-- [ ] Event UI redesign (featured events hero, weekly regulars grid)
+The site uses a **hand-rolled CSS custom-property system** (no Tailwind). All design tokens live in:
+
+```
+frontend/src/styles/variables.css   ← all tokens (colours, spacing, radius, shadows)
+frontend/src/styles/global.css      ← base resets + shared layout classes
+frontend/src/styles/components/     ← buttons.css, cards.css
+```
+
+Key tokens:
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-accent` | `#C62828` | Wine-red primary CTA colour |
+| `--color-accent-dark` | `#a81f1f` | Hover state for accent |
+| `--color-bg-canvas` | `#FFFFFF` | Page background |
+| `--color-primary` | `#1A1A1A` | Dark text / dark backgrounds |
+| `--color-border` | `#E5E7EB` | Dividers, card borders |
+
+**Transparent header:** Pages pass `headerTransparent={true}` to `BaseLayout`. The header uses `position: fixed` and `background: transparent` until the user scrolls 40px, then transitions to white with blur. Currently used on: homepage (`/[lang]/index.astro`) and events index (`/[lang]/events/index.astro`).
+
+---
+
+## 10. Planned Features (not yet implemented)
+
+- [ ] Auto-broadcast to subscribers when new event is published (Issue [#51](https://github.com/GenLI3202/acc_clubhub/issues/51))
+- [ ] Admin UI for subscriber management (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53))
+- [ ] Dark mode (`prefers-color-scheme: dark`) (Issue [#55](https://github.com/GenLI3202/acc_clubhub/issues/55))
 - [ ] Phase 4.4 — Authentication

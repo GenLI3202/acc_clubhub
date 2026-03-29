@@ -23,7 +23,7 @@
 ## Completed Features
 
 - [x] **Layer 1 — Base Setup**: Astro project scaffold, basic routing, Vercel deployment
-- [x] **Layer 2 — Design & Polish**: TailwindCSS design system, responsive layout, typography
+- [x] **Layer 2 — Design & Polish**: CSS custom-property design system, responsive layout, typography
 - [x] **Layer 3 — CMS + i18n**
   - [x] Sveltia CMS integration with GitHub OAuth (`/admin`)
   - [x] Content collections: Media, Knowledge (Gear/Training), Routes
@@ -47,6 +47,24 @@
   - [x] `lang` passed in RSVP POST body so backend sends emails in correct language
   - [x] German email templates added to `email.py` (confirmation + waitlist)
   - [x] `_ensure_subscriber` now receives `lang` from RSVP flow
+- [x] **Phase A — Global Style Refresh** (2026-03-29)
+  - [x] New Rapha-inspired palette: wine red `#C62828` accent, clean white canvas, full design token system in `variables.css`
+  - [x] Removed all skew transforms (`--angle-motion: 0deg`) and hard-edge drop shadows site-wide
+  - [x] Transparent → white scroll header: `position: fixed` in transparent mode, smooth backdrop-filter transition
+  - [x] Homepage hero: full-viewport photo, dark gradient overlay, club name + tagline + CTA
+  - [x] Tokens propagated to Footer, Masonry, FilterComponents, SearchBar, ArticleLayout, EventRegistrationForm
+  - [x] Search icon white in transparent header mode
+  - [x] Language switcher converted to click-toggle (no more hover-gap dismissal bug)
+- [x] **Phase B — Events Three-Layer Redesign** (2026-03-29)
+  - [x] `EventHero.astro` — full-width carousel, bare SVG chevron arrows at content edges, dots centred bottom
+  - [x] `UpcomingEvents.astro` — card grid for non-featured upcoming non-social-ride events
+  - [x] `WeeklyRegulars.astro` — compact list rows for recurring social-ride events
+  - [x] `PastEvents.astro` — grayscale archive, colour on hover
+  - [x] `eventHelpers.ts` — pure functions: `getHeroEvent`, `splitEvents`, `getRegulars`
+  - [x] `featured` field added to events content schema (boolean, default false)
+  - [x] 4 dummy events added (zh/en/de): spring-classic-2026, stadtpark-social-april, wheel-workshop-may, isar-gravel-june
+  - [x] Events `index.astro` rewritten: transparent header, hero slot, drops legacy EventsPage/FilterPanel
+  - [x] Events page also uses transparent header with hero preload hint
 - [x] **Production Domain + Email Infrastructure** (2026-03-28)
   - [x] Registered `accross-cc.de` via IONOS (Domain-only plan)
   - [x] Custom domain live: `www.accross-cc.de` → Vercel frontend (DNS: A `216.198.79.1`, CNAME `www`)
@@ -84,11 +102,6 @@
   - [ ] Simple read-only web UI — no SQL editor required
   - [ ] Protected by admin token
 
-- [ ] **Phase 4.3.2 — Event UI Redesign** (`docs/rebuild_plan/phase_4_3_2_event_ui.md`)
-  - [ ] Featured events hero section
-  - [ ] Weekly regulars card grid
-  - [ ] Responsive design improvements
-
 - [ ] **Phase 4.4 — Authentication** (future)
 - [ ] **Phase 4.2.2 — WeChat Integration** (`docs/rebuild_plan/future_add_on/phase_4_2_2_wechat_plan.md`)
 
@@ -105,7 +118,7 @@
 - [ ] HEIC image upload not supported — med (Issue [#13](https://github.com/GenLI3202/acc_clubhub/issues/13))
 - [ ] Filter cannot search by Author — med (Issue [#22](https://github.com/GenLI3202/acc_clubhub/issues/22))
 - [ ] Author field missing in CMS content creation — med (Issue [#8](https://github.com/GenLI3202/acc_clubhub/issues/8))
-- [ ] Contact email missing from Privacy Policy / About Us — low (Issue [#39](https://github.com/GenLI3202/acc_clubhub/issues/39))
+- [ ] Dark mode (`prefers-color-scheme: dark`) not implemented — low (Issue [#55](https://github.com/GenLI3202/acc_clubhub/issues/55))
 
 ## Architecture Decisions
 
@@ -121,3 +134,5 @@
 | CMS as single source of truth for events (AD #10) | Markdown frontmatter drives event metadata; DB only stores RSVP interaction data; backend auto-creates event on first registration — eliminates manual SQL per new event | 2026-03-27 |
 | Resend subdomain `events.accross-cc.de` for transactional email (AD #11) | Subdomain isolates email reputation from root domain; verified via IONOS DNS; pg8000 SSL fixed by stripping libpq URL params and using `connect_args={"ssl_context": ...}` | 2026-03-28 |
 | English-only confirmation emails (AD #12) | Single language avoids partial-translation issues; English works across all user locales; UI language does not affect email language | 2026-03-28 |
+| Hand-rolled CSS over Tailwind (AD #13) | Full control over design tokens; no purge/JIT edge cases; CSS custom properties shared across Astro + Preact components without extra tooling | 2026-03-29 |
+| Events carousel: `featured` flag in frontmatter (AD #14) | CMS editors control which events appear in the hero carousel via a boolean field; no code change needed to promote/demote an event | 2026-03-29 |
