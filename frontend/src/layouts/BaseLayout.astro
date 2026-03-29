@@ -7,9 +7,10 @@ import type { Locale } from '../lib/i18n';
 interface Props {
   title: string;
   lang?: Locale;
+  headerTransparent?: boolean;
 }
 
-const { title, lang = 'zh' } = Astro.props;
+const { title, lang = 'zh', headerTransparent = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,7 +22,8 @@ const { title, lang = 'zh' } = Astro.props;
     <link rel="icon" type="image/jpeg" href="/images/red_logo.png" />
   </head>
   <body>
-    <Header lang={lang} />
+    <Header lang={lang} transparent={headerTransparent} />
+    <slot name="hero" />
     <main>
       <slot />
     </main>

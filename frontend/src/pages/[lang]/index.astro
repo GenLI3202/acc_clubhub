@@ -1,130 +1,273 @@
 ---
 // src/pages/[lang]/index.astro
-// 多语言首页
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
+
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
 }
+
 const { lang } = Astro.params as { lang: Locale };
+
+const tagline =
+  lang === 'zh' ? '慕尼黑骑行社群，自由骑行，一路同行。'
+  : lang === 'de' ? 'Münchner Radsportgemeinschaft. Frei fahren, gemeinsam weiter.'
+  : 'Munich cycling community. Ride free, ride together.';
+
+const ctaLabel =
+  lang === 'zh' ? '加入下次骑行 →'
+  : lang === 'de' ? 'Nächste Ausfahrt →'
+  : 'Join Next Ride →';
+
 const sections = [
   {
-    title: lang === 'zh' ? '慕城<br/>日常' : lang === 'de' ? 'Münchner<br/>Alltag' : 'Munich<br/>Daily',
+    label: lang === 'zh' ? '活动' : lang === 'de' ? 'Events' : 'Events',
+    href: `/${lang}/events`,
+    icon: '🚴',
+  },
+  {
+    label: lang === 'zh' ? '媒体' : lang === 'de' ? 'Medien' : 'Media',
+    href: `/${lang}/media`,
+    icon: '🎬',
+  },
+  {
+    label: lang === 'zh' ? '装备' : lang === 'de' ? 'Ausrüstung' : 'Gear',
+    href: `/${lang}/knowledge/gear`,
+    icon: '🔧',
+  },
+  {
+    label: lang === 'zh' ? '训练' : lang === 'de' ? 'Training' : 'Training',
+    href: `/${lang}/knowledge/training`,
+    icon: '📊',
+  },
+  {
+    label: lang === 'zh' ? '路线' : lang === 'de' ? 'Routen' : 'Routes',
+    href: `/${lang}/routes`,
+    icon: '🗺️',
+  },
+];
+
+const sectionDetails = [
+  {
+    title: lang === 'zh' ? '慕城日常' : lang === 'de' ? 'Münchner Alltag' : 'Munich Daily',
     href: `/${lang}/events`,
     description:
-      lang === 'zh'
-        ? 'Social Ride、Training Day、活动报名'
-        : lang === 'de'
-          ? 'Social Ride, Training Day, Anmeldung'
-          : 'Social Ride, Training Day, Registration',
-    emoji: '🚴',
+      lang === 'zh' ? 'Social Ride、Training Day、活动报名'
+      : lang === 'de' ? 'Social Ride, Training Day, Anmeldung'
+      : 'Social Ride, Training Day, Registration',
   },
   {
-    title: lang === 'zh' ? '车影<br/>骑踪' : lang === 'de' ? 'Medien<br/>Archiv' : 'Media<br/>Archive',
+    title: lang === 'zh' ? '车影骑踪' : lang === 'de' ? 'Medien Archiv' : 'Media Archive',
     href: `/${lang}/media`,
     description:
-      lang === 'zh'
-        ? '影像资料、骑友访谈、翻山越岭记录'
-        : lang === 'de'
-          ? 'Videos, Interviews, Bergabenteuer'
-          : 'Videos, Interviews, Mountain Adventures',
-    emoji: '🎬',
+      lang === 'zh' ? '影像资料、骑友访谈、翻山越岭记录'
+      : lang === 'de' ? 'Videos, Interviews, Bergabenteuer'
+      : 'Videos, Interviews, Mountain Adventures',
   },
   {
-    title: lang === 'zh' ? '器械<br/>知识' : lang === 'de' ? 'Ausrüst-<br/>ung' : 'Gear<br/>Guide',
+    title: lang === 'zh' ? '器械知识' : lang === 'de' ? 'Ausrüstung' : 'Gear Guide',
     href: `/${lang}/knowledge/gear`,
     description:
-      lang === 'zh'
-        ? '购车指南、维修 Workshop、新品解读'
-        : lang === 'de'
-          ? 'Kaufberatung, Workshops, Neuheiten'
-          : 'Buying Guide, Workshops, New Products',
-    emoji: '🔧',
+      lang === 'zh' ? '购车指南、维修 Workshop、新品解读'
+      : lang === 'de' ? 'Kaufberatung, Workshops, Neuheiten'
+      : 'Buying Guide, Workshops, New Products',
   },
   {
-    title: lang === 'zh' ? '科学<br/>训练' : lang === 'de' ? 'Wissen-<br/>schaft' : 'Science<br/>Training',
+    title: lang === 'zh' ? '科学训练' : lang === 'de' ? 'Wissenschaft' : 'Science Training',
     href: `/${lang}/knowledge/training`,
     description:
-      lang === 'zh'
-        ? '训练方法论、安全科普'
-        : lang === 'de'
-          ? 'Trainingsmethoden, Sicherheit'
-          : 'Training Methods, Safety Tips',
-    emoji: '📊',
+      lang === 'zh' ? '训练方法论、安全科普'
+      : lang === 'de' ? 'Trainingsmethoden, Sicherheit'
+      : 'Training Methods, Safety Tips',
   },
   {
-    title: lang === 'zh' ? '骑行<br/>路线库' : lang === 'de' ? 'Routen-<br/>datenbank' : 'Route<br/>Database',
+    title: lang === 'zh' ? '骑行路线库' : lang === 'de' ? 'Routendatenbank' : 'Route Database',
     href: `/${lang}/routes`,
     description:
-      lang === 'zh'
-        ? '可搜索路线数据库、Strava/Komoot 链接'
-        : lang === 'de'
-          ? 'Suchbare Routen, Strava/Komoot Links'
-          : 'Searchable Routes, Strava/Komoot Links',
-    emoji: '🗺️',
+      lang === 'zh' ? '可搜索路线数据库、Strava/Komoot 链接'
+      : lang === 'de' ? 'Suchbare Routen, Strava/Komoot Links'
+      : 'Searchable Routes, Strava/Komoot Links',
   },
 ];
 ---
-<BaseLayout title={t(lang, 'nav.home')} lang={lang}>
-  <section class="sections-hub">
-    <div class="hub-grid">
-      {sections.map((section) => (
-        <a href={section.href} class="hub-card">
-          {/* <span class="hub-card-emoji">{section.emoji}</span> */}
-          <h3 set:html={section.title} />
-          <p>{section.description}</p>
-        </a>
-      ))}
+
+<BaseLayout title={t(lang, 'nav.home')} lang={lang} headerTransparent={true}>
+
+  <!-- Hero: full-width, breaks out of main's max-width -->
+  <section slot="hero" class="homepage-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Across Cycling Club · München</p>
+      <h1 class="hero-title">ACC ClubHub</h1>
+      <p class="hero-tagline">{tagline}</p>
+      <a href={`/${lang}/events`} class="hero-cta">{ctaLabel}</a>
     </div>
   </section>
-  <section class="hero">
-    <img src="/images/transparent_red_logo.png" alt="ACC ClubHub" class="hero-logo" />
-    <span class="status-badge status-badge--coming">
-      {lang === 'zh' ? 'Beta 建设中' : lang === 'de' ? 'Beta in Entwicklung' : 'Beta Under Construction'}
-    </span>
-  </section>
+
+  <!-- Section nav strip -->
+  <nav class="section-nav" aria-label="Site sections">
+    {sections.map((s) => (
+      <a href={s.href} class="section-nav-item">
+        <span class="section-nav-icon">{s.icon}</span>
+        <span class="section-nav-label">{s.label}</span>
+      </a>
+    ))}
+  </nav>
+
+  <!-- Section cards grid -->
+  <div class="hub-grid">
+    {sectionDetails.map((section) => (
+      <a href={section.href} class="hub-card">
+        <h3>{section.title}</h3>
+        <p>{section.description}</p>
+      </a>
+    ))}
+  </div>
+
 </BaseLayout>
+
 <style>
-  .hero {
-    text-align: center;
-    padding: var(--space-xl) 0 var(--space-lg);
-  }
-  .hero-logo {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vh; /* Very large relative to viewport height */
-    max-width: 80vw;
-    height: auto;
-    opacity: 0.9; /* 0.1 = Very subtle, 1 = Solid */
-    z-index: -1; /* Behind content but above background */
-    pointer-events: none;
-    mix-blend-mode: multiply; /* Other options: screen, overlay, difference, multiply, etc.*/
-  }
-  .hero .status-badge {
+  /* ---- Hero ---- */
+  .homepage-hero {
     position: relative;
-    top: 40px;
+    width: 100%;
+    height: 85vh;
+    min-height: 480px;
+    max-height: 760px;
+    overflow: hidden;
+    background-image: url('/images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg');
+    background-size: cover;
+    background-position: center 40%;
+    display: flex;
+    align-items: flex-end;
   }
-  /* H1 is removed, but we keep the style block clean */
-  .hero-subtitle {
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.35) 50%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 2rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-tagline {
     font-family: var(--font-body);
-    font-size: 1.15rem;
-    color: #666;
-    margin-top: var(--space-sm);
-    margin-bottom: var(--space-md);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 2rem;
+    max-width: 480px;
+    line-height: 1.5;
   }
-  .sections-hub {
-    margin-top: 270px; /* Moved down by ~half card width */
-  }
-  .sections-hub h2 {
-    margin-bottom: var(--space-sm);
-  }
-  .sections-hub h2::after {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 3px;
+
+  .hero-cta {
+    display: inline-block;
     background: var(--color-accent);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-cta:hover {
+    background: #a81f1f;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  /* ---- Section nav strip ---- */
+  .section-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-canvas);
+    position: sticky;
+    top: 64px; /* below header */
+    z-index: 50;
+  }
+
+  .section-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.9rem 1.5rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .section-nav-item:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .section-nav-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  @media (max-width: 600px) {
+    .section-nav-item {
+      padding: 0.75rem 0.75rem;
+      font-size: 0.7rem;
+    }
+    .section-nav-icon { font-size: 1.1rem; }
+  }
+
+  /* ---- Hub grid spacing ---- */
+  :global(.hub-grid) {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
   }
 </style>
