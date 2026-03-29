@@ -262,8 +262,9 @@ function formatDate(dateStr: string): string {
     transition: background var(--transition-fast), border-color var(--transition-fast);
     backdrop-filter: blur(6px);
   }
-  .hero-arrow--prev { left: 1.5rem; }
-  .hero-arrow--next { right: 1.5rem; }
+  /* Align with content edges (max-width 960px → half = 480px, arrows sit ~32px outside) */
+  .hero-arrow--prev { left: max(0.75rem, calc(50% - 512px)); }
+  .hero-arrow--next { right: max(0.75rem, calc(50% - 512px)); }
   .hero-arrow:hover {
     background: rgba(255,255,255,0.28);
     border-color: rgba(255,255,255,0.6);
