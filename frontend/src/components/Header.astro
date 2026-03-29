@@ -21,7 +21,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
 <header class:list={[{ 'header-transparent': transparent }]}>
   <nav>
     <a href={`/${lang}`} class="logo">
-      <img src="/images/red_logo.png" alt="ACC ClubHub" width="40" height="40" />
+      <img src="/images/transparent_red_logo.png" alt="ACC ClubHub" width="40" height="40" />
       <span>ACC ClubHub</span>
     </a>
 
@@ -107,15 +107,22 @@ function getLangSwitchUrl(targetLang: Locale): string {
     transition: background var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
   }
 
-  /* Transparent mode: clear on top of hero */
+  /* Transparent mode: fixed so hero slides behind it */
   header.header-transparent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background: transparent;
+    backdrop-filter: none;
     border-bottom-color: transparent;
+    box-shadow: none;
   }
 
   /* After scrolling: fade in white */
   header.header-transparent.header-scrolled {
     background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(12px);
     border-bottom-color: var(--color-border);
     box-shadow: var(--shadow-sm);
   }

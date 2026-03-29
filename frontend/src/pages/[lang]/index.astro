@@ -21,8 +21,6 @@ const ctaLabel =
 
 const sections = [
   {
-    icon: '🚴',
-    label: lang === 'zh' ? '活动' : lang === 'de' ? 'Events' : 'Events',
     title: lang === 'zh' ? '慕城日常' : lang === 'de' ? 'Münchner Alltag' : 'Munich Daily',
     href: `/${lang}/events`,
     description:
@@ -31,8 +29,6 @@ const sections = [
       : 'Social Ride, Training Day, Registration',
   },
   {
-    icon: '🎬',
-    label: lang === 'zh' ? '媒体' : lang === 'de' ? 'Medien' : 'Media',
     title: lang === 'zh' ? '车影骑踪' : lang === 'de' ? 'Medien Archiv' : 'Media Archive',
     href: `/${lang}/media`,
     description:
@@ -41,8 +37,6 @@ const sections = [
       : 'Videos, Interviews, Mountain Adventures',
   },
   {
-    icon: '🔧',
-    label: lang === 'zh' ? '装备' : lang === 'de' ? 'Ausrüstung' : 'Gear',
     title: lang === 'zh' ? '器械知识' : lang === 'de' ? 'Ausrüstung' : 'Gear Guide',
     href: `/${lang}/knowledge/gear`,
     description:
@@ -51,8 +45,6 @@ const sections = [
       : 'Buying Guide, Workshops, New Products',
   },
   {
-    icon: '📊',
-    label: lang === 'zh' ? '训练' : lang === 'de' ? 'Training' : 'Training',
     title: lang === 'zh' ? '科学训练' : lang === 'de' ? 'Wissenschaft' : 'Science Training',
     href: `/${lang}/knowledge/training`,
     description:
@@ -61,8 +53,6 @@ const sections = [
       : 'Training Methods, Safety Tips',
   },
   {
-    icon: '🗺️',
-    label: lang === 'zh' ? '路线' : lang === 'de' ? 'Routen' : 'Routes',
     title: lang === 'zh' ? '骑行路线库' : lang === 'de' ? 'Routendatenbank' : 'Route Database',
     href: `/${lang}/routes`,
     description:
@@ -85,16 +75,6 @@ const sections = [
       <a href={`/${lang}/events`} class="hero-cta">{ctaLabel}</a>
     </div>
   </section>
-
-  <!-- Section nav strip -->
-  <nav class="section-nav" aria-label="Site sections">
-    {sections.map((s) => (
-      <a href={s.href} class="section-nav-item">
-        <span class="section-nav-icon">{s.icon}</span>
-        <span class="section-nav-label">{s.label}</span>
-      </a>
-    ))}
-  </nav>
 
   <!-- Section cards grid -->
   <div class="hub-grid">
@@ -195,56 +175,6 @@ const sections = [
     box-shadow: var(--shadow-lg);
     color: #ffffff;
     text-decoration: none;
-  }
-
-  /* ---- Section nav strip ---- */
-  .section-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-bg-canvas);
-    position: sticky;
-    top: 64px; /* below header */
-    z-index: 50;
-  }
-
-  .section-nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.9rem 1.5rem;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 2px solid transparent;
-    transition: color var(--transition-fast), border-color var(--transition-fast);
-    white-space: nowrap;
-  }
-
-  .section-nav-item:hover {
-    color: var(--color-accent);
-    border-bottom-color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .section-nav-icon {
-    font-size: 1.25rem;
-    line-height: 1;
-  }
-
-  @media (max-width: 600px) {
-    .section-nav-item {
-      padding: 0.75rem 0.75rem;
-      font-size: 0.7rem;
-    }
-    .section-nav-icon { font-size: 1.1rem; }
   }
 
   /* ---- Hub grid spacing ---- */
