@@ -223,17 +223,7 @@ def callback(
     Handle GitHub OAuth callback.
     Exchanges code for token, verifies user is collaborator, creates session.
     """
-    # Determine redirect URL from state
     redirect_to = "/dashboard/events"
-    try:
-        parts = state.split(".")
-        if len(parts) == 3:
-            timestamp = int(parts[1])
-            if time.time() - timestamp <= STATE_EXPIRY_MINUTES * 60:
-                # Reconstruct to verify
-                pass  # state already contains redirect_url embedded
-    except (ValueError, jwt.PyJWTError):
-        pass  # Use default
 
     if not _verify_state_token(state):
         raise HTTPException(status_code=400, detail="Invalid or expired state parameter")
