@@ -58,16 +58,16 @@ def _create_state_token(redirect_url: str = "/dashboard/events") -> str:
     secret = _get_session_secret()
     random_part = secrets.token_urlsafe(32)
     timestamp = int(time.time())
-    data = f"{random_part}.{timestamp}.{redirect_url}"
+    data = f"{random_part}|{timestamp}|{redirect_url}"
     signature = jwt.encode({"data": data}, secret, algorithm=JWT_ALGORITHM)
-    # Combine: random_part.timestamp.signature
-    return f"{random_part}.{timestamp}.{signature}"
+    # Use | as separator since JWT tokens contain dots
+    return f"{random_part}|{timestamp}|{signature}"
 
 
 def _verify_state_token(state: str, redirect_url: str = "/dashboard/events") -> bool:
     """Verify and consume a state token (single-use)."""
     try:
-        parts = state.split(".")
+        parts = state.split("|")
         if len(parts) != 3:
             return False
         random_part, timestamp_str, signature = parts
@@ -78,7 +78,7 @@ def _verify_state_token(state: str, redirect_url: str = "/dashboard/events") -> 
             return False
 
         # Reconstruct and verify signature
-        data = f"{random_part}.{timestamp}.{redirect_url}"
+        data = f"{random_part}|{timestamp}|{redirect_url}"
         secret = _get_session_secret()
         payload = jwt.decode(signature, secret, algorithms=[JWT_ALGORITHM])
         return payload.get("data") == data
