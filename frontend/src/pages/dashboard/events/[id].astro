@@ -273,7 +273,8 @@ const statusClass: Record<string, string> = {
                       {rsvp.status !== "cancelled" && (
                         <button
                           class="cancel-btn"
-                          onclick={`cancelRsvp(${rsvp.id}, '${rsvp.name}')`}
+                          data-rsvp-id={rsvp.id}
+                          data-rsvp-name={rsvp.name}
                           id={`cancel-btn-${rsvp.id}`}
                         >
                           Cancel
@@ -290,16 +291,15 @@ const statusClass: Record<string, string> = {
     </div>
 
     <script define:vars={{ apiUrl, id }}>
-      async function cancelRsvp(rsvpId, rsvpName) {
+      async function cancelRsvp(rsvpId, rsvpName, btn) {
         if (!confirm(`Cancel RSVP for ${rsvpName}?`)) return;
-        const btn = document.getElementById(`cancel-btn-${rsvpId}`);
-        if (btn) btn.disabled = true;
+        btn.disabled = true;
         try {
           const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvp/cancel`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rsvp_id: rsvpId }),
+            body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
           });
           if (res.ok) {
             const row = document.getElementById(`rsvp-${rsvpId}`);
@@ -310,19 +310,22 @@ const statusClass: Record<string, string> = {
                 badge.textContent = "cancelled";
               }
             }
-            if (btn) {
-              btn.style.display = "none";
-            }
+            btn.style.display = "none";
           } else {
             alert("Failed to cancel RSVP");
-            if (btn) btn.disabled = false;
+            btn.disabled = false;
           }
         } catch (e) {
           alert("Error: " + e.message);
-          if (btn) btn.disabled = false;
+          btn.disabled = false;
         }
       }
-      window.cancelRsvp = cancelRsvp;
+
+      document.querySelectorAll(".cancel-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          cancelRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
+        });
+      });
     </script>
   </body>
 </html>
