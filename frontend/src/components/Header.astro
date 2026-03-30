@@ -95,7 +95,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
 )}
 
 <script>
-  // Language dropdown: click-toggle so mouse movement can't accidentally close it
+  // Language dropdown: click-toggle
   const dropdown = document.querySelector('.lang-dropdown');
   const toggle = dropdown?.querySelector('.lang-toggle');
   if (dropdown && toggle) {
@@ -103,7 +103,13 @@ function getLangSwitchUrl(targetLang: Locale): string {
       e.stopPropagation();
       dropdown.classList.toggle('open');
     });
-    document.addEventListener('click', () => dropdown.classList.remove('open'));
+    // Close when clicking outside — use contains() so Preact event delegation
+    // on hydrated pages can't cause a same-tick close of the dropdown
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target as Node)) {
+        dropdown.classList.remove('open');
+      }
+    });
   }
 
   // Save language preference when user switches
