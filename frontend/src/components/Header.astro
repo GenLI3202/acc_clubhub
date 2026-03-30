@@ -67,6 +67,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
             <a
               href={getLangSwitchUrl(l)}
               class:list={['lang-link', { active: l === lang }]}
+              data-lang={l}
             >
               {l.toUpperCase()}
             </a>
@@ -105,6 +106,16 @@ function getLangSwitchUrl(targetLang: Locale): string {
     });
     document.addEventListener('click', () => dropdown.classList.remove('open'));
   }
+
+  // Save language preference when user switches
+  document.querySelectorAll('.lang-link[data-lang]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const lang = (link as HTMLAnchorElement).dataset.lang;
+      if (lang) {
+        try { localStorage.setItem('acc-locale', lang); } catch (e) {}
+      }
+    });
+  });
 
   // Mobile nav: add .nav-open to <header> when checkbox is checked
   // (fallback for browsers without :has() support)
