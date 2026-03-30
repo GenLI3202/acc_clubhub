@@ -5,6 +5,7 @@ Phase 4.3.4: Admin dashboard API endpoints (JWT protected)
 
 import csv
 import io
+import traceback
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -13,6 +14,28 @@ from models import Event, RSVP
 from routes.auth import get_current_admin
 
 router = APIRouter()
+
+
+# ── TEMP: Debug endpoint (remove after fixing) ──────────────
+@router.get("/api/admin/debug-events")
+def debug_events(db: Session = Depends(get_db)) -> dict:
+    """Temporary: reproduce the ProgrammingError without auth."""
+    try:
+        events = db.query(Event).order_by(Event.event_date.desc()).all()
+        event_count = len(events)
+
+        # Try the RSVP count query that admin endpoint uses
+        rsvp_test = None
+        if events:
+            first = events[0]
+            rsvp_test = db.query(RSVP).filter(
+                RSVP.event_id == first.id,
+                RSVP.status == "confirmed",
+            ).count()
+
+        return {"event_count": event_count, "rsvp_test": rsvp_test}
+    except Exception as e:
+        return {"error": type(e).__name__, "detail": str(e), "trace": traceback.format_exc()}
 
 
 # ── Admin Event List ──────────────────────────────────────────
