@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 // src/pages/[lang]/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
@@ -62,6 +63,7 @@ const sections = [
   },
 ];
 ---
+export const prerender = true;
 
 <BaseLayout title={t(lang, 'nav.home')} lang={lang} headerTransparent={true} heroImagePreload="/images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg">
 

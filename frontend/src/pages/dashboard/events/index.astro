@@ -4,10 +4,11 @@ export const prerender = false;
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
-// Verify authentication (redirect to login if not authenticated)
+// Verify authentication — forward browser cookies to backend
+const cookie = Astro.request.headers.get("cookie") || "";
 try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
-    credentials: "include",
+    headers: { cookie },
   });
   if (!meRes.ok) {
     return Astro.redirect("/dashboard/login");
@@ -22,7 +23,7 @@ let fetchError = null;
 
 try {
   const res = await fetch(`${apiUrl}/api/admin/events`, {
-    credentials: "include",
+    headers: { cookie },
   });
   if (res.ok) {
     events = await res.json();

@@ -4,13 +4,14 @@ export const prerender = false;
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
-// Verify authentication
+// Verify authentication — forward browser cookies to backend
+const cookie = Astro.request.headers.get("cookie") || "";
 let adminUser = null;
 let authError = null;
 
 try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
-    credentials: "include",
+    headers: { cookie },
   });
   if (meRes.ok) {
     adminUser = await meRes.json();
