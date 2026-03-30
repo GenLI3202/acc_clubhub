@@ -93,6 +93,7 @@ class RSVP(Base):
     status = Column(String(20), default="confirmed", index=True)
     notes = Column(Text, nullable=True)
     privacy_accepted = Column(Boolean, default=False)
+    view_token = Column(String(64), nullable=True, index=True)
     created_at = Column(
         DateTime(timezone=True), default=_utcnow, index=True,
     )

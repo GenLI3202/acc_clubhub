@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from config import settings, get_allowed_origins
-from routes import events, rsvp
+from routes import events, rsvp, auth, admin
 
 app = FastAPI(
     title="ACC ClubHub API",
@@ -95,3 +95,5 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
 # ============================================================
 app.include_router(events.router, tags=["Events"])
 app.include_router(rsvp.router, tags=["RSVP & Subscription"])
+app.include_router(auth.router, tags=["Authentication"])
+app.include_router(admin.router, tags=["Admin"])

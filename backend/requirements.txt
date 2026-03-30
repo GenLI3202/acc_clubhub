@@ -17,5 +17,8 @@ python-dotenv>=1.0.0
 httpx>=0.25.1
 resend>=0.8.0
 
+# JWT Authentication
+PyJWT>=2.8.0
+
 # Form parsing
 python-multipart>=0.0.6

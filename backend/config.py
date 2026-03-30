@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     # Email Service (Resend) - for confirmations & notifications
     RESEND_API_KEY: Optional[str] = None
 
+    # Frontend URL (for email links)
+    PUBLIC_FRONTEND_URL: str = "https://www.accross-cc.de"
+
+    # Admin Authentication (GitHub OAuth)
+    ADMIN_SESSION_SECRET: Optional[str] = None
+    GITHUB_CLIENT_ID: Optional[str] = None
+    GITHUB_CLIENT_SECRET: Optional[str] = None
+
     # CORS Configuration
     ALLOWED_ORIGINS: str = "*"
 
