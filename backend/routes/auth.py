@@ -93,10 +93,11 @@ def get_github_auth_url(redirect_url: str = "/dashboard/events") -> str:
     client_id = _get_github_client_id()
     state = _create_state_token(redirect_url)
     scope = "read:user"
+    frontend_url = settings.PUBLIC_FRONTEND_URL.rstrip("/")
     return (
         f"{GITHUB_AUTH_URL}"
         f"?client_id={client_id}"
-        f"&redirect_uri=https://www.accross-cc.de/auth/callback"
+        f"&redirect_uri={frontend_url}/auth/callback"
         f"&scope={scope}"
         f"&state={state}"
     )
