@@ -272,9 +272,9 @@ def me(current_admin: dict = Depends(get_current_admin)) -> dict:
     }
 
 
-@router.post("/auth/logout")
-def logout(response: Response) -> dict:
-    """Clear the admin session cookie."""
+@router.get("/auth/logout")
+def logout() -> RedirectResponse:
+    """Clear the admin session cookie and redirect to login."""
     response = RedirectResponse(url="/dashboard/login", status_code=302)
     response.delete_cookie(key="admin_session")
-    return {"success": True, "message": "Logged out"}
+    return response

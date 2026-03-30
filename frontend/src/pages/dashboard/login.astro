@@ -8,7 +8,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.
 try {
   const cookie = Astro.request.headers.get("cookie") || "";
   const meRes = await fetch(`${apiUrl}/auth/me`, {
-    headers: { cookie },
+    headers: { "Cookie": cookie },
   });
   if (meRes.ok) {
     return Astro.redirect("/dashboard/events");

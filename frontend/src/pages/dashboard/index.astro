@@ -11,7 +11,7 @@ let authError = null;
 
 try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
-    headers: { cookie },
+    headers: { "Cookie": cookie },
   });
   if (meRes.ok) {
     adminUser = await meRes.json();

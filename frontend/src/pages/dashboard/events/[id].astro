@@ -9,7 +9,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.
 const cookie = Astro.request.headers.get("cookie") || "";
 try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
-    headers: { cookie },
+    headers: { "Cookie": cookie },
   });
   if (!meRes.ok) {
     return Astro.redirect("/dashboard/login");
@@ -24,7 +24,7 @@ let fetchError = null;
 
 try {
   const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvps`, {
-    headers: { cookie },
+    headers: { "Cookie": cookie },
   });
   if (res.ok) {
     eventData = await res.json();
@@ -234,7 +234,7 @@ const statusClass: Record<string, string> = {
 
           <div class="actions">
             <a
-              href={`${apiUrl}/api/admin/events/${id}/rsvps.csv`}
+              href={`/api/admin/events/${id}/rsvps.csv`}
               class="action-btn secondary"
               download
             >
@@ -291,12 +291,12 @@ const statusClass: Record<string, string> = {
       )}
     </div>
 
-    <script define:vars={{ apiUrl, id }}>
+    <script define:vars={{ id }}>
       async function cancelRsvp(rsvpId, rsvpName, btn) {
         if (!confirm(`Cancel RSVP for ${rsvpName}?`)) return;
         btn.disabled = true;
         try {
-          const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvp/cancel`, {
+          const res = await fetch(`/api/admin/events/${id}/rsvp/cancel`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
