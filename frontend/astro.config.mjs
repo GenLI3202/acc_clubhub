@@ -14,6 +14,7 @@ export default defineConfig({
     locales: ['zh', 'en', 'de'],
     routing: {
       prefixDefaultLocale: true,  // /zh/media, /en/media, /de/media
+      redirectToDefaultLocale: false,  // let index.astro handle detection
     },
   },
 

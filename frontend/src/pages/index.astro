@@ -1,11 +1,43 @@
 ---
 export const prerender = true;
 // src/pages/index.astro
-// 根页面重定向到默认语言
-
-import { defaultLocale } from '../lib/i18n';
-
-// 重定向到默认语言首页
-return Astro.redirect(`/${defaultLocale}`);
+// Detect browser language and redirect to matching locale
 ---
 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ACC ClubHub</title>
+    <script is:inline>
+      (function () {
+        var SUPPORTED = ["zh", "en", "de"];
+        var DEFAULT = "zh";
+        var STORAGE_KEY = "acc-locale";
+
+        // 1. Check saved preference
+        var saved = null;
+        try {
+          saved = localStorage.getItem(STORAGE_KEY);
+        } catch (e) {}
+        if (saved && SUPPORTED.indexOf(saved) !== -1) {
+          window.location.replace("/" + saved);
+          return;
+        }
+
+        // 2. Detect from browser languages
+        var langs = navigator.languages || [navigator.language || ""];
+        for (var i = 0; i < langs.length; i++) {
+          var code = langs[i].toLowerCase().split("-")[0];
+          if (SUPPORTED.indexOf(code) !== -1) {
+            window.location.replace("/" + code);
+            return;
+          }
+        }
+
+        // 3. Fallback to default
+        window.location.replace("/" + DEFAULT);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
