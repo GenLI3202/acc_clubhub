@@ -15,17 +15,12 @@ from routes.auth import get_current_admin
 router = APIRouter()
 
 
-def _require_admin():
-    """Dependency that requires valid admin session."""
-    return Depends(get_current_admin)
-
-
 # ── Admin Event List ──────────────────────────────────────────
 
 @router.get("/api/admin/events")
 def list_events(
     db: Session = Depends(get_db),
-    _admin: dict = _require_admin(),
+    _admin: dict = Depends(get_current_admin),
 ) -> list[dict]:
     """
     List all events with registration statistics.
@@ -77,7 +72,7 @@ def list_events(
 def get_event_rsvps(
     event_id: int,
     db: Session = Depends(get_db),
-    _admin: dict = _require_admin(),
+    _admin: dict = Depends(get_current_admin),
 ) -> dict:
     """
     Get full RSVP list for an event (includes email addresses).
@@ -131,7 +126,7 @@ def cancel_rsvp(
     event_id: int,
     rsvp_id: int,
     db: Session = Depends(get_db),
-    _admin: dict = _require_admin(),
+    _admin: dict = Depends(get_current_admin),
 ) -> dict:
     """
     Cancel an RSVP (set status to 'cancelled').
@@ -160,7 +155,7 @@ def cancel_rsvp(
 def export_rsvps_csv(
     event_id: int,
     db: Session = Depends(get_db),
-    _admin: dict = _require_admin(),
+    _admin: dict = Depends(get_current_admin),
 ) -> bytes:
     """
     Export event RSVPs as CSV.
