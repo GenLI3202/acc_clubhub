@@ -5,10 +5,8 @@ Phase 4.3.4: Admin dashboard API endpoints (JWT protected)
 
 import csv
 import io
-import traceback
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Optional
 from database import get_db
 from models import Event, RSVP
 from routes.auth import get_current_admin
@@ -16,26 +14,30 @@ from routes.auth import get_current_admin
 router = APIRouter()
 
 
-# ── TEMP: Debug endpoint (remove after fixing) ──────────────
-@router.get("/api/admin/debug-events")
-def debug_events(db: Session = Depends(get_db)) -> dict:
-    """Temporary: reproduce the ProgrammingError without auth."""
-    try:
-        events = db.query(Event).order_by(Event.event_date.desc()).all()
-        event_count = len(events)
-
-        # Try the RSVP count query that admin endpoint uses
-        rsvp_test = None
-        if events:
-            first = events[0]
-            rsvp_test = db.query(RSVP).filter(
-                RSVP.event_id == first.id,
-                RSVP.status == "confirmed",
-            ).count()
-
-        return {"event_count": event_count, "rsvp_test": rsvp_test}
-    except Exception as e:
-        return {"error": type(e).__name__, "detail": str(e), "trace": traceback.format_exc()}
+# ── TEMP: Migration endpoint (remove after running once) ─────
+@router.post("/api/admin/migrate-rsvp-columns")
+def migrate_rsvp_columns(db: Session = Depends(get_db)) -> dict:
+    """
+    One-time migration: add view_token and privacy_accepted columns
+    to rsvps table if they don't exist.
+    Safe to run multiple times (IF NOT EXISTS).
+    """
+    from sqlalchemy import text
+    results = []
+    migrations = [
+        "ALTER TABLE rsvps ADD COLUMN IF NOT EXISTS view_token VARCHAR(64)",
+        "ALTER TABLE rsvps ADD COLUMN IF NOT EXISTS privacy_accepted BOOLEAN DEFAULT FALSE",
+        "CREATE INDEX IF NOT EXISTS ix_rsvps_view_token ON rsvps (view_token)",
+    ]
+    for sql in migrations:
+        try:
+            db.execute(text(sql))
+            db.commit()
+            results.append({"sql": sql, "status": "ok"})
+        except Exception as e:
+            db.rollback()
+            results.append({"sql": sql, "status": "error", "detail": str(e)})
+    return {"migrations": results}
 
 
 # ── Admin Event List ──────────────────────────────────────────
