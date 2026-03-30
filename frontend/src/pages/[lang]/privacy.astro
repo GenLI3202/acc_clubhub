@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 // src/pages/[lang]/privacy.astro
 // Privacy Policy Page
 
@@ -283,6 +284,7 @@ Standort: München, Deutschland
 
 const pageContent = content[lang];
 ---
+
 
 <BaseLayout title={pageContent.title} lang={lang}>
   <article class="privacy-page">

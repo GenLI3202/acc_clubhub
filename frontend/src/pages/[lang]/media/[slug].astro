@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 // src/pages/[lang]/media/[slug].astro
 // 车影骑踪 - 详情页
 
@@ -26,6 +27,7 @@ const { entry } = Astro.props;
 const { lang } = Astro.params as { lang: Locale };
 const { Content } = await render(entry);
 ---
+
 
 <ArticleLayout
   title={entry.data.title}

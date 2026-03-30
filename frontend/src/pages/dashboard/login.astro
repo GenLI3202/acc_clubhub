@@ -4,17 +4,17 @@ export const prerender = false;
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
-// Check if already authenticated
-let alreadyLoggedIn = false;
+// Check if already authenticated (server-side, no cookies forwarded)
 try {
+  const cookie = Astro.request.headers.get("cookie") || "";
   const meRes = await fetch(`${apiUrl}/auth/me`, {
-    credentials: "include",
+    headers: { cookie },
   });
   if (meRes.ok) {
     return Astro.redirect("/dashboard/events");
   }
 } catch {
-  // Not authenticated
+  // Not authenticated — show login page
 }
 ---
 

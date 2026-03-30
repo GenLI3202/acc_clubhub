@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 // src/pages/[lang]/routes/[slug].astro
 // 骑行路线 - 详情页
 
@@ -40,6 +41,7 @@ const difficultyColors: Record<string, string> = {
   expert: '#ef4444',
 };
 ---
+
 
 <BaseLayout title={entry.data.name} lang={lang}>
   <article class="route-detail">

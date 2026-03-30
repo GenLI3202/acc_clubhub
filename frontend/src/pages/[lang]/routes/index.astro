@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 // src/pages/[lang]/routes/index.astro
 // 骑行路线 - 列表页 (瀑布流布局)
 
@@ -26,6 +27,7 @@ const sortedRoutes = langRoutes.sort(
 
 const pageTitle = t(lang, 'nav.routes');
 ---
+
 
 <BaseLayout title={pageTitle} lang={lang}>
   <div class="page-title-header">

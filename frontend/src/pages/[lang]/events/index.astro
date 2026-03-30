@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 // src/pages/[lang]/events/index.astro
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
@@ -34,6 +35,7 @@ const upcomingCards = upcoming.filter((e) => e.data.displaySection === 'upcoming
 
 const regulars = getRegulars(upcoming);
 ---
+
 
 <BaseLayout
   title={pageTitle}
