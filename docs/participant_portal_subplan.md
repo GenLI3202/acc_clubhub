@@ -1,26 +1,28 @@
 # Sub-Plan: Participant Portal
 
 > Part of #53 — Admin Dashboard MVP
-> Status: IN PROGRESS — Backend complete, frontend integrated
+> Status: ✅ COMPLETE — All code implemented & deployed
 
 ## Scope
 
 Token-based portal allowing event registrants to view the participant list for events they've signed up for.
 
-MVP includes:
-- ✅ Add `view_token` to RSVP model
-- ✅ Generate token on RSVP creation
-- ✅ New `/api/events/{slug}/participant?token=xxx` endpoint (uses slug, not id)
-- ✅ Confirmation/waitlist emails include portal link
-- ✅ Event detail page shows participant list when valid token present
+MVP — all items complete:
+- ✅ `view_token` added to RSVP model (`backend/models.py`)
+- ✅ `privacy_accepted` added to RSVP model
+- ✅ Token generated on RSVP creation (both v1 and v2 endpoints)
+- ✅ `GET /api/events/{slug}/participant?token=xxx` endpoint implemented
+- ✅ Confirmation/waitlist emails include portal link (`backend/services/email.py`)
+- ✅ Event detail page shows participant list when valid token present (`[slug].astro`)
+- ✅ DB columns migrated to production via Neon console (2026-03-30)
 
 ---
 
 ## Implementation Steps
 
-### Phase A: Database & Model Changes
+### Phase A: Database & Model Changes ✅ Complete
 
-**1. Add `view_token` to RSVP model**
+**1. Add `view_token` to RSVP model** ✅
 
 File: `backend/models.py`
 
@@ -30,7 +32,7 @@ class RSVP(Base):
     view_token = Column(String(64), nullable=True, index=True)  # NEW
 ```
 
-**2. Generate token on RSVP creation**
+**2. Generate token on RSVP creation** ✅
 
 Files: `backend/routes/rsvp.py`
 
@@ -44,9 +46,9 @@ new_rsvp = RSVP(
 
 ---
 
-### Phase B: New Participant Endpoint
+### Phase B: New Participant Endpoint ✅ Complete
 
-**3. Create `/api/events/{event_id}/participant` endpoint**
+**3. `GET /api/events/{slug}/participant?token=xxx`** ✅ (uses slug, not id)
 
 File: `backend/routes/rsvp.py`
 
@@ -100,9 +102,9 @@ def get_participant_view(
 
 ---
 
-### Phase C: Email Integration
+### Phase C: Email Integration ✅ Complete
 
-**4. Add portal link to confirmation email**
+**4. Add portal link to confirmation email** ✅
 
 File: `backend/services/email.py`
 
@@ -113,15 +115,15 @@ participant_link = f"{PUBLIC_FRONTEND_URL}/{lang}/events/{event_slug}?token={vie
 
 Note: `send_confirmation_email()` currently doesn't receive `event_slug` or `view_token`. Need to add these parameters.
 
-**5. Add portal link to waitlist email**
+**5. Add portal link to waitlist email** ✅
 
 Same in `send_waitlist_email()`.
 
 ---
 
-### Phase D: Frontend Integration
+### Phase D: Frontend Integration ✅ Complete
 
-**6. Enable SSR for event detail page**
+**6. Enable SSR for event detail page** ✅
 
 File: `frontend/astro.config.mjs`
 ```js
@@ -135,7 +137,7 @@ export const prerender = false;  // SSR for this page
 ---
 ```
 
-**7. Add participant list section**
+**7. Add participant list section** ✅
 
 In `[lang]/events/[slug].astro`, add server-side token check:
 
@@ -171,11 +173,13 @@ if (token) {
 
 ## Verification
 
-1. Register for an event → confirmation email arrives with `?token=xxx` link
-2. Visit link with valid token → see participant list with names
-3. Visit link with invalid token → normal event page (no participant list)
-4. Visit link after cancelling → error "Registration was cancelled"
-5. Waitlisted user also receives token → can see who's already confirmed
+| # | Test | Status |
+|---|------|--------|
+| 1 | Register → confirmation email has `?token=xxx` link | Not tested end-to-end (email delivery works; token in model ✅) |
+| 2 | Visit link with valid token → see participant list | Not tested end-to-end |
+| 3 | Visit link with invalid/missing token → normal page | Not tested end-to-end |
+| 4 | Visit link after cancelling → cancelled notice | Not tested end-to-end |
+| 5 | Waitlisted user receives token in waitlist email | Not tested end-to-end |
 
 ---
 

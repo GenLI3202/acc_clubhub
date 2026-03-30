@@ -1,7 +1,7 @@
 # Sub-Plan: Admin Portal
 
 > Part of #53 — Admin Dashboard MVP
-> Status: IN PROGRESS — Backend complete, frontend complete, diagnosis fixes applied
+> Status: ⚠️ BLOCKED — All code implemented & deployed; blocked by Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67) (`/dashboard/login` returns 404)
 
 ## Scope
 
@@ -25,20 +25,13 @@ Deferred: Subscriber management (Phase 4.3.4)
 
 ## Implementation Steps
 
-### Phase A: Shared Auth Infrastructure
+### Phase A: Shared Auth Infrastructure ✅ Complete
 
-**1. Switch Astro to hybrid mode**
+**1. Switch Astro to server mode** ✅
 
-File: `frontend/astro.config.mjs`
-```js
-// Change output: 'static' → 'hybrid'
-export default defineConfig({
-  output: 'hybrid',  // was 'static'
-  adapter: vercel(),
-})
-```
+`frontend/astro.config.mjs` — `output: 'server'` (note: 'hybrid' was deprecated; using 'server' with per-page `prerender = true` for static pages)
 
-**2. Register GitHub OAuth App env vars**
+**2. Register GitHub OAuth App env vars** ✅
 
 In Vercel dashboard (frontend project):
 ```
@@ -47,82 +40,35 @@ GITHUB_CLIENT_ID=<from OAuth App>
 GITHUB_CLIENT_SECRET=<from OAuth App>
 ```
 
-**3. Create new GitHub OAuth App**
+**3. Create new GitHub OAuth App** ✅
 
-Go to: GitHub Settings > Developer settings > OAuth Apps > New OAuth App
+Registered. Callback URL: `https://www.accross-cc.de/auth/callback`
 
-- Application name: `ACC ClubHub Admin`
-- Homepage URL: `https://www.accross-cc.de`
-- Authorization callback URL: `https://www.accross-cc.de/auth/callback`
+**4. Create Vercel rewrite for API proxy** ✅
 
-Copy Client ID and Secret → add to Vercel env vars.
-
-**4. Create Vercel rewrite for API proxy**
-
-File: `frontend/vercel.json` (create if not exists)
-```json
-{
-  "rewrites": [
-    { "source": "/api/admin/:path*", "destination": "https://acc-clubhub-events-ms.vercel.app/api/admin/:path*" }
-  ]
-}
-```
-
-This avoids CORS when Astro SSR pages call the backend API.
+`frontend/vercel.json` — rewrites for `/api/admin/:path*` and `/auth/:path*` → backend
 
 ---
 
-### Phase B: Backend Auth Routes
+### Phase B: Backend Auth Routes ✅ Complete
 
-**5. Create `backend/routes/auth.py`**
+**5. `backend/routes/auth.py`** ✅
 
-Contains:
-- `get_github_auth_url()` — builds GitHub OAuth URL with signed state param
-- `get_access_token(code)` — exchanges code for GitHub access token
-- `check_collaborator(github_token, username)` — calls GitHub API to verify collaborator
-- `create_jwt_session(github_login, github_user_id)` — creates JWT with 24h expiry
-- `verify_jwt_session(token)` — verifies and returns payload
-- `get_current_admin(request)` — FastAPI dependency
+Implemented & deployed. Fixes applied: `|` separator for state token, `PUBLIC_FRONTEND_URL` for redirect_uri, `repo` OAuth scope, logout changed to GET.
 
-Endpoints:
-```
-GET  /auth/login         → redirect to GitHub
-GET  /auth/callback      → exchange code, verify collaborator, set cookie
-GET  /auth/me            → return current user or 401
-POST /auth/logout        → clear cookie
-```
-
-JWT payload: `{github_login, github_user_id, exp}`
-Cookie: `admin_session`, httpOnly, sameSite=lax, secure, 24h
+Endpoints: `GET /auth/login`, `GET /auth/callback`, `GET /auth/me`, `GET /auth/logout`
 
 ---
 
-### Phase C: Backend Admin API Routes
+### Phase C: Backend Admin API Routes ✅ Complete
 
-**6. Create `backend/routes/admin.py`**
+**6. `backend/routes/admin.py`** ✅
 
-Requires: valid `admin_session` JWT cookie (via `get_current_admin` dependency)
-
-```
-GET  /api/admin/events
-     → Returns: [{id, title, event_date, location, max_participants,
-                  confirmed_count, waitlist_count, spots_remaining}]
-
-GET  /api/admin/events/{id}/rsvps
-     → Returns: {event: {id, title, slug},
-                 rsvps: [{id, name, email, status, notes, created_at}]}
-
-POST /api/admin/events/{id}/rsvp/cancel
-     Body: {rsvp_id: int}
-     → Sets RSVP status='cancelled' (DB trigger updates current_participants)
-
-GET  /api/admin/events/{id}/rsvps.csv
-     → Returns CSV download: name,email,status,notes,created_at
-```
+Implemented & deployed. All 4 endpoints active. Fix applied: `Depends()` used directly as default arg (broken helper wrapper removed).
 
 ---
 
-### Phase D: Frontend Admin Pages
+### Phase D: Frontend Admin Pages ✅ Complete
 
 **7. `frontend/src/pages/dashboard/login.astro`** ✅ Implemented
 
@@ -163,10 +109,14 @@ Protected SSR page. Full RSVP table with cancel action (via data-attributes + ev
 
 ## Verification
 
-1. Visit `/dashboard/login` → GitHub OAuth page → approve → redirected to `/dashboard/events` → see event table
-2. Non-collaborator GitHub account → 403 error page
-3. Click event → see full RSVP list with emails
-4. Cancel an RSVP → disappears from confirmed, `current_participants` decrements
-5. Export CSV → downloads valid CSV file
-6. Logout → session cleared, `/dashboard/*` returns 401
-7. Visit `/admin/` → Sveltia CMS loads (no collision)
+| # | Test | Status |
+|---|------|--------|
+| 1 | Visit `/dashboard/login` → see login page | ❌ Returns 404 — Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67) |
+| 2 | Click GitHub login → OAuth → redirected to `/dashboard/events` | ✅ OAuth flow works (confirmed manually) |
+| 3 | Non-collaborator GitHub account → 403 | Not tested |
+| 4 | Click event → see RSVP list | ✅ Works (after DB migration fixed view_token columns) |
+| 5 | Cancel RSVP → status changes | Not tested end-to-end |
+| 6 | Export CSV → downloads file | Not tested end-to-end |
+| 7 | Logout → session cleared | ✅ Works |
+| 8 | `/admin/` → Sveltia CMS loads (no collision) | ✅ Works |
+| 9 | Spot counts match between dashboard and event page | ❌ Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66) |

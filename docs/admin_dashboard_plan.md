@@ -1,6 +1,6 @@
 # Plan: #53 Admin Dashboard — Master Plan
 
-> Status: IN PROGRESS — Diagnosis complete, fixes pending
+> Status: IN PROGRESS — Backend + frontend implemented; 2 blocking bugs open (see Known Issues)
 
 ## Overview
 
@@ -109,23 +109,36 @@ If the project scales (e.g., Phase 4.3.4 broadcast feature adds more API endpoin
 
 ---
 
-## Diagnosis (2026-03-30)
+## Diagnosis & Fixes Applied (2026-03-30)
 
-Issues found during code review of current implementation:
-
-### Critical
+### Critical — All Fixed ✅
 - **C1** Route conflict: Sveltia CMS (`public/admin/`) vs admin dashboard (`src/pages/admin/`) — **Fixed:** dashboard moved to `/dashboard/`
 - **C2** Unprotected `GET /api/events/{id}/rsvps` in rsvp.py leaks all emails — **Fixed:** endpoint removed (protected version in admin.py)
 - **C3** XSS in inline `onclick` handler on RSVP cancel button — **Fixed:** switched to `data-` attributes + event delegation
 
-### High
+### High — All Fixed ✅
 - **H1** Hardcoded `redirect_uri` in auth.py — **Fixed:** uses `PUBLIC_FRONTEND_URL` from config
 - **H2** Missing `/auth/*` rewrite in vercel.json — **Fixed:** added rewrite rule
 - **H3** Unprotected `DELETE /api/events/{id}/rsvp` in rsvp.py — **Fixed:** endpoint removed
+- **H4** Logout was POST, browser link sends GET — **Fixed:** changed to `@router.get`
+- **H5** `Depends()` wrapper broken in admin.py — **Fixed:** use `Depends()` directly as default arg
+- **H6** Cookie header forwarding wrong in SSR fetch calls — **Fixed:** explicit `"Cookie"` header name
+- **H7** State token separator was `.` (same as JWT) — **Fixed:** changed to `|`
+- **H8** OAuth needed `repo` scope for collaborator check — **Fixed:** scope added
+- **H9** DB missing `view_token`/`privacy_accepted` columns in production — **Fixed:** ran `ALTER TABLE IF NOT EXISTS` migration via Neon console
 
-### Medium
+### Medium — All Fixed ✅
 - **M1** `print()` instead of `logging` in email.py — **Fixed:** switched to logging module
 - **M4** Dead state token extraction code in auth.py — **Fixed:** removed
+
+---
+
+## Known Issues (Open — as of 2026-03-30)
+
+| # | Issue | Severity | Status |
+|---|-------|----------|--------|
+| [#67](https://github.com/GenLI3202/acc_clubhub/issues/67) | `/dashboard/login` returns HTTP 404 (Astro i18n middleware sets 404 for non-locale-prefixed routes) | High | Middleware fix deployed (`src/middleware.ts`), still returns 404 — needs deeper fix |
+| [#66](https://github.com/GenLI3202/acc_clubhub/issues/66) | Registration spot counts don't match between dashboard and event page | Medium | Open |
 
 ---
 

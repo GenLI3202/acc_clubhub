@@ -93,6 +93,16 @@
 
 ## In Progress
 
+- [ ] **Phase 4.3.5 — Admin Dashboard** (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53)) — 2026-03-30
+  - [x] GitHub OAuth login flow (state token, collaborator check, JWT cookie)
+  - [x] Backend: `auth.py` (login / callback / me / logout), `admin.py` (events list, RSVP detail, cancel, CSV)
+  - [x] Frontend: `/dashboard/login`, `/dashboard/`, `/dashboard/events`, `/dashboard/events/[id]`
+  - [x] Participant Portal: `view_token` in model, `/api/events/{slug}/participant` endpoint, portal link in emails, SSR token check in event detail page
+  - [x] DB migration: `view_token` + `privacy_accepted` columns added to production Neon DB
+  - [ ] **BLOCKED** — `/dashboard/login` returns 404 (Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67))
+  - [ ] **OPEN** — Registration spot count mismatch in dashboard (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
+  - [ ] Participant portal not tested end-to-end
+
 - [ ] **E2E Testing**
   - [ ] E2E functional testing for registration flow (8 test scenarios)
   - [ ] Email delivery monitoring
@@ -103,12 +113,6 @@
   - [ ] `POST /api/admin/broadcast/{event_slug}` endpoint
   - [ ] Sends multilingual announcement to all active subscribers
   - [ ] Unsubscribe link in every broadcast email
-  - [ ] Protected by admin token
-
-- [ ] **Phase 4.3.5 — Admin Dashboard** (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53))
-  - [ ] View registrations per event (confirmed / waitlist / spots remaining)
-  - [ ] Manage email subscriber list (view, export, unsubscribe)
-  - [ ] Simple read-only web UI — no SQL editor required
   - [ ] Protected by admin token
 
 - [ ] **Phase 4.4 — Authentication** (future)
@@ -122,6 +126,9 @@
 
 > Full issue triage (priority tiers + agent work order): **[docs/issues_sorted_for_agents.md](docs/issues_sorted_for_agents.md)**
 
+- [ ] `/dashboard/login` returns HTTP 404 — high (Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67)) — middleware fix deployed, still 404
+- [ ] Language switcher non-functional on pages with `client:load` Preact components (gear, routes, media, training) — high (Issue [#68](https://github.com/GenLI3202/acc_clubhub/issues/68))
+- [ ] Registration spot count mismatch in dashboard — med (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
 - [ ] E2E tests not yet written for registration flow — med
 - [ ] Android frame drops on Mechanical Knowledge section — high (Issue [#19](https://github.com/GenLI3202/acc_clubhub/issues/19))
 - [ ] HEIC image upload not supported — med (Issue [#13](https://github.com/GenLI3202/acc_clubhub/issues/13))
