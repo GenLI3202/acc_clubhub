@@ -27,7 +27,7 @@ const { entry } = Astro.props;
 const { lang } = Astro.params as { lang: Locale };
 const { Content } = await render(entry);
 ---
-export const prerender = true;
+
 
 <ArticleLayout
   title={entry.data.title}

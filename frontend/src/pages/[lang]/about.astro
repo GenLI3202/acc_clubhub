@@ -13,7 +13,7 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Locale };
 const pageTitle = t(lang, 'nav.about');
 ---
-export const prerender = true;
+
 
 <BaseLayout title={pageTitle} lang={lang}>
   <div class="page-title">
