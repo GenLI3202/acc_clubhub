@@ -21,7 +21,6 @@ function getLangSwitchUrl(targetLang: Locale): string {
 <header class:list={[{ 'header-transparent': transparent }]}>
   <nav>
     <a href={`/${lang}`} class="logo">
-      <img src="/images/transparent_red_logo.png" alt="ACC ClubHub" width="40" height="40" />
       <span>ACC ClubHub</span>
     </a>
 
@@ -179,6 +178,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
 
   .logo img {
     border-radius: 4px;
+    mix-blend-mode: multiply;
   }
 
   /* Transparent mode: white logo text */

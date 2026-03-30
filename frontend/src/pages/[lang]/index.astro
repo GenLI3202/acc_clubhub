@@ -11,7 +11,7 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Locale };
 
 const tagline =
-  lang === 'zh' ? '慕尼黑骑行社群，自由骑行，一路同行。'
+  lang === 'zh' ? '自由骑行，一路同行。'
   : lang === 'de' ? 'Münchner Radsportgemeinschaft. Frei fahren, gemeinsam weiter.'
   : 'Munich cycling community. Ride free, ride together.';
 
@@ -63,9 +63,8 @@ const sections = [
   },
 ];
 ---
-export const prerender = true;
 
-<BaseLayout title={t(lang, 'nav.home')} lang={lang} headerTransparent={true} heroImagePreload="/images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg">
+<BaseLayout title={t(lang, 'nav.home')} lang={lang} headerTransparent={true} heroImagePreload="/images/uploads/rr120_2026_group.jpg">
 
   <!-- Hero: full-width, breaks out of main's max-width -->
   <section slot="hero" class="homepage-hero">
@@ -99,7 +98,7 @@ export const prerender = true;
     min-height: 480px;
     max-height: 760px;
     overflow: hidden;
-    background-image: url('/images/uploads/RR120-SONNTAG-cPIARAZZI-20.jpg');
+    background-image: url('/images/uploads/rr120_2026_group.jpg');
     background-size: cover;
     background-position: center 40%;
     display: flex;
@@ -179,9 +178,33 @@ export const prerender = true;
     text-decoration: none;
   }
 
-  /* ---- Hub grid spacing ---- */
+  /* ---- Hub grid spacing and background watermark ---- */
   .hub-grid {
-    margin-top: var(--space-xl);
+    margin-top: var(--space-l);
     margin-bottom: var(--space-xl);
+    position: relative;
+    padding: var(--space-xl) 0;
+    isolation: isolate;
+    /* 仅仅切除上下溢出的部分，保留左右 100vw 的全宽延伸 */
+    clip-path: polygon(-100vw 0, 100vw 0, 200vw 120%, -100vw 120%);
+  }
+
+  .hub-grid::before {
+    content: '';
+    position: absolute;
+    /* 让背景溢出当前容器，向左右两边延伸到屏幕边缘，上下也稍微放大一点防止截断 */
+    top: -100px;
+    bottom: -100px;
+    left: calc(50% - 50vw);
+    width: 100vw;
+    background-image: url('/images/transparent_red_logo.png');
+    background-repeat: repeat;
+    background-position: left bottom;
+    transform: rotate(-18deg);
+    background-size: 320px;
+    opacity: 0.35;
+    mix-blend-mode: color-burn;
+    pointer-events: none;
+    z-index: -1;
   }
 </style>
