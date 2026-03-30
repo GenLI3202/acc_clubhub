@@ -161,6 +161,7 @@ def create_rsvp(
         status=rsvp_status,
         notes=rsvp_data.notes,
         privacy_accepted=rsvp_data.privacy_accepted,
+        view_token=secrets.token_urlsafe(32),
     )
     db.add(new_rsvp)
 
@@ -183,6 +184,8 @@ def create_rsvp(
             event_location=event.location,
             event_id=event.id,
             lang="en",
+            event_slug=event.slug,
+            view_token=new_rsvp.view_token,
         )
     else:
         send_waitlist_email(
@@ -191,6 +194,8 @@ def create_rsvp(
             event_title=event.title,
             waitlist_position=waitlist_pos or 0,
             lang="en",
+            event_slug=event.slug,
+            view_token=new_rsvp.view_token,
         )
 
     return RSVPResponse(
@@ -290,6 +295,7 @@ def create_rsvp_v2(
         status=rsvp_status,
         notes=data.notes,
         privacy_accepted=data.privacy_accepted,
+        view_token=secrets.token_urlsafe(32),
     )
     db.add(new_rsvp)
 
@@ -312,6 +318,8 @@ def create_rsvp_v2(
                 event_location=event.location,
                 event_id=event.id,
                 lang="en",
+                event_slug=event.slug,
+                view_token=new_rsvp.view_token,
             )
         else:
             send_waitlist_email(
@@ -320,6 +328,8 @@ def create_rsvp_v2(
                 event_title=event.title,
                 waitlist_position=waitlist_pos or 0,
                 lang="en",
+                event_slug=event.slug,
+                view_token=new_rsvp.view_token,
             )
     except Exception as email_err:
         logging.error("Email send failed (RSVP still saved): %s", email_err)
@@ -336,63 +346,53 @@ def create_rsvp_v2(
     )
 
 
-@router.get("/api/events/{event_id}/rsvps")
-def get_event_rsvps(
-    event_id: int,
+# ── Participant Portal Endpoint ──────────────────────────────
+
+@router.get("/api/events/{slug}/participant")
+def get_participant_view(
+    slug: str,
+    token: str,
     db: Session = Depends(get_db),
 ) -> dict:
-    """获取活动的报名列表 (管理员功能)"""
-    # TODO: Add admin authentication check
-    event = db.query(Event).filter(Event.id == event_id).first()
+    """View event participant list with RSVP token (no login required)."""
+    # Get event by slug
+    event = db.query(Event).filter(Event.slug == slug).first()
     if not event:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event with id {event_id} not found",
-        )
+        raise HTTPException(status_code=404, detail="Event not found")
 
-    rsvps = db.query(RSVP).filter(RSVP.event_id == event_id).all()
-    return {
-        "event_id": event_id,
-        "total": len(rsvps),
-        "confirmed": len([r for r in rsvps if r.status == "confirmed"]),
-        "waitlist": len([r for r in rsvps if r.status == "waitlist"]),
-        "cancelled": len([r for r in rsvps if r.status == "cancelled"]),
-        "rsvps": [
-            {
-                "id": r.id,
-                "email": r.email,
-                "name": r.name,
-                "status": r.status,
-                "notes": r.notes,
-                "created_at": r.created_at.isoformat(),
-            }
-            for r in rsvps
-        ],
-    }
-
-
-@router.delete("/api/events/{event_id}/rsvp")
-def cancel_rsvp(
-    event_id: int,
-    email: str,
-    db: Session = Depends(get_db),
-) -> dict:
-    """取消报名 (通过 email 查找)"""
+    # Validate token
     rsvp = db.query(RSVP).filter(
-        RSVP.event_id == event_id,
-        RSVP.email == email,
+        RSVP.event_id == event.id,
+        RSVP.view_token == token,
     ).first()
+
     if not rsvp:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="RSVP not found for this email",
-        )
+        raise HTTPException(status_code=401, detail="Invalid token")
 
-    rsvp.status = "cancelled"
-    # NOTE: current_participants 由数据库触发器自动更新
-    db.commit()
+    if rsvp.status == "cancelled":
+        raise HTTPException(status_code=401, detail="Registration was cancelled")
 
-    return {"success": True, "message": "报名已取消"}
+    # Get confirmed participants (names only)
+    confirmed_rsvps = db.query(RSVP).filter(
+        RSVP.event_id == event.id,
+        RSVP.status == "confirmed",
+    ).order_by(RSVP.created_at).all()
+
+    return {
+        "event": {
+            "id": event.id,
+            "title": event.title,
+            "event_date": event.event_date.isoformat() if event.event_date else None,
+            "location": event.location,
+            "slug": event.slug,
+        },
+        "participants": [
+            {"name": r.name, "created_at": r.created_at.isoformat()}
+            for r in confirmed_rsvps
+        ],
+        "total_confirmed": len(confirmed_rsvps),
+        "your_status": rsvp.status,
+    }
 
 
 # ── Subscription Endpoints ───────────────────────────────────

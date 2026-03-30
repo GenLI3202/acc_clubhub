@@ -1,0 +1,193 @@
+---
+// dashboard/events/index.astro — Admin event list with stats (SSR)
+export const prerender = false;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+// Verify authentication (redirect to login if not authenticated)
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, {
+    credentials: "include",
+  });
+  if (!meRes.ok) {
+    return Astro.redirect("/dashboard/login");
+  }
+} catch {
+  return Astro.redirect("/dashboard/login");
+}
+
+// Fetch events with stats
+let events = [];
+let fetchError = null;
+
+try {
+  const res = await fetch(`${apiUrl}/api/admin/events`, {
+    credentials: "include",
+  });
+  if (res.ok) {
+    events = await res.json();
+  } else if (res.status === 401) {
+    return Astro.redirect("/dashboard/login");
+  } else {
+    fetchError = `Failed to fetch events: ${res.status}`;
+  }
+} catch (e) {
+  fetchError = `Failed to fetch events: ${e.message}`;
+}
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "—";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events | ACC ClubHub Admin</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 1100px; margin: 0 auto; }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #d0d7de;
+      }
+      h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+      .breadcrumb { margin-bottom: 1.5rem; }
+      .breadcrumb a { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .back-link { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .back-link:hover { text-decoration: underline; }
+      table {
+        width: 100%;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        border-collapse: collapse;
+        overflow: hidden;
+      }
+      th {
+        background: #f6f8fa;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #57606a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #d0d7de;
+      }
+      td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eaeef2;
+        font-size: 0.9rem;
+      }
+      tr:last-child td { border-bottom: none; }
+      tr:hover td { background: #f6f8fa; }
+      .event-title { font-weight: 600; color: #24292f; }
+      .badge {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-confirmed { background: #dafbe1; color: #1a7f37; }
+      .badge-waitlist { background: #fff8c5; color: #9a6700; }
+      .badge-cancelled { background: #ffebe9; color: #cf222e; }
+      .spots { color: #57606a; }
+      .action-btn {
+        display: inline-block;
+        padding: 0.3rem 0.7rem;
+        background: #0969da;
+        color: white !important;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: background 0.2s;
+      }
+      .action-btn:hover { background: #0860ca; text-decoration: none; }
+      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .empty { text-align: center; padding: 3rem; color: #57606a; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">&larr; Admin Dashboard</a>
+      </div>
+
+      <div class="header">
+        <h1>Events</h1>
+      </div>
+
+      {fetchError && <div class="error">{fetchError}</div>}
+
+      {events.length === 0 && !fetchError ? (
+        <div class="empty">No events found.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Date</th>
+              <th>Location</th>
+              <th>Confirmed</th>
+              <th>Waitlist</th>
+              <th>Spots</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {events.map((event: any) => (
+              <tr>
+                <td class="event-title">{event.title}</td>
+                <td>{formatDate(event.event_date)}</td>
+                <td>{event.location || "—"}</td>
+                <td>
+                  <span class="badge badge-confirmed">
+                    {event.confirmed_count}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-waitlist">
+                    {event.waitlist_count}
+                  </span>
+                </td>
+                <td class="spots">
+                  {event.spots_remaining !== null ? event.spots_remaining : "∞"}
+                </td>
+                <td>
+                  <a href={`/dashboard/events/${event.id}`} class="action-btn">
+                    View RSVPs
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </body>
+</html>
