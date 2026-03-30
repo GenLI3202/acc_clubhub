@@ -87,6 +87,9 @@
   - [x] Deadline check moved to frontend (no backend round-trip needed)
   - [x] Deleted `populate_events_via_api.py` and `sync_events.py` — zero manual DB work per new event
   - [x] Old `POST /api/events/{event_id}/rsvp` kept intact (no breaking change)
+- [x] **Homepage UI Polish** (2026-03-30)
+  - [x] Fixed scattered `export const prerender = true;` raw text rendering on 13 pages
+  - [x] Removed header logo and added full-width background logo watermark using `clip-path` in `index.astro`
 
 ## In Progress
 
