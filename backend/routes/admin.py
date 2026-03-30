@@ -14,32 +14,6 @@ from routes.auth import get_current_admin
 router = APIRouter()
 
 
-# ── TEMP: Migration endpoint (remove after running once) ─────
-@router.post("/api/admin/migrate-rsvp-columns")
-def migrate_rsvp_columns(db: Session = Depends(get_db)) -> dict:
-    """
-    One-time migration: add view_token and privacy_accepted columns
-    to rsvps table if they don't exist.
-    Safe to run multiple times (IF NOT EXISTS).
-    """
-    from sqlalchemy import text
-    results = []
-    migrations = [
-        "ALTER TABLE rsvps ADD COLUMN IF NOT EXISTS view_token VARCHAR(64)",
-        "ALTER TABLE rsvps ADD COLUMN IF NOT EXISTS privacy_accepted BOOLEAN DEFAULT FALSE",
-        "CREATE INDEX IF NOT EXISTS ix_rsvps_view_token ON rsvps (view_token)",
-    ]
-    for sql in migrations:
-        try:
-            db.execute(text(sql))
-            db.commit()
-            results.append({"sql": sql, "status": "ok"})
-        except Exception as e:
-            db.rollback()
-            results.append({"sql": sql, "status": "error", "detail": str(e)})
-    return {"migrations": results}
-
-
 # ── Admin Event List ──────────────────────────────────────────
 
 @router.get("/api/admin/events")
