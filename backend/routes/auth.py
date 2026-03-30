@@ -92,7 +92,7 @@ def get_github_auth_url(redirect_url: str = "/dashboard/events") -> str:
     """Build the GitHub OAuth authorization URL."""
     client_id = _get_github_client_id()
     state = _create_state_token(redirect_url)
-    scope = "read:user"
+    scope = "read:user,repo"
     frontend_url = settings.PUBLIC_FRONTEND_URL.rstrip("/")
     return (
         f"{GITHUB_AUTH_URL}"
