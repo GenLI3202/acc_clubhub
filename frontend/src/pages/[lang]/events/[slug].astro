@@ -22,10 +22,12 @@ if (!entry) {
 
 const { Content } = await render(entry);
 
+// API URL from environment
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
 // Participant portal: check for token in query param
 let participantData = null;
 const token = Astro.url.searchParams.get("token");
-const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
 if (token) {
   try {
@@ -43,9 +45,6 @@ const registrationLabels: Record<string, string> = {
   en: 'Register Now',
   de: 'Jetzt anmelden',
 };
-
-// API URL from environment
-const apiUrl = import.meta.env.PUBLIC_API_URL || 'https://acc-clubhub-events-ms.vercel.app';
 
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
