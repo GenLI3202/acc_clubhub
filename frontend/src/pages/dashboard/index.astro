@@ -1,0 +1,112 @@
+---
+// dashboard/index.astro — Admin dashboard landing (SSR)
+export const prerender = false;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+// Verify authentication
+let adminUser = null;
+let authError = null;
+
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, {
+    credentials: "include",
+  });
+  if (meRes.ok) {
+    adminUser = await meRes.json();
+  } else if (meRes.status === 401) {
+    return Astro.redirect("/dashboard/login");
+  } else {
+    authError = `Auth check failed: ${meRes.status}`;
+  }
+} catch (e) {
+  authError = `Auth check error: ${e.message}`;
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | ACC ClubHub</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 900px; margin: 0 auto; }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #d0d7de;
+      }
+      h1 { font-size: 1.75rem; margin: 0; color: #24292f; }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .user-info span { color: #57606a; }
+      .logout-btn {
+        padding: 0.4rem 0.9rem;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        color: #24292f;
+        text-decoration: none;
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+      .logout-btn:hover { background: #f6f8fa; }
+      .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+      .nav-card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .nav-card:hover {
+        border-color: #0969da;
+        box-shadow: 0 2px 8px rgba(9,105,218,0.1);
+        text-decoration: none;
+      }
+      .nav-card h2 { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #0969da; }
+      .nav-card p { margin: 0; color: #57606a; font-size: 0.9rem; }
+      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>ACC ClubHub Admin</h1>
+        <div class="user-info">
+          {adminUser && <span>@{adminUser.github_login}</span>}
+          <a href="/auth/logout" class="logout-btn">Logout</a>
+        </div>
+      </div>
+
+      {authError && <div class="error">Error: {authError}</div>}
+
+      <div class="nav-grid">
+        <a href="/dashboard/events" class="nav-card">
+          <h2>Events</h2>
+          <p>View event list, manage RSVPs, export CSV</p>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

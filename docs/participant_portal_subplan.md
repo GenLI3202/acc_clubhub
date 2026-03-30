@@ -1,17 +1,18 @@
 # Sub-Plan: Participant Portal
 
 > Part of #53 — Admin Dashboard MVP
+> Status: IN PROGRESS — Backend complete, frontend integrated
 
 ## Scope
 
 Token-based portal allowing event registrants to view the participant list for events they've signed up for.
 
 MVP includes:
-- Add `view_token` to RSVP model
-- Generate token on RSVP creation
-- New `/api/events/{id}/participant?token=xxx` endpoint
-- Confirmation/waitlist emails include portal link
-- Event detail page shows participant list when valid token present
+- ✅ Add `view_token` to RSVP model
+- ✅ Generate token on RSVP creation
+- ✅ New `/api/events/{slug}/participant?token=xxx` endpoint (uses slug, not id)
+- ✅ Confirmation/waitlist emails include portal link
+- ✅ Event detail page shows participant list when valid token present
 
 ---
 

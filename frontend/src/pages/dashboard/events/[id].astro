@@ -1,0 +1,328 @@
+---
+// dashboard/events/[id].astro — Admin event RSVP detail (SSR)
+export const prerender = false;
+
+const { id } = Astro.params;
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+// Verify authentication
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, {
+    credentials: "include",
+  });
+  if (!meRes.ok) {
+    return Astro.redirect("/dashboard/login");
+  }
+} catch {
+  return Astro.redirect("/dashboard/login");
+}
+
+// Fetch event RSVPs
+let eventData = null;
+let fetchError = null;
+
+try {
+  const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvps`, {
+    credentials: "include",
+  });
+  if (res.ok) {
+    eventData = await res.json();
+  } else if (res.status === 401) {
+    return Astro.redirect("/dashboard/login");
+  } else if (res.status === 404) {
+    fetchError = "Event not found";
+  } else {
+    fetchError = `Failed to fetch RSVPs: ${res.status}`;
+  }
+} catch (e) {
+  fetchError = `Failed to fetch RSVPs: ${e.message}`;
+}
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "—";
+  try {
+    return new Date(dateStr).toLocaleString("en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+const statusClass: Record<string, string> = {
+  confirmed: "badge-confirmed",
+  waitlist: "badge-waitlist",
+  cancelled: "badge-cancelled",
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{eventData?.event?.title || "Event RSVPs"} | ACC ClubHub Admin</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 1100px; margin: 0 auto; }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #d0d7de;
+      }
+      h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+      .breadcrumb { margin-bottom: 1.5rem; }
+      .breadcrumb a { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .back-link { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .back-link:hover { text-decoration: underline; }
+      .event-header {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .event-header h2 { margin: 0 0 0.5rem 0; font-size: 1.25rem; }
+      .event-meta { display: flex; gap: 2rem; flex-wrap: wrap; font-size: 0.9rem; color: #57606a; }
+      .event-meta span { display: flex; align-items: center; gap: 0.3rem; }
+      .summary-bar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .summary-card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        min-width: 120px;
+      }
+      .summary-card .label { font-size: 0.75rem; color: #57606a; text-transform: uppercase; letter-spacing: 0.05em; }
+      .summary-card .value { font-size: 1.75rem; font-weight: 700; color: #24292f; }
+      .actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+      .action-btn {
+        display: inline-block;
+        padding: 0.4rem 0.9rem;
+        background: #0969da;
+        color: white !important;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .action-btn:hover { background: #0860ca; text-decoration: none; }
+      .action-btn.secondary {
+        background: white;
+        color: #24292f !important;
+        border: 1px solid #d0d7de;
+      }
+      .action-btn.secondary:hover { background: #f6f8fa; }
+      table {
+        width: 100%;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        border-collapse: collapse;
+        overflow: hidden;
+      }
+      th {
+        background: #f6f8fa;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #57606a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #d0d7de;
+      }
+      td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eaeef2;
+        font-size: 0.9rem;
+      }
+      tr:last-child td { border-bottom: none; }
+      tr:hover td { background: #f6f8fa; }
+      .badge {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-confirmed { background: #dafbe1; color: #1a7f37; }
+      .badge-waitlist { background: #fff8c5; color: #9a6700; }
+      .badge-cancelled { background: #ffebe9; color: #cf222e; }
+      .cancel-btn {
+        padding: 0.25rem 0.6rem;
+        background: #ffebe9;
+        color: #cf222e !important;
+        border: 1px solid #ff818266;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .cancel-btn:hover { background: #ffc9c9; }
+      .cancel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .notes { max-width: 200px; font-size: 0.8rem; color: #57606a; }
+      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .empty { text-align: center; padding: 3rem; color: #57606a; }
+      .email-cell { font-family: monospace; font-size: 0.85rem; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">&larr; Admin Dashboard</a>
+        <span style="color: #57606a; margin: 0 0.5rem;">/</span>
+        <a href="/dashboard/events">Events</a>
+        <span style="color: #57606a; margin: 0 0.5rem;">/</span>
+        <span>{eventData?.event?.title || `Event #${id}`}</span>
+      </div>
+
+      {fetchError && <div class="error">{fetchError}</div>}
+
+      {eventData && (
+        <>
+          <div class="event-header">
+            <h2>{eventData.event.title}</h2>
+            <div class="event-meta">
+              <span>📅 {formatDate(eventData.event.event_date)}</span>
+              <span>📍 {eventData.event.location || "—"}</span>
+              <span>👥 {eventData.event.current_participants}/{eventData.event.max_participants || "∞"}</span>
+            </div>
+          </div>
+
+          <div class="summary-bar">
+            <div class="summary-card">
+              <div class="label">Confirmed</div>
+              <div class="value">{eventData.summary.confirmed}</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Waitlist</div>
+              <div class="value">{eventData.summary.waitlist}</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Cancelled</div>
+              <div class="value">{eventData.summary.cancelled}</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Total</div>
+              <div class="value">{eventData.summary.total}</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a
+              href={`${apiUrl}/api/admin/events/${id}/rsvps.csv`}
+              class="action-btn secondary"
+              download
+            >
+              Export CSV
+            </a>
+          </div>
+
+          <div style="height: 1.5rem;"></div>
+
+          {eventData.rsvps.length === 0 ? (
+            <div class="empty">No RSVPs for this event yet.</div>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {eventData.rsvps.map((rsvp: any) => (
+                  <tr id={`rsvp-${rsvp.id}`}>
+                    <td><strong>{rsvp.name}</strong></td>
+                    <td class="email-cell">{rsvp.email}</td>
+                    <td>
+                      <span class={`badge badge-${rsvp.status}`}>
+                        {rsvp.status}
+                      </span>
+                    </td>
+                    <td class="notes">{rsvp.notes || "—"}</td>
+                    <td>{formatDate(rsvp.created_at)}</td>
+                    <td>
+                      {rsvp.status !== "cancelled" && (
+                        <button
+                          class="cancel-btn"
+                          onclick={`cancelRsvp(${rsvp.id}, '${rsvp.name}')`}
+                          id={`cancel-btn-${rsvp.id}`}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
+      )}
+    </div>
+
+    <script define:vars={{ apiUrl, id }}>
+      async function cancelRsvp(rsvpId, rsvpName) {
+        if (!confirm(`Cancel RSVP for ${rsvpName}?`)) return;
+        const btn = document.getElementById(`cancel-btn-${rsvpId}`);
+        if (btn) btn.disabled = true;
+        try {
+          const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvp/cancel`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rsvp_id: rsvpId }),
+          });
+          if (res.ok) {
+            const row = document.getElementById(`rsvp-${rsvpId}`);
+            if (row) {
+              const badge = row.querySelector(".badge");
+              if (badge) {
+                badge.className = "badge badge-cancelled";
+                badge.textContent = "cancelled";
+              }
+            }
+            if (btn) {
+              btn.style.display = "none";
+            }
+          } else {
+            alert("Failed to cancel RSVP");
+            if (btn) btn.disabled = false;
+          }
+        } catch (e) {
+          alert("Error: " + e.message);
+          if (btn) btn.disabled = false;
+        }
+      }
+      window.cancelRsvp = cancelRsvp;
+    </script>
+  </body>
+</html>

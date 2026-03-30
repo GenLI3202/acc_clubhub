@@ -1,6 +1,7 @@
 # Sub-Plan: Admin Portal
 
 > Part of #53 — Admin Dashboard MVP
+> Status: IN PROGRESS — Backend complete, frontend complete, diagnosis fixes applied
 
 ## Scope
 
@@ -11,6 +12,14 @@ GitHub OAuth protected admin UI for managing event registrations. MVP includes:
 - CSV export
 
 Deferred: Subscriber management (Phase 4.3.4)
+
+## Route Change (2026-03-30)
+
+**All `/admin/` paths moved to `/dashboard/`** to avoid collision with Sveltia CMS.
+- `/dashboard/login` — GitHub OAuth login
+- `/dashboard/` — Admin hub
+- `/dashboard/events` — Event list
+- `/dashboard/events/[id]` — RSVP detail
 
 ---
 
@@ -115,43 +124,22 @@ GET  /api/admin/events/{id}/rsvps.csv
 
 ### Phase D: Frontend Admin Pages
 
-**7. `frontend/src/pages/admin/login.astro`**
+**7. `frontend/src/pages/dashboard/login.astro`** ✅ Implemented
 
-```astro
----
-// prerender = false (SSR)
----
-<html>
-  <a href="/auth/login">Login with GitHub</a>
-</html>
-```
+SSR page with GitHub OAuth button. Redirects authenticated users to `/dashboard/events`.
 
-**8. `frontend/src/pages/admin/index.astro`**
+**8. `frontend/src/pages/dashboard/index.astro`** ✅ Implemented
 
-Landing page after login. Checks `/auth/me` — if not logged in, redirect to login.
+Protected landing page. Checks `/auth/me` — redirects to `/dashboard/login` if 401.
+Shows welcome message and navigation grid.
 
-Shows:
-- Welcome, {github_login}
-- Links to: Events, (Subscribers — deferred)
+**9. `frontend/src/pages/dashboard/events/index.astro`** ✅ Implemented
 
-**9. `frontend/src/pages/admin/events/index.astro`**
+Protected SSR page. Fetches `/api/admin/events`. Shows event table with stats.
 
-SSR page. Fetches `/api/admin/events` (SSR server-side fetch, no CORS issue).
+**10. `frontend/src/pages/dashboard/events/[id].astro`** ✅ Implemented
 
-Shows table:
-| Event | Date | Confirmed | Waitlist | Spots | Actions |
-|-------|------|-----------|----------|-------|---------|
-| 周日骑行 | 2026-04-01 | 12/20 | 3 | 8 | [View] |
-
-**10. `frontend/src/pages/admin/events/[id].astro`**
-
-SSR page. Fetches `/api/admin/events/{id}/rsvps`.
-
-Shows full RSVP list with columns: Name, Email, Status, Notes, Registered At, Actions
-
-Actions: [Cancel] button per RSVP row → POST to cancel endpoint → refresh
-
-Also: [Export CSV] button linking to CSV endpoint.
+Protected SSR page. Full RSVP table with cancel action (via data-attributes + event delegation) and CSV export.
 
 ---
 
@@ -161,10 +149,10 @@ Also: [Export CSV] button linking to CSV endpoint.
 - `backend/routes/auth.py`
 - `backend/routes/admin.py`
 - `frontend/vercel.json`
-- `frontend/src/pages/admin/login.astro`
-- `frontend/src/pages/admin/index.astro`
-- `frontend/src/pages/admin/events/index.astro`
-- `frontend/src/pages/admin/events/[id].astro`
+- `frontend/src/pages/dashboard/login.astro`
+- `frontend/src/pages/dashboard/index.astro`
+- `frontend/src/pages/dashboard/events/index.astro`
+- `frontend/src/pages/dashboard/events/[id].astro`
 
 **Modified files:**
 - `frontend/astro.config.mjs` — `output: 'static'` → `'hybrid'`
@@ -175,9 +163,10 @@ Also: [Export CSV] button linking to CSV endpoint.
 
 ## Verification
 
-1. Visit `/admin/login` → GitHub OAuth page → approve → redirected to `/admin/events` → see event table
+1. Visit `/dashboard/login` → GitHub OAuth page → approve → redirected to `/dashboard/events` → see event table
 2. Non-collaborator GitHub account → 403 error page
 3. Click event → see full RSVP list with emails
 4. Cancel an RSVP → disappears from confirmed, `current_participants` decrements
 5. Export CSV → downloads valid CSV file
-6. Logout → session cleared, `/admin/*` returns 401
+6. Logout → session cleared, `/dashboard/*` returns 401
+7. Visit `/admin/` → Sveltia CMS loads (no collision)
