@@ -2,6 +2,30 @@
 
 ---
 
+# General Rules
+
+- Before doing broad codebase searches, ask the user for the specific file path or location if the search isn't immediately productive. Do not spend more than 2 tool calls searching for a file without asking.
+
+---
+
+# Project Setup
+
+- This project primarily uses Python and TypeScript. When scaffolding new projects, prefer manual file creation over interactive CLI tools (e.g., `npm create vite`) as they often stall in non-interactive environments.
+
+---
+
+# Bug Fixes
+
+- When fixing bugs, always verify the fix works locally before considering it complete. If the fix cannot be verified locally (e.g., production-only issue), explicitly state that and suggest creating a tracking issue.
+
+---
+
+# Code Changes
+
+- When making multi-file changes, verify that new files are placed in the correct directories and won't be picked up by content globs or build tools unintentionally. Double-check database table names and migration scripts before running them.
+
+---
+
 # Coding Style
 
 > Rules for AI coding assistants. Follow strictly.

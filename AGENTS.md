@@ -36,19 +36,43 @@ mypy .                                  # type check
 
 ---
 
+# General Rules
+
+- Before doing broad codebase searches, ask the user for the specific file path or location if the search isn't immediately productive. Do not spend more than 2 tool calls searching for a file without asking.
+
+---
+
+# Project Setup
+
+- This project primarily uses Python and TypeScript. When scaffolding new projects, prefer manual file creation over interactive CLI tools (e.g., `npm create vite`) as they often stall in non-interactive environments.
+
+---
+
+# Bug Fixes
+
+- When fixing bugs, always verify the fix works locally before considering it complete. If the fix cannot be verified locally (e.g., production-only issue), explicitly state that and suggest creating a tracking issue.
+
+---
+
+# Code Changes
+
+- When making multi-file changes, verify that new files are placed in the correct directories and won't be picked up by content globs or build tools unintentionally. Double-check database table names and migration scripts before running them.
+
+---
+
 # Coding Style
 
 > Rules for AI coding assistants. Follow strictly.
 
 ## Naming
 
-| Element        | Style                   | Example               |
-| -------------- | ----------------------- | --------------------- |
-| Classes        | `PascalCase`            | `CustomerService`     |
-| Functions/Vars | `snake_case`            | `get_account_by_id`   |
-| Constants      | `UPPER_SNAKE`           | `MAX_RETRY_COUNT`     |
-| Files          | `snake_case`            | `transfer_service.py` |
-| Private        | `_leading_underscore`   | `_validate_balance`   |
+| Element        | Style                   | Example                 |
+| -------------- | ----------------------- | ----------------------- |
+| Classes        | `PascalCase`          | `CustomerService`     |
+| Functions/Vars | `snake_case`          | `get_account_by_id`   |
+| Constants      | `UPPER_SNAKE`         | `MAX_RETRY_COUNT`     |
+| Files          | `snake_case`          | `transfer_service.py` |
+| Private        | `_leading_underscore` | `_validate_balance`   |
 
 ## Formatting
 
@@ -90,7 +114,6 @@ mypy .                                  # type check
 - 🌿 **Branching**: `phase-N/<topic>` (e.g., `phase-4/event-registration`)
 - ✅ **Allowed**: `status`, `diff`, `log`, `add`, `commit`, `stash`, `switch`, `branch`, `revert`
 - ❌ **Blocked**: `push`, `merge`, `rebase`, `reset --hard`, `clean -fd`, `branch -D`
-
 
 # === fullstack archetype ===
 
