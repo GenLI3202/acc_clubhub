@@ -77,35 +77,35 @@ function getLangSwitchUrl(targetLang: Locale): string {
   </nav>
 </header>
 
-{transparent && (
-  <script>
-    const header = document.querySelector('header');
-    if (header) {
-      const onScroll = () => {
-        if (window.scrollY > 40) {
-          header.classList.add('header-scrolled');
-        } else {
-          header.classList.remove('header-scrolled');
-        }
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    }
-  </script>
-)}
-
 <script>
-  // Language dropdown: click-toggle
+  // Transparent-header scroll handler: check DOM class at runtime so this
+  // single <script> block works on all pages without conditional rendering.
+  // (A second conditional <script> block causes Astro to assign indices that
+  // break script loading on non-transparent pages.)
+  const header = document.querySelector('header');
+  if (header?.classList.contains('header-transparent')) {
+    const onScroll = () => {
+      if (window.scrollY > 40) {
+        header.classList.add('header-scrolled');
+      } else {
+        header.classList.remove('header-scrolled');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // Language dropdown toggle. Use mousedown (not click) so this fires before
+  // Preact's synthetic click delegation on pages with client:load islands.
   const dropdown = document.querySelector('.lang-dropdown');
   const toggle = dropdown?.querySelector('.lang-toggle');
   if (dropdown && toggle) {
-    toggle.addEventListener('click', (e) => {
+    toggle.addEventListener('mousedown', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('open');
     });
-    // Close when clicking outside — use contains() so Preact event delegation
-    // on hydrated pages can't cause a same-tick close of the dropdown
-    document.addEventListener('click', (e) => {
+    // Close when clicking outside
+    document.addEventListener('mousedown', (e) => {
       if (!dropdown.contains(e.target as Node)) {
         dropdown.classList.remove('open');
       }
@@ -125,7 +125,6 @@ function getLangSwitchUrl(targetLang: Locale): string {
   // Mobile nav: add .nav-open to <header> when checkbox is checked
   // (fallback for browsers without :has() support)
   const navToggle = document.getElementById('nav-toggle') as HTMLInputElement | null;
-  const header = document.querySelector('header');
   if (navToggle && header) {
     navToggle.addEventListener('change', () => {
       header.classList.toggle('nav-open', navToggle.checked);

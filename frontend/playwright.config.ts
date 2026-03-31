@@ -6,13 +6,13 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 1,
     reporter: process.env.CI ? 'html' : 'list',
     use: {
-        baseURL: 'http://localhost:4321',
+        baseURL: 'http://localhost:4399',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
     },
     webServer: {
-        command: 'npm run preview',
-        port: 4321,
+        command: 'npm run dev -- --port 4399',
+        port: 4399,
         reuseExistingServer: !process.env.CI,
         timeout: 120000,
     },
