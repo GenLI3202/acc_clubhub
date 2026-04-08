@@ -138,8 +138,8 @@ function getLangSwitchUrl(targetLang: Locale): string {
     position: sticky;
     top: 0;
     z-index: 100;
-    /* Default: solid white */
-    background: rgba(255, 255, 255, 0.97);
+    /* Default: canvas with subtle blur */
+    background: color-mix(in srgb, var(--color-bg-canvas) 97%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-border);
     transition: background var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
@@ -157,9 +157,9 @@ function getLangSwitchUrl(targetLang: Locale): string {
     box-shadow: none;
   }
 
-  /* After scrolling: fade in white */
+  /* After scrolling: fade in canvas color */
   header.header-transparent.header-scrolled {
-    background: rgba(255, 255, 255, 0.97);
+    background: color-mix(in srgb, var(--color-bg-canvas) 97%, transparent);
     backdrop-filter: blur(12px);
     border-bottom-color: var(--color-border);
     box-shadow: var(--shadow-sm);
@@ -339,7 +339,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
     /* ── Mobile nav open: force solid background over hero ── */
     header:has(#nav-toggle:checked),
     header.nav-open {
-      background: rgba(255, 255, 255, 0.98) !important;
+      background: color-mix(in srgb, var(--color-bg-canvas) 98%, transparent) !important;
       backdrop-filter: blur(12px);
       border-bottom-color: var(--color-border) !important;
       z-index: 10000 !important;
@@ -431,7 +431,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
     position: absolute;
     top: 100%;
     right: 0;
-    background: #ffffff;
+    background: var(--color-bg-canvas);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
