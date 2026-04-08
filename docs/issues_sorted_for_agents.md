@@ -1,6 +1,6 @@
 # Issues Sorted for Agents
 
-> Last updated: 2026-04-08
+> Last updated: 2026-04-08 (session 2)
 > Source: [GitHub Issues](https://github.com/GenLI3202/acc_clubhub/issues)
 >
 > This document organises all open issues by implementation difficulty and who/what is needed to proceed.
@@ -14,7 +14,7 @@
 
 | # | Title | Root Cause | Action |
 |---|-------|-----------|--------|
-| [#19](https://github.com/GenLI3202/acc_clubhub/issues/19) | Android severe frame drops on Mechanical Knowledge section | Too many unoptimised images loaded at once on mobile | Add lazy loading + image size cap; consider `loading="lazy"` + responsive `srcset` |
+| ✅ [#19](https://github.com/GenLI3202/acc_clubhub/issues/19) | Android severe frame drops on Mechanical Knowledge section | ~~Too many unoptimised images loaded at once on mobile~~ | `will-change:transform` on masonry cards, `decoding="async"` on cover images, `loading="lazy"` on markdown inline images. `commit 7a70e87` |
 
 ---
 
@@ -27,9 +27,9 @@ All of these have a clear root cause and a contained fix. An agent can open a PR
 | ✅ [#39](https://github.com/GenLI3202/acc_cubhub/issues/39) | ACC contact email missing | ~~Content only~~ | Set to `letusride@accross-cc.de` in `privacy.astro` (3×) and `about.astro`. `commit e419cc0` |
 | ✅ [#8](https://github.com/GenLI3202/acc_clubhub/issues/8) | Author field missing in content creation | ~~CMS schema + DB~~ | Added `author: z.string().default('ACC Club')` to events schema; backfilled 9 event md files. All collections now track author. `commit 9d27462` |
 | ✅ [#22](https://github.com/GenLI3202/acc_clubhub/issues/22) | Filter cannot extract Author info | ~~Frontend filter logic~~ | Added `author` dynamic filter to `mediaFilters` in `filterConfig.ts`. `commit 75a90a6` |
-| [#13](https://github.com/GenLI3202/acc_clubhub/issues/13) | HEIC image format not supported on upload | Upload component | Convert HEIC→JPEG client-side (`heic2any`) or server-side (Pillow) before storing |
+| ✅ [#13](https://github.com/GenLI3202/acc_clubhub/issues/13) | HEIC image format not supported on upload | ~~Upload component~~ | Auth-protected `/dashboard/tools/heic-convert` page using `heic2any` CDN — client-side only, files never leave browser. `commit 49158f9` |
 | ✅ [#25](https://github.com/GenLI3202/acc_clubhub/issues/25) | No image size limit on Admin upload | ~~Upload component validation~~ | Already implemented: `media_library.max_file_size: 5242880` in `config.yml`. Closed. |
-| [#30](https://github.com/GenLI3202/acc_clubhub/issues/30) | Comment feature bugs (silent fail + wrong OAuth options) | Two sub-bugs | ① Show error/toast on unauthenticated submit; ② restrict OAuth provider list to Google + GitHub only |
+| ✅ [#30](https://github.com/GenLI3202/acc_clubhub/issues/30) | Comment feature bugs (silent fail + wrong OAuth options) | ~~Two sub-bugs~~ | `login:'disable'` disables social login at framework level; capture-phase click listener validates nick/mail/comment and shows styled error toast. `commit 7771056` |
 | [#65](https://github.com/GenLI3202/acc_clubhub/issues/65) | Remaining spots not updated after registration | Frontend display | `EventRegistrationForm.tsx` shows static `maxParticipants` instead of live count; fetch `/api/events/{slug}` on mount + update after submit |
 | [#66](https://github.com/GenLI3202/acc_clubhub/issues/66) | Spot count mismatch in dashboard events list vs detail | Backend consistency | Dashboard list uses `event.available_spots` (DB trigger); detail page counts live from RSVPs. Fix: promote waitlisted RSVP to confirmed on cancel + refresh counts in page JS |
 | [#67](https://github.com/GenLI3202/acc_clubhub/issues/67) | `/dashboard/login` returns 404 — i18n middleware status override | Middleware + Vercel SSR | Consume body via `response.text()` before re-wrapping with status 200 to avoid ReadableStream reuse on Vercel edge |
@@ -43,12 +43,12 @@ Direction is agreed; no design review needed before starting.
 | # | Title | Complexity | Notes |
 |---|-------|-----------|-------|
 | ✅ [#47](https://github.com/GenLI3202/acc_clubhub/issues/47) | Add ACC Strava group link to webpage | ~~Very low~~ | Added to `Footer.astro` → `strava.com/clubs/accmunich`. `commit 195ae1a` |
-| [#51](https://github.com/GenLI3202/acc_clubhub/issues/51) | Auto-broadcast email to subscribers on event publish | Medium | New `POST /api/admin/broadcast/{event_slug}`; reuses existing Resend email service; spec fully written in issue; already tracked as **Phase 4.3.4** in `progress.md` |
+| ✅ [#51](https://github.com/GenLI3202/acc_clubhub/issues/51) | Auto-broadcast email to subscribers on event publish | ~~Medium~~ | `POST /api/admin/broadcast/{event_slug}` with zh/en/de templates, unsubscribe link, CTA button; continues on per-subscriber failure; 7 tests green. `commit 5790a13` |
 | [#55](https://github.com/GenLI3202/acc_clubhub/issues/55) | Dark mode (`prefers-color-scheme: dark`) | Low | Add dark-mode overrides to `variables.css`; update hardcoded `rgba(255,255,255,...)` in Header + EventHero; system-preference only (no manual toggle) |
 | ✅ [#60](https://github.com/GenLI3202/acc_clubhub/issues/60) | Content authoring standards: `displaySection`, templates, past-event gate | ~~Medium~~ | Closed. `displaySection` field, past-event registration gate, and `_template.md` files implemented. |
 | [#27](https://github.com/GenLI3202/acc_clubhub/issues/27) | Authorization expansion (non-GitHub users as Admin) | Medium | Add role-based manual grant in backend; decouple Admin rights from GitHub collaborator status |
 | ✅ [#14](https://github.com/GenLI3202/acc_clubhub/issues/14) | Draft mode in CMS editor | ~~Medium~~ | `status: draft\|published` added to all 5 Zod schemas + 4 CMS collections; all 5 index pages filter drafts at build time. `commit 39164eb` |
-| [#53](https://github.com/GenLI3202/acc_clubhub/issues/53) | Admin Dashboard — manage registrations & subscriber list | Medium | Password-protected admin web UI showing event registration counts, waitlist, spots remaining, and subscriber list; uses existing `/api/admin/*` endpoints |
+| ✅ [#53](https://github.com/GenLI3202/acc_clubhub/issues/53) | Admin Dashboard — manage registrations & subscriber list | ~~Medium~~ | `/dashboard/subscribers` with summary cards, toggle active/inactive, and broadcast form; `GET /api/admin/subscribers` + `POST /api/admin/subscribers/{id}/toggle`; 8 tests green. `commit fdb4ce2` |
 | [#69](https://github.com/GenLI3202/acc_clubhub/issues/69) | Cancel participation sends notification email | Low | When admin cancels an RSVP via dashboard, send a cancellation notification email to the participant; reuse existing Resend email service |
 
 ---
@@ -96,9 +96,9 @@ These span multiple layers of the stack or introduce new subsystems.
 ## Quick Reference: Recommended Work Order
 
 ```
-Immediate  ── #19 (P1 mobile performance)
-Bug sweep  ── #67 → #65 → #66 → #13 → #30          (✅ #8 #22 #25 #39 done)
-Features   ── #69 → #51 (Phase 4.3.4) → #55 → #53 → #27    (✅ #47 #14 #60 done)
+Immediate  ── (✅ #19 done)
+Bug sweep  ── (✅ #67 #65 #66 #13 #30 #8 #22 #25 #39 done)
+Features   ── #55 → #27    (✅ #69 #51 #53 #47 #14 #60 done)
 Design req ── #43, #44, #7, #15, #5             (✅ #9 done)
 Research   ── #50, #17, #41, #6
 Roadmap    ── #48, #20, #61  (define phases before starting)
