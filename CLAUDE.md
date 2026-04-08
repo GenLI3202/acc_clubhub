@@ -71,5 +71,5 @@
 - 🌿 **Branching**: Create `phase-N/<topic>` branch before each phase (e.g., `phase-1/read-only-api`)
 - 📝 **Commits**: `<type>(scope): <50ch max>` — one logical change per commit
   - Types: `feat` | `fix` | `docs` | `style` | `refactor` | `perf` | `test` | `chore`
-  - **Commit after each file/logical unit** — don't batch entire phases
+  - **Atomic workflow**: fix one issue → commit → fix next issue → commit. Never implement multiple issues and batch-commit at the end. Each commit must represent a working, independently revertable state.
 - ⏸️ **End of phase**: List commits made, await human review before merge/push
