@@ -102,6 +102,85 @@ def send_confirmation_email(
         return {"status": "error", "message": str(e)}
 
 
+def send_cancellation_email(
+    user_email: str,
+    user_name: str,
+    event_title: str,
+    event_date: Optional[datetime] = None,
+    event_location: Optional[str] = None,
+    lang: str = "zh",
+) -> dict:
+    """Send cancellation notification email when admin cancels an RSVP."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping cancellation email (no RESEND_API_KEY): %s", user_email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+
+    templates = {
+        "zh": {
+            "subject": f"报名已取消: {event_title}",
+            "body": (
+                f"<p>您好 {user_name}，</p>"
+                f"<p>您在以下活动中的报名已由管理员取消：</p>"
+                f"<ul><li><strong>活动：</strong>{event_title}</li>"
+                + (f"<li><strong>时间：</strong>{date_str}</li>" if date_str else "")
+                + (f"<li><strong>地点：</strong>{event_location}</li>" if event_location else "")
+                + "</ul>"
+                f"<p>如有疑问，请联系 ACC 团队。</p>"
+                f"<p>—— ACC ClubHub 团队</p>"
+            ),
+        },
+        "en": {
+            "subject": f"Registration Cancelled: {event_title}",
+            "body": (
+                f"<p>Hello {user_name},</p>"
+                f"<p>Your registration for the following event has been cancelled by an admin:</p>"
+                f"<ul><li><strong>Event:</strong> {event_title}</li>"
+                + (f"<li><strong>Date:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Location:</strong> {event_location}</li>" if event_location else "")
+                + "</ul>"
+                f"<p>If you have questions, please contact the ACC team.</p>"
+                f"<p>—— ACC ClubHub Team</p>"
+            ),
+        },
+        "de": {
+            "subject": f"Anmeldung storniert: {event_title}",
+            "body": (
+                f"<p>Hallo {user_name},</p>"
+                f"<p>Ihre Anmeldung für folgende Veranstaltung wurde von einem Admin storniert:</p>"
+                f"<ul><li><strong>Veranstaltung:</strong> {event_title}</li>"
+                + (f"<li><strong>Datum:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Ort:</strong> {event_location}</li>" if event_location else "")
+                + "</ul>"
+                f"<p>Bei Fragen wenden Sie sich bitte an das ACC-Team.</p>"
+                f"<p>—— ACC ClubHub Team</p>"
+            ),
+        },
+    }
+
+    template = templates.get(lang, templates["en"])
+    html_body = (
+        f'<div style="font-family: Arial, sans-serif; max-width: 600px;">'
+        f'<h2 style="color: #C62828;">❌ {template["subject"]}</h2>'
+        f"{template['body']}"
+        f"</div>"
+    )
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "to": [user_email],
+        "subject": template["subject"],
+        "html": html_body,
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send cancellation email: %s", e, exc_info=True)
+        return {"status": "error", "message": str(e)}
+
+
 def send_waitlist_email(
     user_email: str,
     user_name: str,
