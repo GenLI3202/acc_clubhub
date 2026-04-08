@@ -43,6 +43,8 @@
     color: var(--color-text-main);
     box-shadow: var(--shadow-sm);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Promote card to its own GPU layer — prevents repaints on siblings */
+    will-change: transform;
 }
 
 .masonry-card:hover {
@@ -63,6 +65,8 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    /* GPU-composite the zoom so Android doesn't repaint surrounding pixels */
+    will-change: transform;
 }
 
 .masonry-card:hover .masonry-card-cover img {

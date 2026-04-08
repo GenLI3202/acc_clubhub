@@ -58,7 +58,13 @@ const formattedDate = isValidDate
     </header>
 
     {cover && (
-      <img src={cover} alt={title} class="article-cover" />
+      <img
+        src={cover}
+        alt={title}
+        class="article-cover"
+        loading="lazy"
+        decoding="async"
+      />
     )}
 
     <div class="article-content prose">
@@ -226,4 +232,22 @@ const formattedDate = isValidDate
     background: none;
     padding: 0;
   }
+
+  /* Cap inline images to prevent oversized assets from blocking render on mobile */
+  .article-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+    margin: var(--space-md) auto;
+  }
 </style>
+
+<script>
+  /* Apply lazy loading + async decode to all images inside article content.
+     Markdown-rendered <img> tags have no loading attribute by default. */
+  document.querySelectorAll<HTMLImageElement>(".article-content img").forEach((img) => {
+    if (!img.loading) img.loading = "lazy";
+    img.decoding = "async";
+  });
+</script>

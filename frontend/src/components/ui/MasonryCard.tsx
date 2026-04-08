@@ -55,7 +55,14 @@ export function MasonryCard({
         <a href={href} class="masonry-card">
             {cover ? (
                 <div class="masonry-card-cover" style={{ height: `${coverHeight}px` }}>
-                    <img src={cover} alt={title} loading="lazy" />
+                    <img
+                        src={cover}
+                        alt={title}
+                        loading="lazy"
+                        decoding="async"
+                        width="400"
+                        height={coverHeight}
+                    />
                 </div>
             ) : (
                 <div
