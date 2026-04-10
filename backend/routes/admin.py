@@ -12,7 +12,11 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Event, RSVP, Subscriber
 from routes.auth import get_current_admin
-from services.email import send_cancellation_email, send_broadcast_email
+from services.email import (
+    send_cancellation_email,
+    send_broadcast_email,
+    send_registrant_notification_email,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -242,6 +246,60 @@ def export_rsvps_csv(
     output.close()
 
     return csv_content.encode("utf-8")
+
+
+# ── Notify Registrants ───────────────────────────────────────
+
+@router.post("/api/admin/events/{event_id}/notify")
+def notify_registrants(
+    event_id: int,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Send an event notification email to all confirmed and waitlisted registrants.
+
+    Skips cancelled RSVPs. Failed sends are logged but do not abort the batch.
+    Returns a summary: {sent, skipped, failed}.
+
+    Requires admin authentication.
+    """
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    rsvps = (
+        db.query(RSVP)
+        .filter(RSVP.event_id == event_id)
+        .order_by(RSVP.created_at)
+        .all()
+    )
+
+    sent = 0
+    skipped = 0
+    failed = 0
+
+    for rsvp in rsvps:
+        if rsvp.status == "cancelled":
+            skipped += 1
+            continue
+        try:
+            send_registrant_notification_email(
+                user_email=rsvp.email,
+                user_name=rsvp.name,
+                event_title=event.title,
+                event_date=event.event_date,
+                event_location=event.location,
+                event_slug=event.slug,
+                view_token=rsvp.view_token or "",
+                lang="en",
+            )
+            sent += 1
+        except Exception as e:
+            logger.error("Registrant notification failed for %s: %s", rsvp.email, e)
+            failed += 1
+
+    return {"sent": sent, "skipped": skipped, "failed": failed}
 
 
 # ── Broadcast Email ───────────────────────────────────────────
