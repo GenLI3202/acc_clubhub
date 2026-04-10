@@ -188,6 +188,7 @@ const statusClass: Record<string, string> = {
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
       .email-cell { font-family: monospace; font-size: 0.85rem; }
+      #notify-status { font-size: 0.85rem; margin-left: 0.5rem; }
     </style>
   </head>
   <body>
@@ -240,6 +241,10 @@ const statusClass: Record<string, string> = {
             >
               Export CSV
             </a>
+            <button class="action-btn" id="notify-btn">
+              📧 Notify Registrants
+            </button>
+            <span id="notify-status"></span>
           </div>
 
           <div style="height: 1.5rem;"></div>
@@ -341,6 +346,35 @@ const statusClass: Record<string, string> = {
         btn.addEventListener("click", () => {
           cancelRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
         });
+      });
+
+      // Notify all confirmed + waitlisted registrants
+      document.getElementById("notify-btn")?.addEventListener("click", async () => {
+        const btn = document.getElementById("notify-btn");
+        const status = document.getElementById("notify-status");
+        if (!confirm("Send a notification email to all confirmed and waitlisted registrants?")) return;
+
+        btn.disabled = true;
+        status.textContent = "Sending…";
+        status.style.color = "#57606a";
+
+        try {
+          const res = await fetch(`/api/admin/events/${id}/notify`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({}),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          status.textContent = `✓ Sent: ${data.sent}  Skipped: ${data.skipped}  Failed: ${data.failed}`;
+          status.style.color = "#1a7f37";
+        } catch (e) {
+          status.textContent = `✗ ${e.message}`;
+          status.style.color = "#cf222e";
+        } finally {
+          btn.disabled = false;
+        }
       });
     </script>
   </body>
