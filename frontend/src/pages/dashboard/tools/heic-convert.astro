@@ -1,0 +1,269 @@
+---
+// dashboard/tools/heic-convert.astro
+// Client-side HEIC → JPEG converter for use before CMS media upload (#13)
+export const prerender = false;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+// Auth check
+const cookie = Astro.request.headers.get("cookie") || "";
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, {
+    headers: { "Cookie": cookie },
+  });
+  if (!meRes.ok) return Astro.redirect("/dashboard/login");
+} catch {
+  return Astro.redirect("/dashboard/login");
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HEIC Converter | ACC ClubHub Admin</title>
+    <!-- heic2any via CDN — converts HEIC/HEIF client-side, no server needed -->
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 760px; margin: 0 auto; }
+      .breadcrumb { margin-bottom: 1.5rem; font-size: 0.9rem; }
+      .breadcrumb a { color: #0969da; text-decoration: none; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .breadcrumb span { color: #57606a; margin: 0 0.4rem; }
+      h1 { font-size: 1.5rem; color: #24292f; margin: 0 0 0.4rem; }
+      .subtitle { color: #57606a; font-size: 0.9rem; margin-bottom: 2rem; }
+      .card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 2rem;
+      }
+      .drop-zone {
+        border: 2px dashed #d0d7de;
+        border-radius: 8px;
+        padding: 3rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+        position: relative;
+      }
+      .drop-zone.drag-over {
+        border-color: #0969da;
+        background: #ddf4ff;
+      }
+      .drop-zone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .drop-zone-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+      .drop-zone p { color: #57606a; margin: 0; font-size: 0.9rem; }
+      .drop-zone strong { color: #24292f; }
+      #status {
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: #57606a;
+        min-height: 1.4em;
+      }
+      #status.error { color: #cf222e; }
+      #status.success { color: #1a7f37; }
+      #progress { width: 100%; margin-top: 0.5rem; display: none; }
+      .results {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .result-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: #f6f8fa;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+      }
+      .result-item img {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #d0d7de;
+      }
+      .result-item .info { flex: 1; min-width: 0; }
+      .result-item .filename {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #24292f;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .result-item .size { font-size: 0.75rem; color: #57606a; }
+      .download-btn {
+        display: inline-block;
+        padding: 0.35rem 0.8rem;
+        background: #0969da;
+        color: white;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .download-btn:hover { background: #0860ca; }
+      .note {
+        margin-top: 1.5rem;
+        padding: 0.75rem 1rem;
+        background: #fff8c5;
+        border: 1px solid #d4a72c;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: #6e5000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">&larr; Admin Dashboard</a>
+        <span>/</span>
+        <span>HEIC Converter</span>
+      </div>
+
+      <h1>HEIC → JPEG Converter</h1>
+      <p class="subtitle">
+        Convert iPhone HEIC photos to JPEG before uploading to the CMS media library.
+        All conversion happens in your browser — files are never sent to a server.
+      </p>
+
+      <div class="card">
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept=".heic,.heif,image/heic,image/heif" multiple />
+          <div class="drop-zone-icon">📷</div>
+          <p><strong>Click to select</strong> or drag &amp; drop HEIC / HEIF files here</p>
+          <p>Multiple files supported</p>
+        </div>
+
+        <div id="status"></div>
+        <progress id="progress" max="100" value="0"></progress>
+        <div class="results" id="results"></div>
+
+        <div class="note">
+          After converting, download the JPEG files and upload them through
+          <a href="/admin" target="_blank">Sveltia CMS</a> as normal.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const dropZone = document.getElementById("dropZone");
+      const fileInput = document.getElementById("fileInput");
+      const statusEl = document.getElementById("status");
+      const progressEl = document.getElementById("progress");
+      const resultsEl = document.getElementById("results");
+
+      function setStatus(msg, type = "") {
+        statusEl.textContent = msg;
+        statusEl.className = type;
+      }
+
+      function formatBytes(bytes) {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+      }
+
+      // Drag-and-drop
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("drag-over");
+      });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("drag-over");
+        processFiles(Array.from(e.dataTransfer.files));
+      });
+
+      fileInput.addEventListener("change", () => {
+        processFiles(Array.from(fileInput.files));
+        fileInput.value = ""; // allow re-selecting same file
+      });
+
+      async function processFiles(files) {
+        const heicFiles = files.filter((f) =>
+          f.name.toLowerCase().endsWith(".heic") ||
+          f.name.toLowerCase().endsWith(".heif") ||
+          f.type === "image/heic" ||
+          f.type === "image/heif"
+        );
+
+        if (heicFiles.length === 0) {
+          setStatus("No HEIC/HEIF files found. Please select .heic or .heif files.", "error");
+          return;
+        }
+
+        resultsEl.innerHTML = "";
+        progressEl.style.display = "block";
+        progressEl.value = 0;
+        setStatus(`Converting ${heicFiles.length} file(s)…`);
+
+        for (let i = 0; i < heicFiles.length; i++) {
+          const file = heicFiles[i];
+          setStatus(`Converting ${i + 1} / ${heicFiles.length}: ${file.name}`);
+
+          try {
+            const blob = await heic2any({
+              blob: file,
+              toType: "image/jpeg",
+              quality: 0.92,
+            });
+
+            const resultBlob = Array.isArray(blob) ? blob[0] : blob;
+            const jpegName = file.name.replace(/\.(heic|heif)$/i, ".jpg");
+            const url = URL.createObjectURL(resultBlob);
+            const thumb = URL.createObjectURL(resultBlob);
+
+            const item = document.createElement("div");
+            item.className = "result-item";
+            item.innerHTML = `
+              <img src="${thumb}" alt="${jpegName}" />
+              <div class="info">
+                <div class="filename">${jpegName}</div>
+                <div class="size">${formatBytes(resultBlob.size)}</div>
+              </div>
+              <a class="download-btn" href="${url}" download="${jpegName}">Download</a>
+            `;
+            resultsEl.appendChild(item);
+          } catch (err) {
+            const item = document.createElement("div");
+            item.className = "result-item";
+            item.innerHTML = `
+              <div class="info">
+                <div class="filename">${file.name}</div>
+                <div class="size" style="color:#cf222e">Failed: ${err.message || err}</div>
+              </div>
+            `;
+            resultsEl.appendChild(item);
+          }
+
+          progressEl.value = Math.round(((i + 1) / heicFiles.length) * 100);
+        }
+
+        setStatus(`Done — ${heicFiles.length} file(s) converted. Click Download to save each JPEG.`, "success");
+      }
+    </script>
+  </body>
+</html>

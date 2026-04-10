@@ -102,6 +102,184 @@ def send_confirmation_email(
         return {"status": "error", "message": str(e)}
 
 
+def send_cancellation_email(
+    user_email: str,
+    user_name: str,
+    event_title: str,
+    event_date: Optional[datetime] = None,
+    event_location: Optional[str] = None,
+    lang: str = "zh",
+) -> dict:
+    """Send cancellation notification email when admin cancels an RSVP."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping cancellation email (no RESEND_API_KEY): %s", user_email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+
+    templates = {
+        "zh": {
+            "subject": f"报名已取消: {event_title}",
+            "body": (
+                f"<p>您好 {user_name}，</p>"
+                f"<p>您在以下活动中的报名已由管理员取消：</p>"
+                f"<ul><li><strong>活动：</strong>{event_title}</li>"
+                + (f"<li><strong>时间：</strong>{date_str}</li>" if date_str else "")
+                + (f"<li><strong>地点：</strong>{event_location}</li>" if event_location else "")
+                + "</ul>"
+                f"<p>如有疑问，请联系 ACC 团队。</p>"
+                f"<p>—— ACC ClubHub 团队</p>"
+            ),
+        },
+        "en": {
+            "subject": f"Registration Cancelled: {event_title}",
+            "body": (
+                f"<p>Hello {user_name},</p>"
+                f"<p>Your registration for the following event has been cancelled by an admin:</p>"
+                f"<ul><li><strong>Event:</strong> {event_title}</li>"
+                + (f"<li><strong>Date:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Location:</strong> {event_location}</li>" if event_location else "")
+                + "</ul>"
+                f"<p>If you have questions, please contact the ACC team.</p>"
+                f"<p>—— ACC ClubHub Team</p>"
+            ),
+        },
+        "de": {
+            "subject": f"Anmeldung storniert: {event_title}",
+            "body": (
+                f"<p>Hallo {user_name},</p>"
+                f"<p>Ihre Anmeldung für folgende Veranstaltung wurde von einem Admin storniert:</p>"
+                f"<ul><li><strong>Veranstaltung:</strong> {event_title}</li>"
+                + (f"<li><strong>Datum:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Ort:</strong> {event_location}</li>" if event_location else "")
+                + "</ul>"
+                f"<p>Bei Fragen wenden Sie sich bitte an das ACC-Team.</p>"
+                f"<p>—— ACC ClubHub Team</p>"
+            ),
+        },
+    }
+
+    template = templates.get(lang, templates["en"])
+    html_body = (
+        f'<div style="font-family: Arial, sans-serif; max-width: 600px;">'
+        f'<h2 style="color: #C62828;">❌ {template["subject"]}</h2>'
+        f"{template['body']}"
+        f"</div>"
+    )
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "to": [user_email],
+        "subject": template["subject"],
+        "html": html_body,
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send cancellation email: %s", e, exc_info=True)
+        return {"status": "error", "message": str(e)}
+
+
+def send_broadcast_email(
+    user_email: str,
+    user_name: str,
+    event_title: str,
+    event_date: Optional[datetime] = None,
+    event_location: Optional[str] = None,
+    event_slug: str = "",
+    lang: str = "zh",
+    unsubscribe_token: str = "",
+) -> dict:
+    """Send event announcement broadcast email to a subscriber."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping broadcast email (no RESEND_API_KEY): %s", user_email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    event_link = f"{frontend_url}/{lang}/events/{event_slug}" if event_slug else frontend_url
+    unsub_link = (
+        f"{frontend_url}/api/unsubscribe/{unsubscribe_token}"
+        if unsubscribe_token else ""
+    )
+    unsub_html = (
+        f'<p style="font-size:0.8em;color:#999;">不再接收活动通知？<a href="{unsub_link}">点击退订</a></p>'
+        if lang == "zh" and unsub_link
+        else f'<p style="font-size:0.8em;color:#999;"><a href="{unsub_link}">Unsubscribe</a></p>'
+        if unsub_link else ""
+    )
+
+    templates = {
+        "zh": {
+            "subject": f"新活动通知: {event_title}",
+            "body": (
+                f"<p>您好 {user_name}，</p>"
+                f"<p>ACC ClubHub 有新活动发布：</p>"
+                f"<ul>"
+                f"<li><strong>活动：</strong>{event_title}</li>"
+                + (f"<li><strong>时间：</strong>{date_str}</li>" if date_str else "")
+                + (f"<li><strong>地点：</strong>{event_location}</li>" if event_location else "")
+                + f"</ul>"
+                f'<p><a href="{event_link}" style="background:#C62828;color:white;padding:8px 16px;'
+                f'border-radius:4px;text-decoration:none;font-weight:600;">立即查看 →</a></p>'
+                f"{unsub_html}"
+            ),
+        },
+        "en": {
+            "subject": f"New Event: {event_title}",
+            "body": (
+                f"<p>Hello {user_name},</p>"
+                f"<p>A new event has been published on ACC ClubHub:</p>"
+                f"<ul>"
+                f"<li><strong>Event:</strong> {event_title}</li>"
+                + (f"<li><strong>Date:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Location:</strong> {event_location}</li>" if event_location else "")
+                + f"</ul>"
+                f'<p><a href="{event_link}" style="background:#C62828;color:white;padding:8px 16px;'
+                f'border-radius:4px;text-decoration:none;font-weight:600;">View Event →</a></p>'
+                f"{unsub_html}"
+            ),
+        },
+        "de": {
+            "subject": f"Neue Veranstaltung: {event_title}",
+            "body": (
+                f"<p>Hallo {user_name},</p>"
+                f"<p>Eine neue Veranstaltung wurde auf ACC ClubHub veröffentlicht:</p>"
+                f"<ul>"
+                f"<li><strong>Veranstaltung:</strong> {event_title}</li>"
+                + (f"<li><strong>Datum:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Ort:</strong> {event_location}</li>" if event_location else "")
+                + f"</ul>"
+                f'<p><a href="{event_link}" style="background:#C62828;color:white;padding:8px 16px;'
+                f'border-radius:4px;text-decoration:none;font-weight:600;">Veranstaltung ansehen →</a></p>'
+                f"{unsub_html}"
+            ),
+        },
+    }
+
+    template = templates.get(lang, templates["en"])
+    html_body = (
+        f'<div style="font-family:Arial,sans-serif;max-width:600px;">'
+        f'<h2 style="color:#C62828;">🚴 {template["subject"]}</h2>'
+        f"{template['body']}"
+        f"</div>"
+    )
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "to": [user_email],
+        "subject": template["subject"],
+        "html": html_body,
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send broadcast email to %s: %s", user_email, e, exc_info=True)
+        return {"status": "error", "message": str(e)}
+
+
 def send_waitlist_email(
     user_email: str,
     user_name: str,

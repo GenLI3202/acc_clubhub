@@ -38,14 +38,69 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
   const lang = walineContainer?.dataset.lang || 'en';
   const path = window.location.pathname;
 
-  init({
+  const walineInstance = init({
     el: '#waline',
     serverURL,
     lang,
     path,
     requiredMeta: ['nick', 'mail'],
     dark: 'html[data-theme="dark"]',
+    // Explicitly list only the social login providers we support.
+    // Waline shows all configured providers on the server; listing them here
+    // as an empty array disables the social-login panel entirely and forces
+    // guests to use the nick+email form (which is what we want).
+    login: 'disable',
   });
+
+  // Show a visible error toast when the user tries to submit without
+  // filling in the required nick and mail fields (silent-fail fix, #30).
+  function showCommentError(message) {
+    const existing = document.getElementById('waline-error-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'waline-error-toast';
+    toast.setAttribute('role', 'alert');
+    toast.style.cssText = [
+      'position:fixed', 'bottom:1.5rem', 'left:50%', 'transform:translateX(-50%)',
+      'background:#cf222e', 'color:white', 'padding:0.6rem 1.2rem',
+      'border-radius:6px', 'font-size:0.9rem', 'font-weight:600',
+      'box-shadow:0 4px 12px rgba(0,0,0,0.2)', 'z-index:9999',
+      'animation:fadeIn 0.2s ease',
+    ].join(';');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  // Intercept submit clicks: validate nick and mail before Waline's own handler.
+  document.addEventListener('click', (e) => {
+    const btn = e.target?.closest?.('.wl-btn');
+    if (!btn) return;
+    const wrapper = document.getElementById('waline');
+    if (!wrapper?.contains(btn)) return;
+
+    const nickInput = wrapper.querySelector('input[name="nick"]');
+    const mailInput = wrapper.querySelector('input[name="mail"]');
+    const comment   = wrapper.querySelector('.wl-editor');
+
+    if (nickInput && !nickInput.value.trim()) {
+      e.stopImmediatePropagation();
+      showCommentError('Please enter your name (nickname) before submitting.');
+      nickInput.focus();
+      return;
+    }
+    if (mailInput && !mailInput.value.trim()) {
+      e.stopImmediatePropagation();
+      showCommentError('Please enter your email address before submitting.');
+      mailInput.focus();
+      return;
+    }
+    if (comment && !comment.textContent?.trim()) {
+      e.stopImmediatePropagation();
+      showCommentError('Comment cannot be empty.');
+      comment.focus();
+    }
+  }, true); // capture phase so we run before Waline's handler
 </script>
 
 <style>
@@ -113,12 +168,14 @@ const walineServerUrl = import.meta.env.PUBLIC_WALINE_SERVER_URL || 'https://acc
     font-size: 0.85rem !important;
   }
 
-  /* Only keep GitHub OAuth */
-  .waline-wrapper :global(.wl-login-info a) {
+  /* Social login is disabled via login:'disable' in JS.
+     Hide the login panel entirely as a CSS safety net. */
+  .waline-wrapper :global(.wl-login-info) {
     display: none !important;
   }
 
-  .waline-wrapper :global(.wl-login-info a[title*="GitHub"]) {
-    display: inline-block !important;
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 </style>

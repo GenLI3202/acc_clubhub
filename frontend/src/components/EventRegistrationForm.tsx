@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import type { VNode } from 'preact';
 import type { Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
@@ -53,6 +53,20 @@ export function EventRegistrationForm({
     const [success, setSuccess] = useState(false);
     const [isWaitlist, setIsWaitlist] = useState(false);
     const [submittedEmail, setSubmittedEmail] = useState('');
+    // Live spot count fetched from DB; null = unlimited or not yet loaded
+    const [spotsRemaining, setSpotsRemaining] = useState<number | null>(maxParticipants);
+
+    useEffect(() => {
+        if (maxParticipants === null) return; // unlimited — no need to fetch
+        fetch(`${apiUrl}/api/events/${eventSlug}`)
+            .then((r) => r.ok ? r.json() : null)
+            .then((data) => {
+                if (data && typeof data.available_spots === 'number') {
+                    setSpotsRemaining(data.available_spots);
+                }
+            })
+            .catch(() => { /* silently keep static maxParticipants as fallback */ });
+    }, [eventSlug, apiUrl, maxParticipants]);
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
@@ -103,6 +117,10 @@ export function EventRegistrationForm({
             setIsWaitlist(data.status === 'waitlist');
             setSubmittedEmail(formData.email);
             setSuccess(true);
+            // Decrement live spot count immediately after confirmed registration
+            if (data.status === 'confirmed') {
+                setSpotsRemaining((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
+            }
             setFormData({
                 email: '',
                 name: '',
@@ -148,8 +166,10 @@ export function EventRegistrationForm({
         <form className="event-registration-form" onSubmit={handleSubmit} data-title={formTitle}>
             {maxParticipants !== null && (
                 <div className="spots-indicator">
-                    <span className="spots-available">
-                        {t(lang, 'event.spotsAvailable')}: {maxParticipants}
+                    <span className={`spots-available${spotsRemaining === 0 ? ' spots-full' : ''}`}>
+                        {spotsRemaining === 0
+                            ? t(lang, 'event.noSpotsLeft')
+                            : `${t(lang, 'event.spotsAvailable')}: ${spotsRemaining ?? '…'}`}
                     </span>
                 </div>
             )}

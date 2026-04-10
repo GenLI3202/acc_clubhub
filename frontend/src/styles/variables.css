@@ -6,6 +6,29 @@
 /* Google Fonts: Jost (heading) + Inter (body) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Jost:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
+/* ===================================================
+   Dark Mode — class-based manual toggle
+   Issue #55: :root.dark set by theme-toggle button
+   Persisted in localStorage('acc-theme')
+   =================================================== */
+:root.dark {
+  --color-bg-canvas: #111111;
+  --color-bg-secondary: #1A1A1A;
+  --color-primary: #EDEDED;
+  --color-text-main: #E5E5E5;
+  --color-text-secondary: #9CA3AF;
+  --color-text-muted: #6B7280;
+  --color-text-light: #FFFFFF;
+  --color-border: #2D2D2D;
+  --color-border-strong: #3D3D3D;
+  /* Accent and secondary stay the same — wine red works on dark */
+
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.40);
+  --shadow-md:  0 4px 12px rgba(0, 0, 0, 0.50);
+  --shadow-lg:  0 8px 24px rgba(0, 0, 0, 0.60);
+  --shadow-xl:  0 16px 40px rgba(0, 0, 0, 0.70);
+}
+
 :root {
   /* -----------------------------------------------
      Color Palette — Modern Cycling Premium

@@ -303,6 +303,7 @@ const statusClass: Record<string, string> = {
             body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
           });
           if (res.ok) {
+            const data = await res.json();
             const row = document.getElementById(`rsvp-${rsvpId}`);
             if (row) {
               const badge = row.querySelector(".badge");
@@ -312,6 +313,20 @@ const statusClass: Record<string, string> = {
               }
             }
             btn.style.display = "none";
+
+            // If a waitlisted RSVP was promoted, update their badge in the table
+            if (data.promoted) {
+              document.querySelectorAll(".badge-waitlist").forEach((b) => {
+                if (b.closest("tr")?.querySelector("td strong")?.textContent === data.promoted) {
+                  b.className = "badge badge-confirmed";
+                  b.textContent = "confirmed";
+                }
+              });
+            }
+
+            // Reload the page to get accurate spot counts from the server
+            // (summary cards and event meta header can't be updated client-side reliably)
+            window.location.reload();
           } else {
             alert("Failed to cancel RSVP");
             btn.disabled = false;

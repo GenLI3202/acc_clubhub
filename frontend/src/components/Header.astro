@@ -45,6 +45,26 @@ function getLangSwitchUrl(targetLang: Locale): string {
     </ul>
 
     <div class="header-actions">
+      <!-- Theme toggle: moon = go dark, sun = go light -->
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <!-- Moon icon — visible in light mode -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <!-- Sun icon — visible in dark mode -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+
       <GlobalSearch
         client:idle
         lang={lang}
@@ -78,6 +98,21 @@ function getLangSwitchUrl(targetLang: Locale): string {
 </header>
 
 <script>
+  // Theme toggle — persists to localStorage, applies .dark to <html>
+  const themeBtn = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+
+  function applyTheme(dark: boolean) {
+    root.classList.toggle('dark', dark);
+    try { localStorage.setItem('acc-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  }
+
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      applyTheme(!root.classList.contains('dark'));
+    });
+  }
+
   // Transparent-header scroll handler: check DOM class at runtime so this
   // single <script> block works on all pages without conditional rendering.
   // (A second conditional <script> block causes Astro to assign indices that
@@ -138,8 +173,8 @@ function getLangSwitchUrl(targetLang: Locale): string {
     position: sticky;
     top: 0;
     z-index: 100;
-    /* Default: solid white */
-    background: rgba(255, 255, 255, 0.97);
+    /* Default: canvas with subtle blur */
+    background: color-mix(in srgb, var(--color-bg-canvas) 97%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-border);
     transition: background var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
@@ -157,9 +192,9 @@ function getLangSwitchUrl(targetLang: Locale): string {
     box-shadow: none;
   }
 
-  /* After scrolling: fade in white */
+  /* After scrolling: fade in canvas color */
   header.header-transparent.header-scrolled {
-    background: rgba(255, 255, 255, 0.97);
+    background: color-mix(in srgb, var(--color-bg-canvas) 97%, transparent);
     backdrop-filter: blur(12px);
     border-bottom-color: var(--color-border);
     box-shadow: var(--shadow-sm);
@@ -339,7 +374,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
     /* ── Mobile nav open: force solid background over hero ── */
     header:has(#nav-toggle:checked),
     header.nav-open {
-      background: rgba(255, 255, 255, 0.98) !important;
+      background: color-mix(in srgb, var(--color-bg-canvas) 98%, transparent) !important;
       backdrop-filter: blur(12px);
       border-bottom-color: var(--color-border) !important;
       z-index: 10000 !important;
@@ -370,6 +405,46 @@ function getLangSwitchUrl(targetLang: Locale): string {
       color: var(--color-text-main) !important;
     }
   }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--color-text-main);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-accent);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .theme-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Light mode: show moon, hide sun */
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+
+  /* Dark mode: show sun, hide moon */
+  :global(:root.dark) .icon-sun { display: block; }
+  :global(:root.dark) .icon-moon { display: none; }
+
+  /* Transparent header: white icon */
+  header.header-transparent .theme-toggle { color: rgba(255, 255, 255, 0.9); }
+  header.header-transparent .theme-toggle:hover { color: #ffffff; background: rgba(255, 255, 255, 0.15); }
+  header.header-transparent.header-scrolled .theme-toggle { color: var(--color-text-main); }
+  header.header-transparent.header-scrolled .theme-toggle:hover { color: var(--color-accent); background: rgba(0, 0, 0, 0.05); }
 
   /* Language switcher */
   .lang-dropdown {
@@ -431,7 +506,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
     position: absolute;
     top: 100%;
     right: 0;
-    background: #ffffff;
+    background: var(--color-bg-canvas);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);

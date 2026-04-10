@@ -22,6 +22,14 @@ const { title, lang = 'zh', headerTransparent = false, heroImagePreload } = Astr
     <title>{title} | ACC ClubHub</title>
     <link rel="icon" type="image/jpeg" href="/images/transparent_red_logo.png" />
     {heroImagePreload && <link rel="preload" as="image" href={heroImagePreload} />}
+    <!-- Anti-FOUC: apply saved theme class before first paint -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('acc-theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <Header lang={lang} transparent={headerTransparent} />

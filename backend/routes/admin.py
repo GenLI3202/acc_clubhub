@@ -5,11 +5,16 @@ Phase 4.3.4: Admin dashboard API endpoints (JWT protected)
 
 import csv
 import io
+import logging
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from database import get_db
-from models import Event, RSVP
+from models import Event, RSVP, Subscriber
 from routes.auth import get_current_admin
+from services.email import send_cancellation_email, send_broadcast_email
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -120,20 +125,33 @@ def get_event_rsvps(
 
 # ── Admin Cancel RSVP ─────────────────────────────────────────
 
+class CancelRsvpRequest(BaseModel):
+    rsvp_id: int
+
+
 @router.post("/api/admin/events/{event_id}/rsvp/cancel")
 def cancel_rsvp(
     event_id: int,
-    rsvp_id: int,
+    body: CancelRsvpRequest,
     db: Session = Depends(get_db),
     _admin: dict = Depends(get_current_admin),
 ) -> dict:
     """
     Cancel an RSVP (set status to 'cancelled').
-    DB trigger updates current_participants automatically.
+
+    Explicitly maintains current_participants as a safety net over the DB
+    trigger (which may not run in all environments). Also promotes the first
+    waitlisted RSVP to confirmed when a spot opens, and sends a cancellation
+    email to the affected participant.
+
     Requires admin authentication.
     """
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
     rsvp = db.query(RSVP).filter(
-        RSVP.id == rsvp_id,
+        RSVP.id == body.rsvp_id,
         RSVP.event_id == event_id,
     ).first()
     if not rsvp:
@@ -142,10 +160,46 @@ def cancel_rsvp(
     if rsvp.status == "cancelled":
         return {"success": True, "message": "Already cancelled"}
 
+    was_confirmed = rsvp.status == "confirmed"
     rsvp.status = "cancelled"
+
+    # Safety net: explicitly keep current_participants in sync (complements DB trigger)
+    if was_confirmed and event.current_participants > 0:
+        event.current_participants -= 1
+
+    # Promote the first waitlisted RSVP when a confirmed slot opens
+    promoted = None
+    if was_confirmed:
+        next_waitlisted = (
+            db.query(RSVP)
+            .filter(RSVP.event_id == event_id, RSVP.status == "waitlist")
+            .order_by(RSVP.created_at)
+            .first()
+        )
+        if next_waitlisted:
+            next_waitlisted.status = "confirmed"
+            event.current_participants += 1
+            promoted = next_waitlisted
+
     db.commit()
 
-    return {"success": True, "message": f"RSVP for {rsvp.name} cancelled"}
+    # Send cancellation notification (non-fatal)
+    try:
+        send_cancellation_email(
+            user_email=rsvp.email,
+            user_name=rsvp.name,
+            event_title=event.title,
+            event_date=event.event_date,
+            event_location=event.location,
+            lang="en",
+        )
+    except Exception as e:
+        logger.error("Cancellation email failed (RSVP still cancelled): %s", e)
+
+    result: dict = {"success": True, "message": f"RSVP for {rsvp.name} cancelled"}
+    if promoted:
+        result["promoted"] = promoted.name
+    return result
 
 
 # ── Admin CSV Export ──────────────────────────────────────────
@@ -188,3 +242,107 @@ def export_rsvps_csv(
     output.close()
 
     return csv_content.encode("utf-8")
+
+
+# ── Broadcast Email ───────────────────────────────────────────
+
+@router.post("/api/admin/broadcast/{event_slug}")
+def broadcast_event(
+    event_slug: str,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Broadcast a new-event announcement to all active subscribers.
+
+    Sends one email per active subscriber in their preferred language
+    (zh / en / de). Failed sends are logged but do not abort the batch.
+    Returns a summary: {sent, skipped, failed}.
+
+    Requires admin authentication.
+    """
+    event = db.query(Event).filter(Event.slug == event_slug).first()
+    if not event:
+        raise HTTPException(status_code=404, detail=f"Event '{event_slug}' not found")
+
+    subscribers = db.query(Subscriber).all()
+
+    sent = 0
+    skipped = 0
+    failed = 0
+
+    for sub in subscribers:
+        if not sub.is_active:
+            skipped += 1
+            continue
+        try:
+            send_broadcast_email(
+                user_email=sub.email,
+                user_name=sub.name,
+                event_title=event.title,
+                event_date=event.event_date,
+                event_location=event.location,
+                event_slug=event.slug,
+                lang=sub.lang or "en",
+                unsubscribe_token=sub.unsubscribe_token,
+            )
+            sent += 1
+        except Exception as e:
+            logger.error("Broadcast failed for %s: %s", sub.email, e)
+            failed += 1
+
+    return {"sent": sent, "skipped": skipped, "failed": failed}
+
+
+# ── Subscriber List ───────────────────────────────────────────
+
+@router.get("/api/admin/subscribers")
+def list_subscribers(
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> list[dict]:
+    """
+    List all subscribers (active + inactive).
+    Does NOT expose unsubscribe_token.
+    Requires admin authentication.
+    """
+    subscribers = (
+        db.query(Subscriber)
+        .order_by(Subscriber.subscribed_at.desc())
+        .all()
+    )
+    return [
+        {
+            "id": s.id,
+            "email": s.email,
+            "name": s.name,
+            "lang": s.lang,
+            "is_active": s.is_active,
+            "subscribed_at": s.subscribed_at.isoformat() if s.subscribed_at else None,
+        }
+        for s in subscribers
+    ]
+
+
+@router.post("/api/admin/subscribers/{subscriber_id}/toggle")
+def toggle_subscriber(
+    subscriber_id: int,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Toggle a subscriber's is_active flag (activate / deactivate).
+    Requires admin authentication.
+    """
+    sub = db.query(Subscriber).filter(Subscriber.id == subscriber_id).first()
+    if not sub:
+        raise HTTPException(status_code=404, detail="Subscriber not found")
+
+    sub.is_active = not sub.is_active
+    db.commit()
+
+    return {
+        "id": sub.id,
+        "email": sub.email,
+        "is_active": sub.is_active,
+    }

@@ -2,6 +2,7 @@
 ACC ClubHub - SQLAlchemy 数据模型
 Phase 4.3: Email-based event registration + subscription system
 """
+from __future__ import annotations
 
 from datetime import datetime, timezone
 from sqlalchemy import (

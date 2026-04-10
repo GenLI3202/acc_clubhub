@@ -1,0 +1,318 @@
+---
+// dashboard/subscribers/index.astro — Subscriber list + management (SSR)
+export const prerender = false;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+// Auth check
+const cookie = Astro.request.headers.get("cookie") || "";
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, {
+    headers: { "Cookie": cookie },
+  });
+  if (!meRes.ok) return Astro.redirect("/dashboard/login");
+} catch {
+  return Astro.redirect("/dashboard/login");
+}
+
+// Fetch subscribers
+let subscribers: any[] = [];
+let fetchError: string | null = null;
+
+try {
+  const res = await fetch(`${apiUrl}/api/admin/subscribers`, {
+    headers: { "Cookie": cookie },
+  });
+  if (res.ok) {
+    subscribers = await res.json();
+  } else if (res.status === 401) {
+    return Astro.redirect("/dashboard/login");
+  } else {
+    fetchError = `Failed to fetch subscribers: ${res.status}`;
+  }
+} catch (e: any) {
+  fetchError = `Failed to fetch subscribers: ${e.message}`;
+}
+
+const activeCount = subscribers.filter((s) => s.is_active).length;
+const inactiveCount = subscribers.length - activeCount;
+
+function formatDate(dateStr: string | null): string {
+  if (!dateStr) return "—";
+  try {
+    return new Date(dateStr).toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subscribers | ACC ClubHub Admin</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 1100px; margin: 0 auto; }
+      .breadcrumb { margin-bottom: 1.5rem; font-size: 0.9rem; }
+      .breadcrumb a { color: #0969da; text-decoration: none; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .breadcrumb span { color: #57606a; margin: 0 0.4rem; }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #d0d7de;
+      }
+      h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+      .summary-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+      .summary-card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        min-width: 120px;
+      }
+      .summary-card .label { font-size: 0.75rem; color: #57606a; text-transform: uppercase; letter-spacing: 0.05em; }
+      .summary-card .value { font-size: 1.75rem; font-weight: 700; color: #24292f; }
+      table {
+        width: 100%;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        border-collapse: collapse;
+        overflow: hidden;
+      }
+      th {
+        background: #f6f8fa;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #57606a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #d0d7de;
+      }
+      td { padding: 0.75rem 1rem; border-bottom: 1px solid #eaeef2; font-size: 0.9rem; }
+      tr:last-child td { border-bottom: none; }
+      tr:hover td { background: #f6f8fa; }
+      .email-cell { font-family: monospace; font-size: 0.85rem; }
+      .badge {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-active { background: #dafbe1; color: #1a7f37; }
+      .badge-inactive { background: #f6f8fa; color: #57606a; border: 1px solid #d0d7de; }
+      .lang-tag {
+        display: inline-block;
+        padding: 0.1rem 0.4rem;
+        background: #ddf4ff;
+        color: #0550ae;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        font-family: monospace;
+      }
+      .toggle-btn {
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        border: 1px solid #d0d7de;
+        background: white;
+        color: #24292f;
+        transition: background 0.15s;
+      }
+      .toggle-btn:hover { background: #f6f8fa; }
+      .toggle-btn.deactivate { border-color: #ff818266; color: #cf222e; }
+      .toggle-btn.deactivate:hover { background: #ffebe9; }
+      .toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .empty { text-align: center; padding: 3rem; color: #57606a; }
+      .broadcast-form {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .broadcast-form input {
+        padding: 0.4rem 0.75rem;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        width: 220px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.4rem 0.9rem;
+        background: #0969da;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn:hover { background: #0860ca; }
+      .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      #broadcast-status { font-size: 0.85rem; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">&larr; Admin Dashboard</a>
+        <span>/</span>
+        <span>Subscribers</span>
+      </div>
+
+      <div class="header">
+        <h1>Subscribers</h1>
+        <div class="broadcast-form">
+          <input id="broadcast-slug" type="text" placeholder="event-slug" />
+          <button class="btn" id="broadcast-btn">📢 Broadcast Event</button>
+          <span id="broadcast-status"></span>
+        </div>
+      </div>
+
+      {fetchError && <div class="error">{fetchError}</div>}
+
+      <div class="summary-bar">
+        <div class="summary-card">
+          <div class="label">Total</div>
+          <div class="value">{subscribers.length}</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Active</div>
+          <div class="value">{activeCount}</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Inactive</div>
+          <div class="value">{inactiveCount}</div>
+        </div>
+      </div>
+
+      {subscribers.length === 0 && !fetchError ? (
+        <div class="empty">No subscribers yet.</div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Lang</th>
+              <th>Status</th>
+              <th>Subscribed</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {subscribers.map((sub: any) => (
+              <tr id={`sub-${sub.id}`}>
+                <td><strong>{sub.name}</strong></td>
+                <td class="email-cell">{sub.email}</td>
+                <td><span class="lang-tag">{sub.lang}</span></td>
+                <td>
+                  <span class={`badge ${sub.is_active ? "badge-active" : "badge-inactive"}`} id={`status-${sub.id}`}>
+                    {sub.is_active ? "active" : "inactive"}
+                  </span>
+                </td>
+                <td>{formatDate(sub.subscribed_at)}</td>
+                <td>
+                  <button
+                    class={`toggle-btn ${sub.is_active ? "deactivate" : ""}`}
+                    data-id={sub.id}
+                    data-active={String(sub.is_active)}
+                    id={`toggle-${sub.id}`}
+                  >
+                    {sub.is_active ? "Deactivate" : "Activate"}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+
+    <script define:vars={{ apiUrl }}>
+      // Toggle subscriber active status
+      document.querySelectorAll(".toggle-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          btn.disabled = true;
+          try {
+            const res = await fetch(`${apiUrl}/api/admin/subscribers/${id}/toggle`, {
+              method: "POST",
+              credentials: "include",
+            });
+            if (!res.ok) throw new Error(`${res.status}`);
+            const data = await res.json();
+            const badge = document.getElementById(`status-${id}`);
+            if (badge) {
+              badge.className = `badge ${data.is_active ? "badge-active" : "badge-inactive"}`;
+              badge.textContent = data.is_active ? "active" : "inactive";
+            }
+            btn.dataset.active = String(data.is_active);
+            btn.textContent = data.is_active ? "Deactivate" : "Activate";
+            btn.className = `toggle-btn ${data.is_active ? "deactivate" : ""}`;
+          } catch (e) {
+            alert("Failed to toggle subscriber: " + e.message);
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      });
+
+      // Broadcast email to all active subscribers
+      document.getElementById("broadcast-btn")?.addEventListener("click", async () => {
+        const slug = document.getElementById("broadcast-slug").value.trim();
+        const status = document.getElementById("broadcast-status");
+        const btn = document.getElementById("broadcast-btn");
+        if (!slug) { alert("Please enter an event slug."); return; }
+        if (!confirm(`Broadcast event "${slug}" to all active subscribers?`)) return;
+
+        btn.disabled = true;
+        status.textContent = "Sending…";
+        status.style.color = "#57606a";
+
+        try {
+          const res = await fetch(`${apiUrl}/api/admin/broadcast/${slug}`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({}),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          status.textContent = `✓ Sent: ${data.sent}  Skipped: ${data.skipped}  Failed: ${data.failed}`;
+          status.style.color = "#1a7f37";
+        } catch (e) {
+          status.textContent = `✗ ${e.message}`;
+          status.style.color = "#cf222e";
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
