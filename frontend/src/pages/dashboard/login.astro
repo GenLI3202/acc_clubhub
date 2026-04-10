@@ -11,7 +11,7 @@ try {
     headers: { "Cookie": cookie },
   });
   if (meRes.ok) {
-    return Astro.redirect("/dashboard/events");
+    return Astro.redirect("/dashboard");
   }
 } catch {
   // Not authenticated — show login page
