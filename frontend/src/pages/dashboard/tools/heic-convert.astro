@@ -185,6 +185,76 @@ try {
         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
       }
 
+      /**
+       * Strategy 1: Native browser HEIC decode via <img> → canvas.
+       * Works in Safari on macOS/iOS (native HEIC support).
+       * naturalWidth check guards against browsers that fire onload
+       * without actually decoding the image.
+       */
+      function convertViaNative(file) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const objectUrl = URL.createObjectURL(file);
+
+          img.onload = () => {
+            URL.revokeObjectURL(objectUrl);
+            if (!img.naturalWidth || !img.naturalHeight) {
+              reject(new Error("Native decode produced empty image"));
+              return;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            canvas.getContext("2d").drawImage(img, 0, 0);
+            canvas.toBlob(
+              (blob) => blob ? resolve(blob) : reject(new Error("Canvas JPEG export failed")),
+              "image/jpeg",
+              0.92
+            );
+          };
+
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error("Browser cannot natively decode this HEIC file"));
+          };
+
+          img.src = objectUrl;
+        });
+      }
+
+      /**
+       * Strategy 2: heic2any (WASM libheif fallback).
+       * Covers older HEIC files but fails on modern iPhone photos
+       * (HEVC codec not in the 2019 libheif WASM build).
+       */
+      async function convertViaHeic2any(file) {
+        if (typeof heic2any === "undefined") {
+          throw new Error("heic2any library not loaded");
+        }
+        const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.92 });
+        return Array.isArray(blob) ? blob[0] : blob;
+      }
+
+      /**
+       * Try native first (fast, no WASM, handles modern iPhone HEIC),
+       * fall back to heic2any (handles older HEIC variants).
+       */
+      async function convertFile(file) {
+        try {
+          return await convertViaNative(file);
+        } catch {
+          // Native failed — try heic2any
+        }
+        try {
+          return await convertViaHeic2any(file);
+        } catch (e) {
+          throw new Error(
+            `Conversion failed: ${e.message}. ` +
+            "If using Chrome, try opening this file in Safari instead."
+          );
+        }
+      }
+
       // Drag-and-drop
       dropZone.addEventListener("dragover", (e) => {
         e.preventDefault();
@@ -199,7 +269,7 @@ try {
 
       fileInput.addEventListener("change", () => {
         processFiles(Array.from(fileInput.files));
-        fileInput.value = ""; // allow re-selecting same file
+        fileInput.value = "";
       });
 
       async function processFiles(files) {
@@ -220,26 +290,21 @@ try {
         progressEl.value = 0;
         setStatus(`Converting ${heicFiles.length} file(s)…`);
 
+        let succeeded = 0;
+
         for (let i = 0; i < heicFiles.length; i++) {
           const file = heicFiles[i];
           setStatus(`Converting ${i + 1} / ${heicFiles.length}: ${file.name}`);
 
           try {
-            const blob = await heic2any({
-              blob: file,
-              toType: "image/jpeg",
-              quality: 0.92,
-            });
-
-            const resultBlob = Array.isArray(blob) ? blob[0] : blob;
+            const resultBlob = await convertFile(file);
             const jpegName = file.name.replace(/\.(heic|heif)$/i, ".jpg");
             const url = URL.createObjectURL(resultBlob);
-            const thumb = URL.createObjectURL(resultBlob);
 
             const item = document.createElement("div");
             item.className = "result-item";
             item.innerHTML = `
-              <img src="${thumb}" alt="${jpegName}" />
+              <img src="${url}" alt="${jpegName}" />
               <div class="info">
                 <div class="filename">${jpegName}</div>
                 <div class="size">${formatBytes(resultBlob.size)}</div>
@@ -247,6 +312,7 @@ try {
               <a class="download-btn" href="${url}" download="${jpegName}">Download</a>
             `;
             resultsEl.appendChild(item);
+            succeeded++;
           } catch (err) {
             const item = document.createElement("div");
             item.className = "result-item";
@@ -262,7 +328,15 @@ try {
           progressEl.value = Math.round(((i + 1) / heicFiles.length) * 100);
         }
 
-        setStatus(`Done — ${heicFiles.length} file(s) converted. Click Download to save each JPEG.`, "success");
+        const failed = heicFiles.length - succeeded;
+        if (failed === 0) {
+          setStatus(`Done — ${succeeded} file(s) converted. Click Download to save each JPEG.`, "success");
+        } else {
+          setStatus(
+            `${succeeded} converted, ${failed} failed. Failed files may require Safari browser.`,
+            succeeded > 0 ? "success" : "error"
+          );
+        }
       }
     </script>
   </body>
