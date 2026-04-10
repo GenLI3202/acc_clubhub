@@ -10,8 +10,17 @@ import { defineMiddleware } from "astro:middleware";
  * which can happen on Vercel's SSR edge runtime.
  */
 export const onRequest = defineMiddleware(async (context, next) => {
-    const response = await next();
     const path = context.url.pathname;
+
+    // Redirect /dashboard/ (trailing slash) to /dashboard before i18n runs.
+    // Without this, Astro's i18n middleware returns a generic 404 body for the
+    // trailing-slash variant, and the status-override below would serve that
+    // generic body as a 200 — making the page appear blank.
+    if (path === "/dashboard/") {
+        return context.redirect("/dashboard", 308);
+    }
+
+    const response = await next();
 
     if (path.startsWith("/dashboard") && response.status === 404) {
         const body = await response.text();
