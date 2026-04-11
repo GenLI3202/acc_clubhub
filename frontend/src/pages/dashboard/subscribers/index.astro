@@ -153,13 +153,17 @@ function formatDate(dateStr: string | null): string {
         align-items: center;
         flex-wrap: wrap;
       }
-      .broadcast-form input {
+      .broadcast-form select {
         padding: 0.4rem 0.75rem;
         border: 1px solid #d0d7de;
         border-radius: 6px;
         font-size: 0.85rem;
-        width: 220px;
+        min-width: 260px;
+        background: white;
+        color: #24292f;
+        cursor: pointer;
       }
+      .broadcast-form select:disabled { opacity: 0.6; cursor: not-allowed; }
       .btn {
         display: inline-block;
         padding: 0.4rem 0.9rem;
@@ -188,7 +192,9 @@ function formatDate(dateStr: string | null): string {
       <div class="header">
         <h1>Subscribers</h1>
         <div class="broadcast-form">
-          <input id="broadcast-slug" type="text" placeholder="event-slug" />
+          <select id="broadcast-slug" disabled>
+            <option value="">Loading events…</option>
+          </select>
           <button class="btn" id="broadcast-btn">📢 Broadcast Event</button>
           <span id="broadcast-status"></span>
         </div>
@@ -283,12 +289,64 @@ function formatDate(dateStr: string | null): string {
         });
       });
 
+      // Populate the event dropdown with upcoming/ongoing events
+      (async () => {
+        const select = document.getElementById("broadcast-slug");
+        try {
+          const res = await fetch(`${apiUrl}/api/admin/events`, {
+            credentials: "include",
+          });
+          if (!res.ok) throw new Error(`${res.status}`);
+          const events = await res.json();
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          const upcoming = events.filter((e) => {
+            if (!e.event_date) return false;
+            return new Date(e.event_date) >= today;
+          });
+
+          select.innerHTML = "";
+
+          if (upcoming.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "No upcoming events";
+            opt.disabled = true;
+            select.appendChild(opt);
+          } else {
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "— select an event —";
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            select.appendChild(placeholder);
+
+            upcoming
+              .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
+              .forEach((e) => {
+                const opt = document.createElement("option");
+                opt.value = e.slug;
+                const dateLabel = new Date(e.event_date).toLocaleDateString("en-GB", {
+                  year: "numeric", month: "short", day: "numeric",
+                });
+                opt.textContent = `${e.title} (${dateLabel})`;
+                select.appendChild(opt);
+              });
+          }
+          select.disabled = false;
+        } catch (err) {
+          select.innerHTML = "<option value=\"\" disabled>Failed to load events</option>";
+        }
+      })();
+
       // Broadcast email to all active subscribers
       document.getElementById("broadcast-btn")?.addEventListener("click", async () => {
         const slug = document.getElementById("broadcast-slug").value.trim();
         const status = document.getElementById("broadcast-status");
         const btn = document.getElementById("broadcast-btn");
-        if (!slug) { alert("Please enter an event slug."); return; }
+        if (!slug) { alert("Please select an event."); return; }
         if (!confirm(`Broadcast event "${slug}" to all active subscribers?`)) return;
 
         btn.disabled = true;

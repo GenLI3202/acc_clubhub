@@ -280,6 +280,103 @@ def send_broadcast_email(
         return {"status": "error", "message": str(e)}
 
 
+def send_registrant_notification_email(
+    user_email: str,
+    user_name: str,
+    event_title: str,
+    event_date: Optional[datetime] = None,
+    event_location: Optional[str] = None,
+    event_slug: str = "",
+    view_token: str = "",
+    lang: str = "en",
+) -> dict:
+    """Send an event update/reminder notification to an event registrant."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping registrant notification (no RESEND_API_KEY): %s", user_email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    event_link = (
+        f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
+        if event_slug and view_token
+        else f"{frontend_url}/{lang}/events/{event_slug}"
+        if event_slug
+        else frontend_url
+    )
+
+    templates = {
+        "zh": {
+            "subject": f"活动提醒: {event_title}",
+            "body": (
+                f"<p>您好 {user_name}，</p>"
+                f"<p>以下是您已报名活动的最新信息：</p>"
+                f"<ul>"
+                f"<li><strong>活动：</strong>{event_title}</li>"
+                + (f"<li><strong>时间：</strong>{date_str}</li>" if date_str else "")
+                + (f"<li><strong>地点：</strong>{event_location}</li>" if event_location else "")
+                + f"</ul>"
+                f'<p><a href="{event_link}" style="background:#2A5CA6;color:white;padding:8px 16px;'
+                f'border-radius:4px;text-decoration:none;font-weight:600;">查看活动详情 →</a></p>'
+                f"<p>—— ACC ClubHub 团队</p>"
+            ),
+        },
+        "en": {
+            "subject": f"Event Reminder: {event_title}",
+            "body": (
+                f"<p>Hello {user_name},</p>"
+                f"<p>Here is an update about the event you registered for:</p>"
+                f"<ul>"
+                f"<li><strong>Event:</strong> {event_title}</li>"
+                + (f"<li><strong>Date:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Location:</strong> {event_location}</li>" if event_location else "")
+                + f"</ul>"
+                f'<p><a href="{event_link}" style="background:#2A5CA6;color:white;padding:8px 16px;'
+                f'border-radius:4px;text-decoration:none;font-weight:600;">View Event →</a></p>'
+                f"<p>—— ACC ClubHub Team</p>"
+            ),
+        },
+        "de": {
+            "subject": f"Veranstaltungserinnerung: {event_title}",
+            "body": (
+                f"<p>Hallo {user_name},</p>"
+                f"<p>Hier ist eine Aktualisierung zur Veranstaltung, für die Sie sich angemeldet haben:</p>"
+                f"<ul>"
+                f"<li><strong>Veranstaltung:</strong> {event_title}</li>"
+                + (f"<li><strong>Datum:</strong> {date_str}</li>" if date_str else "")
+                + (f"<li><strong>Ort:</strong> {event_location}</li>" if event_location else "")
+                + f"</ul>"
+                f'<p><a href="{event_link}" style="background:#2A5CA6;color:white;padding:8px 16px;'
+                f'border-radius:4px;text-decoration:none;font-weight:600;">Veranstaltung ansehen →</a></p>'
+                f"<p>—— ACC ClubHub Team</p>"
+            ),
+        },
+    }
+
+    template = templates.get(lang, templates["en"])
+    html_body = (
+        f'<div style="font-family:Arial,sans-serif;max-width:600px;">'
+        f'<h2 style="color:#2A5CA6;">🚴 {template["subject"]}</h2>'
+        f"{template['body']}"
+        f"</div>"
+    )
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "to": [user_email],
+        "subject": template["subject"],
+        "html": html_body,
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error(
+            "Failed to send registrant notification to %s: %s", user_email, e, exc_info=True,
+        )
+        return {"status": "error", "message": str(e)}
+
+
 def send_waitlist_email(
     user_email: str,
     user_name: str,
