@@ -4,7 +4,8 @@
 ---
 
 <div class="splash" id="acc-splash" aria-hidden="true">
-    <div class="splash-bg-logo">
+    <!-- Logo: top, prominent, heartbeat animation -->
+    <div class="splash-logo">
         <img
             src="/images/transparent_red_logo.png"
             alt=""
@@ -12,10 +13,14 @@
             draggable="false"
         />
     </div>
+
+    <!-- Text: below logo, no overlap -->
     <div class="splash-content">
         <h1 class="splash-name">ACC ClubHub</h1>
         <p class="splash-tagline">Ride free, ride together.</p>
     </div>
+
+    <!-- Progress bar -->
     <div class="splash-progress">
         <div class="splash-progress-bar"></div>
     </div>
@@ -28,58 +33,58 @@
         z-index: 9999;
         background: var(--color-bg-canvas);
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 1.5rem;
         pointer-events: none;
-        /* JS controls fade-out; start fully visible */
         opacity: 1;
         transition: opacity 0.5s ease;
     }
 
-    .splash-bg-logo {
-        position: absolute;
-        inset: 0;
+    /* Logo — in flow, above text */
+    .splash-logo {
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
     }
 
-    .splash-bg-logo img {
-        width: min(65vw, 560px);
+    .splash-logo img {
+        width: min(42vw, 320px);
         height: auto;
         opacity: 0;
-        transform: scale(0.92);
-        animation: logo-breathe 2s ease forwards;
         user-select: none;
+        animation: logo-in 0.5s ease forwards, logo-heartbeat 1.4s 0.5s ease forwards;
     }
 
+    /* Text — below logo */
     .splash-content {
-        position: relative;
-        z-index: 1;
         text-align: center;
-        animation: content-in 0.4s ease forwards;
     }
 
     .splash-name {
         font-family: var(--font-heading);
-        font-size: clamp(2.5rem, 7vw, 4.5rem);
+        font-size: clamp(1.8rem, 5vw, 3rem);
         font-weight: 700;
         color: var(--color-accent);
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
         line-height: 1;
         margin: 0;
+        opacity: 0;
+        animation: content-in 0.4s 0.3s ease forwards;
     }
 
     .splash-tagline {
         font-family: var(--font-body);
-        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
         color: var(--color-text-secondary);
-        margin-top: 0.6rem;
+        margin-top: 0.4rem;
         letter-spacing: 0.02em;
-        animation: content-in 0.4s 0.15s ease both;
+        opacity: 0;
+        animation: content-in 0.4s 0.5s ease forwards;
     }
 
+    /* Progress bar — pinned to bottom */
     .splash-progress {
         position: absolute;
         bottom: 0;
@@ -97,15 +102,23 @@
         animation: progress-fill 1.7s linear forwards;
     }
 
-    @keyframes logo-breathe {
-        0%   { opacity: 0;    transform: scale(0.92); }
-        25%  { opacity: 0.1;  transform: scale(1.0);  }
-        70%  { opacity: 0.12; transform: scale(1.02); }
-        100% { opacity: 0.08; transform: scale(1.05); }
+    /* Logo: fade in → heartbeat (lub-dub double-pulse) */
+    @keyframes logo-in {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 0.38; transform: scale(1); }
+    }
+
+    @keyframes logo-heartbeat {
+        0%   { opacity: 0.38; transform: scale(1);    }
+        12%  { opacity: 0.45; transform: scale(1.07); }  /* lub */
+        22%  { opacity: 0.38; transform: scale(0.99); }
+        34%  { opacity: 0.44; transform: scale(1.05); }  /* dub */
+        46%  { opacity: 0.38; transform: scale(1);    }
+        100% { opacity: 0.38; transform: scale(1);    }  /* rest */
     }
 
     @keyframes content-in {
-        from { opacity: 0; transform: translateY(8px); }
+        from { opacity: 0; transform: translateY(6px); }
         to   { opacity: 1; transform: translateY(0);   }
     }
 
