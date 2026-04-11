@@ -79,19 +79,16 @@ const hasItems = items && items.length > 0;
         width: 100vw;
         margin-left: calc(50% - 50vw);
         background: var(--color-bg-canvas);
-    }
-
-    .pillar-section--alt {
-        background: var(--color-bg-secondary);
+        border-top: 1px solid var(--color-border);
     }
 
     .pillar-inner {
         max-width: var(--max-width);
         margin: 0 auto;
-        padding: var(--space-xl) var(--space-md);
+        padding: 2rem var(--space-md);
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--space-xl);
+        gap: var(--space-lg);
         align-items: center;
     }
 

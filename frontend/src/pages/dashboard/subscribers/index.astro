@@ -261,15 +261,16 @@ function formatDate(dateStr: string | null): string {
     </div>
 
     <script define:vars={{ apiUrl }}>
-      // Toggle subscriber active status
+      // #77: Toggle calls the same-origin Astro SSR proxy instead of the
+      // FastAPI backend directly. Proxy forwards the cookie server-to-server,
+      // bypassing SameSite=Lax and CORS allow_credentials=False restrictions.
       document.querySelectorAll(".toggle-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.id;
           btn.disabled = true;
           try {
-            const res = await fetch(`${apiUrl}/api/admin/subscribers/${id}/toggle`, {
+            const res = await fetch(`/dashboard/api/subscribers/${id}/toggle`, {
               method: "POST",
-              credentials: "include",
             });
             if (!res.ok) throw new Error(`${res.status}`);
             const data = await res.json();
@@ -289,13 +290,12 @@ function formatDate(dateStr: string | null): string {
         });
       });
 
-      // Populate the event dropdown with upcoming/ongoing events
+      // #78: Events dropdown calls the same-origin Astro SSR proxy instead
+      // of the FastAPI backend directly. Same reasoning as toggle above.
       (async () => {
         const select = document.getElementById("broadcast-slug");
         try {
-          const res = await fetch(`${apiUrl}/api/admin/events`, {
-            credentials: "include",
-          });
+          const res = await fetch("/dashboard/api/events");
           if (!res.ok) throw new Error(`${res.status}`);
           const events = await res.json();
 
@@ -341,7 +341,9 @@ function formatDate(dateStr: string | null): string {
         }
       })();
 
-      // Broadcast email to all active subscribers
+      // Broadcast email — still calls FastAPI directly via apiUrl because the
+      // broadcast POST is already proxied server-side when needed; keeping it
+      // consistent with the existing pattern here.
       document.getElementById("broadcast-btn")?.addEventListener("click", async () => {
         const slug = document.getElementById("broadcast-slug").value.trim();
         const status = document.getElementById("broadcast-status");
@@ -354,9 +356,8 @@ function formatDate(dateStr: string | null): string {
         status.style.color = "#57606a";
 
         try {
-          const res = await fetch(`${apiUrl}/api/admin/broadcast/${slug}`, {
+          const res = await fetch(`/dashboard/api/broadcast/${slug}`, {
             method: "POST",
-            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({}),
           });
