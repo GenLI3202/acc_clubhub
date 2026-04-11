@@ -1,0 +1,164 @@
+---
+// SplashScreen.astro — ACC brand intro animation, homepage only
+// Shows once per browser session via sessionStorage
+---
+
+<div class="splash" id="acc-splash" aria-hidden="true">
+    <!-- Wheel: rolls in from left, decelerates to center -->
+    <div class="splash-logo">
+        <img
+            src="/images/transparent_red_logo.png"
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+        />
+    </div>
+
+    <!-- Text: fades in after wheel settles -->
+    <div class="splash-content">
+        <h1 class="splash-name">ACC ClubHub</h1>
+        <p class="splash-tagline">Ride free, ride together.</p>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="splash-progress">
+        <div class="splash-progress-bar"></div>
+    </div>
+</div>
+
+<style>
+    .splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: var(--color-bg-canvas);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.5s ease;
+    }
+
+    /* Wheel: rolls in from left */
+    .splash-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* clip horizontal overflow so wheel enters cleanly */
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .splash-logo img {
+        width: min(40vw, 300px);
+        height: auto;
+        user-select: none;
+        /* start transparent, off-screen left */
+        opacity: 0;
+        transform: translateX(-50vw) rotate(0deg);
+        animation: wheel-roll-in 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+
+    /* Text: fades in after wheel settles */
+    .splash-content {
+        text-align: center;
+    }
+
+    .splash-name {
+        font-family: var(--font-heading);
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        font-weight: 700;
+        color: var(--color-accent);
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin: 0;
+        opacity: 0;
+        animation: content-in 0.35s 0.75s ease forwards;
+    }
+
+    .splash-tagline {
+        font-family: var(--font-body);
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
+        color: var(--color-text-secondary);
+        margin-top: 0.4rem;
+        letter-spacing: 0.02em;
+        opacity: 0;
+        animation: content-in 0.35s 0.95s ease forwards;
+    }
+
+    /* Progress bar — pinned to bottom */
+    .splash-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--color-border);
+        overflow: hidden;
+    }
+
+    .splash-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--color-accent);
+        animation: progress-fill 1.7s linear forwards;
+    }
+
+    /*
+      wheel-roll-in:
+      - Starts 50vw to the left, invisible, not rotated
+      - Fades in quickly as it enters the viewport
+      - Rolls (translates + rotates clockwise) to center
+      - cubic-bezier(0.22, 0.61, 0.36, 1) = natural deceleration / ease-out-back-lite
+      - 720deg = 2 full rotations over ~50vw travel distance
+    */
+    @keyframes wheel-roll-in {
+        0% {
+            opacity: 0;
+            transform: translateX(-50vw) rotate(0deg);
+        }
+        12% {
+            opacity: 0.42;
+        }
+        100% {
+            opacity: 0.42;
+            transform: translateX(0) rotate(720deg);
+        }
+    }
+
+    @keyframes content-in {
+        from { opacity: 0; transform: translateY(5px); }
+        to   { opacity: 1; transform: translateY(0);   }
+    }
+
+    @keyframes progress-fill {
+        from { width: 0%; }
+        to   { width: 100%; }
+    }
+</style>
+
+<script>
+    (function () {
+        const splash = document.getElementById("acc-splash");
+        if (!splash) return;
+
+        // Only show once per browser session
+        if (sessionStorage.getItem("acc-splash-shown")) {
+            splash.remove();
+            return;
+        }
+
+        sessionStorage.setItem("acc-splash-shown", "1");
+
+        // Fade out after 1.7s, remove after fade completes
+        setTimeout(function () {
+            splash.style.opacity = "0";
+            setTimeout(function () {
+                splash.remove();
+            }, 500);
+        }, 1700);
+    })();
+</script>
