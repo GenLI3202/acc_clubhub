@@ -1,0 +1,207 @@
+---
+interface Props {
+    title: string;
+    subtitle: string;
+    ctaLabel: string;
+    ctaHref: string;
+    imageUrl: string;
+    imageAlt: string;
+    imagePosition: "left" | "right";
+    alternate: boolean;
+    items?: Array<{ title: string; href: string; meta?: string }>;
+    comingSoon?: string;
+}
+
+const {
+    title,
+    subtitle,
+    ctaLabel,
+    ctaHref,
+    imageUrl,
+    imageAlt,
+    imagePosition,
+    alternate,
+    items,
+    comingSoon,
+} = Astro.props;
+
+const hasItems = items && items.length > 0;
+---
+
+<section
+    class:list={[
+        "pillar-section",
+        { "pillar-section--alt": alternate },
+        { "pillar-section--image-right": imagePosition === "right" },
+    ]}
+>
+    <div class="pillar-inner">
+        <div class="pillar-image">
+            <img
+                src={imageUrl}
+                alt={imageAlt}
+                loading="lazy"
+                decoding="async"
+            />
+        </div>
+        <div class="pillar-text">
+            <h2 class="pillar-title">{title}</h2>
+            <p class="pillar-subtitle">{subtitle}</p>
+
+            {hasItems && (
+                <ul class="pillar-items">
+                    {items.map((item) => (
+                        <li>
+                            <a href={item.href}>
+                                {item.title}
+                                {item.meta && (
+                                    <span class="pillar-item-meta">
+                                        {item.meta}
+                                    </span>
+                                )}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            {!hasItems && comingSoon && (
+                <p class="pillar-coming-soon">{comingSoon}</p>
+            )}
+
+            <a href={ctaHref} class="pillar-cta">{ctaLabel}</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .pillar-section {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        background: var(--color-bg-canvas);
+    }
+
+    .pillar-section--alt {
+        background: var(--color-bg-secondary);
+    }
+
+    .pillar-inner {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: var(--space-xl) var(--space-md);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-xl);
+        align-items: center;
+    }
+
+    .pillar-section--image-right .pillar-image {
+        order: 2;
+    }
+
+    .pillar-section--image-right .pillar-text {
+        order: 1;
+    }
+
+    .pillar-image img {
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+        border-radius: var(--radius-aero);
+    }
+
+    .pillar-title {
+        font-family: var(--font-heading);
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-text-main);
+        line-height: 1.2;
+    }
+
+    .pillar-subtitle {
+        font-size: 1rem;
+        color: var(--color-text-secondary);
+        margin-top: var(--space-sm);
+        line-height: 1.6;
+    }
+
+    .pillar-items {
+        list-style: none;
+        padding: 0;
+        margin-top: var(--space-md);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .pillar-items li a {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-sm);
+        font-size: 0.95rem;
+        color: var(--color-text-main);
+        text-decoration: none;
+        padding: var(--space-xs) 0;
+        border-bottom: 1px solid var(--color-border);
+        transition: color var(--transition-fast);
+    }
+
+    .pillar-items li a:hover {
+        color: var(--color-accent);
+    }
+
+    .pillar-item-meta {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        margin-left: auto;
+        white-space: nowrap;
+    }
+
+    .pillar-coming-soon {
+        margin-top: var(--space-md);
+        font-size: 0.95rem;
+        color: var(--color-text-muted);
+        font-style: italic;
+    }
+
+    .pillar-cta {
+        display: inline-block;
+        margin-top: var(--space-lg);
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--color-accent);
+        text-decoration: none;
+        padding: 0.6rem 1.5rem;
+        border: 2px solid var(--color-accent);
+        border-radius: var(--radius-btn);
+        transition:
+            background var(--transition-fast),
+            color var(--transition-fast),
+            transform var(--transition-fast);
+    }
+
+    .pillar-cta:hover {
+        background: var(--color-accent);
+        color: #ffffff;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .pillar-inner {
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+        }
+
+        .pillar-section--image-right .pillar-image {
+            order: 0;
+        }
+
+        .pillar-section--image-right .pillar-text {
+            order: 0;
+        }
+    }
+</style>
