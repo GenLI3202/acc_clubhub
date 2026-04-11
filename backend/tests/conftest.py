@@ -72,6 +72,23 @@ def client(db):
 
 
 @pytest.fixture()
+def client_no_auth(db):
+    """FastAPI TestClient with DB override but NO admin-auth override (tests 401 paths)."""
+    from app import app
+
+    def override_get_db():
+        try:
+            yield db
+        finally:
+            pass
+
+    app.dependency_overrides[get_db] = override_get_db
+    with TestClient(app, raise_server_exceptions=True) as c:
+        yield c
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture()
 def sample_event(db) -> Event:
     """An event with max 2 participants, current = 0."""
     event = Event(
