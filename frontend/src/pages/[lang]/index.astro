@@ -7,6 +7,7 @@ import { locales, defaultLocale, t, type Locale } from "../../lib/i18n";
 import { splitEvents } from "../../lib/events/eventHelpers";
 import NextRideBanner from "../../components/home/NextRideBanner.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
+import SplashScreen from "../../components/home/SplashScreen.astro";
 
 export function getStaticPaths() {
     return locales.map((lang) => ({ params: { lang } }));
@@ -72,6 +73,8 @@ const routeItems = allRoutes
     headerTransparent={true}
     heroImagePreload="/images/uploads/rr120_2026_group.jpg"
 >
+    <SplashScreen />
+
     <!-- Hero: full-width, breaks out of main's max-width -->
     <section slot="hero" class="homepage-hero">
         <div class="hero-overlay"></div>
