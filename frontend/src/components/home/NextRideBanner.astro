@@ -1,0 +1,179 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { t, type Locale } from "../../lib/i18n";
+
+interface Props {
+    event: CollectionEntry<"events"> | null;
+    lang: Locale;
+}
+
+const { event, lang } = Astro.props;
+
+const typeLabels: Record<string, string> = {
+    "training-camp":
+        lang === "zh" ? "训练营" : lang === "de" ? "Trainingslager" : "Training Camp",
+    "social-ride":
+        lang === "zh" ? "社交骑" : lang === "de" ? "Social Ride" : "Social Ride",
+    "race":
+        lang === "zh" ? "比赛" : lang === "de" ? "Rennen" : "Race",
+    "workshop":
+        lang === "zh" ? "工作坊" : lang === "de" ? "Workshop" : "Workshop",
+};
+
+function formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString(
+        lang === "zh" ? "zh-CN" : lang === "de" ? "de-DE" : "en-GB",
+        { year: "numeric", month: "long", day: "numeric" },
+    );
+}
+
+const slug = event?.id.split("/").pop();
+---
+
+<section class="next-ride-banner">
+    <div class="next-ride-inner">
+        {event ? (
+            <>
+                <div class="next-ride-info">
+                    <span class="next-ride-label">
+                        {t(lang, "home.nextRide")}
+                    </span>
+                    <h2 class="next-ride-title">{event.data.title}</h2>
+                    <p class="next-ride-meta">
+                        <span class="next-ride-date">
+                            {formatDate(event.data.date)}
+                        </span>
+                        {event.data.location && (
+                            <span class="next-ride-location">
+                                · {event.data.location}
+                            </span>
+                        )}
+                    </p>
+                    {event.data.eventType && (
+                        <span class="next-ride-badge">
+                            {typeLabels[event.data.eventType] ??
+                                event.data.eventType}
+                        </span>
+                    )}
+                </div>
+                <div class="next-ride-action">
+                    <a
+                        href={`/${lang}/events/${slug}`}
+                        class="next-ride-cta"
+                    >
+                        {t(lang, "home.viewAll")}
+                    </a>
+                </div>
+            </>
+        ) : (
+            <div class="next-ride-info">
+                <span class="next-ride-label">
+                    {t(lang, "home.nextRide")}
+                </span>
+                <p class="next-ride-fallback">
+                    {t(lang, "home.noUpcoming")}
+                </p>
+            </div>
+        )}
+    </div>
+</section>
+
+<style>
+    .next-ride-banner {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        background: var(--color-bg-secondary);
+        border-top: 3px solid var(--color-accent);
+    }
+
+    .next-ride-inner {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: var(--space-lg) var(--space-md);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-lg);
+    }
+
+    .next-ride-label {
+        font-family: var(--font-heading);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--color-accent);
+    }
+
+    .next-ride-title {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text-main);
+        margin-top: var(--space-xs);
+        line-height: 1.2;
+    }
+
+    .next-ride-meta {
+        font-size: 0.95rem;
+        color: var(--color-text-secondary);
+        margin-top: var(--space-xs);
+    }
+
+    .next-ride-badge {
+        display: inline-block;
+        font-family: var(--font-heading);
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.2rem 0.6rem;
+        border-radius: var(--radius-full);
+        border: 1.5px solid var(--color-accent);
+        color: var(--color-accent);
+        background: rgba(198, 40, 40, 0.06);
+        margin-top: var(--space-sm);
+    }
+
+    .next-ride-fallback {
+        font-size: 1.1rem;
+        color: var(--color-text-secondary);
+        margin-top: var(--space-xs);
+    }
+
+    .next-ride-cta {
+        display: inline-block;
+        background: var(--color-accent);
+        color: #ffffff;
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.7rem 1.8rem;
+        border-radius: var(--radius-btn);
+        text-decoration: none;
+        transition:
+            background var(--transition-fast),
+            transform var(--transition-fast),
+            box-shadow var(--transition-fast);
+        box-shadow: var(--shadow-sm);
+        white-space: nowrap;
+    }
+
+    .next-ride-cta:hover {
+        background: var(--color-accent-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .next-ride-inner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+    }
+</style>
