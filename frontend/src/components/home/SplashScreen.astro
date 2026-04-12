@@ -16,7 +16,7 @@
 
     <!-- Text: fades in after wheel settles -->
     <div class="splash-content">
-        <h1 class="splash-name">ACC ClubHub</h1>
+        <h1 class="splash-name">Across Cycling Club</h1>
         <p class="splash-tagline">Ride free, ride together.</p>
     </div>
 
@@ -36,7 +36,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 1.25rem;
+        gap: 1.375rem;
         pointer-events: none;
         opacity: 1;
         transition: opacity 0.5s ease;
@@ -53,7 +53,7 @@
     }
 
     .splash-logo img {
-        width: min(40vw, 300px);
+        width: min(44vw, 330px);
         height: auto;
         user-select: none;
         /* start transparent, off-screen left */
@@ -69,7 +69,7 @@
 
     .splash-name {
         font-family: var(--font-heading);
-        font-size: clamp(1.8rem, 5vw, 3rem);
+        font-size: clamp(1.98rem, 5.5vw, 3.3rem);
         font-weight: 700;
         color: var(--color-accent);
         letter-spacing: -0.02em;
@@ -81,9 +81,9 @@
 
     .splash-tagline {
         font-family: var(--font-body);
-        font-size: clamp(0.85rem, 1.8vw, 1rem);
+        font-size: clamp(1.1rem, 2.75vw, 1.43rem);
         color: var(--color-text-secondary);
-        margin-top: 0.4rem;
+        margin-top: 0.6rem;
         letter-spacing: 0.02em;
         opacity: 0;
         animation: content-in 0.35s 0.95s ease forwards;
@@ -104,7 +104,7 @@
         height: 100%;
         width: 0%;
         background: var(--color-accent);
-        animation: progress-fill 1.7s linear forwards;
+        animation: progress-fill 2.5s linear forwards;
     }
 
     /*
@@ -121,10 +121,10 @@
             transform: translateX(-50vw) rotate(0deg);
         }
         12% {
-            opacity: 0.42;
+            opacity: 0.85;
         }
         100% {
-            opacity: 0.42;
+            opacity: 0.85;
             transform: translateX(0) rotate(720deg);
         }
     }
@@ -153,12 +153,12 @@
 
         sessionStorage.setItem("acc-splash-shown", "1");
 
-        // Fade out after 1.7s, remove after fade completes
+        // Fade out after 2.5s, remove after fade completes
         setTimeout(function () {
             splash.style.opacity = "0";
             setTimeout(function () {
                 splash.remove();
             }, 500);
-        }, 1700);
+        }, 2500);
     })();
 </script>
