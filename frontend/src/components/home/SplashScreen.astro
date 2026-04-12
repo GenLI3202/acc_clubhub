@@ -1,6 +1,5 @@
 ---
 // SplashScreen.astro — ACC brand intro animation, homepage only
-// Sequence: wheel rolls in → "Across Cycling Club" → abbreviates to "ACC ClubHub"
 // Shows once per browser session via sessionStorage
 ---
 
@@ -15,25 +14,13 @@
         />
     </div>
 
-    <!--
-        Text stack: absolute-positioned layers prevent layout shift
-        Phase 1: full name "Across Cycling Club"
-        Phase 2: abbreviation "ACC ClubHub" + tagline
-    -->
-    <div class="splash-text-stack">
-        <!-- Phase 1: full club name -->
-        <div class="splash-phase-1">
-            <p class="splash-fullname">Across Cycling Club</p>
-        </div>
-
-        <!-- Phase 2: abbreviation + tagline -->
-        <div class="splash-phase-2">
-            <h1 class="splash-name">ACC ClubHub</h1>
-            <p class="splash-tagline">Ride free, ride together.</p>
-        </div>
+    <!-- Text: fades in after wheel settles -->
+    <div class="splash-content">
+        <h1 class="splash-name">Across Cycling Club</h1>
+        <p class="splash-tagline">Ride free, ride together.</p>
     </div>
 
-    <!-- Progress bar — fills over 3s -->
+    <!-- Progress bar -->
     <div class="splash-progress">
         <div class="splash-progress-bar"></div>
     </div>
@@ -55,11 +42,13 @@
         transition: opacity 0.5s ease;
     }
 
-    /* ---- Wheel ---- */
+    /* Wheel: rolls in from left */
     .splash-logo {
         display: flex;
         align-items: center;
         justify-content: center;
+        /* clip horizontal overflow so wheel enters cleanly */
+        overflow: hidden;
         width: 100%;
     }
 
@@ -67,50 +56,17 @@
         width: min(40vw, 300px);
         height: auto;
         user-select: none;
+        /* start transparent, off-screen left */
         opacity: 0;
         transform: translateX(-50vw) rotate(0deg);
-        /* rolls in over 0.9s, then holds at opacity 0.42 */
         animation: wheel-roll-in 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
     }
 
-    /* ---- Text stack ---- */
-    .splash-text-stack {
-        position: relative;
-        width: 100%;
-        /* fixed height prevents layout shift when phase changes */
-        height: 5rem;
+    /* Text: fades in after wheel settles */
+    .splash-content {
         text-align: center;
     }
 
-    /* Both phases sit on top of each other */
-    .splash-phase-1,
-    .splash-phase-2 {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.35rem;
-    }
-
-    /* Phase 1: "Across Cycling Club" — fades in, then fades out */
-    .splash-fullname {
-        font-family: var(--font-heading);
-        font-size: clamp(0.85rem, 2.2vw, 1.1rem);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-        color: var(--color-text-secondary);
-        margin: 0;
-        opacity: 0;
-        /* appear at 0.9s, disappear at 1.8s */
-        animation:
-            content-in  0.35s 0.9s  ease forwards,
-            content-out 0.25s 1.75s ease forwards;
-    }
-
-    /* Phase 2: "ACC ClubHub" — fades in after full name vanishes */
     .splash-name {
         font-family: var(--font-heading);
         font-size: clamp(1.8rem, 5vw, 3rem);
@@ -120,20 +76,20 @@
         line-height: 1;
         margin: 0;
         opacity: 0;
-        animation: content-in 0.35s 2.05s ease forwards;
+        animation: content-in 0.35s 0.75s ease forwards;
     }
 
     .splash-tagline {
         font-family: var(--font-body);
-        font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
         color: var(--color-text-secondary);
+        margin-top: 0.4rem;
         letter-spacing: 0.02em;
-        margin: 0;
         opacity: 0;
-        animation: content-in 0.35s 2.3s ease forwards;
+        animation: content-in 0.35s 0.95s ease forwards;
     }
 
-    /* ---- Progress bar (3 s fill) ---- */
+    /* Progress bar — pinned to bottom */
     .splash-progress {
         position: absolute;
         bottom: 0;
@@ -148,12 +104,17 @@
         height: 100%;
         width: 0%;
         background: var(--color-accent);
-        animation: progress-fill 3s linear forwards;
+        animation: progress-fill 2.5s linear forwards;
     }
 
-    /* ---- Keyframes ---- */
-
-    /* Wheel rolls in from left with natural deceleration */
+    /*
+      wheel-roll-in:
+      - Starts 50vw to the left, invisible, not rotated
+      - Fades in quickly as it enters the viewport
+      - Rolls (translates + rotates clockwise) to center
+      - cubic-bezier(0.22, 0.61, 0.36, 1) = natural deceleration / ease-out-back-lite
+      - 720deg = 2 full rotations over ~50vw travel distance
+    */
     @keyframes wheel-roll-in {
         0% {
             opacity: 0;
@@ -169,13 +130,8 @@
     }
 
     @keyframes content-in {
-        from { opacity: 0; transform: translateY(6px); }
+        from { opacity: 0; transform: translateY(5px); }
         to   { opacity: 1; transform: translateY(0);   }
-    }
-
-    @keyframes content-out {
-        from { opacity: 1; transform: translateY(0);    }
-        to   { opacity: 0; transform: translateY(-6px); }
     }
 
     @keyframes progress-fill {
@@ -197,12 +153,12 @@
 
         sessionStorage.setItem("acc-splash-shown", "1");
 
-        // Total visible duration: 3 s, then 0.5 s fade-out
+        // Fade out after 2.5s, remove after fade completes
         setTimeout(function () {
             splash.style.opacity = "0";
             setTimeout(function () {
                 splash.remove();
             }, 500);
-        }, 3000);
+        }, 2500);
     })();
 </script>
