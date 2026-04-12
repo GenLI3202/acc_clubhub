@@ -8,7 +8,7 @@ import { splitEvents } from "../../lib/events/eventHelpers";
 import NextRideBanner from "../../components/home/NextRideBanner.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
 import SplashScreen from "../../components/home/SplashScreen.astro";
-import StravaBanner from "../../components/home/StravaBanner.astro";
+import StravaWidget from "../../components/home/StravaWidget.astro";
 
 export function getStaticPaths() {
     return locales.map((lang) => ({ params: { lang } }));
@@ -92,8 +92,8 @@ const routeItems = allRoutes
     <!-- Next Ride Banner -->
     <NextRideBanner event={heroEvent} lang={lang} />
 
-    <!-- Strava Club Banner -->
-    <StravaBanner lang={lang} />
+    <!-- Strava Floating Widget -->
+    <StravaWidget lang={lang} />
 
     <!-- Content Pillar Sections -->
     <PillarSection
