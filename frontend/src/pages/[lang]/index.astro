@@ -8,6 +8,7 @@ import { splitEvents } from "../../lib/events/eventHelpers";
 import NextRideBanner from "../../components/home/NextRideBanner.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
 import SplashScreen from "../../components/home/SplashScreen.astro";
+import StravaBanner from "../../components/home/StravaBanner.astro";
 
 export function getStaticPaths() {
     return locales.map((lang) => ({ params: { lang } }));
@@ -79,8 +80,8 @@ const routeItems = allRoutes
     <section slot="hero" class="homepage-hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <p class="hero-eyebrow">München</p>
-            <h1 class="hero-title">Across Cycling Club</h1>
+            <p class="hero-eyebrow">Across Cycling Club · München</p>
+            <h1 class="hero-title">ACC ClubHub</h1>
             <p class="hero-tagline">{t(lang, "home.tagline")}</p>
             <a href={`/${lang}/events`} class="hero-cta">
                 {t(lang, "home.heroCta")}
@@ -90,6 +91,9 @@ const routeItems = allRoutes
 
     <!-- Next Ride Banner -->
     <NextRideBanner event={heroEvent} lang={lang} />
+
+    <!-- Strava Club Banner -->
+    <StravaBanner lang={lang} />
 
     <!-- Content Pillar Sections -->
     <PillarSection
@@ -201,7 +205,7 @@ const routeItems = allRoutes
 
     .hero-title {
         font-family: var(--font-heading);
-        font-size: clamp(2.2rem, 5.5vw, 4rem);
+        font-size: clamp(3rem, 8vw, 5.5rem);
         font-weight: 700;
         color: #ffffff;
         line-height: 1;

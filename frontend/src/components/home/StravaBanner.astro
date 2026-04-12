@@ -1,0 +1,186 @@
+---
+// src/components/home/StravaBanner.astro
+import { t, type Locale } from "../../lib/i18n";
+
+interface Props {
+    lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const STRAVA_CLUB_URL = "https://www.strava.com/clubs/accmunich";
+---
+
+<section class="strava-banner">
+    <div class="strava-inner">
+        <div class="strava-left">
+            <div class="strava-brand">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="#FC4C02"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"
+                    ></path>
+                </svg>
+                <span class="strava-wordmark">STRAVA</span>
+            </div>
+            <h2 class="strava-title">{t(lang, "home.strava.title")}</h2>
+            <p class="strava-subtitle">{t(lang, "home.strava.subtitle")}</p>
+        </div>
+
+        <div class="strava-right">
+            <a
+                href={STRAVA_CLUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="strava-cta-primary"
+            >
+                {t(lang, "home.strava.leaderboard")}
+            </a>
+            <a
+                href={STRAVA_CLUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="strava-cta-secondary"
+            >
+                {t(lang, "home.strava.join")}
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .strava-banner {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        background: var(--color-bg-secondary);
+        border-top: 3px solid #FC4C02;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .strava-inner {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: var(--space-lg) var(--space-md);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-lg);
+    }
+
+    /* --- Left side --- */
+    .strava-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: var(--space-sm);
+    }
+
+    .strava-wordmark {
+        font-family: var(--font-heading);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        color: #FC4C02;
+    }
+
+    .strava-title {
+        font-family: var(--font-heading);
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--color-text-main);
+        line-height: 1.2;
+        margin: 0 0 var(--space-xs);
+    }
+
+    .strava-subtitle {
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* --- Right side --- */
+    .strava-right {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+        align-items: flex-end;
+        flex-shrink: 0;
+    }
+
+    .strava-cta-primary {
+        display: inline-block;
+        background: #FC4C02;
+        color: #ffffff;
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.7rem 1.8rem;
+        border-radius: var(--radius-btn);
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            background var(--transition-fast),
+            transform var(--transition-fast),
+            box-shadow var(--transition-fast);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .strava-cta-primary:hover {
+        background: #e04400;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    .strava-cta-secondary {
+        display: inline-block;
+        background: transparent;
+        color: #FC4C02;
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.55rem 1.4rem;
+        border-radius: var(--radius-btn);
+        border: 1.5px solid #FC4C02;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            background var(--transition-fast),
+            color var(--transition-fast),
+            transform var(--transition-fast);
+    }
+
+    .strava-cta-secondary:hover {
+        background: rgba(252, 76, 2, 0.08);
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: #FC4C02;
+    }
+
+    @media (max-width: 640px) {
+        .strava-inner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .strava-right {
+            align-items: flex-start;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+    }
+</style>
