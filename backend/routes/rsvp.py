@@ -11,7 +11,14 @@ from models import Event, RSVP, Subscriber
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timezone
 import secrets
-from services.email import send_confirmation_email, send_waitlist_email
+import logging
+from services.email import (
+    send_confirmation_email,
+    send_waitlist_email,
+    send_subscription_confirmation_email,
+)
+
+logger = logging.getLogger(__name__)
 
 
 def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
@@ -168,11 +175,25 @@ def create_rsvp(
     # NOTE: current_participants 由数据库触发器自动更新
 
     # 6. 处理订阅
+    new_subscriber = False
+    sub = None
     if rsvp_data.subscribe:
-        _ensure_subscriber(db, rsvp_data.email, rsvp_data.name, rsvp_data.lang)
+        sub, new_subscriber = _ensure_subscriber(db, rsvp_data.email, rsvp_data.name, rsvp_data.lang)
 
     db.commit()
     db.refresh(new_rsvp)
+
+    # Send subscription confirmation if brand-new subscriber
+    if new_subscriber and sub is not None:
+        try:
+            send_subscription_confirmation_email(
+                email=rsvp_data.email,
+                name=rsvp_data.name,
+                lang=rsvp_data.lang,
+                unsubscribe_token=sub.unsubscribe_token,
+            )
+        except Exception as email_err:
+            logger.error("Subscription confirmation email failed: %s", email_err)
 
     # 7. 发送邮件通知
     if rsvp_status == "confirmed":
@@ -300,11 +321,25 @@ def create_rsvp_v2(
     db.add(new_rsvp)
 
     # 6. Handle subscription
+    new_subscriber = False
+    sub = None
     if data.subscribe:
-        _ensure_subscriber(db, data.email, data.name, data.lang)
+        sub, new_subscriber = _ensure_subscriber(db, data.email, data.name, data.lang)
 
     db.commit()
     db.refresh(new_rsvp)
+
+    # Send subscription confirmation if brand-new subscriber
+    if new_subscriber and sub is not None:
+        try:
+            send_subscription_confirmation_email(
+                email=data.email,
+                name=data.name,
+                lang=data.lang,
+                unsubscribe_token=sub.unsubscribe_token,
+            )
+        except Exception as email_err:
+            logger.error("Subscription confirmation email failed: %s", email_err)
 
     # 7. Send email notification (non-fatal — RSVP is already committed)
     import logging
@@ -409,8 +444,19 @@ def subscribe(
             detail="Please accept the privacy policy",
         )
 
-    _ensure_subscriber(db, data.email, data.name, data.lang)
+    sub, is_new = _ensure_subscriber(db, data.email, data.name, data.lang)
     db.commit()
+
+    if is_new:
+        try:
+            send_subscription_confirmation_email(
+                email=data.email,
+                name=data.name,
+                lang=data.lang,
+                unsubscribe_token=sub.unsubscribe_token,
+            )
+        except Exception as email_err:
+            logger.error("Subscription confirmation email failed: %s", email_err)
 
     return {"success": True, "message": "订阅成功！"}
 
@@ -443,8 +489,12 @@ def _ensure_subscriber(
     email: str,
     name: str,
     lang: str = "zh",
-) -> Subscriber:
-    """确保订阅者存在，如已存在则重新激活"""
+) -> tuple["Subscriber", bool]:
+    """Ensure subscriber exists; reactivate if inactive.
+
+    Returns (subscriber, is_new) where is_new=True only for brand-new rows.
+    Callers use is_new to decide whether to send a confirmation email.
+    """
     subscriber = db.query(Subscriber).filter(
         Subscriber.email == email,
     ).first()
@@ -452,7 +502,7 @@ def _ensure_subscriber(
     if subscriber:
         subscriber.is_active = True
         subscriber.name = name
-        return subscriber
+        return subscriber, False
 
     subscriber = Subscriber(
         email=email,
@@ -463,4 +513,4 @@ def _ensure_subscriber(
         is_active=True,
     )
     db.add(subscriber)
-    return subscriber
+    return subscriber, True

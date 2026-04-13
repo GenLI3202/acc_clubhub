@@ -435,3 +435,73 @@ def send_waitlist_email(
         return resend.Emails.send(params)
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+def send_subscription_confirmation_email(
+    email: str,
+    name: str,
+    lang: str = "zh",
+    unsubscribe_token: str = "",
+) -> dict:
+    """Send subscription confirmation email when a new subscriber is created."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping subscription confirmation email (no RESEND_API_KEY): %s", email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    unsubscribe_url = (
+        f"{frontend_url}/api/unsubscribe/{unsubscribe_token}"
+        if unsubscribe_token else ""
+    )
+    unsubscribe_html = (
+        f'<p style="font-size:0.85rem;color:#888;">'
+        f'<a href="{unsubscribe_url}">Unsubscribe</a></p>'
+        if unsubscribe_url else ""
+    )
+
+    templates = {
+        "zh": {
+            "subject": "订阅确认 — ACC ClubHub 活动通知",
+            "body": (
+                f"<p>您好 {name}，</p>"
+                f"<p>您已成功订阅 ACC ClubHub 活动通知。"
+                f"每当有新活动发布，我们会第一时间通知您。</p>"
+                f"<p>期待与您相见！</p>"
+                f"{unsubscribe_html}"
+            ),
+        },
+        "en": {
+            "subject": "Subscription confirmed — ACC ClubHub event notifications",
+            "body": (
+                f"<p>Hi {name},</p>"
+                f"<p>You're now subscribed to ACC ClubHub event notifications. "
+                f"We'll let you know whenever a new event is published.</p>"
+                f"<p>See you on the road!</p>"
+                f"{unsubscribe_html}"
+            ),
+        },
+        "de": {
+            "subject": "Abo bestätigt — ACC ClubHub Veranstaltungsbenachrichtigungen",
+            "body": (
+                f"<p>Hallo {name},</p>"
+                f"<p>Sie haben die ACC ClubHub Veranstaltungsbenachrichtigungen abonniert. "
+                f"Wir informieren Sie, sobald neue Events veröffentlicht werden.</p>"
+                f"<p>Bis bald auf der Straße!</p>"
+                f"{unsubscribe_html}"
+            ),
+        },
+    }
+
+    template = templates.get(lang, templates["en"])
+    params = {
+        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "to": [email],
+        "subject": template["subject"],
+        "html": template["body"],
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send subscription confirmation to %s: %s", email, e)
+        return {"status": "error", "message": str(e)}
