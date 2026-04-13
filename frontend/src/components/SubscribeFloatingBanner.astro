@@ -262,9 +262,9 @@ const { lang, apiUrl } = Astro.props;
     // Show after short delay
     setTimeout(() => { banner.style.display = "block"; }, SHOW_DELAY_MS);
 
-    // Close button — stores dismissal so banner won't reappear
+    // Close button — only hides for this page load, does NOT persist
+    // localStorage is only set on successful subscription
     document.getElementById("sb-close-btn")?.addEventListener("click", () => {
-      localStorage.setItem(STORAGE_KEY, "1");
       dismiss(banner);
     });
 
