@@ -1,0 +1,324 @@
+---
+/**
+ * SubscribeFloatingBanner — floating popup for event pages (#86)
+ *
+ * Appears 1 s after page load, auto-dismisses after 8 s.
+ * Dismissed / submitted state is stored in localStorage so it
+ * never re-appears once the user has interacted with it.
+ *
+ * Props:
+ *   lang  — current locale ("zh" | "en" | "de")
+ *   apiUrl — backend base URL
+ */
+interface Props {
+  lang: string;
+  apiUrl: string;
+}
+const { lang, apiUrl } = Astro.props;
+---
+
+<div
+  id="subscribe-banner"
+  role="dialog"
+  aria-labelledby="subscribe-banner-title"
+  aria-modal="false"
+  data-lang={lang}
+  data-api-url={apiUrl}
+  style="display:none"
+>
+  <div class="sb-inner">
+    <button class="sb-close" id="sb-close-btn" aria-label="Close">&times;</button>
+
+    <p class="sb-eyebrow" id="subscribe-banner-title" data-i18n="eyebrow"></p>
+    <h3 class="sb-heading" data-i18n="heading"></h3>
+    <p class="sb-sub" data-i18n="sub"></p>
+
+    <form id="sb-form" novalidate>
+      <input
+        id="sb-name"
+        type="text"
+        autocomplete="name"
+        data-i18n-placeholder="namePlaceholder"
+        required
+      />
+      <input
+        id="sb-email"
+        type="email"
+        autocomplete="email"
+        data-i18n-placeholder="emailPlaceholder"
+        required
+      />
+      <label class="sb-privacy">
+        <input id="sb-privacy" type="checkbox" required />
+        <span data-i18n="privacy"></span>
+      </label>
+      <button type="submit" class="sb-submit" data-i18n="submit"></button>
+      <p class="sb-error" id="sb-error" hidden></p>
+    </form>
+
+    <p class="sb-success" id="sb-success" hidden data-i18n="success"></p>
+
+  </div>
+</div>
+
+<style>
+  #subscribe-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9000;
+    width: min(360px, calc(100vw - 2rem));
+    font-family: var(--font-body, sans-serif);
+  }
+
+  .sb-inner {
+    background: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
+    padding: 1.4rem 1.5rem 1rem;
+    position: relative;
+    animation: sb-slide-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes sb-slide-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .sb-close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #6e7781;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .sb-close:hover { color: #24292f; background: #f0f0f0; }
+
+  .sb-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary, #C62828);
+    margin: 0 0 0.3rem;
+  }
+
+  .sb-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #24292f;
+    margin: 0 0 0.3rem;
+    padding-right: 1.5rem;
+  }
+
+  .sb-sub {
+    font-size: 0.82rem;
+    color: #57606a;
+    margin: 0 0 0.9rem;
+    line-height: 1.5;
+  }
+
+  #sb-form { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  #sb-form input[type="text"],
+  #sb-form input[type="email"] {
+    width: 100%;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: #24292f;
+    background: #f6f8fa;
+    box-sizing: border-box;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  #sb-form input[type="text"]:focus,
+  #sb-form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--color-primary, #C62828);
+    background: #fff;
+  }
+
+  .sb-privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: #57606a;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .sb-privacy input { margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+
+  .sb-submit {
+    padding: 0.5rem;
+    background: var(--color-primary, #C62828);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .sb-submit:hover { background: #a81f1f; }
+  .sb-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .sb-error {
+    font-size: 0.8rem;
+    color: #cf222e;
+    margin: 0;
+  }
+
+  .sb-success {
+    font-size: 0.9rem;
+    color: #1a7f37;
+    font-weight: 600;
+    margin: 0.5rem 0 0;
+    text-align: center;
+  }
+
+</style>
+
+<script>
+  const STORAGE_KEY = "acc_subscribe_banner_done";
+  const SHOW_DELAY_MS = 1000; // 1 s before appearing
+
+  const STRINGS: Record<string, Record<string, string>> = {
+    zh: {
+      eyebrow: "ACC 俱乐部",
+      heading: "订阅活动通知",
+      sub: "第一时间收到新活动发布提醒，不错过任何骑行机会。",
+      namePlaceholder: "你的名字",
+      emailPlaceholder: "邮箱地址",
+      privacy: "我已阅读并同意隐私政策",
+      submit: "订阅",
+      success: "✅ 订阅成功！确认邮件已发送。",
+      errorPrivacy: "请先勾选同意隐私政策",
+      errorGeneral: "订阅失败，请稍后再试",
+    },
+    en: {
+      eyebrow: "ACC Club",
+      heading: "Stay in the loop",
+      sub: "Get notified when new rides and events are published.",
+      namePlaceholder: "Your name",
+      emailPlaceholder: "Email address",
+      privacy: "I accept the privacy policy",
+      submit: "Subscribe",
+      success: "✅ Subscribed! Check your inbox for a confirmation.",
+      errorPrivacy: "Please accept the privacy policy",
+      errorGeneral: "Something went wrong — please try again",
+    },
+    de: {
+      eyebrow: "ACC Club",
+      heading: "Auf dem Laufenden bleiben",
+      sub: "Erhalte eine Benachrichtigung, wenn neue Ausfahrten veröffentlicht werden.",
+      namePlaceholder: "Dein Name",
+      emailPlaceholder: "E-Mail-Adresse",
+      privacy: "Ich akzeptiere die Datenschutzerklärung",
+      submit: "Abonnieren",
+      success: "✅ Abonniert! Bestätigungs-E-Mail wurde gesendet.",
+      errorPrivacy: "Bitte Datenschutzerklärung akzeptieren",
+      errorGeneral: "Etwas ist schiefgelaufen — bitte erneut versuchen",
+    },
+  };
+
+  function dismiss(banner: HTMLElement) {
+    banner.style.transition = "opacity 0.3s, transform 0.3s";
+    banner.style.opacity = "0";
+    banner.style.transform = "translateY(10px)";
+    setTimeout(() => { banner.style.display = "none"; }, 320);
+  }
+
+  function init() {
+    const banner = document.getElementById("subscribe-banner") as HTMLElement | null;
+    if (!banner) return;
+
+    // Skip if user already dismissed or subscribed
+    if (localStorage.getItem(STORAGE_KEY)) return;
+
+    const lang = banner.dataset.lang ?? "zh";
+    const apiUrl = banner.dataset.apiUrl ?? "";
+    const s = STRINGS[lang] ?? STRINGS.en;
+
+    // Apply i18n strings
+    banner.querySelectorAll<HTMLElement>("[data-i18n]").forEach((el) => {
+      const key = el.dataset.i18n!;
+      if (key in s) el.textContent = s[key];
+    });
+    banner.querySelectorAll<HTMLInputElement>("[data-i18n-placeholder]").forEach((el) => {
+      const key = el.dataset.i18nPlaceholder!;
+      if (key in s) el.placeholder = s[key];
+    });
+
+    // Show after short delay
+    setTimeout(() => { banner.style.display = "block"; }, SHOW_DELAY_MS);
+
+    // Close button — stores dismissal so banner won't reappear
+    document.getElementById("sb-close-btn")?.addEventListener("click", () => {
+      localStorage.setItem(STORAGE_KEY, "1");
+      dismiss(banner);
+    });
+
+    // Form submission
+    const form = document.getElementById("sb-form") as HTMLFormElement;
+    const errorEl = document.getElementById("sb-error") as HTMLElement;
+    const successEl = document.getElementById("sb-success") as HTMLElement;
+    const submitBtn = form.querySelector<HTMLButtonElement>(".sb-submit")!;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+
+      const name = (document.getElementById("sb-name") as HTMLInputElement).value.trim();
+      const email = (document.getElementById("sb-email") as HTMLInputElement).value.trim();
+      const privacyAccepted = (document.getElementById("sb-privacy") as HTMLInputElement).checked;
+
+      if (!privacyAccepted) {
+        errorEl.textContent = s.errorPrivacy;
+        errorEl.hidden = false;
+        return;
+      }
+
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${apiUrl}/api/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, lang, privacy_accepted: true }),
+        });
+
+        if (res.ok) {
+          form.hidden = true;
+          successEl.hidden = false;
+          localStorage.setItem(STORAGE_KEY, "1");
+          setTimeout(() => dismiss(banner), 2500);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          errorEl.textContent = (data as any).detail ?? s.errorGeneral;
+          errorEl.hidden = false;
+          submitBtn.disabled = false;
+        }
+      } catch {
+        errorEl.textContent = s.errorGeneral;
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>
