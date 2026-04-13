@@ -104,7 +104,7 @@
         height: 100%;
         width: 0%;
         background: var(--color-accent);
-        animation: progress-fill 2.5s linear forwards;
+        animation: progress-fill 2s linear forwards;
     }
 
     /*
@@ -153,12 +153,12 @@
 
         sessionStorage.setItem("acc-splash-shown", "1");
 
-        // Fade out after 2.5s, remove after fade completes
+        // Fade out after 2s, remove after fade completes (total = 2.5s)
         setTimeout(function () {
             splash.style.opacity = "0";
             setTimeout(function () {
                 splash.remove();
             }, 500);
-        }, 2500);
+        }, 2000);
     })();
 </script>
