@@ -130,8 +130,8 @@ const endedLabels: Record<string, string> = {
       <!-- EventRegistrationForm will be hydrated here -->
     </div>
   )}
-  <!-- Floating subscribe banner (appears after 1s, auto-dismisses after 8s) -->
-  <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />
+  <!-- Floating subscribe banner: only on past events (active events have the form checkbox) -->
+  {isPastEvent && <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />}
 </ArticleLayout>
 
 <!-- Client-side script to hydrate registration form -->

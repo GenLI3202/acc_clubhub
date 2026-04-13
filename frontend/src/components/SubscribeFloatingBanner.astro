@@ -58,7 +58,6 @@ const { lang, apiUrl } = Astro.props;
 
     <p class="sb-success" id="sb-success" hidden data-i18n="success"></p>
 
-    <div class="sb-progress-bar"><div id="sb-progress" class="sb-progress-fill"></div></div>
   </div>
 </div>
 
@@ -187,26 +186,11 @@ const { lang, apiUrl } = Astro.props;
     text-align: center;
   }
 
-  .sb-progress-bar {
-    margin-top: 0.9rem;
-    height: 3px;
-    background: #eaeef2;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .sb-progress-fill {
-    height: 100%;
-    width: 100%;
-    background: var(--color-primary, #C62828);
-    transform-origin: left;
-    transition: transform linear;
-  }
 </style>
 
 <script>
   const STORAGE_KEY = "acc_subscribe_banner_done";
-  const SHOW_DELAY_MS = 1000;   // 1 s before appearing
-  const AUTO_DISMISS_MS = 8000; // 8 s countdown
+  const SHOW_DELAY_MS = 1000; // 1 s before appearing
 
   const STRINGS: Record<string, Record<string, string>> = {
     zh: {
@@ -258,7 +242,7 @@ const { lang, apiUrl } = Astro.props;
     const banner = document.getElementById("subscribe-banner") as HTMLElement | null;
     if (!banner) return;
 
-    // Skip if user already interacted
+    // Skip if user already dismissed or subscribed
     if (localStorage.getItem(STORAGE_KEY)) return;
 
     const lang = banner.dataset.lang ?? "zh";
@@ -275,56 +259,13 @@ const { lang, apiUrl } = Astro.props;
       if (key in s) el.placeholder = s[key];
     });
 
-    // Show after delay
-    let dismissTimer: ReturnType<typeof setTimeout>;
-    let progressEl = document.getElementById("sb-progress") as HTMLElement;
+    // Show after short delay
+    setTimeout(() => { banner.style.display = "block"; }, SHOW_DELAY_MS);
 
-    function startCountdown() {
-      // Animate progress bar shrinking over AUTO_DISMISS_MS
-      progressEl.style.transition = `transform ${AUTO_DISMISS_MS}ms linear`;
-      // Allow next frame to apply transition
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          progressEl.style.transform = "scaleX(0)";
-        });
-      });
-      dismissTimer = setTimeout(() => {
-        localStorage.setItem(STORAGE_KEY, "1");
-        dismiss(banner);
-      }, AUTO_DISMISS_MS);
-    }
-
-    setTimeout(() => {
-      banner.style.display = "block";
-      startCountdown();
-    }, SHOW_DELAY_MS);
-
-    // Close button
+    // Close button — stores dismissal so banner won't reappear
     document.getElementById("sb-close-btn")?.addEventListener("click", () => {
-      clearTimeout(dismissTimer);
       localStorage.setItem(STORAGE_KEY, "1");
       dismiss(banner);
-    });
-
-    // Pause countdown on hover / focus
-    banner.addEventListener("mouseenter", () => {
-      clearTimeout(dismissTimer);
-      progressEl.style.transition = "none";
-      const currentScale = parseFloat(getComputedStyle(progressEl).transform.split(",")[0].replace("matrix(", "") || "1");
-      progressEl.style.transform = `scaleX(${isNaN(currentScale) ? 1 : currentScale})`;
-    });
-    banner.addEventListener("mouseleave", () => {
-      // Restart a shorter countdown (remaining ≈ proportional, simplified to 3s)
-      progressEl.style.transition = `transform 3000ms linear`;
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          progressEl.style.transform = "scaleX(0)";
-        });
-      });
-      dismissTimer = setTimeout(() => {
-        localStorage.setItem(STORAGE_KEY, "1");
-        dismiss(banner);
-      }, 3000);
     });
 
     // Form submission
@@ -335,7 +276,6 @@ const { lang, apiUrl } = Astro.props;
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      clearTimeout(dismissTimer);
       errorEl.hidden = true;
 
       const name = (document.getElementById("sb-name") as HTMLInputElement).value.trim();

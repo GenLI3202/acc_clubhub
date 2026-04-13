@@ -9,6 +9,7 @@ import EventHero from '../../../components/events/EventHero.astro';
 import UpcomingEvents from '../../../components/events/UpcomingEvents.astro';
 import WeeklyRegulars from '../../../components/events/WeeklyRegulars.astro';
 import PastEvents from '../../../components/events/PastEvents.astro';
+import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -34,6 +35,7 @@ const carouselEvents = upcoming
 const upcomingCards = upcoming.filter((e) => e.data.displaySection === 'upcoming');
 
 const regulars = getRegulars(upcoming);
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 ---
 
 
@@ -48,4 +50,5 @@ const regulars = getRegulars(upcoming);
   <UpcomingEvents events={upcomingCards} lang={lang} />
   <WeeklyRegulars events={regulars} lang={lang} />
   <PastEvents events={past} lang={lang} />
+  <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />
 </BaseLayout>
