@@ -1,0 +1,229 @@
+---
+// src/components/home/StravaWidget.astro
+// Floating Strava sidebar widget — slides in from right, pulses gently
+import { t, type Locale } from "../../lib/i18n";
+
+interface Props {
+    lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const STRAVA_CLUB_URL = "https://www.strava.com/clubs/accmunich";
+---
+
+<div class="sw-root" id="strava-widget">
+    <a
+        href={STRAVA_CLUB_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="sw-anchor"
+        title={t(lang, "home.strava.leaderboard")}
+    >
+        <!-- Always-visible collapsed tab -->
+        <div class="sw-tab">
+            <svg
+                class="sw-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+            >
+                <path
+                    d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"
+                ></path>
+            </svg>
+            <div class="sw-tab-text">
+                <span class="sw-tab-title">Strava</span>
+                <span class="sw-tab-sub">{t(lang, "home.strava.widgetSub")}</span>
+            </div>
+            <svg class="sw-chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </div>
+
+        <!-- Expanded card (on hover) -->
+        <div class="sw-card" aria-hidden="true">
+            <p class="sw-card-label">STRAVA COMMUNITY</p>
+            <p class="sw-card-body">{t(lang, "home.strava.widgetText")}</p>
+            <span class="sw-card-cta">{t(lang, "home.strava.leaderboard")}</span>
+        </div>
+    </a>
+</div>
+
+<style>
+    /* ── Root ── */
+    .sw-root {
+        position: fixed;
+        right: 0;
+        top: 42%;
+        z-index: 200;
+
+        /* Slide-in from right on load */
+        transform: translateX(100%);
+        animation: sw-slide-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 3.8s forwards;
+    }
+
+    @keyframes sw-slide-in {
+        to { transform: translateX(0); }
+    }
+
+    /* ── Anchor resets ── */
+    .sw-anchor {
+        display: flex;
+        align-items: stretch;
+        text-decoration: none;
+        color: #ffffff;
+        position: relative;
+    }
+
+    .sw-anchor:hover,
+    .sw-anchor:focus {
+        text-decoration: none;
+        color: #ffffff;
+    }
+
+    /* ── Always-visible tab ── */
+    .sw-tab {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #fc4c02;
+        color: #ffffff;
+        padding: 14px 14px 14px 16px;
+        border-radius: 12px 0 0 12px;
+        cursor: pointer;
+        white-space: nowrap;
+        box-shadow:
+            -4px 0 20px rgba(252, 76, 2, 0.45),
+            -1px 0 6px rgba(0, 0, 0, 0.2);
+
+        /* Gentle pulse every 4s */
+        animation: sw-pulse 4s ease-in-out 5s infinite;
+
+        transition: padding var(--transition-base), gap var(--transition-base);
+    }
+
+    @keyframes sw-pulse {
+        0%, 100% { box-shadow: -4px 0 20px rgba(252, 76, 2, 0.45), -1px 0 6px rgba(0,0,0,0.2); }
+        50%       { box-shadow: -4px 0 32px rgba(252, 76, 2, 0.75), -1px 0 8px rgba(0,0,0,0.25); }
+    }
+
+    .sw-icon {
+        flex-shrink: 0;
+    }
+
+    .sw-tab-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .sw-tab-title {
+        font-family: var(--font-heading);
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    .sw-tab-sub {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1;
+    }
+
+    .sw-chevron {
+        flex-shrink: 0;
+        opacity: 0.7;
+        transition: transform var(--transition-base), opacity var(--transition-base);
+    }
+
+    /* ── Expanded card ── */
+    .sw-card {
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 210px;
+        background: #1a1a1a;
+        border: 1px solid rgba(252, 76, 2, 0.35);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        padding: 18px 16px;
+        box-shadow: -8px 0 32px rgba(0, 0, 0, 0.4);
+
+        opacity: 0;
+        pointer-events: none;
+        translate: 10px 0;
+        transition:
+            opacity var(--transition-base),
+            translate var(--transition-base);
+    }
+
+    /* Hover/focus: show card, rotate chevron */
+    .sw-anchor:hover .sw-card,
+    .sw-anchor:focus-within .sw-card {
+        opacity: 1;
+        pointer-events: auto;
+        translate: 0 0;
+    }
+
+    .sw-anchor:hover .sw-chevron,
+    .sw-anchor:focus-within .sw-chevron {
+        transform: rotate(180deg);
+        opacity: 1;
+    }
+
+    .sw-anchor:hover .sw-tab,
+    .sw-anchor:focus-within .sw-tab {
+        /* Pause pulse on hover */
+        animation-play-state: paused;
+    }
+
+    .sw-card-label {
+        font-family: var(--font-heading);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #fc4c02;
+        margin: 0 0 8px;
+    }
+
+    .sw-card-body {
+        font-family: var(--font-body);
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.55;
+        margin: 0 0 14px;
+    }
+
+    .sw-card-cta {
+        display: block;
+        background: #fc4c02;
+        color: #ffffff;
+        font-family: var(--font-heading);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        padding: 8px 14px;
+        border-radius: 7px;
+        text-align: center;
+        transition: background var(--transition-fast);
+    }
+
+    .sw-anchor:hover .sw-card-cta {
+        background: #e04400;
+    }
+
+    /* ── Mobile: hide ── */
+    @media (max-width: 640px) {
+        .sw-root { display: none; }
+    }
+</style>

@@ -85,6 +85,10 @@ export const ui = {
         'home.training.subtitle': '训练方法论、安全科普',
         'home.routes.title': '骑行路线库',
         'home.routes.subtitle': '可搜索路线数据库、Strava/Komoot 链接',
+        'home.strava.leaderboard': '查看本周排行榜 →',
+        'home.strava.widgetLabel': 'Strava',
+        'home.strava.widgetSub': '本周排行榜',
+        'home.strava.widgetText': '查看本周排行榜，与俱乐部成员一起骑行。',
     },
     en: {
         'nav.home': 'Home',
@@ -143,6 +147,10 @@ export const ui = {
         'home.training.subtitle': 'Training Methods, Safety Tips',
         'home.routes.title': 'Route Database',
         'home.routes.subtitle': 'Searchable Routes, Strava/Komoot Links',
+        'home.strava.leaderboard': 'View Weekly Leaderboard →',
+        'home.strava.widgetLabel': 'Strava',
+        'home.strava.widgetSub': 'Weekly Leaderboard',
+        'home.strava.widgetText': 'See this week\'s leaderboard and ride with the club.',
     },
     de: {
         'nav.home': 'Startseite',
@@ -201,6 +209,10 @@ export const ui = {
         'home.training.subtitle': 'Trainingsmethoden, Sicherheit',
         'home.routes.title': 'Routendatenbank',
         'home.routes.subtitle': 'Suchbare Routen, Strava/Komoot Links',
+        'home.strava.leaderboard': 'Wochenrangliste ansehen →',
+        'home.strava.widgetLabel': 'Strava',
+        'home.strava.widgetSub': 'Wochenrangliste',
+        'home.strava.widgetText': 'Wochenrangliste ansehen und mit dem Club fahren.',
     },
 } as const;
 
