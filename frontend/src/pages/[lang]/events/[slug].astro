@@ -8,6 +8,7 @@ import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
 import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
+import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
 
 export const prerender = false;
 
@@ -129,6 +130,8 @@ const endedLabels: Record<string, string> = {
       <!-- EventRegistrationForm will be hydrated here -->
     </div>
   )}
+  <!-- Floating subscribe banner (appears after 1s, auto-dismisses after 8s) -->
+  <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />
 </ArticleLayout>
 
 <!-- Client-side script to hydrate registration form -->
