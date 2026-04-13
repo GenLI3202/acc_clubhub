@@ -1,0 +1,94 @@
+---
+// /api/unsubscribe/[token].astro — Unsubscribe confirmation page (#84)
+//
+// Emails link to {frontend_url}/api/unsubscribe/{token}. This page:
+//   1. Proxies the GET to the FastAPI backend (server-to-server, no CORS)
+//   2. Renders a success or error confirmation page
+export const prerender = false;
+
+const { token } = Astro.params;
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+type Result =
+  | { ok: true }
+  | { ok: false; status: number };
+
+let result: Result;
+
+try {
+  const res = await fetch(`${apiUrl}/api/unsubscribe/${token}`);
+  result = res.ok ? { ok: true } : { ok: false, status: res.status };
+} catch {
+  result = { ok: false, status: 0 };
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{result.ok ? "Unsubscribed" : "Error"} | ACC ClubHub</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #f6f8fa;
+      }
+      .card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 3rem 2.5rem;
+        max-width: 440px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      }
+      .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+      h1 { font-size: 1.4rem; color: #24292f; margin: 0 0 0.75rem; }
+      p { color: #57606a; font-size: 0.95rem; margin: 0 0 1.5rem; line-height: 1.6; }
+      a {
+        display: inline-block;
+        padding: 0.5rem 1.25rem;
+        background: #C62828;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+      }
+      a:hover { background: #a81f1f; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      {result.ok ? (
+        <>
+          <div class="icon">✅</div>
+          <h1>You've been unsubscribed</h1>
+          <p>
+            You'll no longer receive event notification emails from ACC ClubHub.
+            You can re-subscribe any time by registering for a future event.
+          </p>
+          <a href="/">Back to ACC ClubHub</a>
+        </>
+      ) : (
+        <>
+          <div class="icon">❌</div>
+          <h1>Invalid unsubscribe link</h1>
+          <p>
+            This link has already been used or is no longer valid.
+            If you're still receiving emails, please contact us.
+          </p>
+          <a href="/">Back to ACC ClubHub</a>
+        </>
+      )}
+    </div>
+  </body>
+</html>
