@@ -11,6 +11,12 @@ import resend
 
 logger = logging.getLogger(__name__)
 
+_CONTACT = {
+    "zh": '<p style="color:#666;font-size:0.9em;">如有任何疑问，欢迎发邮件至 <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a> 联系俱乐部。</p>',
+    "en": '<p style="color:#666;font-size:0.9em;">If you have any questions, feel free to contact us at <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a>.</p>',
+    "de": '<p style="color:#666;font-size:0.9em;">Bei Fragen erreichst du uns jederzeit unter <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a>.</p>',
+}
+
 # Initialize Resend
 if settings.RESEND_API_KEY:
     resend.api_key = settings.RESEND_API_KEY
@@ -86,6 +92,7 @@ def send_confirmation_email(
     html_body = f"""<div style="font-family: Arial, sans-serif; max-width: 600px;">
 <h2 style="color: #2A5CA6;">🚴 {template["subject"]}</h2>
 {template["body"]}
+{_CONTACT.get(lang, _CONTACT["en"])}
 </div>"""
 
     params = {
@@ -164,6 +171,7 @@ def send_cancellation_email(
         f'<div style="font-family: Arial, sans-serif; max-width: 600px;">'
         f'<h2 style="color: #C62828;">❌ {template["subject"]}</h2>'
         f"{template['body']}"
+        f"{_CONTACT.get(lang, _CONTACT['en'])}"
         f"</div>"
     )
 
@@ -263,6 +271,7 @@ def send_broadcast_email(
         f'<div style="font-family:Arial,sans-serif;max-width:600px;">'
         f'<h2 style="color:#C62828;">🚴 {template["subject"]}</h2>'
         f"{template['body']}"
+        f"{_CONTACT.get(lang, _CONTACT['en'])}"
         f"</div>"
     )
 
@@ -358,6 +367,7 @@ def send_registrant_notification_email(
         f'<div style="font-family:Arial,sans-serif;max-width:600px;">'
         f'<h2 style="color:#2A5CA6;">🚴 {template["subject"]}</h2>'
         f"{template['body']}"
+        f"{_CONTACT.get(lang, _CONTACT['en'])}"
         f"</div>"
     )
 
@@ -422,7 +432,7 @@ def send_waitlist_email(
             f"Warteliste f\u00fcr {event_title}.</p>{link_html}"
         ),
     }
-    html_body = body_templates.get(lang, body_templates["en"])
+    html_body = body_templates.get(lang, body_templates["en"]) + _CONTACT.get(lang, _CONTACT["en"])
 
     params = {
         "from": "ACC ClubHub <noreply@events.accross-cc.de>",
@@ -497,7 +507,7 @@ def send_subscription_confirmation_email(
         "from": "ACC ClubHub <noreply@events.accross-cc.de>",
         "to": [email],
         "subject": template["subject"],
-        "html": template["body"],
+        "html": template["body"] + _CONTACT.get(lang, _CONTACT["en"]),
     }
 
     try:
