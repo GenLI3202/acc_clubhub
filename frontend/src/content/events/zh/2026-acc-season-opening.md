@@ -6,7 +6,7 @@ location: 慕尼黑英国花园南门
 author: ACC Club
 date: 2026-04-19
 eventType: social-ride
-coverImage: /images/uploads/spring-ride-2025.jpg
+cover: /images/uploads/spring-ride-2025.jpg
 displaySection: hero
 wechatQrCode: /images/uploads/event_src/2026-season-opening/140426-ACC-2026season-open.png
 ---
