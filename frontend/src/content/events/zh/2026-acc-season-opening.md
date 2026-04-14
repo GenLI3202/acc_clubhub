@@ -2,16 +2,21 @@
 slug: 2026-acc-season-opening
 title: ACC 2026 赛季首骑
 description: 新赛季开幕骑行，欢迎所有骑行爱好者，无均速要求
-location: 慕尼黑英国花园南门
+location: 慕尼黑动物园 · Tierparkstraße 30, 81543 München
 author: ACC Club
 date: 2026-04-19
 eventType: social-ride
 cover: /images/uploads/spring-ride-2025.jpg
 displaySection: hero
+maxParticipants: 35
 wechatQrCode: /images/uploads/event_src/2026-season-opening/140426-ACC-2026season-open.png
 ---
 
 🚴‍♂️ 新赛季，新开始。这是 ACC 慕城骑行俱乐部网站正式上线后的第一个官方活动，欢迎所有热爱骑行的朋友加入！无论你是老面孔还是新成员，都来一起骑。
+
+**时间** ｜ 4月19日（周六）早上 9:00 出发
+
+**集合地点** ｜ 慕尼黑动物园门口 · Tierparkstraße 30, 81543 München
 
 **路线** ｜ 41.6km · 爬升 350m · 约 2 小时  
 途经 Perlacher Forst 林间小道 → 油菜花田风景路 → Ludwigshöhe 阿尔卑斯山眺望点 → Kloster Schäftlarn 修道院
