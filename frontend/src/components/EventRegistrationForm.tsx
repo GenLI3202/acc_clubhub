@@ -12,6 +12,7 @@ interface EventRegistrationFormProps {
     eventType: string;
     maxParticipants: number | null;
     registrationDeadline: string | null;
+    wechatQrCode: string | null;
     lang: Locale;
     apiUrl: string;
 }
@@ -33,6 +34,7 @@ export function EventRegistrationForm({
     eventType,
     maxParticipants,
     registrationDeadline,
+    wechatQrCode,
     lang,
     apiUrl,
 }: EventRegistrationFormProps): VNode {
@@ -94,6 +96,7 @@ export function EventRegistrationForm({
                     event_type: eventType,
                     max_participants: maxParticipants,
                     registration_deadline: registrationDeadline,
+                    wechat_qr_code: wechatQrCode,
                 }),
             });
 

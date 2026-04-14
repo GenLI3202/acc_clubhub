@@ -124,6 +124,7 @@ const endedLabels: Record<string, string> = {
       data-event-type={entry.data.eventType}
       data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
       data-registration-deadline={entry.data.registrationDeadline ?? ''}
+      data-wechat-qr-code={(entry.data as any).wechatQrCode ?? ''}
       data-lang={lang}
       data-api-url={apiUrl}
     >
@@ -152,6 +153,7 @@ const endedLabels: Record<string, string> = {
     const maxParticipantsRaw = container.dataset.maxParticipants;
     const maxParticipants = maxParticipantsRaw ? parseInt(maxParticipantsRaw, 10) : null;
     const registrationDeadline = container.dataset.registrationDeadline || null;
+    const wechatQrCode = container.dataset.wechatQrCode || null;
     const lang = (container.dataset.lang ?? 'zh') as Locale;
     const apiUrl = container.dataset.apiUrl ?? '';
 
@@ -169,6 +171,7 @@ const endedLabels: Record<string, string> = {
         eventType,
         maxParticipants,
         registrationDeadline,
+        wechatQrCode,
         lang,
         apiUrl,
       }),
