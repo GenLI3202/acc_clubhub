@@ -15,9 +15,10 @@ export const prerender = false;
 // SSR: fetch content collection per request
 const { lang, slug } = Astro.params as { lang: Locale; slug: string };
 const allEvents = await getCollection('events');
-const entry = allEvents.find(
-  (e) => e.data.slug === slug && getLangFromEntry(e.id, 'events') === lang
-);
+// Fix #93: match by both slug AND lang; fall back to zh if no lang-specific version exists
+const entry =
+  allEvents.find((e) => e.data.slug === slug && e.id.startsWith(`${lang}/`)) ??
+  allEvents.find((e) => e.data.slug === slug && e.id.startsWith('zh/'));
 
 if (!entry) {
   return Astro.redirect(`/${lang}/events`);
