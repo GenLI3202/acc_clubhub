@@ -4,7 +4,7 @@ title: Powermeter Vergleich
 description: Umfassender Vergleich von Kurbel-, Pedal- und Naben-Powermetern.
 author: acc-
 date: 2026-01-12
-cover: /images/uploads/尊吗.jpg
+cover: /images/shared/placeholders/ai-placeholder-02.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

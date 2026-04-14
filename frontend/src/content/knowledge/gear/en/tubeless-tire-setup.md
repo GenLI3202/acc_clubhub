@@ -4,7 +4,7 @@ title: Tubeless Tire Setup Guide
 description: Step-by-step guide to installing and maintaining tubeless tires.
 author: acc-
 date: 2026-01-05
-cover: /images/uploads/谁有我多.jpg
+cover: /images/shared/placeholders/ai-placeholder-01.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

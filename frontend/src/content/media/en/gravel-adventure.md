@@ -4,7 +4,7 @@ title: Bavaria Gravel Adventure
 description: Off the road, exploring Bavaria's gravel trails.
 date: 2025-05-20
 type: adventure
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

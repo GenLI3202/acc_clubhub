@@ -5,7 +5,7 @@ description: 回顾俱乐部成立以来的精彩瞬间。
 date: 2025-09-01
 author: ''
 type: 影像
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

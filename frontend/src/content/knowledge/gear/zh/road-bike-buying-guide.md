@@ -4,7 +4,7 @@ title: 公路车购买指南 2026(test template)
 description: 从入门到进阶，帮你选择适合的公路自行车。
 author: acc-
 date: 2026-01-20
-cover: /images/uploads/buy_canyon.webp
+cover: /images/shared/stock/canyon-road-bike.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 选购公路车是一门学问，本文将从预算、用途、品牌等多个维度为你提供参考。

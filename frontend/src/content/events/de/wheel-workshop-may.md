@@ -7,7 +7,7 @@ author: ACC Club
 date: 2026-05-09
 eventType: workshop
 displaySection: hero
-coverImage: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 maxParticipants: 12
 ---
 Laufrad einspeichen von Grund auf: Felgen-, Speichen- und Naben-Auswahl, Einspeichmuster, Speichenspannung. Materialkosten €30, Werkzeug gestellt.

@@ -4,7 +4,7 @@ title: Fahrradbeleuchtung Kaufratgeber
 description: Frontlichter, Rücklichter, Tagfahrlichter - unverzichtbar für sicheres Fahren.
 author: acc-
 date: 2026-01-10
-cover: /images/uploads/Gemini_Generated_Image_taubr8taubr8taub.png
+cover: /images/shared/placeholders/ai-gear-02.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

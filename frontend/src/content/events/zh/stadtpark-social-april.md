@@ -7,6 +7,6 @@ author: ACC Club
 date: 2026-04-05
 eventType: social-ride
 displaySection: regular
-coverImage: /images/uploads/rr120_2024.jpg
+cover: /images/posts/rad-race-120-2025/cover.jpg
 ---
 每周五 18:30 出发，25-30km，轻松配速，无需报名。

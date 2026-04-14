@@ -7,7 +7,7 @@ author: ACC Club
 date: 2026-05-09
 eventType: workshop
 displaySection: hero
-coverImage: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 maxParticipants: 12
 ---
 Hands-on wheel building: rim, spoke, and hub selection, lacing patterns, tension adjustment. Materials fee €30, tools provided.

@@ -4,7 +4,7 @@ title: (Demo) Alps Summer Cycling Adventure
 description: Stunning footage from our cycling journey through the Alps.
 date: 2025-08-15
 type: video
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_source=9869b386690dc31064a52b29365a3735
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

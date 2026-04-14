@@ -4,7 +4,7 @@ title: Road Bike Buying Guide 2026 (Demo)
 description: From beginner to advanced, helping you choose the right road bike.
 author: acc-
 date: 2026-01-20
-cover: /images/uploads/buy_canyon.webp
+cover: /images/shared/stock/canyon-road-bike.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 Buying a road bike is an art. This guide covers budget, purpose, and brand considerations.

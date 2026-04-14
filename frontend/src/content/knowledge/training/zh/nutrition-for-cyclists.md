@@ -4,7 +4,7 @@ title: 骑行者营养指南
 description: 骑行前中后的营养补给策略。
 author: acc-
 date: 2026-01-10
-cover: /images/uploads/rr120_2024.jpg
+cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

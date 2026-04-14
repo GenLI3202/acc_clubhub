@@ -6,7 +6,7 @@ location: ACC Club House
 author: ACC Club
 date: 2025-06-10
 eventType: workshop
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 ---
 # 单车维修工作坊
 

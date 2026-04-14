@@ -4,7 +4,7 @@ title: Dolomites Cycling Tour
 description: Documentary of the most beautiful cycling destination in northern Italy.
 date: 2025-07-05
 type: adventure
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

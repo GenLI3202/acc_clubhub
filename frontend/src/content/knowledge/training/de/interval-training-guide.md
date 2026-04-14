@@ -4,7 +4,7 @@ title: Kompletter Intervalltraining-Leitfaden
 description: Wie man durch Intervalltraining schnell die Radleistung verbessert.
 author: acc-trainingsteam
 date: 2026-01-12
-cover: /images/uploads/rr120_2024.jpg
+cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
