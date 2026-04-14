@@ -11,8 +11,7 @@ displaySection: hero
 maxParticipants: 35
 wechatQrCode: /images/uploads/event_src/2026-season-opening/140426-ACC-2026season-open.png
 ---
-
-终于，夏天要来了。天气开始稳定地转暖，这个周末阳光明媚——骑行的时机，再完美不过。
+冬天终于要过去了。滑雪的朋友们或许还有些依依不舍，但热爱骑行的伙伴们早已跃跃欲试。天气慢慢转暖，这个周六阳光难得，告别了一周的阴雨——正是出门骑行的好时机。
 
 ACC 慕城骑行俱乐部邀请大家一起加入我们的 2026 赛季首骑。没有均速门槛，没有排名，没有压力。不论你是跟我们骑了好几年的老朋友，还是刚刚加入的新面孔，这一天都欢迎你。
 
@@ -20,10 +19,12 @@ ACC 慕城骑行俱乐部邀请大家一起加入我们的 2026 赛季首骑。�
 
 ---
 
-| | |
-|---|---|
-| **时间** | 4月19日（周六）09:00 出发 |
-| **集合地点** | 慕尼黑动物园门口 · Tierparkstraße 30, 81543 München |
-| **路线** | 41.6km · 爬升 350m · [Komoot 查看](https://www.komoot.com/de-de/invite-tour/2885696236?code=3fniij-TBaTprvecAk0wxNmrwbeU9MIQhD2C3roxA1jduOqx0c&ref=wtd&share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa) |
-| **强度** | 无均速要求，沿途互相等候 |
-| **注意事项** | 头盔必戴，公路车或砾石车，自备补给 |
+|                    |                                                                                                                                                                                                                      |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **时间**     | 4月19日（周六）09:00 出发                                                                                                                                                                                            |
+| **集合地点** | 慕尼黑动物园门口 · Tierparkstraße 30, 81543 München                                                                                                                                                               |
+| **路线**     | 41.6km · 爬升 350m ·[Komoot 查看](https://www.komoot.com/de-de/invite-tour/2885696236?code=3fniij-TBaTprvecAk0wxNmrwbeU9MIQhD2C3roxA1jduOqx0c&ref=wtd&share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa) |
+| **强度**     | 无均速要求，沿途互相等候                                                                                                                                                                                             |
+| **注意事项** | 头盔必戴，公路车或砾石车，自备补给                                                                                                                                                                                   |
+
+*Let us ride, free and together.*
