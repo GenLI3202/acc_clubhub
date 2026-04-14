@@ -160,9 +160,9 @@ export function EventRegistrationForm({
     }
 
     const formTitle = {
-        zh: '活动报名',
-        en: 'Event Registration',
-        de: 'Anmeldung',
+        zh: '活动报名 — let us ride, free and together',
+        en: 'Event Registration — let us ride, free and together',
+        de: 'Anmeldung — let us ride, free and together',
     }[lang] || 'Registration';
 
     return (
