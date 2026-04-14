@@ -15,7 +15,9 @@ export const prerender = false;
 // SSR: fetch content collection per request
 const { lang, slug } = Astro.params as { lang: Locale; slug: string };
 const allEvents = await getCollection('events');
-const entry = allEvents.find((e) => e.data.slug === slug);
+const entry = allEvents.find(
+  (e) => e.data.slug === slug && getLangFromEntry(e.id, 'events') === lang
+);
 
 if (!entry) {
   return Astro.redirect(`/${lang}/events`);
