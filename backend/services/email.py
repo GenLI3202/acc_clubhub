@@ -32,6 +32,7 @@ def send_confirmation_email(
     lang: str = "zh",
     event_slug: str = "",
     view_token: str = "",
+    wechat_qr_code: Optional[str] = None,
 ) -> dict:
     """Send RSVP confirmation email"""
     if not settings.RESEND_API_KEY:
@@ -45,6 +46,12 @@ def send_confirmation_email(
         if event_slug and view_token
         else ""
     )
+    qr_html = (
+        f'<p style="margin-top:1.2em;"><strong>微信群二维码</strong><br>'
+        f'<img src="{wechat_qr_code}" alt="WeChat QR Code" '
+        f'style="width:180px;height:180px;margin-top:8px;border:1px solid #eee;border-radius:4px;" /></p>'
+        if wechat_qr_code else ""
+    )
 
     templates = {
         "zh": {
@@ -57,6 +64,7 @@ def send_confirmation_email(
     <li><strong>地点：</strong>{event_location or "待定"}</li>
 </ul>
 {f'<p><a href="{participant_link}">查看参与名单</a></p>' if participant_link else ""}
+{qr_html}
 <p>祝您骑行愉快！</p>
 <p>—— ACC ClubHub 团队</p>""",
         },
@@ -70,6 +78,7 @@ def send_confirmation_email(
     <li><strong>Location:</strong> {event_location or "TBD"}</li>
 </ul>
 {f'<p><a href="{participant_link}">View participant list</a></p>' if participant_link else ""}
+{qr_html}
 <p>Enjoy your ride!</p>
 <p>—— ACC ClubHub Team</p>""",
         },
@@ -83,6 +92,7 @@ def send_confirmation_email(
     <li><strong>Ort:</strong> {event_location or "TBD"}</li>
 </ul>
 {f'<p><a href="{participant_link}">Teilnehmerliste ansehen</a></p>' if participant_link else ""}
+{qr_html}
 <p>Viel Spaß beim Radfahren!</p>
 <p>—— ACC ClubHub Team</p>""",
         },

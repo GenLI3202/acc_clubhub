@@ -185,6 +185,7 @@
   margin-bottom: 0.9rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--color-border, #C62828);
+  text-align: center;
 }
 
 /* Responsive: stack on mobile */

@@ -47,6 +47,14 @@ const registrationLabels: Record<string, string> = {
   de: 'Jetzt anmelden',
 };
 
+const eventTypeLabels: Record<string, Record<string, string>> = {
+  'social-ride':   { zh: '咖啡骑', en: 'Coffee Ride', de: 'Coffee Ride' },
+  'training-camp': { zh: '训练营', en: 'Training Camp', de: 'Trainingslager' },
+  'race':          { zh: '比赛', en: 'Race', de: 'Rennen' },
+  'workshop':      { zh: '工作坊', en: 'Workshop', de: 'Workshop' },
+};
+const eventTypeLabel = (eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType;
+
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
 // Effective registration deadline: explicit value in frontmatter, or default to day before event at 22:00
@@ -84,7 +92,7 @@ const endedLabels: Record<string, string> = {
   <!-- Event Info -->
   <div class="event-info">
     {entry.data.eventType && (
-      <span class="event-type-badge">{entry.data.eventType}</span>
+      <span class="event-type-badge">{eventTypeLabel}</span>
     )}
     {entry.data.location && (
       <span class="event-location">📍 {entry.data.location}</span>
@@ -134,6 +142,7 @@ const endedLabels: Record<string, string> = {
       data-event-type={entry.data.eventType}
       data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
       data-registration-deadline={effectiveDeadline}
+      data-wechat-qr-code={(entry.data as any).wechatQrCode ?? ''}
       data-lang={lang}
       data-api-url={apiUrl}
     >
@@ -162,6 +171,7 @@ const endedLabels: Record<string, string> = {
     const maxParticipantsRaw = container.dataset.maxParticipants;
     const maxParticipants = maxParticipantsRaw ? parseInt(maxParticipantsRaw, 10) : null;
     const registrationDeadline = container.dataset.registrationDeadline || null;
+    const wechatQrCode = container.dataset.wechatQrCode || null;
     const lang = (container.dataset.lang ?? 'zh') as Locale;
     const apiUrl = container.dataset.apiUrl ?? '';
 
@@ -179,6 +189,7 @@ const endedLabels: Record<string, string> = {
         eventType,
         maxParticipants,
         registrationDeadline,
+        wechatQrCode,
         lang,
         apiUrl,
       }),

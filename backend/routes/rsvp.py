@@ -78,6 +78,7 @@ class RSVPCreateV2(BaseModel):
     event_type: str = "social-ride"
     max_participants: Optional[int] = None
     registration_deadline: Optional[str] = None
+    wechat_qr_code: Optional[str] = None
 
 
 class SubscribeRequest(BaseModel):
@@ -352,9 +353,10 @@ def create_rsvp_v2(
                 event_date=event.event_date,
                 event_location=event.location,
                 event_id=event.id,
-                lang="en",
+                lang=data.lang,
                 event_slug=event.slug,
                 view_token=new_rsvp.view_token,
+                wechat_qr_code=data.wechat_qr_code,
             )
         else:
             send_waitlist_email(
