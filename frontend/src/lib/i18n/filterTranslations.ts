@@ -23,7 +23,7 @@ export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, s
     },
     // Events
     eventType: {
-        'social-ride': { zh: '休闲骑', de: 'Social Ride', en: 'Social Ride' },
+        'social-ride': { zh: '咖啡骑', de: 'Coffee Ride', en: 'Coffee Ride' },
         'training-camp': { zh: '训练营', de: 'Trainingslager', en: 'Training Camp' },
         'race': { zh: '比赛', de: 'Rennen', en: 'Race' },
         'workshop': { zh: '工作坊', de: 'Workshop', en: 'Workshop' }
