@@ -26,3 +26,11 @@ ACC 慕城骑行俱乐部邀请大家一起加入我们的 2026 开春咖啡骑�
 | **路线**     | 41.6km · 爬升 350m ·[Komoot 查看](https://www.komoot.com/de-de/invite-tour/2885696236?code=3fniij-TBaTprvecAk0wxNmrwbeU9MIQhD2C3roxA1jduOqx0c&ref=wtd&share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa) |
 | **强度**     | 无均速要求，沿途互相等候                                                                                                                                                                                             |
 | **注意事项** | 头盔必戴，公路车或砾石车，自备补给                                                                                                                                                                                   |
+
+---
+
+### 📱 加入活动微信群
+
+报名后请扫描下方二维码加入活动微信群，获取最新骑行信息和集合通知：
+
+<img src="/images/events/2026-acc-season-opening/wechat-qr.jpg" alt="ACC 2026 开春咖啡骑 微信群二维码" style="max-width: 40%;" />
