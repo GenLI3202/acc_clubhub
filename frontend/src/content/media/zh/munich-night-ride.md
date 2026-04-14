@@ -4,7 +4,7 @@ title: 慕尼黑夜骑穿越
 description: 城市灯火下的骑行体验，探索夜晚的慕尼黑。
 date: 2025-07-20
 type: video
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

@@ -4,7 +4,7 @@ title: Fahrradhelm Sicherheitsratgeber
 description: Wie man einen Fahrradhelm richtig auswählt und trägt.
 author: acc-ausrstungsteam
 date: 2026-01-18
-cover: /images/uploads/bike.jpg
+cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

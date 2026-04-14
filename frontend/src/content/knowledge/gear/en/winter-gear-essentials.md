@@ -4,7 +4,7 @@ title: Winter Cycling Gear Essentials
 description: Must-have gear for staying warm and safe in cold weather.
 author: acc-
 date: 2026-01-08
-cover: /images/uploads/Gemini_Generated_Image_edc4obedc4obedc4.png
+cover: /images/shared/placeholders/ai-gear-01.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

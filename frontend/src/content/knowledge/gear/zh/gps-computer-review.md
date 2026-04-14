@@ -4,7 +4,7 @@ title: GPS 码表横向评测
 description: Garmin、Wahoo、Hammerhead 三大品牌对比。
 author: acc-
 date: 2026-01-02
-cover: /images/uploads/bike.jpg
+cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

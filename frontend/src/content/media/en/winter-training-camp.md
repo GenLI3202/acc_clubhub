@@ -4,7 +4,7 @@ title: Mallorca Winter Training Camp
 description: Highlights from our winter training camp in Mallorca, Spain.
 date: 2025-02-10
 type: video
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

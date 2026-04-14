@@ -6,7 +6,7 @@ location: München Hauptbahnhof
 author: ACC Club
 date: 2025-07-15
 eventType: training-camp
-cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
+cover: /images/shared/stock/munich-cycling.jpg
 ---
 # 2025 Sommer Alpen Radtour
 

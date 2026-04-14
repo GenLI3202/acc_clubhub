@@ -5,7 +5,7 @@ region: munich-south
 distance: 65
 elevation: 450
 difficulty: medium
-cover: /images/uploads/ivan-bandura-Vdv_3HmV-tk-unsplash.jpg
+cover: /images/shared/stock/munich-cycling.jpg
 stravaUrl: https://www.strava.com/routes/123456
 komootUrl: https://www.komoot.com/tour/123456
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456

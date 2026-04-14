@@ -4,7 +4,7 @@ title: 骑行头盔安全指南
 description: 如何选择和正确佩戴骑行头盔。
 author: acc-
 date: 2026-01-18
-cover: /images/uploads/bike.jpg
+cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

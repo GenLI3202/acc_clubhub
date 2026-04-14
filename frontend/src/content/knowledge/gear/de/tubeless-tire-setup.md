@@ -4,7 +4,7 @@ title: Tubeless-Reifen Einrichtung
 description: Schritt-für-Schritt-Anleitung zur Installation und Wartung von Tubeless-Reifen.
 author: acc-
 date: 2026-01-05
-cover: /images/uploads/谁有我多.jpg
+cover: /images/shared/placeholders/ai-placeholder-01.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

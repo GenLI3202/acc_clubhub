@@ -292,9 +292,189 @@ Set `status: draft` to hide content from the live site without deleting it. Swit
 
 ---
 
-## 11. Planned Features (not yet implemented)
+## 11. Media & Image Governance
+
+> **这是法条，不是建议。** 所有向本项目提交图片的人都必须遵守本节规则。
+> 违反规则的文件不得合并进 `master`。
+
+---
+
+### 11.1 权威目录结构
+
+```
+frontend/public/images/
+├── events/
+│   └── {event-slug}/          ← 每个活动独立文件夹，slug 与 .md 文件名一致
+│       ├── cover.jpg           ← 活动封面（必须命名为 cover）
+│       ├── wechat-qr.png       ← 微信群二维码（如有）
+│       └── gallery/            ← 活动后照片（可选）
+│           └── {描述}.jpg
+├── posts/                      ← 对应 src/content/media/ 内容集
+│   └── {post-slug}/
+│       ├── cover.jpg
+│       └── gallery/
+│           └── {描述}.jpg
+├── routes/
+│   └── {route-slug}/
+│       └── cover.jpg
+├── knowledge/
+│   ├── gear/
+│   │   └── {article-slug}/
+│   │       └── cover.jpg
+│   └── training/
+│       └── {article-slug}/
+│           └── cover.jpg
+└── shared/
+    ├── stock/                  ← 版权购买或 Unsplash 等通用素材，可跨内容复用
+    ├── placeholders/           ← 占位图（AI 生成图放这里，不得用于生产内容）
+    └── logos/                  ← ACC logo 及品牌图形资产
+```
+
+**禁止的目录：**
+
+- `frontend/public/images/uploads/` — **已废弃**，仅在迁移过渡期存在，完成后删除
+- 任何不在上述结构内的新建目录
+- `event_src/` 或其他临时性子目录
+
+---
+
+### 11.2 文件命名规则
+
+| 用途 | 命名规则 | 示例 |
+|------|----------|------|
+| 活动/文章封面 | 固定命名 `cover.{ext}` | `cover.jpg` |
+| 微信群二维码 | 固定命名 `wechat-qr.png` | `wechat-qr.png` |
+| 图库照片 | `{年份}-{简短描述}.{ext}`，全小写，连字符分隔 | `2026-group-start.jpg`、`2025-summit.jpg` |
+| 通用素材 | `{简短描述}.{ext}` | `munich-cycling.jpg`、`canyon-road-bike.webp` |
+
+**强制规则：**
+
+1. **全部小写**，不得含大写字母
+2. **只用连字符 `-`** 分隔单词，不用空格、下划线、点
+3. **不得使用中文、特殊字符、哈希值、自动生成的 UUID** 作为文件名
+4. **扩展名必须小写**（`.jpg` 不是 `.JPG`，`.png` 不是 `.PNG`）
+5. **不得提交 `.HEIC` 格式**——上传前必须先转为 `.jpg` 或 `.webp`
+6. 封面图统一命名 `cover.jpg`（或 `.webp`），**不得用 `photo.jpg`、`image.jpg`、`DSC_xxxx.jpg` 等**
+
+---
+
+### 11.3 Frontmatter 引用规则
+
+#### 路径格式
+
+所有 `cover` 字段的值必须是从站点根目录起的绝对路径：
+
+```yaml
+# ✅ 正确
+cover: /images/events/spring-classic-2026/cover.jpg
+
+# ❌ 错误——旧的 uploads 路径
+cover: /images/uploads/rr120_2024.jpg
+
+# ❌ 错误——相对路径
+cover: ../../../public/images/events/...
+
+# ❌ 错误——外部 URL（封面图必须是本地资产）
+cover: https://example.com/photo.jpg
+```
+
+#### 字段名统一
+
+所有内容集（events、media、routes、gear、training）的封面字段**统一使用 `cover`**：
+
+```yaml
+# ✅ 正确（所有集合统一）
+cover: /images/events/spring-classic-2026/cover.jpg
+
+# ❌ 错误——coverImage 已废弃
+coverImage: /images/uploads/...
+```
+
+`coverImage` 字段名已废弃，任何新内容不得使用。发现旧文件中仍有 `coverImage` 时，随手修正。
+
+#### 正文内嵌图片（Markdown body）
+
+Typora 等工具自动保存的正文图片路径（相对路径）允许保留在 `src/content/{集合}/{语言}/image/{slug}/` 下，**不需要**移动到 `public/images/`。这是正文图片与封面图片的合法区别：
+
+```markdown
+<!-- ✅ 正文内嵌图，相对路径，保留在 src/content/ 内 -->
+![骑行途中](image/garmisch-to-gardasee/2025-cols.jpg)
+
+<!-- ✅ Frontmatter 封面，绝对路径，存放于 public/images/ -->
+cover: /images/posts/garmisch-to-gardasee/cover.jpg
+```
+
+---
+
+### 11.4 新建内容时的操作规程
+
+发布一个新活动或文章时，**按以下顺序操作**，不得颠倒：
+
+1. **确定 slug**（与 `.md` 文件名一致，kebab-case）
+2. **创建对应图片目录**
+   ```bash
+   # 新活动示例
+   mkdir -p frontend/public/images/events/{slug}
+
+   # 新文章示例
+   mkdir -p frontend/public/images/posts/{slug}/gallery
+   ```
+3. **放入封面图**，命名为 `cover.jpg`（或 `.webp`）
+4. **如有微信群二维码**，放入同目录，命名为 `wechat-qr.png`
+5. **在 frontmatter 中引用**：`cover: /images/events/{slug}/cover.jpg`
+6. **不得**在 `uploads/` 或任何不在规范结构内的位置放置文件
+
+---
+
+### 11.5 shared/ 目录使用规则
+
+`shared/` 目录用于**跨多个内容项复用**的图片。
+
+| 子目录 | 允许放什么 | 不允许放什么 |
+|--------|------------|--------------|
+| `shared/stock/` | Unsplash 等版权清晰的通用摄影素材 | 任何 AI 生成图 |
+| `shared/placeholders/` | AI 生成的临时占位图 | 任何真实照片或品牌资产 |
+| `shared/logos/` | ACC logo 及品牌图形 | 活动照片或骑行图片 |
+
+**`shared/placeholders/` 中的图片不得出现在已发布的生产内容中。** 它们只能作为开发期间的视觉占位，在真实内容就绪前临时使用。正式发布前必须替换。
+
+---
+
+### 11.6 禁止行为清单
+
+以下行为在任何 PR 中都不得出现，发现即打回：
+
+- [ ] 向 `frontend/public/images/uploads/` 添加新文件
+- [ ] 文件名含中文、空格、大写字母、哈希值或 UUID
+- [ ] 提交 `.HEIC` 格式图片
+- [ ] 在 frontmatter 中使用 `coverImage:` 字段名
+- [ ] 封面图不命名为 `cover.{ext}`
+- [ ] 在 `shared/placeholders/` 以外的位置放置 AI 生成图，并用于已发布内容
+- [ ] 在内容的 `cover` 字段引用外部 URL
+
+---
+
+### 11.7 迁移过渡期说明
+
+`frontend/public/images/uploads/` 目录在 **PR #[迁移PR编号]** 合并后将被彻底删除。
+
+在该 PR 合并之前，已有内容中的旧路径仍然有效，但**新内容不得引用 `uploads/` 下的路径**。
+
+---
+
+## 12. Planned Features (not yet implemented)
 
 - [ ] Auto-broadcast to subscribers when new event is published (Issue [#51](https://github.com/GenLI3202/acc_clubhub/issues/51))
 - [ ] Admin UI for subscriber management (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53))
 - [ ] Dark mode (`prefers-color-scheme: dark`) (Issue [#55](https://github.com/GenLI3202/acc_clubhub/issues/55))
 - [ ] Phase 4.4 — Authentication
+
+---
+
+## 12. Developer Tooling Tips
+
+**gstack** is a Claude Code skill suite worth installing locally. It adds useful slash commands like `/browse` (browser automation), `/review`, `/qa`, `/ship`, and more.
+
+Install: `git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup`
+
+Not required — just a recommendation for anyone using Claude Code on this project.

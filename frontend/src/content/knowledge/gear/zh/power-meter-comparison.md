@@ -4,7 +4,7 @@ title: 功率计选购对比
 description: 曲柄式、踏板式、花鼓式功率计全面对比。
 author: acc-
 date: 2026-01-12
-cover: /images/uploads/尊吗.jpg
+cover: /images/shared/placeholders/ai-placeholder-02.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

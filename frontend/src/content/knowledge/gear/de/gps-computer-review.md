@@ -4,7 +4,7 @@ title: GPS-Computer Vergleichstest
 description: Vergleich von Garmin, Wahoo und Hammerhead - die großen Drei.
 author: acc-ausrstungsteam
 date: 2026-01-02
-cover: /images/uploads/bike.jpg
+cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

@@ -4,7 +4,7 @@ title: Rennrad Kaufberatung 2026 (Demo)
 description: Vom Einsteiger bis Fortgeschrittene - so findest du das richtige Rennrad.
 author: acc-
 date: 2026-01-20
-cover: /images/uploads/buy_canyon.webp
+cover: /images/shared/stock/canyon-road-bike.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 Der Kauf eines Rennrads ist eine Wissenschaft. Dieser Leitfaden behandelt Budget, Verwendungszweck und Markenüberlegungen.

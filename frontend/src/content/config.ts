@@ -35,6 +35,11 @@ const eventsCollection = defineCollection({
         cover: z.string().optional(),
         location: z.string().optional(),
         registrationLink: z.string().optional(),
+        author: z.string().optional(),
+        displaySection: z.string().optional(),
+        maxParticipants: z.number().int().optional(),
+        registrationDeadline: z.string().optional(),
+        wechatQrCode: z.string().optional(),
     }),
 });
 

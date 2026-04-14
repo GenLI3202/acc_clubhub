@@ -4,7 +4,7 @@ title: FTP Training Basics Guide (Demo)
 description: Understanding Functional Threshold Power (FTP) and how to improve it through scientific training.
 author: acc-training-team
 date: 2026-01-15
-cover: /images/uploads/rr120_2024.jpg
+cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

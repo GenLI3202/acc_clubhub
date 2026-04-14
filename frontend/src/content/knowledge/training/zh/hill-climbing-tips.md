@@ -4,7 +4,7 @@ title: 爬坡技巧与训练
 description: 如何更高效地爬坡，以及针对性训练方法。
 author: acc-
 date: 2026-01-05
-cover: /images/uploads/rr120_2024.jpg
+cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

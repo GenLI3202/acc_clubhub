@@ -4,7 +4,7 @@ title: 多洛米蒂山脉骑行之旅
 description: 意大利北部最美的骑行目的地纪录片。
 date: 2025-07-05
 type: adventure
-cover: /images/uploads/DSC04622.jpg
+cover: /images/posts/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
