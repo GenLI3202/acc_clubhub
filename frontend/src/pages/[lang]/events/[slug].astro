@@ -47,6 +47,14 @@ const registrationLabels: Record<string, string> = {
   de: 'Jetzt anmelden',
 };
 
+const eventTypeLabels: Record<string, Record<string, string>> = {
+  'social-ride':   { zh: '咖啡骑', en: 'Coffee Ride', de: 'Coffee Ride' },
+  'training-camp': { zh: '训练营', en: 'Training Camp', de: 'Trainingslager' },
+  'race':          { zh: '比赛', en: 'Race', de: 'Rennen' },
+  'workshop':      { zh: '工作坊', en: 'Workshop', de: 'Workshop' },
+};
+const eventTypeLabel = (eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType;
+
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
 const endedLabels: Record<string, string> = {
@@ -74,7 +82,7 @@ const endedLabels: Record<string, string> = {
   <!-- Event Info -->
   <div class="event-info">
     {entry.data.eventType && (
-      <span class="event-type-badge">{entry.data.eventType}</span>
+      <span class="event-type-badge">{eventTypeLabel}</span>
     )}
     {entry.data.location && (
       <span class="event-location">📍 {entry.data.location}</span>
