@@ -12,6 +12,7 @@ interface EventRegistrationFormProps {
     eventType: string;
     maxParticipants: number | null;
     registrationDeadline: string | null;
+    wechatQrCode: string | null;
     lang: Locale;
     apiUrl: string;
 }
@@ -33,6 +34,7 @@ export function EventRegistrationForm({
     eventType,
     maxParticipants,
     registrationDeadline,
+    wechatQrCode,
     lang,
     apiUrl,
 }: EventRegistrationFormProps): VNode {
@@ -94,6 +96,7 @@ export function EventRegistrationForm({
                     event_type: eventType,
                     max_participants: maxParticipants,
                     registration_deadline: registrationDeadline,
+                    wechat_qr_code: wechatQrCode,
                 }),
             });
 
@@ -157,9 +160,9 @@ export function EventRegistrationForm({
     }
 
     const formTitle = {
-        zh: '活动报名',
-        en: 'Event Registration',
-        de: 'Anmeldung',
+        zh: '活动报名 — let us ride, free and together',
+        en: 'Event Registration — let us ride, free and together',
+        de: 'Anmeldung — let us ride, free and together',
     }[lang] || 'Registration';
 
     return (
