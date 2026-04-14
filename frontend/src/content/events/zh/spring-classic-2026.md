@@ -9,6 +9,5 @@ eventType: training-camp
 coverImage: /images/uploads/rr120_2024.jpg
 displaySection: hero
 maxParticipants: 30
-registrationDeadline: 2026-04-12
 ---
 年度春季经典骑行，140km，爬升1800m，穿越巴伐利亚南郊风景道。

@@ -49,6 +49,16 @@ const registrationLabels: Record<string, string> = {
 
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
+// Effective registration deadline: explicit value in frontmatter, or default to day before event at 22:00
+const rawDeadline = (entry.data as any).registrationDeadline;
+const effectiveDeadline = rawDeadline
+  ? String(rawDeadline)
+  : (() => {
+      const d = new Date(entry.data.date);
+      d.setUTCDate(d.getUTCDate() - 1);
+      return `${d.toISOString().slice(0, 10)}T22:00:00`;
+    })();
+
 const endedLabels: Record<string, string> = {
   zh: '该活动已结束，报名通道已关闭。',
   en: 'This event has ended. Registration is closed.',
@@ -123,7 +133,7 @@ const endedLabels: Record<string, string> = {
       data-event-date={entry.data.date}
       data-event-type={entry.data.eventType}
       data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
-      data-registration-deadline={entry.data.registrationDeadline ?? ''}
+      data-registration-deadline={effectiveDeadline}
       data-lang={lang}
       data-api-url={apiUrl}
     >

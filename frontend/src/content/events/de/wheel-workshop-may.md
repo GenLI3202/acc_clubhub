@@ -9,6 +9,5 @@ eventType: workshop
 displaySection: hero
 coverImage: /images/uploads/DSC04622.jpg
 maxParticipants: 12
-registrationDeadline: 2026-05-02
 ---
 Laufrad einspeichen von Grund auf: Felgen-, Speichen- und Naben-Auswahl, Einspeichmuster, Speichenspannung. Materialkosten €30, Werkzeug gestellt.

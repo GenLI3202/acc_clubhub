@@ -9,6 +9,5 @@ eventType: training-camp
 coverImage: /images/uploads/rr120_2024.jpg
 displaySection: hero
 maxParticipants: 30
-registrationDeadline: 2026-04-12
 ---
 Jährlicher Frühjahrsklassiker: 140km, 1800m Höhenmeter, durch die bayerische Landschaft südlich von München.
