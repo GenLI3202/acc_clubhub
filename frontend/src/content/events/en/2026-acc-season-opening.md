@@ -6,10 +6,10 @@ location: Munich Zoo · Tierparkstraße 30, 81543 München
 author: ACC Club
 date: 2026-04-19
 eventType: social-ride
-cover: /images/uploads/spring-ride-2025.jpg
+cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero
 maxParticipants: 35
-wechatQrCode: /images/uploads/event_src/2026-season-opening/140426-ACC-2026season-open.png
+wechatQrCode: /images/events/2026-acc-season-opening/wechat-qr.jpg
 ---
 
 Winter is finally over. The weather is settling, the sun is out after a week of grey skies — and there's really no better excuse to get on the bike.

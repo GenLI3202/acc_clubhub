@@ -6,10 +6,10 @@ location: Münchner Tierpark · Tierparkstraße 30, 81543 München
 author: ACC Club
 date: 2026-04-19
 eventType: social-ride
-cover: /images/uploads/spring-ride-2025.jpg
+cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero
 maxParticipants: 35
-wechatQrCode: /images/uploads/event_src/2026-season-opening/140426-ACC-2026season-open.png
+wechatQrCode: /images/events/2026-acc-season-opening/wechat-qr.jpg
 ---
 
 Der Winter ist endlich vorbei. Das Wetter wird stabiler, die Sonne zeigt sich nach einer grauen Woche — und es gibt wirklich keinen besseren Grund, aufs Rad zu steigen.
