@@ -46,11 +46,16 @@ def send_confirmation_email(
         if event_slug and view_token
         else ""
     )
+    qr_url = (
+        wechat_qr_code if wechat_qr_code and wechat_qr_code.startswith("http")
+        else f"{frontend_url}{wechat_qr_code}"
+        if wechat_qr_code else ""
+    )
     qr_html = (
         f'<p style="margin-top:1.2em;"><strong>微信群二维码</strong><br>'
-        f'<img src="{wechat_qr_code}" alt="WeChat QR Code" '
+        f'<img src="{qr_url}" alt="WeChat QR Code" '
         f'style="width:180px;height:180px;margin-top:8px;border:1px solid #eee;border-radius:4px;" /></p>'
-        if wechat_qr_code else ""
+        if qr_url else ""
     )
 
     templates = {
