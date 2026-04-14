@@ -9,6 +9,5 @@ eventType: workshop
 displaySection: hero
 coverImage: /images/uploads/DSC04622.jpg
 maxParticipants: 12
-registrationDeadline: 2026-05-02
 ---
 学习手工编轮基础：轮圈、辐条、花鼓选配与张力调整。材料费 €30，工具由俱乐部提供。
