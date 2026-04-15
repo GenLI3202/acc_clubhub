@@ -167,9 +167,7 @@ def cancel_rsvp(
     was_confirmed = rsvp.status == "confirmed"
     rsvp.status = "cancelled"
 
-    # Safety net: explicitly keep current_participants in sync (complements DB trigger)
-    if was_confirmed and event.current_participants > 0:
-        event.current_participants -= 1
+
 
     # Promote the first waitlisted RSVP when a confirmed slot opens
     promoted = None
@@ -182,7 +180,6 @@ def cancel_rsvp(
         )
         if next_waitlisted:
             next_waitlisted.status = "confirmed"
-            event.current_participants += 1
             promoted = next_waitlisted
 
     db.commit()

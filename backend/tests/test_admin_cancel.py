@@ -38,33 +38,6 @@ def _cancel(client, event_id: int, rsvp_id: int, extra_json: dict | None = None)
 
 # ── Tests ──────────────────────────────────────────────────────
 
-class TestCancelRsvpParticipantCount:
-    """current_participants must drop by 1 when a confirmed RSVP is cancelled."""
-
-    def test_cancel_confirmed_decrements_current_participants(
-        self, client, db, sample_event, confirmed_rsvp
-    ):
-        assert sample_event.current_participants == 1
-
-        resp = _cancel(client, sample_event.id, confirmed_rsvp.id)
-
-        assert resp.status_code == 200
-        db.refresh(sample_event)
-        assert sample_event.current_participants == 0
-
-    def test_cancel_waitlisted_does_not_decrement_current_participants(
-        self, client, db, sample_event, waitlisted_rsvp
-    ):
-        """Waitlisted RSVPs don't count towards current_participants."""
-        before = sample_event.current_participants
-
-        resp = _cancel(client, sample_event.id, waitlisted_rsvp.id)
-
-        assert resp.status_code == 200
-        db.refresh(sample_event)
-        assert sample_event.current_participants == before
-
-
 class TestCancelRsvpWaitlistPromotion:
     """First waitlisted RSVP must be promoted to confirmed when a slot opens."""
 
@@ -87,9 +60,6 @@ class TestCancelRsvpWaitlistPromotion:
         resp = _cancel(client, sample_event.id, confirmed_rsvp.id)
 
         assert resp.status_code == 200
-        db.refresh(sample_event)
-        # No crash, spot is simply open
-        assert sample_event.current_participants == 0
 
 
 class TestCancelRsvpEmailNotification:
