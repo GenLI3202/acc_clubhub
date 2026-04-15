@@ -34,7 +34,7 @@ Wir starten am Münchner Tierpark, fahren durch die schattigen Wege des Perlache
 Nach dem Biergarten habt ihr zwei Möglichkeiten für die Heimreise:
 
 - **S-Bahn** — Mit dem Rad zum nahegelegenen [Bahnhof Hohenschäftlarn](https://www.google.com/maps/place/Hohensch%C3%A4ftlarn/@47.991694,11.4576179,21z/data=!4m14!1m7!3m6!1s0x479ddb34053e5875:0xf942c7784dc523f7!2sHohensch%C3%A4ftlarn!8m2!3d47.9917341!4d11.4578254!16s%2Fg%2F11ltll1fkx!3m5!1s0x479ddb34053e5875:0xf942c7784dc523f7!8m2!3d47.9917341!4d11.4578254!16s%2Fg%2F11ltll1fkx?entry=ttu&g_ep=EgoyMDI2MDQxMi4wIKXMDSoASAFQAw%3D%3D) (82069 Schäftlarn), dann mit der S7 zurück nach München. Entspannter Abschluss.
-- **Zurückradeln** — Wer lieber auf dem Sattel bleibt: Es gibt eine [Rundtour auf Komoot](https://www.komoot.com/de-de/tour/2886453849?share_token=amnuwo5lJfYTEmklcT15bCGpsrshtVxjA6U3WHmRoYLKnTMp3X&ref=wtd), die zurück zum Startpunkt am Tierpark führt.
+- **Zurückradeln** — Wer lieber auf dem Sattel bleibt: Die [Rückroute auf Komoot](https://www.komoot.com/de-de/tour/2886453849?share_token=amnuwo5lJfYTEmklcT15bCGpsrshtVxjA6U3WHmRoYLKnTMp3X&ref=wtd) führt entlang des Isar-Kanals zurück zum Startpunkt am Tierpark.
 
 ---
 
