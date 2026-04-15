@@ -122,6 +122,9 @@
   - [X] Replaced custom string parsing with Pydantic's native `datetime` type in the FastAPI backend
   - [X] Made `POST /api/rsvp` sync updated Markdown metadata directly to the PostgreSQL database on every RSVP
   - [X] Fixed 2026 Season Opening event date/time across all languages
+- [X] **Dashboard Participant Sync Fix** (2026-04-15)
+  - [X] Removed Python-level `current_participants` modification in `admin.py` to prevent trigger double-counting (resolving the 6 confirmed vs 2/35 bug)
+  - [X] Updated SQLite-based `test_admin_cancel.py` unit tests to bypass trigger-dependent assertions
 
 ## In Progress
 
