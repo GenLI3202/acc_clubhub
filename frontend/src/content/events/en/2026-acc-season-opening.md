@@ -4,7 +4,7 @@ title: ACC 2026 Spring Coffee Ride
 description: Season opener — easy pace, good company, coffee at the end
 location: Munich Zoo · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-04-18
+date: 2026-04-18 10:30
 eventType: social-ride
 cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero

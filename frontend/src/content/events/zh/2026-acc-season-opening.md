@@ -4,7 +4,7 @@ title: ACC 2026 开春咖啡骑
 description: 新赛季第一骑，轻松节奏，骑完一起喝咖啡
 location: 慕尼黑动物园 · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-04-18
+date: 2026-04-18 10:30
 eventType: social-ride
 cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero

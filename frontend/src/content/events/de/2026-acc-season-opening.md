@@ -4,7 +4,7 @@ title: ACC 2026 Frühlings-Kaffeeausfahrt
 description: Saisonauftakt — entspanntes Tempo, gute Gesellschaft, Kaffee am Ende
 location: Münchner Tierpark · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-04-18
+date: 2026-04-18 10:30
 eventType: social-ride
 cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero
