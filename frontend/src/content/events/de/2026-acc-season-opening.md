@@ -4,7 +4,7 @@ title: ACC 2026 Frühlings-Kaffeeausfahrt
 description: Saisonauftakt — entspanntes Tempo, gute Gesellschaft, Kaffee am Ende
 location: Münchner Tierpark · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-04-19
+date: 2026-04-18
 eventType: social-ride
 cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero
@@ -21,7 +21,7 @@ Wir starten am Münchner Tierpark, fahren durch die schattigen Wege des Perlache
 
 |                       |                                                                                                                                                                                                                           |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Zeit**        | Samstag, 19. April · 09:00 Uhr                                                                                                                                                                                           |
+| **Zeit**        | Samstag, 18. April · 10:30 Uhr                                                                                                                                                                                           |
 | **Treffpunkt**  | Münchner Tierpark · Tierparkstraße 30, 81543 München                                                                                                                                                                  |
 | **Strecke**     | 41,6 km · 350 Hm ·[Auf Komoot ansehen](https://www.komoot.com/de-de/invite-tour/2885696236?code=3fniij-TBaTprvecAk0wxNmrwbeU9MIQhD2C3roxA1jduOqx0c&ref=wtd&share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa) |
 | **Intensität** | Kein Tempolimit · wir fahren zusammen                                                                                                                                                                                    |

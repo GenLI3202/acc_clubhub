@@ -116,7 +116,7 @@ flowchart TD
 
 ### 执行清单
 
-- [ ] 命名规范：`{年份}-{活动slug}-{描述}.{扩展名}`
+- [x] 命名规范：`{年份}-{活动slug}-{描述}.{扩展名}`
   - 示例：`2026-spring-classic-group.jpg`、`2024-rad-race-120-finish.jpg`
 - [ ] 批量重命名 `frontend/public/images/uploads/` 下的所有文件
 - [ ] 用 grep 找出所有 `.md` 文件中引用的旧文件名，逐一更新

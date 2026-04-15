@@ -4,7 +4,7 @@ title: ACC 2026 Spring Coffee Ride
 description: Season opener — easy pace, good company, coffee at the end
 location: Munich Zoo · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-04-19
+date: 2026-04-18
 eventType: social-ride
 cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySection: hero
@@ -21,7 +21,7 @@ We roll out from Munich Zoo, through the shaded paths of Perlacher Forst and out
 
 |                         |                                                                                                                                                                                                                              |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Time**          | Saturday, April 19 · 09:00                                                                                                                                                                                                  |
+| **Time**          | Saturday, April 18 · 10:30                                                                                                                                                                                                  |
 | **Meeting point** | Munich Zoo · Tierparkstraße 30, 81543 München                                                                                                                                                                             |
 | **Route**         | 41.6km · 350m elevation ·[View on Komoot](https://www.komoot.com/de-de/invite-tour/2885696236?code=3fniij-TBaTprvecAk0wxNmrwbeU9MIQhD2C3roxA1jduOqx0c&ref=wtd&share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa) |
 | **Intensity**     | No pace requirement · we ride together                                                                                                                                                                                      |
