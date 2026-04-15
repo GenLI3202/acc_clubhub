@@ -29,6 +29,15 @@ ACC 慕城骑行俱乐部邀请大家一起加入我们的 2026 开春咖啡骑�
 
 ---
 
+### 🏁 返程方式
+
+在 Biergarten 结束之后，返程有两个选择：
+
+- **坐 S-Bahn** — 骑车至附近的 [Hohenschäftlarn S-Bahn 站](https://www.google.com/maps/place/Hohensch%C3%A4ftlarn/@47.991694,11.4576179,21z/data=!4m14!1m7!3m6!1s0x479ddb34053e5875:0xf942c7784dc523f7!2sHohensch%C3%A4ftlarn!8m2!3d47.9917341!4d11.4578254!16s%2Fg%2F11ltll1fkx!3m5!1s0x479ddb34053e5875:0xf942c7784dc523f7!8m2!3d47.9917341!4d11.4578254!16s%2Fg%2F11ltll1fkx?entry=ttu&g_ep=EgoyMDI2MDQxMi4wIKXMDSoASAFQAw%3D%3D)（82069 Schäftlarn），乘 S7 线直接回市区。轻松收尾。
+- **骑车返回** — 喜欢继续骑的朋友，可以走 Komoot 上的 [环形返程路线](https://www.komoot.com/de-de/tour/2886453849?share_token=amnuwo5lJfYTEmklcT15bCGpsrshtVxjA6U3WHmRoYLKnTMp3X&ref=wtd)，从 Schäftlarn 绕回慕尼黑动物园起点。
+
+---
+
 ### 📱 加入活动微信群
 
 报名后请扫描下方二维码加入活动微信群，获取最新骑行信息和集合通知：
