@@ -21,17 +21,6 @@ from services.email import (
 logger = logging.getLogger(__name__)
 
 
-def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
-    """Parse ISO date/datetime string to timezone-aware datetime, or return None."""
-    if not value:
-        return None
-    try:
-        dt = datetime.fromisoformat(value)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt
-    except (ValueError, TypeError):
-        return None
 
 router = APIRouter()
 
@@ -74,10 +63,10 @@ class RSVPCreateV2(BaseModel):
     event_slug: str
     event_title: str
     event_location: str = ""
-    event_date: str              # ISO date string
+    event_date: datetime
     event_type: str = "social-ride"
     max_participants: Optional[int] = None
-    registration_deadline: Optional[str] = None
+    registration_deadline: Optional[datetime] = None
     wechat_qr_code: Optional[str] = None
 
 
@@ -254,13 +243,15 @@ def create_rsvp_v2(
         Event.slug == data.event_slug,
     ).with_for_update().first()
 
+    event_date_dt = data.event_date
+    if event_date_dt.tzinfo is None:
+        event_date_dt = event_date_dt.replace(tzinfo=timezone.utc)
+
+    reg_deadline = data.registration_deadline
+    if reg_deadline and reg_deadline.tzinfo is None:
+        reg_deadline = reg_deadline.replace(tzinfo=timezone.utc)
+
     if not event:
-        event_date_dt = _parse_datetime(data.event_date)
-        if not event_date_dt:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid event_date format",
-            )
         event = Event(
             slug=data.event_slug,
             title=data.event_title,
@@ -268,10 +259,18 @@ def create_rsvp_v2(
             event_date=event_date_dt,
             event_type=data.event_type,
             max_participants=data.max_participants,
-            registration_deadline=_parse_datetime(data.registration_deadline),
+            registration_deadline=reg_deadline,
         )
         db.add(event)
         db.flush()  # populate event.id before RSVP insert
+    else:
+        # Sync metadata even if event exists (Markdown is source of truth)
+        event.title = data.event_title
+        event.location = data.event_location
+        event.event_date = event_date_dt
+        event.event_type = data.event_type
+        event.max_participants = data.max_participants
+        event.registration_deadline = reg_deadline
 
     # 2. Check registration deadline (guard against naive vs aware mismatch)
     if event.registration_deadline is not None:
