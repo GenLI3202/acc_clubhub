@@ -114,9 +114,14 @@
   - [X] **#84** — Unsubscribe 404 fixed: Astro SSR proxy page at `/api/unsubscribe/[token]` calls FastAPI server-to-server and renders confirmation UI
   - [X] **#85** — Subscription confirmation email: `_ensure_subscriber()` returns `(subscriber, is_new)`; confirmation email sent only for new subscribers, non-fatal
   - [X] **#86** — Floating subscribe banner (`SubscribeFloatingBanner.astro`): appears on events list page and past event detail pages; X-dismiss is session-only, localStorage only set on successful subscription
-- [X] **Layout & Responsive Improvements** (PR [#90](https://github.com/GenLI3202/acc_clubhub/pull/90)) (2026-04-14)
+- [X] **Layout & Responsive Improvements** (PR #90) (2026-04-14)
   - [X] `--max-width` increased to `clamp(960px, 65vw, 1400px)` — fluid between 960 px and 1400 px
   - [X] Pillar image aspect ratio changed from `3/2` to `16/9`
+- [X] **Event Date/Time Sync Improvements** (2026-04-15)
+  - [X] Prevented stripping of time components in `content.config.ts` for event dates
+  - [X] Replaced custom string parsing with Pydantic's native `datetime` type in the FastAPI backend
+  - [X] Made `POST /api/rsvp` sync updated Markdown metadata directly to the PostgreSQL database on every RSVP
+  - [X] Fixed 2026 Season Opening event date/time across all languages
 
 ## In Progress
 
