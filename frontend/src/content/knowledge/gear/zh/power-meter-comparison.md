@@ -8,6 +8,8 @@ cover: /images/shared/placeholders/ai-placeholder-02.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 功率计是科学训练的基础工具，本文对比市面上主流功率计的优缺点。
 
 ## 类型对比

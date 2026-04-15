@@ -11,4 +11,6 @@ komootUrl: https://www.komoot.com/tour/123456
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 穿越慕尼黑最大的城市公园，适合轻松的晨骑或下班后骑行。

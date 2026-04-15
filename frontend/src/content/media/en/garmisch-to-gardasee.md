@@ -10,6 +10,8 @@ videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 ## **Over the Peak — The 300km Epic Expedition from Garmisch to Lake Garda**
 
 ### **Conquer the Heart of the Alps**

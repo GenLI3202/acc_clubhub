@@ -8,6 +8,8 @@ cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 GPS 码表是现代骑行的必备工具，本文对比三大主流品牌。
 
 ## 产品对比

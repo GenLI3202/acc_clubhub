@@ -8,6 +8,9 @@ date: 2025-07-15
 eventType: training-camp
 cover: /images/shared/stock/munich-cycling.jpg
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 # 2025 Summer Alps Cycling Tour
 
 Join us for a 3-day Alpine cycling adventure!

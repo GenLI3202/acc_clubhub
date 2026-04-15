@@ -7,6 +7,9 @@ date: 2026-01-20
 cover: /images/shared/stock/canyon-road-bike.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 选购公路车是一门学问，本文将从预算、用途、品牌等多个维度为你提供参考。
 
 ## 预算分级

@@ -10,6 +10,8 @@ videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 ## **Über die Alpen: Die 300 km Epic-Tour von Garmisch zum Gardasee**
 
 ### **Bezwinge das Herz der Alpen**

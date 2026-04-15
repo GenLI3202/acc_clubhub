@@ -10,4 +10,7 @@ displaySection: hero
 cover: /images/posts/alps-summer-2025/cover.jpg
 maxParticipants: 12
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Laufrad einspeichen von Grund auf: Felgen-, Speichen- und Naben-Auswahl, Einspeichmuster, Speichenspannung. Materialkosten €30, Werkzeug gestellt.

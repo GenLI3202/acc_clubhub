@@ -8,6 +8,8 @@ cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 FTP（Functional Threshold Power）是衡量骑行能力的关键指标，也是科学训练的基础。
 
 ## 什么是 FTP？

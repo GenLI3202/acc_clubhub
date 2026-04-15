@@ -8,6 +8,8 @@ cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 正确的营养是持续骑行的关键，本文介绍骑行各阶段的补给策略。
 
 ## 骑行中补给

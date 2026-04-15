@@ -9,4 +9,7 @@ eventType: training-camp
 displaySection: upcoming
 cover: /images/shared/stock/munich-cycling.jpg
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 ca. 60km Schotter, 400hm, geeignet für Gravel/MTB. Gemütliches Tempo mit Zwischenstopp.

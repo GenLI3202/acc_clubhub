@@ -9,4 +9,6 @@ videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 多洛米蒂山脉被誉为「世界最美山脉」，这里有传奇的 Sella Ronda 环线等待我们去征服。

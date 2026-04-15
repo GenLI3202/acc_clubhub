@@ -10,4 +10,7 @@ displaySection: hero
 cover: /images/posts/alps-summer-2025/cover.jpg
 maxParticipants: 12
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Hands-on wheel building: rim, spoke, and hub selection, lacing patterns, tension adjustment. Materials fee €30, tools provided.

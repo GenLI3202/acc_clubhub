@@ -8,6 +8,8 @@ cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 头盔是骑行最重要的安全装备，本文教你如何选择合适的头盔。
 
 ## 安全认证

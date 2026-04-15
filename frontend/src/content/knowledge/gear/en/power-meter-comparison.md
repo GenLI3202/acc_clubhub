@@ -8,6 +8,8 @@ cover: /images/shared/placeholders/ai-placeholder-02.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Power meters are the foundation of scientific training. This article compares the pros and cons of mainstream options.
 
 ## Type Comparison

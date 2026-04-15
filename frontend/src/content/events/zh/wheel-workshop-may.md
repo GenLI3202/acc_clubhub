@@ -10,4 +10,7 @@ displaySection: hero
 cover: /images/posts/alps-summer-2025/cover.jpg
 maxParticipants: 12
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 学习手工编轮基础：轮圈、辐条、花鼓选配与张力调整。材料费 €30，工具由俱乐部提供。

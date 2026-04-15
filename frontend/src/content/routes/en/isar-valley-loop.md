@@ -11,6 +11,8 @@ komootUrl: https://www.komoot.com/tour/123456
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 This classic route winds along the Isar valley, one of ACC's most popular weekend rides.
 
 ## Route Overview

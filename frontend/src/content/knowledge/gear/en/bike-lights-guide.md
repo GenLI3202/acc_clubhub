@@ -8,6 +8,8 @@ cover: /images/shared/placeholders/ai-gear-02.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Good lighting is essential for safe riding, especially in winter and tunnels.
 
 ## Recommended Products

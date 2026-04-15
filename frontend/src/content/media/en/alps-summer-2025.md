@@ -9,6 +9,8 @@ videoUrl: https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 An unforgettable cycling experience, starting from Munich and heading south through the Alps.
 
 ## Trip Highlights

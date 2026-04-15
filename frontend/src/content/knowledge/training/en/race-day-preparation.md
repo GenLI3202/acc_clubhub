@@ -8,6 +8,8 @@ cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Race day performance depends on prior preparation. This guide provides a complete checklist.
 
 ## Race Week

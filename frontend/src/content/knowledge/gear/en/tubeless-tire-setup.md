@@ -8,6 +8,8 @@ cover: /images/shared/placeholders/ai-placeholder-01.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Tubeless tires reduce puncture risk and rolling resistance - a standard on modern road bikes.
 
 ## Installation Steps

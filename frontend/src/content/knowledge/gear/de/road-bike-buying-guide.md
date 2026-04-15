@@ -7,6 +7,9 @@ date: 2026-01-20
 cover: /images/shared/stock/canyon-road-bike.webp
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Der Kauf eines Rennrads ist eine Wissenschaft. Dieser Leitfaden behandelt Budget, Verwendungszweck und Markenüberlegungen.
 
 ## Budget-Stufen

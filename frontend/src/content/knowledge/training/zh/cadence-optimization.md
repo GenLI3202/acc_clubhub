@@ -8,6 +8,8 @@ cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 踏频是骑行效率的关键因素，不同场景需要不同的踏频策略。
 
 ## 踏频指南

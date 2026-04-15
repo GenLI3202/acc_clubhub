@@ -8,6 +8,8 @@ cover: /images/shared/placeholders/ai-gear-01.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 冬季骑行需要特别的装备来应对低温和湿滑路面。
 
 ## 必备清单

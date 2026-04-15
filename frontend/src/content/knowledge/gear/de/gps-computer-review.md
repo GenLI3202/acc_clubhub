@@ -8,6 +8,8 @@ cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 GPS-Computer sind unverzichtbare Werkzeuge für modernes Radfahren. Dieser Artikel vergleicht die drei großen Marken.
 
 ## Produktvergleich

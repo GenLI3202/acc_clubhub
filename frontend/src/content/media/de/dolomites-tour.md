@@ -9,4 +9,6 @@ videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Die Dolomiten gelten als die "schönsten Berge der Welt" - hier wartet die legendäre Sella Ronda darauf, erobert zu werden.

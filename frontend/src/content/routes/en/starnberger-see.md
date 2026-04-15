@@ -11,4 +11,6 @@ komootUrl: https://www.komoot.com/tour/123456
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Starnberger See is one of Bavaria's largest lakes, with the Alps as a majestic backdrop.

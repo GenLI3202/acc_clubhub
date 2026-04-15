@@ -8,6 +8,9 @@ date: 2025-06-20
 eventType: social-ride
 cover: /images/red_logo.png
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 # 每周五社交骑
 
 ## 活动介绍

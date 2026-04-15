@@ -8,6 +8,8 @@ cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Ein Helm ist die wichtigste Sicherheitsausrüstung beim Radfahren. Dieser Leitfaden zeigt, wie man den richtigen auswählt.
 
 ## Sicherheitszertifizierungen

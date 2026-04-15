@@ -8,6 +8,8 @@ cover: /images/posts/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 爬坡是公路骑行的核心挑战，掌握正确技巧可以事半功倍。
 
 ## 爬坡技巧

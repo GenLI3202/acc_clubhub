@@ -9,4 +9,7 @@ eventType: training-camp
 displaySection: upcoming
 cover: /images/shared/stock/munich-cycling.jpg
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 ~60km gravel, 400m elevation, suitable for gravel/MTB bikes. Easy pace with a mid-ride stop.

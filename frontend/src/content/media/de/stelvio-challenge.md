@@ -9,6 +9,8 @@ videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Stilfser Joch, 2758m Höhe, 48 Haarnadelkurven - die ultimative Herausforderung für jeden Rennradfahrer.
 
 ## Aufstiegsdaten

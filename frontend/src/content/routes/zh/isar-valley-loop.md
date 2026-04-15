@@ -11,6 +11,8 @@ komootUrl: https://www.komoot.com/tour/123456
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 这条经典路线沿着伊萨尔河谷蜿蜒前行，是 ACC 俱乐部最受欢迎的周末骑行路线之一。
 
 ## 路线概览

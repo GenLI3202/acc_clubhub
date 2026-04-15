@@ -9,6 +9,8 @@ videoUrl: https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Ein unvergessliches Raderlebnis, beginnend in München und weiter nach Süden durch die Alpen.
 
 ## Reisehöhepunkte

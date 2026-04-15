@@ -10,6 +10,8 @@ videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 ## **跨越巅峰：从加米施到加尔达湖的 300 公里史诗远征**
 
 ### **挑战阿尔卑斯的心脏**

@@ -8,6 +8,9 @@ date: 2025-07-15
 eventType: training-camp
 cover: /images/shared/stock/munich-cycling.jpg
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 # 2025 阿尔卑斯夏日骑行
 
 加入我们为期3天的阿尔卑斯山地骑行之旅！

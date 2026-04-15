@@ -8,6 +8,9 @@ date: 2025-06-10
 eventType: workshop
 cover: /images/posts/alps-summer-2025/cover.jpg
 ---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 # 单车维修工作坊
 
 ## 工作坊介绍

@@ -12,4 +12,6 @@ komootUrl: https://www.komoot.com/de-de/tour/2644949336
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Moderate bike tour. Good basic fitness required. The tour may include sections with loose surfaces that are difficult to cycle on.

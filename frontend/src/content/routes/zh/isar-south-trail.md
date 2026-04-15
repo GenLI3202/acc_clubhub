@@ -11,4 +11,6 @@ komootUrl: https://www.komoot.com/tour/123456
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 沿伊萨尔河向南骑行，途经 Grünwald 森林，是热门的 Afterwork 路线。

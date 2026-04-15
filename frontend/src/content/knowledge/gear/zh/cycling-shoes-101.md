@@ -8,6 +8,8 @@ cover: /images/shared/stock/bike.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 选择合适的骑行鞋可以大幅提升骑行效率和舒适度。
 
 ## 锁片系统对比

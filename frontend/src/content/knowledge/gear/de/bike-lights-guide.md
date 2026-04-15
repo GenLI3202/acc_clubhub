@@ -8,6 +8,8 @@ cover: /images/shared/placeholders/ai-gear-02.png
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
 Gute Beleuchtung ist für sicheres Radfahren unerlässlich, besonders im Winter und in Tunneln.
 
 ## Empfohlene Produkte
