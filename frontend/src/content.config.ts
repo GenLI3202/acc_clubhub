@@ -249,7 +249,7 @@ const eventsCollection = defineCollection({
   }).transform((data) => ({
     ...data,
     coverImage: data.coverImage || data.cover,
-    date: data.date.toISOString().split('T')[0],
+    date: data.date.toISOString(),
     lang: data.lang || 'de' as const,
     eventType: data.eventType || 'social-ride' as const,
     description: data.description || '',
