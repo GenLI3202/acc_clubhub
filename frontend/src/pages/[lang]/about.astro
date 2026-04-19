@@ -104,51 +104,67 @@ const featured = MEMBERS.slice(0, 4);
     <div class="section-rule">{t(lang, 'about.sectionRuleGarage')}</div>
 
     <section class="garage-section">
-      <h2 class="garage-h2">
-        {t(lang, 'about.garageH2Prefix')} <em>{t(lang, 'about.garageH2Em')}</em>
-      </h2>
+      <h2 class="garage-h2">{t(lang, 'about.garageH2Prefix')}</h2>
+      <p class="garage-lede">{t(lang, 'about.garageLede')}</p>
 
       <div class="garage-stamp-wall" data-stamp-wall>
-        <div class="stamp-wall-label">{t(lang, 'about.stableEyebrow')}</div>
         <div class="stamp-rows">
-          {[row1, row2].map((row) => (
-            <div class="stamp-row-clip">
-              <div class="stamp-track" data-track>
-                {[1, 2, 3].map((lap) => (
-                  <div class="stamp-lap" data-lap={lap}>
-                    {row.map((m) => (
-                      <button class="stamp-tile" type="button" data-member-id={m.id}>
-                        <img
-                          class="stamp-ring stamp-ring-light"
-                          src="/images/about/logo-stamp-red-transparent.png"
-                          alt=""
-                          draggable="false"
-                          loading="lazy"
-                        />
-                        <img
-                          class="stamp-ring stamp-ring-dark"
-                          src="/images/about/logo-stamp-white-transparent.png"
-                          alt=""
-                          draggable="false"
-                          loading="lazy"
-                        />
-                        <div class="stamp-bike-wrap">
-                          <img class="stamp-bike" src={m.photo} alt="" draggable="false" loading="lazy"/>
-                        </div>
-                        <div class="stamp-caption">
-                          {m.name}
-                          <div class="stamp-subcaption">{m.bike} · {m.joined}</div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                ))}
+          {[row1, row2].map((row) => {
+            // Single continuous strip: 6 originals + 3 cloned head tiles so a
+            // 2-tile step can scroll through all 6 and wrap seamlessly back to
+            // the start after the clone slot.
+            const tiles = [...row, ...row.slice(0, 3)];
+            return (
+              <div class="stamp-row-clip">
+                <div class="stamp-track" data-track>
+                  {tiles.map((m, idx) => (
+                    <button
+                      class="stamp-tile"
+                      type="button"
+                      data-member-id={m.id}
+                      aria-hidden={idx >= 6 ? 'true' : undefined}
+                      tabindex={idx >= 6 ? -1 : undefined}
+                    >
+                      <img
+                        class="stamp-ring stamp-ring-light"
+                        src="/images/about/logo-stamp-red-transparent.png"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                      />
+                      <img
+                        class="stamp-ring stamp-ring-dark"
+                        src="/images/about/logo-stamp-white-transparent.png"
+                        alt=""
+                        draggable="false"
+                        loading="lazy"
+                      />
+                      <div class="stamp-bike-wrap">
+                        <img class="stamp-bike" src={m.photo} alt="" draggable="false" loading="lazy"/>
+                      </div>
+                      <div class="stamp-caption">
+                        {m.name}
+                        <div class="stamp-subcaption">{m.bike} · {m.joined}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-        <div class="stamp-edge stamp-edge-left" aria-hidden="true"></div>
-        <div class="stamp-edge stamp-edge-right" aria-hidden="true"></div>
+        <button class="stamp-arrow stamp-arrow--prev" type="button" data-stamp-prev aria-label="Previous page">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="stamp-arrow stamp-arrow--next" type="button" data-stamp-next aria-label="Next page">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <div class="stamp-dots" data-stamp-dots>
+          <button class="stamp-dot active" type="button" data-stamp-dot="0" aria-label="Page 1"></button>
+          <button class="stamp-dot" type="button" data-stamp-dot="1" aria-label="Page 2"></button>
+          <button class="stamp-dot" type="button" data-stamp-dot="2" aria-label="Page 3"></button>
+        </div>
       </div>
     </section>
 
@@ -222,7 +238,7 @@ const featured = MEMBERS.slice(0, 4);
   </article>
 
   {/* Member card overlay — shown when user clicks a stamp */}
-  <div class="member-card-backdrop" data-member-card hidden>
+  <div class="member-card-backdrop" data-member-card aria-hidden="true">
     <div class="member-card" role="dialog" aria-modal="true" aria-labelledby="member-card-name">
       <div class="member-card-photo">
         <img data-member-card-photo alt=""/>
@@ -240,9 +256,8 @@ const featured = MEMBERS.slice(0, 4);
       </button>
     </div>
   </div>
-</BaseLayout>
 
-<script is:inline define:vars={{ members: MEMBERS }}>
+  <script is:inline define:vars={{ members: MEMBERS }}>
   // ------------------------------------------------------------------
   // Across poem — sequential reveal via IntersectionObserver + timers
   // ------------------------------------------------------------------
@@ -270,65 +285,148 @@ const featured = MEMBERS.slice(0, 4);
   })();
 
   // ------------------------------------------------------------------
-  // Stamp-wall marquee — rAF-driven infinite translate, wheel nudge,
-  // pause on hover, ResizeObserver-backed lap measurement.
+  // Stamp wall — single continuous strip, 3 tiles visible, 2-tile step.
+  // Each row renders 6 originals + 3 cloned head tiles so we can step
+  // through 3 logical positions (0, 2, 4 tiles) and wrap seamlessly:
+  // advancing past step 2 slides onto the clone head, then we snap back
+  // to step 0 without transition. Tile pitch is measured from the DOM so
+  // the same math works across responsive widths.
   // ------------------------------------------------------------------
   (function initStampWall() {
     const wall = document.querySelector('[data-stamp-wall]');
     if (!wall) return;
-    const tracks = wall.querySelectorAll('[data-track]');
+    const tracks = Array.from(wall.querySelectorAll('[data-track]'));
     if (!tracks.length) return;
+    const dots = Array.from(wall.querySelectorAll('[data-stamp-dot]'));
 
-    const state = {
-      offset: 0,
-      lapW: 0,
-      interacting: 0,
-      speed: 22,
-    };
+    const TOTAL_STEPS = 3;          // 3 logical stops → 3 dots
+    const TILES_PER_STEP = 2;       // shift 2 tiles per row per step (4 bikes total)
+    const SLIDE_MS = 700;
+    const DWELL_MS = 4500;
 
-    function measure() {
-      const firstLap = tracks[0].querySelector('[data-lap="1"]');
-      if (firstLap) {
-        const w = firstLap.getBoundingClientRect().width;
-        if (w > 0) state.lapW = w;
+    let current = 0;                // 0..TOTAL_STEPS (TOTAL_STEPS = wrap slot)
+    let unit = 0;                   // px: tile-width + gap
+    let timerId = null;
+    let paused = false;
+    let animating = false;
+
+    function measureUnit() {
+      const sample = tracks[0].querySelectorAll('.stamp-tile');
+      if (sample.length < 2) return;
+      const r0 = sample[0].getBoundingClientRect();
+      const r1 = sample[1].getBoundingClientRect();
+      const u = r1.left - r0.left;
+      if (u > 0) unit = u;
+    }
+
+    function applyTransform(stepIdx, animated) {
+      const x = -stepIdx * TILES_PER_STEP * unit;
+      tracks.forEach((track) => {
+        track.style.transition = animated
+          ? 'transform ' + SLIDE_MS + 'ms cubic-bezier(0.2, 0.8, 0.2, 1)'
+          : 'none';
+        track.style.transform = 'translate3d(' + x + 'px, 0, 0)';
+      });
+    }
+
+    function setActiveDot(visibleIdx) {
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === visibleIdx));
+    }
+
+    function advance() {
+      if (animating || unit === 0) return;
+      animating = true;
+      const target = current + 1;
+      applyTransform(target, true);
+      setActiveDot(target % TOTAL_STEPS);
+      current = target;
+
+      window.setTimeout(() => {
+        if (current >= TOTAL_STEPS) {
+          applyTransform(0, false);
+          void tracks[0].offsetWidth;
+          current = 0;
+        }
+        animating = false;
+      }, SLIDE_MS + 30);
+    }
+
+    function jumpTo(stepIdx) {
+      if (animating || unit === 0) return;
+      const visible = current % TOTAL_STEPS;
+      if (stepIdx === visible) return;
+      animating = true;
+      applyTransform(stepIdx, true);
+      setActiveDot(stepIdx);
+      current = stepIdx;
+      window.setTimeout(() => { animating = false; }, SLIDE_MS + 30);
+    }
+
+    function userStep(delta) {
+      if (animating || unit === 0) return;
+      const visible = current % TOTAL_STEPS;
+      if (delta > 0 && visible === TOTAL_STEPS - 1) {
+        advance();
+      } else if (delta < 0 && visible === 0) {
+        // backward wrap: silently jump to clone slot, then animate to last step
+        animating = true;
+        applyTransform(TOTAL_STEPS, false);
+        void tracks[0].offsetWidth;
+        current = TOTAL_STEPS;
+        requestAnimationFrame(() => {
+          applyTransform(TOTAL_STEPS - 1, true);
+          setActiveDot(TOTAL_STEPS - 1);
+          current = TOTAL_STEPS - 1;
+          window.setTimeout(() => { animating = false; }, SLIDE_MS + 30);
+        });
+      } else {
+        jumpTo((visible + delta + TOTAL_STEPS) % TOTAL_STEPS);
+      }
+      stopTimer();
+      window.setTimeout(startTimer, DWELL_MS);
+    }
+
+    function startTimer() {
+      stopTimer();
+      timerId = window.setInterval(() => {
+        if (!paused) advance();
+      }, DWELL_MS);
+    }
+    function stopTimer() {
+      if (timerId !== null) {
+        window.clearInterval(timerId);
+        timerId = null;
       }
     }
-    measure();
-    const ro = new ResizeObserver(measure);
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        jumpTo(i);
+        stopTimer();
+        window.setTimeout(startTimer, DWELL_MS);
+      });
+    });
+
+    const prevBtn = wall.querySelector('[data-stamp-prev]');
+    const nextBtn = wall.querySelector('[data-stamp-next]');
+    if (prevBtn) prevBtn.addEventListener('click', () => userStep(-1));
+    if (nextBtn) nextBtn.addEventListener('click', () => userStep(1));
+
+    wall.addEventListener('mouseenter', () => { paused = true; });
+    wall.addEventListener('mouseleave', () => { paused = false; });
+
+    // Initial measure + re-measure on resize (keep current step position)
+    measureUnit();
+    applyTransform(0, false);
+    setActiveDot(0);
+
+    const ro = new ResizeObserver(() => {
+      measureUnit();
+      if (!animating) applyTransform(current, false);
+    });
     ro.observe(tracks[0]);
 
-    let last = performance.now();
-    function tick(now) {
-      const dt = Math.min(64, now - last);
-      last = now;
-      if (!state.lapW) {
-        measure();
-      } else {
-        if (state.interacting <= 0) {
-          state.offset -= state.speed * (dt / 1000);
-        }
-        if (state.offset <= -state.lapW) state.offset += state.lapW;
-        if (state.offset > 0) state.offset -= state.lapW;
-        const transform = `translate3d(${state.offset}px, 0, 0)`;
-        tracks.forEach((t) => { t.style.transform = transform; });
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-
-    let resumeTimer = null;
-    function onWheel(e) {
-      const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      if (!dx) return;
-      e.preventDefault();
-      state.offset -= dx;
-      state.interacting = 1;
-      if (resumeTimer) clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => { state.interacting = 0; }, 1200);
-    }
-    wall.addEventListener('wheel', onWheel, { passive: false });
-    wall.addEventListener('mouseenter', () => { state.interacting = Math.max(state.interacting, 1); });
-    wall.addEventListener('mouseleave', () => { state.interacting = 0; });
+    startTimer();
   })();
 
   // ------------------------------------------------------------------
@@ -354,12 +452,12 @@ const featured = MEMBERS.slice(0, 4);
       elName.textContent = m.name;
       elBio.textContent = m.bio;
       elMeta.textContent = `${m.bike} · ${m.joined}`;
-      backdrop.hidden = false;
-      requestAnimationFrame(() => backdrop.classList.add('open'));
+      backdrop.setAttribute('aria-hidden', 'false');
+      backdrop.classList.add('open');
     }
     function close() {
       backdrop.classList.remove('open');
-      setTimeout(() => { backdrop.hidden = true; }, 220);
+      backdrop.setAttribute('aria-hidden', 'true');
     }
 
     document.querySelectorAll('.stamp-tile').forEach((btn) => {
@@ -374,7 +472,7 @@ const featured = MEMBERS.slice(0, 4);
     closeBtn.addEventListener('click', close);
     backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !backdrop.hidden) close();
+      if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
     });
   })();
 
@@ -392,7 +490,8 @@ const featured = MEMBERS.slice(0, 4);
       });
     });
   })();
-</script>
+  </script>
+</BaseLayout>
 
 <style>
   .about-page {
@@ -652,11 +751,15 @@ const featured = MEMBERS.slice(0, 4);
     color: var(--color-text-main);
     max-width: 720px;
     margin: 0 auto;
-  }
-  .garage-h2 em {
     font-style: italic;
-    color: var(--color-accent);
-    font-weight: 500;
+  }
+  .garage-lede {
+    font-family: var(--font-body);
+    font-size: clamp(14px, 1.2vw, 16px);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    max-width: 640px;
+    margin: 14px auto 0;
   }
 
   .garage-stamp-wall {
@@ -681,55 +784,36 @@ const featured = MEMBERS.slice(0, 4);
     background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.14), transparent 60%);
   }
 
-  .stamp-wall-label {
-    position: absolute;
-    top: 22px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 2;
-    pointer-events: none;
-    font-family: var(--font-heading);
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--color-accent);
-  }
-
   .stamp-rows {
+    --stamp-gap: clamp(20px, 3vw, 56px);
     position: relative;
     display: flex;
     flex-direction: column;
     gap: 22px;
-    padding: 70px 0 30px;
+    padding: 40px clamp(48px, 6vw, 96px) 24px;
     justify-content: center;
-    min-height: calc((240px + 40px) * 2 + 22px + 96px);
+    max-width: 1240px;
+    margin: 0 auto;
   }
   .stamp-row-clip {
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
+    width: 100%;
   }
   .stamp-track {
     display: flex;
     flex-direction: row;
+    gap: var(--stamp-gap);
     will-change: transform;
     transform: translate3d(0, 0, 0);
   }
-  .stamp-lap {
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-    align-items: center;
-    flex-shrink: 0;
-    padding-right: 50px;
-  }
 
   .stamp-tile {
-    flex-shrink: 0;
-    width: 240px;
-    height: 280px;
+    container-type: inline-size;
+    flex: 0 0 calc((100% - 2 * var(--stamp-gap)) / 3);
+    width: calc((100% - 2 * var(--stamp-gap)) / 3);
+    aspect-ratio: 240 / 280;
     background: transparent;
     border: none;
     padding: 0;
@@ -742,9 +826,11 @@ const featured = MEMBERS.slice(0, 4);
 
   .stamp-ring {
     position: absolute;
-    inset: 5% 5% auto 5%;
+    top: 5%;
+    left: 5%;
     width: 90%;
-    height: calc(240px * 0.9);
+    aspect-ratio: 1;
+    height: auto;
     object-fit: contain;
     pointer-events: none;
     user-select: none;
@@ -756,7 +842,7 @@ const featured = MEMBERS.slice(0, 4);
 
   .stamp-bike-wrap {
     position: absolute;
-    inset: calc(240px * 0.26) calc(240px * 0.14) calc(40px + 240px * 0.22) calc(240px * 0.14);
+    inset: 26% 14% calc(40px + 22cqw) 14%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -799,18 +885,63 @@ const featured = MEMBERS.slice(0, 4);
     letter-spacing: 0.12em;
   }
 
-  .stamp-edge {
-    position: absolute;
-    top: 40px;
-    bottom: 40px;
-    width: 80px;
-    pointer-events: none;
-    z-index: 3;
+  .stamp-dots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 0 26px;
+    position: relative;
+    z-index: 2;
   }
-  .stamp-edge-left  { left: 0;  background: linear-gradient(to right, var(--color-bg-canvas), transparent); }
-  .stamp-edge-right { right: 0; background: linear-gradient(to left,  var(--color-bg-canvas), transparent); }
-  :global(:root.dark) .stamp-edge-left  { background: linear-gradient(to right, #0d0d0d, transparent); }
-  :global(:root.dark) .stamp-edge-right { background: linear-gradient(to left,  #0d0d0d, transparent); }
+  .stamp-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1.5px solid rgba(0, 0, 0, 0.28);
+    cursor: pointer;
+    padding: 0;
+    transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                background-color 320ms ease,
+                border-color 320ms ease;
+  }
+  .stamp-dot:hover { border-color: var(--color-accent); }
+  .stamp-dot.active {
+    width: 26px;
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  :global(:root.dark) .stamp-dot { border-color: rgba(255, 255, 255, 0.32); }
+  :global(:root.dark) .stamp-dot.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .stamp-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-accent);
+    opacity: 0.78;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  .stamp-arrow:hover { opacity: 1; }
+  .stamp-arrow--prev { left: clamp(8px, 2.5vw, 28px); }
+  .stamp-arrow--next { right: clamp(8px, 2.5vw, 28px); }
+  .stamp-arrow--prev:hover { transform: translateY(-50%) translateX(-3px); }
+  .stamp-arrow--next:hover { transform: translateY(-50%) translateX(3px); }
+  .stamp-arrow:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; border-radius: 4px; }
 
   @keyframes stampPulse {
     0%, 100% { transform: scale(1); }
@@ -1076,10 +1207,12 @@ const featured = MEMBERS.slice(0, 4);
     justify-content: center;
     padding: 24px;
     z-index: 60;
+    pointer-events: none;           /* don't intercept clicks on the page beneath */
     transition: background 200ms ease;
   }
   .member-card-backdrop.open {
     background: rgba(0, 0, 0, 0.28);
+    pointer-events: auto;
   }
   :global(:root.dark) .member-card-backdrop.open {
     background: rgba(0, 0, 0, 0.55);
@@ -1098,11 +1231,13 @@ const featured = MEMBERS.slice(0, 4);
     align-items: flex-start;
     transform: translateY(14px);
     opacity: 0;
+    pointer-events: none;
     transition: opacity 280ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .member-card-backdrop.open .member-card {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
   }
 
   .member-card-photo {
