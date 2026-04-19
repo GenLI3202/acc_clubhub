@@ -125,6 +125,14 @@
 - [X] **Dashboard Participant Sync Fix** (2026-04-15)
   - [X] Removed Python-level `current_participants` modification in `admin.py` to prevent trigger double-counting (resolving the 6 confirmed vs 2/35 bug)
   - [X] Updated SQLite-based `test_admin_cancel.py` unit tests to bypass trigger-dependent assertions
+- [X] **Phase 8 — About Page Editorial Redesign** (2026-04-19)
+  - [X] Branch: `phase-8/about-editorial-redesign`, sourced from Claude Design "Pegboard → Stamp Wall" export
+  - [X] Replaced template About page with: hero title block, two-paragraph intro lede, three-stanza "Across" poem (mountains / paths / borders) with sequential IntersectionObserver reveal, "Our Garage" stamp-wall marquee (rAF-driven infinite scroll, wheel nudge, pause on hover, two rows × 3 laps for seamless loop), Featured Riders accordion (`grid-template-rows` 0fr→1fr expand), Contact section with mailto + Strava CTAs
+  - [X] Click a stamp → wobble + member-card modal overlay; Escape / click-outside to close
+  - [X] 12-rider roster (`src/lib/about/members.ts`): 4 real + 8 placeholders until bios are authored
+  - [X] New i18n keys `about.*` across zh / en / de
+  - [X] Dark mode: swaps stamp-ring image (red→white), adjusts shadows + edge-fade colors via `:root.dark`
+  - [X] Assets: 4 bike cutout PNGs + 2 ACC stamp logos copied to `frontend/public/images/about/`
 
 ## In Progress
 
@@ -153,6 +161,7 @@
 - [ ] Registration spot count mismatch in dashboard — med (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
 - [ ] E2E tests not yet written for registration flow — med
 - [ ] Dark mode (`prefers-color-scheme: dark`) not implemented — low (Issue [#55](https://github.com/GenLI3202/acc_clubhub/issues/55))
+- [ ] Cancelled users cannot re-register via frontend OR be restored by admins, violating DB constraints and sync logic — high
 
 ## Architecture Decisions
 
