@@ -103,6 +103,7 @@ const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
     <section class="garage-section">
       <h2 class="garage-h2">{t(lang, 'about.garageH2Prefix')}</h2>
       <p class="garage-lede">{t(lang, 'about.garageLede')}</p>
+      <p class="garage-desc">{t(lang, 'about.garageDesc')}</p>
 
       <div class="garage-stamp-wall" data-stamp-wall>
         <div class="stamp-rows">
@@ -700,6 +701,16 @@ const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
     color: var(--color-text-muted);
     max-width: 640px;
     margin: 14px auto 0;
+  }
+  .garage-desc {
+    font-family: var(--font-body);
+    font-size: clamp(13px, 1.05vw, 14.5px);
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    max-width: 620px;
+    margin: 18px auto 0;
+    font-style: italic;
+    text-align: center;
   }
 
   .garage-stamp-wall {
