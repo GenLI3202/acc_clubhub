@@ -110,7 +110,7 @@ export const ui = {
         'about.sectionRuleJoin': 'Join Us',
         'about.contactEyebrow': 'Contact',
         'about.contactH2': '自由骑行，一路同行。',
-        'about.contactLede': '刚搬到慕尼黑？从别的俱乐部过来？还是只想先来感受一下？给我们写封信 — 每一封都会认真回。',
+        'about.contactLede': '刚搬到慕尼黑？从别的俱乐部过来？还是只想先来感受一下？只要想骑车，找我们准没错！',
         'about.contactEmail': 'letusride@accross-cc.de',
         'about.contactStrava': '关注 Strava',
         'about.footerTagline': '自由骑行，一路同行',
