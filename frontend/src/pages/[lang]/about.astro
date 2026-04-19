@@ -1,12 +1,12 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/about.astro
-// Editorial about page — hero, Across poem, stamp-wall garage marquee,
-// featured-rider accordion, contact. Based on Phase 8 Claude Design output.
+// Editorial about page — hero, Across poem, stamp-wall garage marquee, contact.
+// Based on Phase 8 Claude Design output.
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
-import { MEMBERS, formatJoined } from '../../lib/about/members';
+import { MEMBERS } from '../../lib/about/members';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -18,9 +18,6 @@ const pageTitle = t(lang, 'nav.about');
 // Split into two rows, preserving original order (i % 2).
 const row1 = MEMBERS.filter((_, i) => i % 2 === 0);
 const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
-
-// Featured bios for accordion — first four members.
-const featured = MEMBERS.slice(0, 4);
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
@@ -169,50 +166,7 @@ const featured = MEMBERS.slice(0, 4);
     </section>
 
     {/* ============================================================
-        5. FEATURED RIDERS — accordion
-       ============================================================ */}
-    <section class="roster-section">
-      <div class="roster-head">
-        <div class="roster-eyebrow">{t(lang, 'about.rosterEyebrow')}</div>
-        <h2 class="roster-title">
-          {t(lang, 'about.rosterTitlePrefix')} <em>{t(lang, 'about.rosterTitleEm')}</em>
-        </h2>
-      </div>
-      <div class="roster-accordion" data-accordion>
-        {featured.map((m, i) => (
-          <div class={`roster-item${i === 0 ? ' open' : ''}`} data-roster-item>
-            <button class="roster-item-head" type="button" aria-expanded={i === 0 ? 'true' : 'false'}>
-              <div class="roster-item-photo">
-                <img src={m.photo} alt="" draggable="false" loading="lazy"/>
-              </div>
-              <div class="roster-item-summary">
-                <div class="roster-item-name">
-                  {m.name}
-                  {m.captain && <span class="captain-badge">{t(lang, 'about.captainBadge')}</span>}
-                </div>
-                <div class="roster-item-meta">
-                  {m.role} · <b>{m.bike}</b> · {formatJoined(lang, m.joined)}
-                </div>
-              </div>
-              <div class="roster-item-chevron" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M6 9l6 6 6-6"/>
-                </svg>
-              </div>
-            </button>
-            <div class="roster-item-body">
-              <div class="roster-item-body-inner">
-                <div class="roster-item-tenure">{m.tenure.toUpperCase()}</div>
-                <p class="roster-item-bio">{m.bio}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    {/* ============================================================
-        6. CONTACT
+        5. CONTACT
        ============================================================ */}
     <div class="section-rule">{t(lang, 'about.sectionRuleJoin')}</div>
 
@@ -476,20 +430,6 @@ const featured = MEMBERS.slice(0, 4);
     });
   })();
 
-  // ------------------------------------------------------------------
-  // Roster accordion — click to toggle a single open item
-  // ------------------------------------------------------------------
-  (function initAccordion() {
-    const items = document.querySelectorAll('[data-roster-item]');
-    items.forEach((item) => {
-      const head = item.querySelector('.roster-item-head');
-      if (!head) return;
-      head.addEventListener('click', () => {
-        const isOpen = item.classList.toggle('open');
-        head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
-    });
-  })();
   </script>
 </BaseLayout>
 
@@ -955,169 +895,6 @@ const featured = MEMBERS.slice(0, 4);
     40% { transform: rotate(7deg); }
     60% { transform: rotate(-4deg); }
     80% { transform: rotate(2deg); }
-  }
-
-  /* ---------- Roster accordion ---------- */
-  .roster-section {
-    max-width: 1080px;
-    margin: 72px auto 0;
-    padding: 0 24px;
-  }
-  .roster-head { text-align: center; }
-  .roster-eyebrow {
-    font-family: var(--font-heading);
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-accent);
-  }
-  .roster-title {
-    font-family: var(--font-heading);
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--color-text-main);
-    margin: 8px 0 0;
-  }
-  .roster-title em {
-    font-style: italic;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-  }
-
-  .roster-accordion {
-    margin-top: 40px;
-    border-top: 1px solid var(--color-border);
-  }
-  .roster-item {
-    border-bottom: 1px solid var(--color-border);
-  }
-  .roster-item-head {
-    width: 100%;
-    display: flex;
-    gap: 22px;
-    align-items: center;
-    padding: 20px 8px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    font: inherit;
-    color: inherit;
-    transition: background 180ms ease;
-  }
-  .roster-item-head:hover { background: rgba(0, 0, 0, 0.02); }
-  :global(:root.dark) .roster-item-head:hover { background: rgba(255, 255, 255, 0.03); }
-
-  .roster-item-photo {
-    flex-shrink: 0;
-    width: 96px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .roster-item-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
-  }
-  :global(:root.dark) .roster-item-photo img {
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-  }
-
-  .roster-item-summary { flex: 1; min-width: 0; }
-  .roster-item-name {
-    font-family: var(--font-heading);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--color-text-main);
-    line-height: 1.15;
-  }
-  .roster-item-meta {
-    font-family: var(--font-body);
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--color-text-secondary);
-    margin-top: 4px;
-  }
-  .roster-item-meta b {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    color: var(--color-text-main);
-  }
-
-  .captain-badge {
-    display: inline-block;
-    font-family: var(--font-heading);
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: #fff;
-    background: var(--color-accent);
-    padding: 3px 8px;
-    border-radius: 9999px;
-    margin-left: 8px;
-    vertical-align: 3px;
-  }
-
-  .roster-item-chevron {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-secondary);
-    transition: transform 300ms cubic-bezier(0.3, 0.7, 0.4, 1);
-  }
-  .roster-item.open .roster-item-chevron {
-    transform: rotate(180deg);
-    color: var(--color-accent);
-  }
-
-  .roster-item-body {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 340ms cubic-bezier(0.3, 0.7, 0.4, 1);
-  }
-  .roster-item.open .roster-item-body {
-    grid-template-rows: 1fr;
-  }
-  .roster-item-body-inner {
-    overflow: hidden;
-    padding: 0 8px 0 126px;
-  }
-  .roster-item.open .roster-item-body-inner {
-    padding-bottom: 24px;
-  }
-  .roster-item-tenure {
-    font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    color: var(--color-accent);
-    margin-bottom: 10px;
-  }
-  .roster-item-bio {
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--color-text-main);
-    margin: 0;
-    max-width: 680px;
-  }
-
-  @media (max-width: 640px) {
-    .roster-item-head { gap: 14px; padding: 16px 4px; }
-    .roster-item-photo { width: 72px; height: 48px; }
-    .roster-item-name { font-size: 18px; }
-    .roster-item-meta { font-size: 12px; }
-    .roster-item-body-inner { padding-left: 0; }
   }
 
   /* ---------- Contact ---------- */
