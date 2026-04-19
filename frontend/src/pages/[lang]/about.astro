@@ -1,10 +1,12 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/about.astro
-// 关于我们页面
+// Editorial about page — hero, Across poem, stamp-wall garage marquee,
+// featured-rider accordion, contact. Based on Phase 8 Claude Design output.
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
+import { MEMBERS, formatJoined } from '../../lib/about/members';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -12,79 +14,1170 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params as { lang: Locale };
 const pageTitle = t(lang, 'nav.about');
+
+// Split into two rows, preserving original order (i % 2).
+const row1 = MEMBERS.filter((_, i) => i % 2 === 0);
+const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
+
+// Featured bios for accordion — first four members.
+const featured = MEMBERS.slice(0, 4);
 ---
 
-
 <BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title">
-    <h1>🚴 {pageTitle}</h1>
-    <p class="page-subtitle">
-      {lang === 'zh'
-        ? 'Across Cycling Club Munich'
-        : 'Across Cycling Club München'}
-    </p>
-  </div>
+  <article class="about-page">
+    {/* ============================================================
+        1. TITLE BLOCK
+       ============================================================ */}
+    <div class="about-title-block">
+      <div class="about-eyebrow">{t(lang, 'about.eyebrow')}</div>
+      <h1 class="about-h1">{t(lang, 'about.h1')}</h1>
+      <div class="about-subtitle">{t(lang, 'about.subtitle')}</div>
+    </div>
 
-  <section class="about-content">
+    {/* ============================================================
+        2. INTRO LEDE
+       ============================================================ */}
     <div class="about-intro">
-      {lang === 'zh' ? (
-        <p>
-          ACC（Across Cycling Club）是一个位于慕尼黑的华人骑行俱乐部，
-          成立于 2023 年。我们致力于推广公路自行车运动，组织各类骑行活动，
-          并为成员提供一个交流和成长的平台。
-        </p>
-      ) : lang === 'de' ? (
-        <p>
-          ACC (Across Cycling Club) ist ein chinesischer Radsportverein in München,
-          gegründet 2023. Wir fördern den Rennradsport, organisieren verschiedene
-          Radtouren und bieten unseren Mitgliedern eine Plattform zum Austausch.
-        </p>
-      ) : (
-        <p>
-          ACC (Across Cycling Club) is a Chinese cycling club based in Munich,
-          founded in 2023. We promote road cycling, organize various riding events,
-          and provide a platform for members to connect and grow.
-        </p>
-      )}
+      <p>{t(lang, 'about.intro1')}</p>
+      <p>
+        {t(lang, 'about.intro2Prefix')}
+        <em> {t(lang, 'about.intro2Em')}</em>
+      </p>
     </div>
 
-    <div class="about-contact">
-      <h2>{lang === 'zh' ? '联系我们' : lang === 'de' ? 'Kontakt' : 'Contact Us'}</h2>
-      <ul>
-        <li>📧 Email: <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a></li>
-        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FC4C02" style="vertical-align:middle;margin-right:4px"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg> Strava: <a href="https://www.strava.com/clubs/accmunich" target="_blank" rel="noopener">strava.com/clubs/accmunich</a></li>
-      </ul>
+    <span class="intro-to-poem-divider" aria-hidden="true"></span>
+
+    {/* ============================================================
+        3. ACROSS — three-beat poem
+       ============================================================ */}
+    <section class="across-poem" aria-label="The meaning of across" data-poem>
+      <div class="across-stanzas">
+        <div class="across-stanza" data-order="1">
+          <div class="across-glyph-bg">
+            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
+              <polyline points="10,160 100,70 190,120 300,20 400,96 500,50 590,150"/>
+            </svg>
+          </div>
+          <div class="across-text">
+            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord1')}</div>
+            <div class="across-gloss">{t(lang, 'about.poemGloss1')}</div>
+          </div>
+        </div>
+        <div class="across-stanza" data-order="2">
+          <div class="across-glyph-bg">
+            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
+              <path d="M20,30 C180,40 260,150 580,160"/>
+              <path d="M20,160 C180,150 260,40 580,30"/>
+            </svg>
+          </div>
+          <div class="across-text">
+            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord2')}</div>
+            <div class="across-gloss">{t(lang, 'about.poemGloss2')}</div>
+          </div>
+        </div>
+        <div class="across-stanza" data-order="3">
+          <div class="across-glyph-bg">
+            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
+              <path d="M 230,90 m -100,0 a 100,70 0 1,0 200,0 a 100,70 0 1,0 -200,0"/>
+              <path d="M 370,90 m -100,0 a 100,70 0 1,0 200,0 a 100,70 0 1,0 -200,0"/>
+              <path class="dashed" d="M 295,90 L 305,90"/>
+            </svg>
+          </div>
+          <div class="across-text">
+            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord3')}</div>
+            <div class="across-gloss">{t(lang, 'about.poemGloss3')}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="across-signature" data-signature>
+        <span class="across-signature-rule"></span>
+        <div class="across-signature-text">
+          <b>Across</b> {t(lang, 'about.signatureClub')}
+        </div>
+      </div>
+    </section>
+
+    {/* ============================================================
+        4. OUR GARAGE — stamp-wall marquee
+       ============================================================ */}
+    <div class="section-rule">{t(lang, 'about.sectionRuleGarage')}</div>
+
+    <section class="garage-section">
+      <h2 class="garage-h2">
+        {t(lang, 'about.garageH2Prefix')} <em>{t(lang, 'about.garageH2Em')}</em>
+      </h2>
+
+      <div class="garage-stamp-wall" data-stamp-wall>
+        <div class="stamp-wall-label">{t(lang, 'about.stableEyebrow')}</div>
+        <div class="stamp-rows">
+          {[row1, row2].map((row) => (
+            <div class="stamp-row-clip">
+              <div class="stamp-track" data-track>
+                {[1, 2, 3].map((lap) => (
+                  <div class="stamp-lap" data-lap={lap}>
+                    {row.map((m) => (
+                      <button class="stamp-tile" type="button" data-member-id={m.id}>
+                        <img
+                          class="stamp-ring stamp-ring-light"
+                          src="/images/about/logo-stamp-red-transparent.png"
+                          alt=""
+                          draggable="false"
+                          loading="lazy"
+                        />
+                        <img
+                          class="stamp-ring stamp-ring-dark"
+                          src="/images/about/logo-stamp-white-transparent.png"
+                          alt=""
+                          draggable="false"
+                          loading="lazy"
+                        />
+                        <div class="stamp-bike-wrap">
+                          <img class="stamp-bike" src={m.photo} alt="" draggable="false" loading="lazy"/>
+                        </div>
+                        <div class="stamp-caption">
+                          {m.name}
+                          <div class="stamp-subcaption">{m.bike} · {m.joined}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="stamp-edge stamp-edge-left" aria-hidden="true"></div>
+        <div class="stamp-edge stamp-edge-right" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    {/* ============================================================
+        5. FEATURED RIDERS — accordion
+       ============================================================ */}
+    <section class="roster-section">
+      <div class="roster-head">
+        <div class="roster-eyebrow">{t(lang, 'about.rosterEyebrow')}</div>
+        <h2 class="roster-title">
+          {t(lang, 'about.rosterTitlePrefix')} <em>{t(lang, 'about.rosterTitleEm')}</em>
+        </h2>
+      </div>
+      <div class="roster-accordion" data-accordion>
+        {featured.map((m, i) => (
+          <div class={`roster-item${i === 0 ? ' open' : ''}`} data-roster-item>
+            <button class="roster-item-head" type="button" aria-expanded={i === 0 ? 'true' : 'false'}>
+              <div class="roster-item-photo">
+                <img src={m.photo} alt="" draggable="false" loading="lazy"/>
+              </div>
+              <div class="roster-item-summary">
+                <div class="roster-item-name">
+                  {m.name}
+                  {m.captain && <span class="captain-badge">{t(lang, 'about.captainBadge')}</span>}
+                </div>
+                <div class="roster-item-meta">
+                  {m.role} · <b>{m.bike}</b> · {formatJoined(lang, m.joined)}
+                </div>
+              </div>
+              <div class="roster-item-chevron" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+            </button>
+            <div class="roster-item-body">
+              <div class="roster-item-body-inner">
+                <div class="roster-item-tenure">{m.tenure.toUpperCase()}</div>
+                <p class="roster-item-bio">{m.bio}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* ============================================================
+        6. CONTACT
+       ============================================================ */}
+    <div class="section-rule">{t(lang, 'about.sectionRuleJoin')}</div>
+
+    <section class="contact-section">
+      <div class="contact-eyebrow">{t(lang, 'about.contactEyebrow')}</div>
+      <h2 class="contact-h2">{t(lang, 'about.contactH2')}</h2>
+      <p class="contact-lede">{t(lang, 'about.contactLede')}</p>
+      <div class="contact-channels">
+        <a class="channel-btn primary" href={`mailto:${t(lang, 'about.contactEmail')}`}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>
+          </svg>
+          {t(lang, 'about.contactEmail')}
+        </a>
+        <a class="channel-btn ghost" href="https://www.strava.com/clubs/accmunich" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+          </svg>
+          {t(lang, 'about.contactStrava')}
+        </a>
+      </div>
+    </section>
+  </article>
+
+  {/* Member card overlay — shown when user clicks a stamp */}
+  <div class="member-card-backdrop" data-member-card hidden>
+    <div class="member-card" role="dialog" aria-modal="true" aria-labelledby="member-card-name">
+      <div class="member-card-photo">
+        <img data-member-card-photo alt=""/>
+      </div>
+      <div class="member-card-body">
+        <div class="member-card-role" data-member-card-role></div>
+        <div class="member-card-name" id="member-card-name" data-member-card-name></div>
+        <p class="member-card-bio" data-member-card-bio></p>
+        <div class="member-card-meta" data-member-card-meta></div>
+      </div>
+      <button class="member-card-close" type="button" aria-label="Close" data-member-card-close>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
     </div>
-  </section>
+  </div>
 </BaseLayout>
 
+<script is:inline define:vars={{ members: MEMBERS }}>
+  // ------------------------------------------------------------------
+  // Across poem — sequential reveal via IntersectionObserver + timers
+  // ------------------------------------------------------------------
+  (function initPoem() {
+    const poem = document.querySelector('[data-poem]');
+    if (!poem) return;
+    const stanzas = poem.querySelectorAll('.across-stanza');
+    const signature = poem.querySelector('[data-signature]');
+    let started = false;
+
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || started) continue;
+        started = true;
+        io.disconnect();
+        stanzas.forEach((s, i) => {
+          setTimeout(() => s.classList.add('in'), i * 1400);
+        });
+        if (signature) {
+          setTimeout(() => signature.classList.add('in'), stanzas.length * 1400);
+        }
+      }
+    }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
+    io.observe(poem);
+  })();
+
+  // ------------------------------------------------------------------
+  // Stamp-wall marquee — rAF-driven infinite translate, wheel nudge,
+  // pause on hover, ResizeObserver-backed lap measurement.
+  // ------------------------------------------------------------------
+  (function initStampWall() {
+    const wall = document.querySelector('[data-stamp-wall]');
+    if (!wall) return;
+    const tracks = wall.querySelectorAll('[data-track]');
+    if (!tracks.length) return;
+
+    const state = {
+      offset: 0,
+      lapW: 0,
+      interacting: 0,
+      speed: 22,
+    };
+
+    function measure() {
+      const firstLap = tracks[0].querySelector('[data-lap="1"]');
+      if (firstLap) {
+        const w = firstLap.getBoundingClientRect().width;
+        if (w > 0) state.lapW = w;
+      }
+    }
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(tracks[0]);
+
+    let last = performance.now();
+    function tick(now) {
+      const dt = Math.min(64, now - last);
+      last = now;
+      if (!state.lapW) {
+        measure();
+      } else {
+        if (state.interacting <= 0) {
+          state.offset -= state.speed * (dt / 1000);
+        }
+        if (state.offset <= -state.lapW) state.offset += state.lapW;
+        if (state.offset > 0) state.offset -= state.lapW;
+        const transform = `translate3d(${state.offset}px, 0, 0)`;
+        tracks.forEach((t) => { t.style.transform = transform; });
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    let resumeTimer = null;
+    function onWheel(e) {
+      const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (!dx) return;
+      e.preventDefault();
+      state.offset -= dx;
+      state.interacting = 1;
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { state.interacting = 0; }, 1200);
+    }
+    wall.addEventListener('wheel', onWheel, { passive: false });
+    wall.addEventListener('mouseenter', () => { state.interacting = Math.max(state.interacting, 1); });
+    wall.addEventListener('mouseleave', () => { state.interacting = 0; });
+  })();
+
+  // ------------------------------------------------------------------
+  // Stamp tile click → wobble + member card overlay
+  // ------------------------------------------------------------------
+  (function initStampClicks() {
+    const backdrop = document.querySelector('[data-member-card]');
+    if (!backdrop) return;
+    const closeBtn = backdrop.querySelector('[data-member-card-close]');
+    const elPhoto = backdrop.querySelector('[data-member-card-photo]');
+    const elRole = backdrop.querySelector('[data-member-card-role]');
+    const elName = backdrop.querySelector('[data-member-card-name]');
+    const elBio = backdrop.querySelector('[data-member-card-bio]');
+    const elMeta = backdrop.querySelector('[data-member-card-meta]');
+
+    const byId = Object.fromEntries(members.map((m) => [m.id, m]));
+
+    function open(id) {
+      const m = byId[id];
+      if (!m) return;
+      elPhoto.src = m.photo;
+      elRole.textContent = `${m.role} · ${m.tenure}`;
+      elName.textContent = m.name;
+      elBio.textContent = m.bio;
+      elMeta.textContent = `${m.bike} · ${m.joined}`;
+      backdrop.hidden = false;
+      requestAnimationFrame(() => backdrop.classList.add('open'));
+    }
+    function close() {
+      backdrop.classList.remove('open');
+      setTimeout(() => { backdrop.hidden = true; }, 220);
+    }
+
+    document.querySelectorAll('.stamp-tile').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-member-id');
+        btn.classList.remove('wobble');
+        void btn.offsetWidth;
+        btn.classList.add('wobble');
+        setTimeout(() => open(id), 420);
+      });
+    });
+    closeBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !backdrop.hidden) close();
+    });
+  })();
+
+  // ------------------------------------------------------------------
+  // Roster accordion — click to toggle a single open item
+  // ------------------------------------------------------------------
+  (function initAccordion() {
+    const items = document.querySelectorAll('[data-roster-item]');
+    items.forEach((item) => {
+      const head = item.querySelector('.roster-item-head');
+      if (!head) return;
+      head.addEventListener('click', () => {
+        const isOpen = item.classList.toggle('open');
+        head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+  })();
+</script>
+
 <style>
-  .about-content {
+  .about-page {
+    max-width: none;
+    padding: 64px 24px 0;
+  }
+
+  /* ---------- Title ---------- */
+  .about-title-block {
     max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .about-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 14px;
+  }
+  .about-h1 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 64px);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--color-text-main);
+    margin: 0;
+  }
+  .about-h1::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-accent);
+    margin: 18px auto 0;
+  }
+  .about-subtitle {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 17px;
+    color: var(--color-text-secondary);
+    margin-top: 14px;
+    letter-spacing: 0.01em;
   }
 
+  /* ---------- Intro ---------- */
   .about-intro {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    margin-bottom: var(--space-xl);
+    max-width: 860px;
+    margin: 48px auto 0;
+    text-align: center;
+    padding: 0 24px;
   }
-
   .about-intro p {
-    margin-bottom: var(--space-md);
+    font-family: var(--font-body);
+    font-size: 20px;
+    line-height: 1.7;
+    font-weight: 400;
+    color: var(--color-text-main);
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .about-intro p + p {
+    margin-top: 18px;
+    font-size: 17.5px;
+    color: var(--color-text-secondary);
+  }
+  .about-intro em {
+    font-style: italic;
+    color: var(--color-text-main);
   }
 
-  .about-contact h2 {
-    font-size: 1.3rem;
-    margin-bottom: var(--space-md);
+  .intro-to-poem-divider {
+    display: block;
+    width: 1px;
+    height: 48px;
+    background: var(--color-text-secondary);
+    margin: 72px auto 0;
+    opacity: 0.55;
   }
 
-  .about-contact ul {
-    list-style: none;
+  /* ---------- Section rule ---------- */
+  .section-rule {
+    max-width: 700px;
+    margin: 96px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-heading);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-text-secondary);
+  }
+  .section-rule::before,
+  .section-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border-strong);
+  }
+
+  /* ---------- Across poem ---------- */
+  .across-poem {
+    max-width: 900px;
+    margin: 56px auto 0;
+    padding: 0 24px;
+  }
+  .across-stanzas {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .across-stanza {
+    position: relative;
+    min-height: 18vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 800ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .across-stanza.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .across-glyph-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(200px, 38%, 340px);
+    height: 52%;
+    z-index: 0;
+    color: var(--color-accent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 600ms ease 180ms;
+  }
+  .across-stanza.in .across-glyph-bg { opacity: 0.22; }
+  :global(:root.dark) .across-stanza.in .across-glyph-bg { opacity: 0.32; }
+  .across-glyph-bg svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .across-glyph-bg :global(path),
+  .across-glyph-bg :global(line),
+  .across-glyph-bg :global(polyline) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    transition: stroke-dashoffset 1400ms cubic-bezier(0.55, 0, 0.25, 1) 260ms;
+  }
+  .across-stanza.in .across-glyph-bg :global(path),
+  .across-stanza.in .across-glyph-bg :global(line),
+  .across-stanza.in .across-glyph-bg :global(polyline) {
+    stroke-dashoffset: 0;
+  }
+  .across-glyph-bg :global(.dashed) {
+    stroke-dasharray: 6 8;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    transition: opacity 600ms ease 900ms;
+  }
+  .across-stanza.in .across-glyph-bg :global(.dashed) { opacity: 0.9; }
+
+  .across-text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .across-word {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(34px, 4.8vw, 54px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--color-text-main);
+  }
+  .across-word .across-key {
+    color: var(--color-accent);
+    font-style: italic;
+  }
+  .across-gloss {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    margin: 12px auto 0;
+    max-width: 520px;
+  }
+
+  .across-signature {
+    margin-top: 72px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 900ms ease 200ms, transform 900ms ease 200ms;
+  }
+  .across-signature.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .across-signature-rule {
+    display: block;
+    width: 36px;
+    height: 1px;
+    background: var(--color-border-strong);
+    margin: 0 auto 18px;
+  }
+  .across-signature-text {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+  .across-signature-text b {
+    font-weight: 700;
+    font-style: italic;
+    color: var(--color-text-main);
+  }
+
+  @media (max-width: 640px) {
+    .across-stanza { min-height: 22vh; }
+    .across-gloss { font-size: 14.5px; }
+  }
+
+  /* ---------- Garage ---------- */
+  .garage-section {
+    max-width: 1200px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    text-align: center;
+  }
+  .garage-h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(30px, 3.8vw, 44px);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--color-text-main);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .garage-h2 em {
+    font-style: italic;
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .garage-stamp-wall {
+    position: relative;
+    margin-top: 44px;
+    border-top: 1px solid var(--color-border-strong);
+    border-bottom: 1px solid var(--color-border-strong);
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+  }
+  :global(:root.dark) .garage-stamp-wall {
+    background: #0d0d0d;
+  }
+  .garage-stamp-wall::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.07), transparent 60%);
+    pointer-events: none;
+  }
+  :global(:root.dark) .garage-stamp-wall::before {
+    background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.14), transparent 60%);
+  }
+
+  .stamp-wall-label {
+    position: absolute;
+    top: 22px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+    font-family: var(--font-heading);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-accent);
+  }
+
+  .stamp-rows {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 70px 0 30px;
+    justify-content: center;
+    min-height: calc((240px + 40px) * 2 + 22px + 96px);
+  }
+  .stamp-row-clip {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .stamp-track {
+    display: flex;
+    flex-direction: row;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+  }
+  .stamp-lap {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    align-items: center;
+    flex-shrink: 0;
+    padding-right: 50px;
+  }
+
+  .stamp-tile {
+    flex-shrink: 0;
+    width: 240px;
+    height: 280px;
+    background: transparent;
+    border: none;
     padding: 0;
+    cursor: pointer;
+    position: relative;
+    font: inherit;
+    color: inherit;
+  }
+  .stamp-tile.wobble { animation: stampPulse 800ms cubic-bezier(0.36, 0, 0.2, 1); }
+
+  .stamp-ring {
+    position: absolute;
+    inset: 5% 5% auto 5%;
+    width: 90%;
+    height: calc(240px * 0.9);
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+  }
+  .stamp-ring-light { opacity: 0.22; display: block; }
+  .stamp-ring-dark  { opacity: 0.18; display: none; }
+  :global(:root.dark) .stamp-ring-light { display: none; }
+  :global(:root.dark) .stamp-ring-dark  { display: block; }
+
+  .stamp-bike-wrap {
+    position: absolute;
+    inset: calc(240px * 0.26) calc(240px * 0.14) calc(40px + 240px * 0.22) calc(240px * 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: 50% 100%;
+  }
+  .stamp-tile.wobble .stamp-bike-wrap {
+    animation: bikeWobbleTight 800ms cubic-bezier(0.36, 0, 0.2, 1);
+  }
+  .stamp-bike {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22));
+    pointer-events: none;
+    user-select: none;
+  }
+  :global(:root.dark) .stamp-bike {
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
   }
 
-  .about-contact li {
-    padding: var(--space-sm) 0;
-    font-size: 1rem;
+  .stamp-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+    line-height: 1.45;
+  }
+  .stamp-subcaption {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-top: 2px;
+    letter-spacing: 0.12em;
+  }
+
+  .stamp-edge {
+    position: absolute;
+    top: 40px;
+    bottom: 40px;
+    width: 80px;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .stamp-edge-left  { left: 0;  background: linear-gradient(to right, var(--color-bg-canvas), transparent); }
+  .stamp-edge-right { right: 0; background: linear-gradient(to left,  var(--color-bg-canvas), transparent); }
+  :global(:root.dark) .stamp-edge-left  { background: linear-gradient(to right, #0d0d0d, transparent); }
+  :global(:root.dark) .stamp-edge-right { background: linear-gradient(to left,  #0d0d0d, transparent); }
+
+  @keyframes stampPulse {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.06); }
+    55% { transform: scale(0.97); }
+    80% { transform: scale(1.02); }
+  }
+  @keyframes bikeWobbleTight {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-9deg); }
+    40% { transform: rotate(7deg); }
+    60% { transform: rotate(-4deg); }
+    80% { transform: rotate(2deg); }
+  }
+
+  /* ---------- Roster accordion ---------- */
+  .roster-section {
+    max-width: 1080px;
+    margin: 72px auto 0;
+    padding: 0 24px;
+  }
+  .roster-head { text-align: center; }
+  .roster-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+  }
+  .roster-title {
+    font-family: var(--font-heading);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-main);
+    margin: 8px 0 0;
+  }
+  .roster-title em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+
+  .roster-accordion {
+    margin-top: 40px;
+    border-top: 1px solid var(--color-border);
+  }
+  .roster-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .roster-item-head {
+    width: 100%;
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    padding: 20px 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    transition: background 180ms ease;
+  }
+  .roster-item-head:hover { background: rgba(0, 0, 0, 0.02); }
+  :global(:root.dark) .roster-item-head:hover { background: rgba(255, 255, 255, 0.03); }
+
+  .roster-item-photo {
+    flex-shrink: 0;
+    width: 96px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .roster-item-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  }
+  :global(:root.dark) .roster-item-photo img {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  }
+
+  .roster-item-summary { flex: 1; min-width: 0; }
+  .roster-item-name {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-main);
+    line-height: 1.15;
+  }
+  .roster-item-meta {
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+  }
+  .roster-item-meta b {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-text-main);
+  }
+
+  .captain-badge {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #fff;
+    background: var(--color-accent);
+    padding: 3px 8px;
+    border-radius: 9999px;
+    margin-left: 8px;
+    vertical-align: 3px;
+  }
+
+  .roster-item-chevron {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    transition: transform 300ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+  .roster-item.open .roster-item-chevron {
+    transform: rotate(180deg);
+    color: var(--color-accent);
+  }
+
+  .roster-item-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 340ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+  .roster-item.open .roster-item-body {
+    grid-template-rows: 1fr;
+  }
+  .roster-item-body-inner {
+    overflow: hidden;
+    padding: 0 8px 0 126px;
+  }
+  .roster-item.open .roster-item-body-inner {
+    padding-bottom: 24px;
+  }
+  .roster-item-tenure {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    margin-bottom: 10px;
+  }
+  .roster-item-bio {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--color-text-main);
+    margin: 0;
+    max-width: 680px;
+  }
+
+  @media (max-width: 640px) {
+    .roster-item-head { gap: 14px; padding: 16px 4px; }
+    .roster-item-photo { width: 72px; height: 48px; }
+    .roster-item-name { font-size: 18px; }
+    .roster-item-meta { font-size: 12px; }
+    .roster-item-body-inner { padding-left: 0; }
+  }
+
+  /* ---------- Contact ---------- */
+  .contact-section {
+    max-width: 700px;
+    margin: 96px auto 0;
+    padding: 0 24px 88px;
+    text-align: center;
+  }
+  .contact-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+  }
+  .contact-h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(30px, 3.8vw, 40px);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--color-text-main);
+    margin-top: 10px;
+  }
+  .contact-lede {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 16px auto 0;
+    max-width: 520px;
+  }
+  .contact-channels {
+    margin-top: 36px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .channel-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-heading);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 22px;
+    border-radius: var(--radius-btn);
+    transition: all 250ms ease;
+    cursor: pointer;
+    border: none;
+  }
+  .channel-btn.primary {
+    background: var(--color-accent);
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .channel-btn.primary:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .channel-btn.ghost {
+    background: transparent;
+    color: var(--color-text-main);
+    border: 1.5px solid var(--color-border-strong);
+  }
+  .channel-btn.ghost:hover {
+    background: var(--color-text-main);
+    color: var(--color-bg-canvas);
+    border-color: var(--color-text-main);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ---------- Member card overlay ---------- */
+  .member-card-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 24px;
+    z-index: 60;
+    transition: background 200ms ease;
+  }
+  .member-card-backdrop.open {
+    background: rgba(0, 0, 0, 0.28);
+  }
+  :global(:root.dark) .member-card-backdrop.open {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .member-card {
+    position: relative;
+    width: min(720px, 100%);
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-xl);
+    padding: 26px 30px;
+    display: flex;
+    gap: 26px;
+    align-items: flex-start;
+    transform: translateY(14px);
+    opacity: 0;
+    transition: opacity 280ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .member-card-backdrop.open .member-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .member-card-photo {
+    width: 120px;
+    height: 82px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .member-card-photo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.22));
+  }
+  :global(:root.dark) .member-card-photo img {
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.55));
+  }
+
+  .member-card-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .member-card-role {
+    font-family: var(--font-heading);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+  }
+  .member-card-name {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-main);
+    margin-top: 4px;
+    line-height: 1.15;
+  }
+  .member-card-bio {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--color-text-main);
+    margin: 8px 0 0;
+    max-width: 56ch;
+  }
+  .member-card-meta {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 12px;
+  }
+
+  .member-card-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+    color: var(--color-text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 640px) {
+    .member-card { flex-direction: column; padding: 20px 22px; }
+    .member-card-photo { width: 100%; height: 96px; }
   }
 </style>
+
