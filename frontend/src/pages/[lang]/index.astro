@@ -121,26 +121,14 @@ const routeItems = allRoutes
     />
 
     <PillarSection
-        title={t(lang, "home.gear.title")}
-        subtitle={t(lang, "home.gear.subtitle")}
-        ctaLabel={t(lang, "home.viewAll")}
-        ctaHref={`/${lang}/knowledge/gear`}
-        imageUrl="/images/shared/stock/bike-fitting.jpg"
-        imageAlt="Bike fitting and gear workshop"
-        imagePosition="left"
-        alternate={false}
-        comingSoon={t(lang, "home.comingSoon")}
-    />
-
-    <PillarSection
         title={t(lang, "home.training.title")}
         subtitle={t(lang, "home.training.subtitle")}
         ctaLabel={t(lang, "home.viewAll")}
         ctaHref={`/${lang}/knowledge/training`}
         imageUrl="/images/media/adventure/rad-race-120-2025/gallery/2025-sonntag.jpg"
         imageAlt="Training ride"
-        imagePosition="right"
-        alternate={true}
+        imagePosition="left"
+        alternate={false}
         comingSoon={t(lang, "home.comingSoon")}
     />
 
@@ -151,9 +139,21 @@ const routeItems = allRoutes
         ctaHref={`/${lang}/routes`}
         imageUrl="/images/shared/stock/munich-cycling.jpg"
         imageAlt="Cycling route landscape"
+        imagePosition="right"
+        alternate={true}
+        items={routeItems}
+    />
+
+    <PillarSection
+        title={t(lang, "home.gear.title")}
+        subtitle={t(lang, "home.gear.subtitle")}
+        ctaLabel={t(lang, "home.viewAll")}
+        ctaHref={`/${lang}/knowledge/gear`}
+        imageUrl="/images/shared/stock/bike-fitting.jpg"
+        imageAlt="Bike fitting and gear workshop"
         imagePosition="left"
         alternate={false}
-        items={routeItems}
+        comingSoon={t(lang, "home.comingSoon")}
     />
 </BaseLayout>
 
