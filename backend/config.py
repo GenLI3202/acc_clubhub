@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     RESEND_API_KEY: Optional[str] = None
 
     # Frontend URL (for email links)
-    PUBLIC_FRONTEND_URL: str = "https://www.accross-cc.de"
+    PUBLIC_FRONTEND_URL: str = "https://www.across-cc.de"
 
     # Admin Authentication (GitHub OAuth)
     ADMIN_SESSION_SECRET: Optional[str] = None

@@ -10,7 +10,7 @@ from services.email import send_confirmation_email
 
 
 SAMPLE_DATE = datetime(2026, 4, 19, 9, 0, tzinfo=timezone.utc)
-FRONTEND_URL = "https://www.accross-cc.de"
+FRONTEND_URL = "https://www.across-cc.de"
 
 
 def _capture_email_params(**kwargs) -> dict:
