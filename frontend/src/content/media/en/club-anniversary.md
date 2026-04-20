@@ -5,7 +5,7 @@ description: Looking back at the highlights since the club was founded.
 date: 2025-09-01
 author: ''
 type: 影像
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

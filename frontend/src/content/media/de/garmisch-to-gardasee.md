@@ -5,7 +5,7 @@ description: Dies ist nicht nur eine Radtour – es ist eine Grenzerfahrung zwis
 date: 2026-01-28T21:22:00
 author: shane-shen
 type: adventure
-cover: /images/posts/garmisch-to-gardasee/cover.jpg
+cover: /images/media/adventure/garmisch-to-gardasee/cover.jpg
 videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
 ---

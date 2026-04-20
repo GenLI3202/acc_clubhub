@@ -4,7 +4,7 @@ title: München Nachtfahrt
 description: Raderlebnis unter Stadtlichtern, München bei Nacht erkunden.
 date: 2025-07-20
 type: video
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

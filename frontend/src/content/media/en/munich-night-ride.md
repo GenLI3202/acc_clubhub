@@ -4,7 +4,7 @@ title: Munich Night Ride
 description: Cycling experience under city lights, exploring Munich at night.
 date: 2025-07-20
 type: video
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

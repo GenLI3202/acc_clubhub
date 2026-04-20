@@ -4,7 +4,7 @@ title: Bike Fitting Workshop
 description: Professioneller Fitter zeigt die optimale Sitzposition.
 date: 2025-03-10
 type: video
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

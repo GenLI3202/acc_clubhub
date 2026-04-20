@@ -4,7 +4,7 @@ title: "Mitglieder-Interview: Toms Radgeschichte"
 description: "Hören Sie, wie das erfahrene Mitglied Tom seine Radreise teilt."
 date: 2025-04-15
 type: interview
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

@@ -4,7 +4,7 @@ title: Bike Fitting Workshop
 description: Professional fitter teaches you how to adjust for optimal riding position.
 date: 2025-03-10
 type: video
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
