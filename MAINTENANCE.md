@@ -2,7 +2,7 @@
 
 Quick reference for maintainers. Covers database queries, publishing events, email, domains, and deployment.
 
-**Live site:** [www.accross-cc.de](https://www.accross-cc.de) · **API + Swagger:** [acc-clubhub-events-ms.vercel.app/docs](https://acc-clubhub-events-ms.vercel.app/docs)
+**Live site:** [www.across-cc.de](https://www.across-cc.de) · **API + Swagger:** [acc-clubhub-events-ms.vercel.app/docs](https://acc-clubhub-events-ms.vercel.app/docs)
 
 ---
 
@@ -190,7 +190,7 @@ The interactive Swagger UI at `/docs` lets you test all endpoints in the browser
 
 ### Frontend (Astro)
 
-- **Live URL:** [www.accross-cc.de](https://www.accross-cc.de)
+- **Live URL:** [www.across-cc.de](https://www.across-cc.de)
 - **Vercel project:** `acc-clubhub`
 - **GitHub repo:** `GenLI3202/acc_clubhub`
 - Auto-deploys on push to `master`; CMS edits also trigger deploys via GitHub commit
@@ -219,7 +219,7 @@ Push any commit to `master`, or: Vercel → project → **Deployments** → **Re
 
 ## 7. Domain & DNS
 
-All DNS is managed at **IONOS** ([ionos.de](https://ionos.de)) → Domains & SSL → `accross-cc.de` → DNS tab.
+All DNS is managed at **IONOS** ([ionos.de](https://ionos.de)) → Domains & SSL → `across-cc.de` → DNS tab. Old domain `accross-cc.de` kept as 308 redirect until 2027-04.
 
 | Record        | Type  | Hostname                     | Value                                     | Purpose               |
 | ------------- | ----- | ---------------------------- | ----------------------------------------- | --------------------- |
@@ -231,8 +231,8 @@ All DNS is managed at **IONOS** ([ionos.de](https://ionos.de)) → Domains & SSL
 
 ## 8. Email Configuration
 
-- **Provider:** Resend ([resend.com](https://resend.com)) — sending domain `events.accross-cc.de` (verified)
-- **From address:** `noreply@events.accross-cc.de`
+- **Provider:** Resend ([resend.com](https://resend.com)) — sending domain `events.across-cc.de` (verified 2026-04-20)
+- **From address:** `noreply@events.across-cc.de`
 - **Language:** Always English, regardless of registrant's UI language
 
 Emails sent automatically:
@@ -241,6 +241,15 @@ Emails sent automatically:
 - Waitlist RSVP → waitlist position notification to registrant
 
 > New event announcements to subscribers are **not yet automated** — see Section 4 and Issue [#51](https://github.com/GenLI3202/acc_clubhub/issues/51).
+
+---
+
+## Domain History
+
+| Domain | Status | Notes |
+|--------|--------|-------|
+| `accross-cc.de` | 308 redirect → `www.across-cc.de` | Original domain (typo — doubled "c"). Registered ~2026-03, migrated away 2026-04-20. Renewal due 2027-04: decide then whether to renew or let lapse. |
+| `across-cc.de` | ✅ Live (Production) | Correct domain. Registered + migrated to 2026-04-20. |
 
 ---
 

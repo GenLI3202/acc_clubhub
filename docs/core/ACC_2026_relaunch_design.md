@@ -197,7 +197,7 @@ Sports Association): ~3€/month or 39-49€/year. Members get group ride insura
 (accident coverage during official ACC rides). Fully non-profit.
 
 This is a real differentiator that currently has no visibility on the website.
-Someone landing on accross-cc.de today has no idea this exists.
+Someone landing on across-cc.de today has no idea this exists.
 
 Actions:
 - [ ] Add a membership section to the website (FAQ-style: what you get, how to join,

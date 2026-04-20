@@ -176,6 +176,22 @@
 | Applied `fullstack` archetype (AGENTS.md)                                | Enforces layer separation, API contract sync, and component organization rules for combined frontend + backend repo                                                          | 2026-03-26 |
 | CMS as single source of truth for events (AD #10)                          | Markdown frontmatter drives event metadata; DB only stores RSVP interaction data; backend auto-creates event on first registration — eliminates manual SQL per new event    | 2026-03-27 |
 | Resend subdomain `events.accross-cc.de` for transactional email (AD #11) | Subdomain isolates email reputation from root domain; verified via IONOS DNS; pg8000 SSL fixed by stripping libpq URL params and using `connect_args={"ssl_context": ...}` | 2026-03-28 |
+| Domain migration `accross-cc.de` → `across-cc.de` (AD #15) | Original go-live domain contained a typo (doubled "c"); correct domain registered and migrated 2026-04-20; old domain kept as 308 redirect for 1 year | 2026-04-20 |
 | English-only confirmation emails (AD #12)                                  | Single language avoids partial-translation issues; English works across all user locales; UI language does not affect email language                                         | 2026-03-28 |
 | Hand-rolled CSS over Tailwind (AD #13)                                     | Full control over design tokens; no purge/JIT edge cases; CSS custom properties shared across Astro + Preact components without extra tooling                                | 2026-03-29 |
 | Events carousel:`featured` flag in frontmatter (AD #14)                  | CMS editors control which events appear in the hero carousel via a boolean field; no code change needed to promote/demote an event                                           | 2026-03-29 |
+
+### 2026-04-20 — Domain migration: accross-cc.de → across-cc.de
+
+- [X] Discovered original domain `accross-cc.de` contained a typo (doubled "c")
+- [X] Registered correct domain `across-cc.de` at IONOS
+- [X] Added new domain to Vercel frontend project (both apex + www, 307 redirect apex → www)
+- [X] Configured IONOS DNS: A `@ → 216.198.79.1`, CNAME `www → dfc7627abbb7145b.vercel-dns-017.com`
+- [X] Migrated Resend sending domain from `events.accross-cc.de` to `events.across-cc.de` (EU Frankfurt, re-verified DKIM/SPF)
+- [X] Global find/replace `accross-cc` → `across-cc` across 6 runtime files (27 substitutions); historical/archived docs preserved as-is
+- [X] Updated Vercel env var `PUBLIC_FRONTEND_URL` → `https://www.across-cc.de`
+- [X] Updated GitHub OAuth callback URL to `https://www.across-cc.de/auth/callback`
+- [X] Added `across-cc.de` to Sveltia CMS Cloudflare Worker allowed domains
+- [X] Configured 308 permanent redirect from `accross-cc.de` + `www.accross-cc.de` → `www.across-cc.de`
+- [X] Updated `MAINTENANCE.md` with new URLs and added "Domain History" section
+- [X] Full runbook archived at `.private/domain_migration.md` (gitignored)

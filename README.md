@@ -2,7 +2,7 @@
 
 Digital platform for **Across Cycling Club Munich** — events, media, knowledge, routes. Multilingual (zh/en/de).
 
-**Live site:** [www.accross-cc.de](https://www.accross-cc.de) 
+**Live site:** [www.across-cc.de](https://www.across-cc.de)
 
 ## Site Sections
 

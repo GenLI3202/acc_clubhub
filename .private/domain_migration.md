@@ -1,8 +1,8 @@
 # Domain Migration: `accross-cc.de` → `across-cc.de`
 
-> **Status:** New domain `across-cc.de` purchased on 2026-04-19. Old domain `accross-cc.de` was live for ~1 week before typo was caught (extra `c` in "across").
+> **Status:** ✅ Completed 2026-04-20. Old domain `accross-cc.de` was live for ~1 week before typo was caught (extra `c` in "across"). New domain `across-cc.de` is now production. Old domain kept as 308 redirect until renewal decision 2027-04.
 >
-> **Strategy:** Migrate to correct domain, 301 redirect from old, keep old domain renewed for 1 year as safety net.
+> **Strategy:** Migrate to correct domain, 308 redirect from old, keep old domain renewed for 1 year as safety net.
 
 ---
 
