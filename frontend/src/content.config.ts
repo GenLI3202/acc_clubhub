@@ -49,7 +49,7 @@ const MEDIA_TYPES = [
   'video',      // 影像作品
   'interview',  // 骑友访谈
   'adventure',  // 翻山越岭
-  'gallery',    // 活动图集
+  'group-ride', // 团骑类
   // Legacy values für Abwärtskompatibilität
   '影像',
   '访谈',
