@@ -133,6 +133,12 @@
   - [X] New i18n keys `about.*` across zh / en / de
   - [X] Dark mode: swaps stamp-ring image (red→white), adjusts shadows + edge-fade colors via `:root.dark`
   - [X] Assets: 4 bike cutout PNGs + 2 ACC stamp logos copied to `frontend/public/images/about/`
+- [X] **Phase 9 — Media Architecture & Recap Post** (2026-04-20)
+  - [X] Restructured `public/images/posts/` into `public/images/media/` to mirror the `src/content/media/` schema.
+  - [X] Added type-based storage subdirectories (`group-ride/`, `video/`, `adventure/`, `interview/`) inside `media/`.
+  - [X] Replaced the legacy `gallery` type with `group-ride` for semantic accuracy across content configs and schemas.
+  - [X] Authored the 2026 Season Opening Recap post, conforming to the new structural governance (`MAINTENANCE.md`).
+  - [X] Bulk updated historical media posts to correctly reference images under the new architecture.
 
 ## In Progress
 
@@ -180,6 +186,7 @@
 | English-only confirmation emails (AD #12)                                  | Single language avoids partial-translation issues; English works across all user locales; UI language does not affect email language                                         | 2026-03-28 |
 | Hand-rolled CSS over Tailwind (AD #13)                                     | Full control over design tokens; no purge/JIT edge cases; CSS custom properties shared across Astro + Preact components without extra tooling                                | 2026-03-29 |
 | Events carousel:`featured` flag in frontmatter (AD #14)                  | CMS editors control which events appear in the hero carousel via a boolean field; no code change needed to promote/demote an event                                           | 2026-03-29 |
+| Media folder type-based subdirectories (AD #16)                            | Moving from a flat `posts/` folder to `media/{type}/` ensures media assets are robustly sorted by their semantic genre (`group-ride`, `video`, etc.)                         | 2026-04-20 |
 
 ### 2026-04-20 — Domain migration: accross-cc.de → across-cc.de
 

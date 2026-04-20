@@ -4,7 +4,7 @@ title: 巴伐利亚 Gravel 探险
 description: 离开公路，探索巴伐利亚的砾石小道。
 date: 2025-05-20
 type: adventure
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/adventure/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/example
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---

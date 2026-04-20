@@ -318,11 +318,24 @@ frontend/public/images/
 │       ├── wechat-qr.png       ← 微信群二维码（如有）
 │       └── gallery/            ← 活动后照片（可选）
 │           └── {描述}.jpg
-├── posts/                      ← 对应 src/content/media/ 内容集
-│   └── {post-slug}/
-│       ├── cover.jpg
-│       └── gallery/
-│           └── {描述}.jpg
+├── media/                      ← 对应 src/content/media/ 内容集, 按 type 二级分发
+│   ├── group-ride/             ← (团骑类)
+│   │   └── {post-slug}/
+│   │       ├── cover.jpg
+│   │       └── gallery/
+│   │           └── {描述}.jpg
+│   ├── video/                  ← (视频类)
+│   │   └── {post-slug}/
+│   │       ├── cover.jpg
+│   │       └── thumbnails/
+│   ├── interview/              ← (访谈类)
+│   │   └── {post-slug}/
+│   │       ├── cover.jpg
+│   │       └── portraits/
+│   └── adventure/              ← (游记类)
+│       └── {post-slug}/
+│           ├── cover.jpg
+│           └── gallery/
 ├── routes/
 │   └── {route-slug}/
 │       └── cover.jpg
@@ -410,7 +423,7 @@ Typora 等工具自动保存的正文图片路径（相对路径）允许保留�
 ![骑行途中](image/garmisch-to-gardasee/2025-cols.jpg)
 
 <!-- ✅ Frontmatter 封面，绝对路径，存放于 public/images/ -->
-cover: /images/posts/garmisch-to-gardasee/cover.jpg
+cover: /images/media/adventure/garmisch-to-gardasee/cover.jpg
 ```
 
 ---
@@ -425,8 +438,8 @@ cover: /images/posts/garmisch-to-gardasee/cover.jpg
    # 新活动示例
    mkdir -p frontend/public/images/events/{slug}
 
-   # 新文章示例
-   mkdir -p frontend/public/images/posts/{slug}/gallery
+   # 新文章示例 (假设 type 为 adventure)
+   mkdir -p frontend/public/images/media/adventure/{slug}/gallery
    ```
 3. **放入封面图**，命名为 `cover.jpg`（或 `.webp`）
 4. **如有微信群二维码**，放入同目录，命名为 `wechat-qr.png`
