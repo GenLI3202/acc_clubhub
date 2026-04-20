@@ -4,7 +4,7 @@ title: Race Day Preparation Guide
 description: Complete preparation from race week to race day.
 author: acc-training-team
 date: 2025-12-25
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

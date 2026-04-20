@@ -7,7 +7,7 @@ author: ACC Club
 date: 2026-05-09
 eventType: workshop
 displaySection: hero
-cover: /images/posts/alps-summer-2025/cover.jpg
+cover: /images/media/video/alps-summer-2025/cover.jpg
 maxParticipants: 12
 ---
 

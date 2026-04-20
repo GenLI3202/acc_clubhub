@@ -4,7 +4,7 @@ title: 比赛日准备指南
 description: 从赛前一周到比赛当天的完整准备流程。
 author: acc-
 date: 2025-12-25
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

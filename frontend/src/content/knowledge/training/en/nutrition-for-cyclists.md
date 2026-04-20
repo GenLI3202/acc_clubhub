@@ -4,7 +4,7 @@ title: Nutrition Guide for Cyclists
 description: Nutrition strategies before, during, and after rides.
 author: acc-training-team
 date: 2026-01-10
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

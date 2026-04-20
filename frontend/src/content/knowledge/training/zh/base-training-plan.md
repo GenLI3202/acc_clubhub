@@ -4,7 +4,7 @@ title: 基础期训练计划
 description: 冬季基础期训练，打好全年骑行基础。
 author: acc-
 date: 2025-12-28
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

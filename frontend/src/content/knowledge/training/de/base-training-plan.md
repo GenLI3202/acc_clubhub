@@ -4,7 +4,7 @@ title: Grundlagen-Trainingsplan
 description: Winter-Grundlagentraining für die Basis des Jahres.
 author: acc-trainingsteam
 date: 2025-12-28
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

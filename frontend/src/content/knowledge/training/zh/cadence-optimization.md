@@ -4,7 +4,7 @@ title: 踏频优化训练
 description: 找到你的最佳踏频，提升骑行效率。
 author: acc-
 date: 2026-01-03
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

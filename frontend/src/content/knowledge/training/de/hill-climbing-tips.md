@@ -4,7 +4,7 @@ title: Berganfahrt-Tipps & Training
 description: Effizienter klettern und spezifische Trainingsmethoden.
 author: acc-trainingsteam
 date: 2026-01-05
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

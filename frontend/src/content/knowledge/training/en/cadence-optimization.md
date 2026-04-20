@@ -4,7 +4,7 @@ title: Cadence Optimization Training
 description: Find your optimal cadence to improve cycling efficiency.
 author: acc-training-team
 date: 2026-01-03
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

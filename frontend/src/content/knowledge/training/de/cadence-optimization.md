@@ -4,7 +4,7 @@ title: Trittfrequenz-Optimierung
 description: Finde deine optimale Trittfrequenz für mehr Effizienz.
 author: acc-trainingsteam
 date: 2026-01-03
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

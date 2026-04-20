@@ -4,7 +4,7 @@ title: FTP 训练入门指南 (AI generated Test Template)
 description: 了解功能阈值功率（FTP）及如何通过科学训练提升它。
 author: acc-
 date: 2026-01-15
-cover: /images/posts/rad-race-120-2025/cover.jpg
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
