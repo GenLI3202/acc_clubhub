@@ -12,9 +12,9 @@ import resend
 logger = logging.getLogger(__name__)
 
 _CONTACT = {
-    "zh": '<p style="color:#666;font-size:0.9em;">如有任何疑问，欢迎发邮件至 <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a> 联系俱乐部。</p>',
-    "en": '<p style="color:#666;font-size:0.9em;">If you have any questions, feel free to contact us at <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a>.</p>',
-    "de": '<p style="color:#666;font-size:0.9em;">Bei Fragen erreichst du uns jederzeit unter <a href="mailto:letusride@accross-cc.de">letusride@accross-cc.de</a>.</p>',
+    "zh": '<p style="color:#666;font-size:0.9em;">如有任何疑问，欢迎发邮件至 <a href="mailto:letusride@across-cc.de">letusride@across-cc.de</a> 联系俱乐部。</p>',
+    "en": '<p style="color:#666;font-size:0.9em;">If you have any questions, feel free to contact us at <a href="mailto:letusride@across-cc.de">letusride@across-cc.de</a>.</p>',
+    "de": '<p style="color:#666;font-size:0.9em;">Bei Fragen erreichst du uns jederzeit unter <a href="mailto:letusride@across-cc.de">letusride@across-cc.de</a>.</p>',
 }
 
 # Initialize Resend
@@ -40,7 +40,7 @@ def send_confirmation_email(
         return {"status": "skipped", "reason": "no_api_key"}
 
     date_str = event_date.strftime("%Y-%m-%d %H:%M")
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     participant_link = (
         f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
         if event_slug and view_token
@@ -111,7 +111,7 @@ def send_confirmation_email(
 </div>"""
 
     params = {
-        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
@@ -191,7 +191,7 @@ def send_cancellation_email(
     )
 
     params = {
-        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
@@ -220,7 +220,7 @@ def send_broadcast_email(
         return {"status": "skipped", "reason": "no_api_key"}
 
     date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     event_link = f"{frontend_url}/{lang}/events/{event_slug}" if event_slug else frontend_url
     unsub_link = (
         f"{frontend_url}/api/unsubscribe/{unsubscribe_token}"
@@ -291,7 +291,7 @@ def send_broadcast_email(
     )
 
     params = {
-        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
@@ -320,7 +320,7 @@ def send_registrant_notification_email(
         return {"status": "skipped", "reason": "no_api_key"}
 
     date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     event_link = (
         f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
         if event_slug and view_token
@@ -387,7 +387,7 @@ def send_registrant_notification_email(
     )
 
     params = {
-        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
@@ -415,7 +415,7 @@ def send_waitlist_email(
     if not settings.RESEND_API_KEY:
         return {"status": "skipped"}
 
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     participant_link = (
         f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
         if event_slug and view_token
@@ -450,7 +450,7 @@ def send_waitlist_email(
     html_body = body_templates.get(lang, body_templates["en"]) + _CONTACT.get(lang, _CONTACT["en"])
 
     params = {
-        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [user_email],
         "subject": template["subject"],
         "html": html_body,
@@ -473,7 +473,7 @@ def send_subscription_confirmation_email(
         logger.debug("Skipping subscription confirmation email (no RESEND_API_KEY): %s", email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.accross-cc.de"
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     unsubscribe_url = (
         f"{frontend_url}/api/unsubscribe/{unsubscribe_token}"
         if unsubscribe_token else ""
@@ -519,7 +519,7 @@ def send_subscription_confirmation_email(
 
     template = templates.get(lang, templates["en"])
     params = {
-        "from": "ACC ClubHub <noreply@events.accross-cc.de>",
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [email],
         "subject": template["subject"],
         "html": template["body"] + _CONTACT.get(lang, _CONTACT["en"]),
