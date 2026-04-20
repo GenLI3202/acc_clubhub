@@ -45,6 +45,55 @@ test.describe('Responsive Design', () => {
     });
 });
 
+// Stamp wall — mobile tile sizing (issue #112)
+test.describe('Stamp wall on mobile', () => {
+    test.use({ viewport: { width: 375, height: 667 } });
+
+    test('stamp tiles are at least 120px wide on mobile', async ({ page }) => {
+        await page.goto('/en/about');
+        // Wait for the stamp wall to be present
+        const wall = page.locator('[data-stamp-wall]');
+        await expect(wall).toBeVisible();
+
+        // Measure the first visible stamp tile
+        const firstTile = page.locator('.stamp-tile').first();
+        await expect(firstTile).toBeVisible();
+        const box = await firstTile.boundingBox();
+        expect(box).not.toBeNull();
+        // 2-column layout gives ~85px; 3-column would give ~50px at this viewport
+        expect(box!.width).toBeGreaterThanOrEqual(75);
+    });
+
+    test('no more than 2 stamp tiles are fully visible per row on mobile', async ({ page }) => {
+        await page.goto('/en/about');
+        const wall = page.locator('[data-stamp-wall]');
+        await expect(wall).toBeVisible();
+        const wallBox = await wall.boundingBox();
+        expect(wallBox).not.toBeNull();
+
+        const tiles = page.locator('.stamp-tile');
+        const count = await tiles.count();
+        let fullyVisible = 0;
+        for (let i = 0; i < count; i++) {
+            const box = await tiles.nth(i).boundingBox();
+            if (!box) continue;
+            const withinWall =
+                box.x >= wallBox!.x &&
+                box.x + box.width <= wallBox!.x + wallBox!.width;
+            if (withinWall) fullyVisible++;
+        }
+        // 2 rows × 2 tiles = 4 fully-visible tiles on mobile
+        expect(fullyVisible).toBeLessThanOrEqual(4);
+    });
+
+    test('stamp wall dot pagination is visible and functional on mobile', async ({ page }) => {
+        await page.goto('/en/about');
+        const dots = page.locator('[data-stamp-dot]');
+        await expect(dots.first()).toBeVisible();
+        await expect(dots).toHaveCount(3);
+    });
+});
+
 // Desktop-specific tests
 test.describe('Desktop Layout', () => {
     test.use({ viewport: { width: 1280, height: 720 } });

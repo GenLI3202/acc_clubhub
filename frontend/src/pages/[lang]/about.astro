@@ -788,6 +788,17 @@ const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
   }
   .stamp-tile.wobble { animation: stampPulse 800ms cubic-bezier(0.36, 0, 0.2, 1); }
 
+  @media (max-width: 640px) {
+    .stamp-tile {
+      flex: 0 0 calc((100% - var(--stamp-gap)) / 2);
+      width: calc((100% - var(--stamp-gap)) / 2);
+    }
+    .stamp-rows {
+      padding-left: clamp(28px, 4vw, 48px);
+      padding-right: clamp(28px, 4vw, 48px);
+    }
+  }
+
   .stamp-ring {
     position: absolute;
     top: 5%;
