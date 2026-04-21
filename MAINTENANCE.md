@@ -366,7 +366,7 @@ frontend/public/images/
 |------|----------|------|
 | 活动/文章封面 | 固定命名 `cover.{ext}` | `cover.jpg` |
 | 微信群二维码 | 固定命名 `wechat-qr.png` | `wechat-qr.png` |
-| 图库照片 | `{年份}-{简短描述}.{ext}`，全小写，连字符分隔 | `2026-group-start.jpg`、`2025-summit.jpg` |
+| 图库照片 | `{两位序号}-{简短描述}.{ext}`，全小写，连字符分隔 | `01-group-start.jpg`、`02-summit.jpg` |
 | 通用素材 | `{简短描述}.{ext}` | `munich-cycling.jpg`、`canyon-road-bike.webp` |
 
 **强制规则：**
@@ -478,9 +478,23 @@ cover: /images/media/adventure/garmisch-to-gardasee/cover.jpg
 
 ### 11.7 迁移过渡期说明
 
-`frontend/public/images/uploads/` 目录在 **PR #[迁移PR编号]** 合并后将被彻底删除。
+`frontend/public/images/uploads/` 目录已废弃，已完成迁移，可直接删除。**新内容不得引用 `uploads/` 下的任何路径。**
 
-在该 PR 合并之前，已有内容中的旧路径仍然有效，但**新内容不得引用 `uploads/` 下的路径**。
+---
+
+### 11.8 AI 模板帖子豁免说明
+
+`src/content/` 下带有 `aiTemplate: true` frontmatter 字段的帖子是 AI 生成的占位内容，用于开发和测试阶段。
+
+这些帖子：
+- 使用临时的资产路径，**不符合 §11 的规范要求**，是已知的历史遗留问题
+- **不得被用作新内容的参考范本**
+- 将在真实内容就绪后逐步删除替换
+
+任何新内容（含人工发布或 Agent 自动发布）必须完整遵守 §11，不受本条豁免。
+
+> 配套的 Agent 发帖专用规范见 [`docs/agent-posting-spec.md`](./docs/agent-posting-spec.md)，
+> 该文档是 §11 的提炼子集，仅包含 Agent 发帖所需的规则，两者保持一致。
 
 ---
 

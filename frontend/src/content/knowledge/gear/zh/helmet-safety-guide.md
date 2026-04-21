@@ -8,6 +8,7 @@ cover: /images/shared/stock/bike.jpg
 featured: true
 category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

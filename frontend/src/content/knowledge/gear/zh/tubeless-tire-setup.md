@@ -7,6 +7,7 @@ date: 2026-01-05
 cover: /images/shared/placeholders/ai-placeholder-01.jpg
 category: maintenance
 xiaohongshuUrl: https://www.xiaohongshu.com/discovery/item/6978a4cc000000000e00d867?source=webshare&xhsshare=pc_web&xsec_token=ABP90VzFcUX0_ie0PQDQ5fvhmUenhPpWTKBAFRyjBYjjQ=&xsec_source=pc_share
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

@@ -7,6 +7,7 @@ author: ACC Club
 date: 2025-07-15
 eventType: training-camp
 cover: /images/shared/stock/munich-cycling.jpg
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

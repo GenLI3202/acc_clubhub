@@ -13,7 +13,10 @@ date: 2026-06-01             # ISO date YYYY-MM-DD
 # OPTIONAL FIELDS
 description: Short one-sentence summary shown in cards and meta tags.
 tags: [interval-training, ftp]   # free-form tags for search/filter
-coverImage: /images/uploads/your-image.jpg
+
+# ASSETS — place files under public/images/knowledge/training/{slug}/ before referencing here
+# cover image:  public/images/knowledge/training/{slug}/cover.jpg
+cover: /images/knowledge/training/{slug}/cover.jpg
 xiaohongshuUrl: https://www.xiaohongshu.com/...   # link to original Xiaohongshu post if applicable
 status: published            # draft | published
 ---

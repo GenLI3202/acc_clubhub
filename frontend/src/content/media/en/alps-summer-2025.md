@@ -7,6 +7,7 @@ type: video
 cover: /images/media/video/alps-summer-2025/cover.jpg
 videoUrl: https://www.bilibili.com/video/BV1tcJNzdE3b/?share_source=copy_web&vd_source=9869b386690dc31064a52b29365a3735
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

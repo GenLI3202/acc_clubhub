@@ -8,6 +8,7 @@ date: 2026-04-05
 eventType: social-ride
 displaySection: regular
 cover: /images/media/adventure/rad-race-120-2025/cover.jpg
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

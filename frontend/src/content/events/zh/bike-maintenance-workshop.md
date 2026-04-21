@@ -7,6 +7,7 @@ author: ACC Club
 date: 2025-06-10
 eventType: workshop
 cover: /images/media/video/alps-summer-2025/cover.jpg
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
