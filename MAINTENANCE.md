@@ -107,7 +107,7 @@ Events are managed entirely through the CMS — no SQL required. Or one can simp
 | `slug`                 | ✅          | URL path, e.g.`spring-classic-2026`                            |
 | `eventType`            | ✅          | `social-ride` · `training-camp` · `race` · `workshop` |
 | `displaySection`       | ✅          | Where this event appears on the events page — see table below   |
-| `coverImage`           | recommended | Path to hero image e.g.`/images/uploads/photo.jpg`             |
+| `cover`                | recommended | Path to hero image e.g.`/images/events/{slug}/cover.jpg`       |
 | `maxParticipants`      | optional    | Leave blank for unlimited                                        |
 | `registrationDeadline` | optional    | ISO date; registration form closes after this date               |
 | `author`               | optional    | Defaults to `"ACC Club"`                                       |
