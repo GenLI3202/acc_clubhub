@@ -1,6 +1,6 @@
 ---
 // components/knowledge/CategoryShelf.astro
-// One horizontal shelf per training category: header row + up to 4 article cards.
+// One horizontal shelf per knowledge category: header row + up to 4 article cards.
 // Does not render when items is empty.
 
 import ArticleCard from './ArticleCard.astro';
@@ -12,9 +12,17 @@ interface Props {
   viewAllHref: string;
   categoryTitle: string;
   categoryDesc?: string;
+  basePath?: string;
 }
 
-const { items, lang, viewAllHref, categoryTitle, categoryDesc } = Astro.props;
+const {
+  items,
+  lang,
+  viewAllHref,
+  categoryTitle,
+  categoryDesc,
+  basePath = '/knowledge/training',
+} = Astro.props;
 
 const viewAllLabel = lang === 'zh' ? '查看全部 →' : lang === 'de' ? 'Alle ansehen →' : 'View all →';
 ---
@@ -33,7 +41,7 @@ const viewAllLabel = lang === 'zh' ? '查看全部 →' : lang === 'de' ? 'Alle 
         const data = entry.data || entry;
         return (
           <ArticleCard
-            href={`/${lang}/knowledge/training/${data.slug}`}
+            href={`/${lang}${basePath}/${data.slug}`}
             title={data.title}
             description={data.description}
             cover={data.coverImage || data.cover}

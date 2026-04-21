@@ -139,6 +139,12 @@
   - [X] Replaced the legacy `gallery` type with `group-ride` for semantic accuracy across content configs and schemas.
   - [X] Authored the 2026 Season Opening Recap post, conforming to the new structural governance (`MAINTENANCE.md`).
   - [X] Bulk updated historical media posts to correctly reference images under the new architecture.
+- [X] **Knowledge Gear Editorial Redesign** (2026-04-21)
+  - [X] Rebuilt `/[lang]/knowledge/gear` with the shared editorial hero, featured shelf, category shelves, and bordered article grid used by the training library page.
+  - [X] Added gear `featured` schema support and marked three curated gear articles per locale as featured.
+  - [X] Backfilled gear content categories across zh/en/de for bike-build, electronics, apparel, and maintenance shelves.
+  - [X] Added gear subtitle and category description i18n keys across zh/en/de.
+  - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
 
 ## In Progress
 

@@ -5,6 +5,7 @@ description: Garmin、Wahoo、Hammerhead 三大品牌对比。
 author: acc-
 date: 2026-01-02
 cover: /images/shared/stock/bike.jpg
+category: electronics
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

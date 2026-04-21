@@ -5,6 +5,7 @@ description: 手把手教你安装和维护真空胎系统。
 author: acc-
 date: 2026-01-05
 cover: /images/shared/placeholders/ai-placeholder-01.jpg
+category: maintenance
 xiaohongshuUrl: https://www.xiaohongshu.com/discovery/item/6978a4cc000000000e00d867?source=webshare&xhsshare=pc_web&xsec_token=ABP90VzFcUX0_ie0PQDQ5fvhmUenhPpWTKBAFRyjBYjjQ=&xsec_source=pc_share
 ---
 

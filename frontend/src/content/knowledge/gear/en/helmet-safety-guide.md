@@ -5,6 +5,8 @@ description: How to choose and properly wear a cycling helmet.
 author: acc-gear-team
 date: 2026-01-18
 cover: /images/shared/stock/bike.jpg
+featured: true
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

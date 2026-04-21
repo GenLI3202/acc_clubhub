@@ -131,6 +131,7 @@ const gearCollection = defineCollection({
     subcategory: z.string().optional(),
     author: z.string(),
     status: z.enum(['draft', 'published']).default('published'),
+    featured: z.boolean().default(false),
     date: z.coerce.date(),
     coverImage: z.string().optional(),
     cover: z.string().optional(),

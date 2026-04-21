@@ -5,6 +5,7 @@ description: 前灯、尾灯、日行灯，安全骑行必备。
 author: acc-
 date: 2026-01-10
 cover: /images/shared/placeholders/ai-gear-02.png
+category: electronics
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
