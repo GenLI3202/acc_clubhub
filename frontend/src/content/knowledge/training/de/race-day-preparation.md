@@ -1,5 +1,6 @@
 ---
 slug: race-day-preparation
+category: planning
 title: Wettkampftag-Vorbereitung
 description: Vollständige Vorbereitung von Rennwoche bis Renntag.
 author: acc-trainingsteam

@@ -1,5 +1,6 @@
 ---
 slug: base-training-plan
+category: planning
 title: Grundlagen-Trainingsplan
 description: Winter-Grundlagentraining für die Basis des Jahres.
 author: acc-trainingsteam

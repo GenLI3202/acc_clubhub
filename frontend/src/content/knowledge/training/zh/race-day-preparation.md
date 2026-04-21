@@ -1,5 +1,6 @@
 ---
 slug: race-day-preparation
+category: planning
 title: 比赛日准备指南
 description: 从赛前一周到比赛当天的完整准备流程。
 author: acc-

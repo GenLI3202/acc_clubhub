@@ -1,5 +1,6 @@
 ---
 slug: interval-training-guide
+category: physical
 title: Kompletter Intervalltraining-Leitfaden
 description: Wie man durch Intervalltraining schnell die Radleistung verbessert.
 author: acc-trainingsteam

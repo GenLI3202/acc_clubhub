@@ -1,5 +1,6 @@
 ---
 slug: cadence-optimization
+category: physical
 title: 踏频优化训练
 description: 找到你的最佳踏频，提升骑行效率。
 author: acc-

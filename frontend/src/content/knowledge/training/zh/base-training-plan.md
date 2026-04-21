@@ -1,5 +1,6 @@
 ---
 slug: base-training-plan
+category: planning
 title: 基础期训练计划
 description: 冬季基础期训练，打好全年骑行基础。
 author: acc-
