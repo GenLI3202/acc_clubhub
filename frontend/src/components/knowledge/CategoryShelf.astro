@@ -4,15 +4,18 @@
 // Does not render when items is empty.
 
 import ArticleCard from './ArticleCard.astro';
+import RouteCard from '../routes/RouteCard.astro';
+import type { Locale } from '../../lib/i18n';
 
 interface Props {
   category: string;
   items: any[];
-  lang: string;
+  lang: Locale;
   viewAllHref: string;
   categoryTitle: string;
   categoryDesc?: string;
   basePath?: string;
+  cardVariant?: 'article' | 'route';
 }
 
 const {
@@ -22,6 +25,7 @@ const {
   categoryTitle,
   categoryDesc,
   basePath = '/knowledge/training',
+  cardVariant = 'article',
 } = Astro.props;
 
 const viewAllLabel = lang === 'zh' ? '查看全部 →' : lang === 'de' ? 'Alle ansehen →' : 'View all →';
@@ -39,7 +43,19 @@ const viewAllLabel = lang === 'zh' ? '查看全部 →' : lang === 'de' ? 'Alle 
     <div class="category-shelf__grid">
       {items.slice(0, 4).map((entry) => {
         const data = entry.data || entry;
-        return (
+        return cardVariant === 'route' ? (
+          <RouteCard
+            href={`/${lang}${basePath}/${data.slug}`}
+            name={data.name}
+            cover={data.coverImage || data.cover}
+            difficulty={data.difficulty}
+            region={data.region}
+            distance={data.distance}
+            elevation={data.elevation}
+            surface={data.surface}
+            lang={lang}
+          />
+        ) : (
           <ArticleCard
             href={`/${lang}${basePath}/${data.slug}`}
             title={data.title}

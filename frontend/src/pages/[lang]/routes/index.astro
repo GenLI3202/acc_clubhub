@@ -1,13 +1,17 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/routes/index.astro
-// 骑行路线 - 列表页 (瀑布流布局)
+// Library-style routes page: EditorialHero, Featured shelf, DifficultyShelves, RouteGrid
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
-
-import RoutesPage from '../../../components/content/RoutesPage';
+import { getFilterLabel } from '../../../lib/i18n/filterTranslations';
+import EditorialHero from '../../../components/editorial/EditorialHero.astro';
+import SectionRule from '../../../components/editorial/SectionRule.astro';
+import FeaturedShelf from '../../../components/editorial/FeaturedShelf.astro';
+import CategoryShelf from '../../../components/knowledge/CategoryShelf.astro';
+import RoutesLibraryPage from '../../../components/content/RoutesLibraryPage';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -17,70 +21,103 @@ const { lang } = Astro.params as { lang: Locale };
 
 const allRoutes = await getCollection('routes');
 const langRoutes = allRoutes.filter(
-  (entry) => getLangFromEntry(entry.filePath, 'routes') === lang && entry.data.status !== 'draft'
+  (entry) => getLangFromEntry(entry.filePath, 'routes') === lang && entry.data.status !== 'draft',
 );
-// 按难度排序
-const difficultyOrder = { easy: 1, medium: 2, hard: 3, expert: 4 };
+const difficultyOrder = { easy: 1, medium: 2, hard: 3, expert: 4 } as const;
 const sortedRoutes = langRoutes.sort(
-  (a, b) => difficultyOrder[a.data.difficulty] - difficultyOrder[b.data.difficulty]
+  (a, b) => {
+    const difficultyDelta =
+      difficultyOrder[a.data.difficulty] - difficultyOrder[b.data.difficulty];
+    return difficultyDelta || a.data.distance - b.data.distance;
+  },
 );
+
+const featuredItems = sortedRoutes
+  .filter((entry) => entry.data.featured)
+  .slice(0, 3)
+  .map((entry) => ({
+    href: `/${lang}/routes/${entry.data.slug}`,
+    title: entry.data.name,
+    description: entry.data.description,
+    cover: entry.data.coverImage || entry.data.cover,
+    tagLabel: getFilterLabel('difficulty', entry.data.difficulty, lang),
+    meta: [
+      `${entry.data.distance} km`,
+      `${entry.data.elevation} m ↑`,
+      getFilterLabel('region', entry.data.region, lang),
+    ].join(' · '),
+  }));
+
+const DIFFICULTY_ORDER = ['easy', 'medium', 'hard', 'expert'] as const;
+type RouteDifficulty = (typeof DIFFICULTY_ORDER)[number];
+
+const byDifficulty: Record<RouteDifficulty, typeof sortedRoutes> = {
+  easy: sortedRoutes
+    .filter((entry) => entry.data.difficulty === 'easy')
+    .slice(0, 4),
+  medium: sortedRoutes
+    .filter((entry) => entry.data.difficulty === 'medium')
+    .slice(0, 4),
+  hard: sortedRoutes
+    .filter((entry) => entry.data.difficulty === 'hard')
+    .slice(0, 4),
+  expert: sortedRoutes
+    .filter((entry) => entry.data.difficulty === 'expert')
+    .slice(0, 4),
+};
+
+const difficultyTitles: Record<RouteDifficulty, string> = {
+  easy: t(lang, 'routes.difficulty.easy'),
+  medium: t(lang, 'routes.difficulty.medium'),
+  hard: t(lang, 'routes.difficulty.hard'),
+  expert: t(lang, 'routes.difficulty.expert'),
+};
 
 const pageTitle = t(lang, 'nav.routes');
 ---
 
 
 <BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title-header">
-    <div class="title-content">
-      <h1>🗺️ {pageTitle}</h1>
-      <p class="page-subtitle">
-        {lang === 'zh'
-          ? '可搜索路线数据库、Strava/Komoot 链接'
-          : lang === 'de'
-            ? 'Suchbare Routen, Strava/Komoot Links'
-            : 'Searchable Routes, Strava/Komoot Links'}
-      </p>
-    </div>
-    <div id="filter-portal-target"></div>
-  </div>
+  <article class="routes-library-page">
+    <EditorialHero
+      eyebrow={t(lang, 'editorial.eyebrow.knowledge')}
+      title={pageTitle}
+      subtitle={t(lang, 'routes.subtitle')}
+    />
 
-  <RoutesPage 
-    client:load 
-    initialItems={sortedRoutes} 
-    lang={lang} 
-  />
+    {featuredItems.length > 0 && (
+      <>
+        <SectionRule label={t(lang, 'editorial.section.featured')} />
+        <FeaturedShelf items={featuredItems} lang={lang} />
+      </>
+    )}
+
+    <SectionRule label={t(lang, 'editorial.section.byDifficulty')} />
+
+    {DIFFICULTY_ORDER.map((difficulty) => (
+      <CategoryShelf
+        category={difficulty}
+        items={byDifficulty[difficulty]}
+        lang={lang}
+        viewAllHref={`/${lang}/routes?difficulty=${difficulty}#all-routes`}
+        categoryTitle={difficultyTitles[difficulty]}
+        basePath="/routes"
+        cardVariant="route"
+      />
+    ))}
+
+    <SectionRule label={t(lang, 'editorial.section.allRoutes')} />
+
+    <RoutesLibraryPage
+      client:load
+      initialItems={sortedRoutes}
+      lang={lang}
+    />
+  </article>
 </BaseLayout>
 
 <style>
-  .page-title-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--color-border-rough);
-    padding-bottom: var(--space-md);
-  }
-
-  .title-content {
-    flex: 1;
-    min-width: 280px;
-  }
-
-  .title-content h1 {
-    margin-bottom: 0.5rem;
-  }
-
-
-
-  .empty-state {
-    text-align: center;
-    padding: var(--space-xl);
-    color: #666;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px dashed var(--color-border-rough);
-    border-radius: var(--radius-aero);
-    margin-top: var(--space-lg);
+  .routes-library-page {
+    padding-bottom: 0;
   }
 </style>

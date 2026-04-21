@@ -145,6 +145,13 @@
   - [X] Backfilled gear content categories across zh/en/de for bike-build, electronics, apparel, and maintenance shelves.
   - [X] Added gear subtitle and category description i18n keys across zh/en/de.
   - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
+- [X] **Routes Editorial Redesign** (2026-04-21)
+  - [X] Rebuilt `/[lang]/routes` with editorial hero, featured shelf, difficulty shelves, and an all-routes FilterPanel grid.
+  - [X] Added data-first `RouteCard` variants for static shelves and interactive filtered results.
+  - [X] Added routes `featured` schema support and marked three curated routes per locale as featured.
+  - [X] Preserved existing region/difficulty/surface/distance/elevation filtering while replacing masonry cards.
+  - [X] Created follow-up Issue [#113](https://github.com/GenLI3202/acc_clubhub/issues/113) for future map data and Komoot-style split view.
+  - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
 
 ## In Progress
 

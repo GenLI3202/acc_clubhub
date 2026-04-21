@@ -198,6 +198,7 @@ const routesCollection = defineCollection({
     surface: z.enum(SURFACES).optional(),
     author: z.string().default('ACC Club'),
     status: z.enum(['draft', 'published']).default('published'),
+    featured: z.boolean().default(false),
     coverImage: z.string().optional(),
     cover: z.string().optional(),
     gpxFile: z.string().optional(),
