@@ -1,5 +1,6 @@
 ---
 slug: nutrition-for-cyclists
+featured: true
 category: wellness
 title: Nutrition Guide for Cyclists
 description: Nutrition strategies before, during, and after rides.

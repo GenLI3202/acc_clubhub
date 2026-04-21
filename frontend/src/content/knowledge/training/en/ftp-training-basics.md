@@ -1,5 +1,6 @@
 ---
 slug: ftp-training-basics
+featured: true
 category: physical
 title: FTP Training Basics Guide (Demo)
 description: Understanding Functional Threshold Power (FTP) and how to improve it through scientific training.
