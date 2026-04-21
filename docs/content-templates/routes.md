@@ -22,7 +22,10 @@ komootUrl: https://www.komoot.com/tour/...
 # OPTIONAL FIELDS
 description: Short one-sentence description shown in cards and meta tags.
 author: ACC Club              # defaults to 'ACC Club' if omitted
-coverImage: /images/uploads/your-image.jpg
+
+# ASSETS — place files under public/images/routes/{slug}/ before referencing here
+# cover image:  public/images/routes/{slug}/cover.jpg
+cover: /images/routes/{slug}/cover.jpg
 surface: tarmac              # tarmac | gravel | mixed
 gpxFile: /gpx/my-route.gpx   # upload GPX file to public/gpx/
 xiaohongshuUrl: https://www.xiaohongshu.com/...

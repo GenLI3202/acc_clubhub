@@ -19,7 +19,14 @@ eventType: training-camp
 # OPTIONAL FIELDS
 description: Short one-sentence description shown in cards and meta tags.
 author: ACC Club            # defaults to 'ACC Club' if omitted
-coverImage: /images/uploads/your-image.jpg
+
+# ASSETS — place files under public/images/events/{slug}/ before referencing here
+# cover image:  public/images/events/{slug}/cover.jpg
+# wechat QR:    public/images/events/{slug}/wechat-qr.png
+# gallery:      public/images/events/{slug}/gallery/01-descriptor.jpg
+cover: /images/events/{slug}/cover.jpg
+wechatQrCode: /images/events/{slug}/wechat-qr.png   # optional, omit if no QR
+
 maxParticipants: 30         # omit for unlimited
 registrationDeadline: 2026-05-25   # ISO date; registration form closes after this date
 status: published           # draft | published (drafts are hidden from the site)
