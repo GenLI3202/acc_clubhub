@@ -116,6 +116,9 @@ export const ui = {
         'about.footerTagline': '自由骑行，一路同行',
         // Editorial redesign keys
         'editorial.eyebrow.knowledge': 'ACROSS · KNOWLEDGE',
+        'editorial.eyebrow.gear': 'ACROSS · GEAR',
+        'editorial.eyebrow.training': 'ACROSS · TRAINING',
+        'editorial.eyebrow.routes': 'ACROSS · ROUTES',
         'editorial.eyebrow.media': 'ACROSS · MEDIA',
         'knowledge.training.subtitle': '训练方法论 · 骑行技巧 · 膳食规划',
         'knowledge.gear.subtitle': '购车指南 · 装备选择 · 维修保养',
@@ -237,6 +240,9 @@ export const ui = {
         'about.footerTagline': 'Ride free, ride together',
         // Editorial redesign keys
         'editorial.eyebrow.knowledge': 'ACROSS · KNOWLEDGE',
+        'editorial.eyebrow.gear': 'ACROSS · GEAR',
+        'editorial.eyebrow.training': 'ACROSS · TRAINING',
+        'editorial.eyebrow.routes': 'ACROSS · ROUTES',
         'editorial.eyebrow.media': 'ACROSS · MEDIA',
         'knowledge.training.subtitle': 'Training methodology · Riding technique · Sports nutrition',
         'knowledge.gear.subtitle': 'Buying guides · Equipment choices · Maintenance',
@@ -358,6 +364,9 @@ export const ui = {
         'about.footerTagline': 'Frei fahren, gemeinsam weiter',
         // Editorial redesign keys
         'editorial.eyebrow.knowledge': 'ACROSS · KNOWLEDGE',
+        'editorial.eyebrow.gear': 'ACROSS · GEAR',
+        'editorial.eyebrow.training': 'ACROSS · TRAINING',
+        'editorial.eyebrow.routes': 'ACROSS · ROUTES',
         'editorial.eyebrow.media': 'ACROSS · MEDIA',
         'knowledge.training.subtitle': 'Trainingsmethodik · Fahrtechnik · Sporternährung',
         'knowledge.gear.subtitle': 'Kaufberatung · Ausrüstungsauswahl · Wartung',

@@ -153,6 +153,10 @@
   - [X] Simplified route filters by removing surface/sort controls and replacing range controls with ClubHub-styled numeric range sliders.
   - [X] Created follow-up Issue [#113](https://github.com/GenLI3202/acc_clubhub/issues/113) for future map data and Komoot-style split view.
   - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
+- [X] **Knowledge Subtitle Improvements** (2026-04-21)
+  - [X] Replaced generic "ACROSS · KNOWLEDGE" eyebrow with specific "ACROSS · GEAR", "ACROSS · TRAINING", and "ACROSS · ROUTES" tags on their respective index pages.
+  - [X] Added new i18n translation keys for all three locales (zh/en/de).
+
 
 ## In Progress
 
