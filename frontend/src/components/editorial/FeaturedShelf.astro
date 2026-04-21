@@ -1,0 +1,146 @@
+---
+// components/editorial/FeaturedShelf.astro
+// 3-card featured shelf. Does not render when items is empty.
+
+export interface FeaturedItem {
+  href: string;
+  title: string;
+  description?: string;
+  cover?: string;
+  tagLabel?: string;
+  meta?: string;
+}
+
+interface Props {
+  items: FeaturedItem[];
+  lang: string;
+}
+
+const { items } = Astro.props;
+---
+
+{items.length > 0 && (
+  <div class="featured-shelf">
+    {items.map((item) => (
+      <a href={item.href} class="featured-card">
+        <div class="featured-card__cover">
+          {item.cover ? (
+            <img src={item.cover} alt="" loading="lazy" />
+          ) : (
+            <div class="featured-card__cover-placeholder" />
+          )}
+        </div>
+        <div class="featured-card__body">
+          {item.tagLabel && <span class="featured-card__tag">{item.tagLabel}</span>}
+          <h3 class="featured-card__title">{item.title}</h3>
+          {item.description && <p class="featured-card__desc">{item.description}</p>}
+          {item.meta && <div class="featured-card__meta">{item.meta}</div>}
+        </div>
+      </a>
+    ))}
+  </div>
+)}
+
+<style>
+  .featured-shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 40px auto 0;
+    padding: 0 24px;
+  }
+
+  @media (min-width: 900px) {
+    .featured-shelf {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .featured-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: var(--color-text-main);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .featured-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .featured-card__cover {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--color-bg-secondary);
+  }
+
+  .featured-card__cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 400ms ease;
+  }
+
+  .featured-card:hover .featured-card__cover img {
+    transform: scale(1.04);
+  }
+
+  .featured-card__cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg-secondary);
+  }
+
+  .featured-card__body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    flex: 1;
+  }
+
+  .featured-card__tag {
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
+
+  .featured-card__title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .featured-card__desc {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .featured-card__meta {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: auto;
+    padding-top: 0.25rem;
+  }
+</style>
