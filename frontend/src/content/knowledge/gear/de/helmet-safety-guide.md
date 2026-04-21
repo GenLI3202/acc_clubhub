@@ -5,6 +5,8 @@ description: Wie man einen Fahrradhelm richtig auswählt und trägt.
 author: acc-ausrstungsteam
 date: 2026-01-18
 cover: /images/shared/stock/bike.jpg
+featured: true
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

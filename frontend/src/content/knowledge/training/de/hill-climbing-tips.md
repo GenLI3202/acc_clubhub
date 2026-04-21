@@ -1,5 +1,6 @@
 ---
 slug: hill-climbing-tips
+category: physical
 title: Berganfahrt-Tipps & Training
 description: Effizienter klettern und spezifische Trainingsmethoden.
 author: acc-trainingsteam

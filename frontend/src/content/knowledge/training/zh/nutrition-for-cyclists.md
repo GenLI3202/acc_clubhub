@@ -1,5 +1,7 @@
 ---
 slug: nutrition-for-cyclists
+featured: true
+category: wellness
 title: 骑行者营养指南
 description: 骑行前中后的营养补给策略。
 author: acc-

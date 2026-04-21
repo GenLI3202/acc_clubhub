@@ -1,5 +1,6 @@
 ---
 slug: interval-training-guide
+category: physical
 title: Complete Interval Training Guide
 description: How to rapidly improve cycling performance through interval training.
 author: acc-training-team

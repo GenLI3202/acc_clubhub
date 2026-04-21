@@ -1,13 +1,17 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/knowledge/training/index.astro
-// 科学训练 - 列表页 (瀑布流布局)
+// Library-style training page: EditorialHero → Featured shelf → 4 CategoryShelves → FilterPanel + ArticleGrid
 
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
-
-import TrainingPage from '../../../../components/content/TrainingPage';
+import { getFilterLabel } from '../../../../lib/i18n/filterTranslations';
+import EditorialHero from '../../../../components/editorial/EditorialHero.astro';
+import SectionRule from '../../../../components/editorial/SectionRule.astro';
+import FeaturedShelf from '../../../../components/editorial/FeaturedShelf.astro';
+import CategoryShelf from '../../../../components/knowledge/CategoryShelf.astro';
+import TrainingLibraryPage from '../../../../components/content/TrainingLibraryPage';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -20,65 +24,98 @@ const langTraining = allTraining.filter(
   (entry) => getLangFromEntry(entry.filePath, 'training') === lang && entry.data.status !== 'draft'
 );
 const sortedTraining = langTraining.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+// Featured shelf: top 3 items with featured: true
+const featuredItems = sortedTraining
+  .filter((e) => e.data.featured)
+  .slice(0, 3)
+  .map((e) => {
+    const d = new Date(e.data.date);
+    const meta = !isNaN(d.getTime())
+      ? d.toLocaleDateString(
+          lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+          { month: 'short', day: 'numeric', year: 'numeric' },
+        )
+      : e.data.date;
+    return {
+      href: `/${lang}/knowledge/training/${e.data.slug}`,
+      title: e.data.title,
+      description: e.data.description,
+      cover: e.data.coverImage,
+      tagLabel: getFilterLabel('category', e.data.category, lang),
+      meta,
+    };
+  });
+
+// Category shelves: top 4 items per category
+const CATEGORY_ORDER = ['physical', 'planning', 'wellness', 'analytics'] as const;
+type TrainingCategory = (typeof CATEGORY_ORDER)[number];
+
+const byCategory: Record<TrainingCategory, typeof sortedTraining> = {
+  physical: sortedTraining.filter((e) => e.data.category === 'physical').slice(0, 4),
+  planning: sortedTraining.filter((e) => e.data.category === 'planning').slice(0, 4),
+  wellness: sortedTraining.filter((e) => e.data.category === 'wellness').slice(0, 4),
+  analytics: sortedTraining.filter((e) => e.data.category === 'analytics').slice(0, 4),
+};
+
+const categoryTitles: Record<TrainingCategory, string> = {
+  physical: t(lang, 'knowledge.training.category.physical'),
+  planning: t(lang, 'knowledge.training.category.planning'),
+  wellness: t(lang, 'knowledge.training.category.wellness'),
+  analytics: t(lang, 'knowledge.training.category.analytics'),
+};
+const categoryDescs: Record<TrainingCategory, string> = {
+  physical: t(lang, 'knowledge.training.categoryDesc.physical'),
+  planning: t(lang, 'knowledge.training.categoryDesc.planning'),
+  wellness: t(lang, 'knowledge.training.categoryDesc.wellness'),
+  analytics: t(lang, 'knowledge.training.categoryDesc.analytics'),
+};
 
 const pageTitle = t(lang, 'nav.training');
 ---
 
-
 <BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title-header">
-    <div class="title-content">
-      <h1>📊 {pageTitle}</h1>
-      <p class="page-subtitle">
-        {lang === 'zh'
-          ? '训练方法论、安全科普'
-          : lang === 'de'
-            ? 'Trainingsmethoden, Sicherheit'
-            : 'Training Methods, Safety Tips'}
-      </p>
-    </div>
-    <div id="filter-portal-target"></div>
-  </div>
+  <article class="training-library-page">
+    <EditorialHero
+      eyebrow={t(lang, 'editorial.eyebrow.training')}
+      title={pageTitle}
+      subtitle={t(lang, 'knowledge.training.subtitle')}
+    />
 
-  <TrainingPage 
-    client:load 
-    initialItems={sortedTraining} 
-    lang={lang} 
-  />
+    {featuredItems.length > 0 && (
+      <>
+        <SectionRule label={t(lang, 'editorial.section.featured')} />
+        <FeaturedShelf items={featuredItems} lang={lang} />
+      </>
+    )}
+
+    <SectionRule label={t(lang, 'editorial.section.byCategory')} />
+
+    {CATEGORY_ORDER.map((cat) => (
+      <CategoryShelf
+        category={cat}
+        items={byCategory[cat]}
+        lang={lang}
+        viewAllHref={`/${lang}/knowledge/training?category=${cat}#all-articles`}
+        categoryTitle={categoryTitles[cat]}
+        categoryDesc={categoryDescs[cat]}
+      />
+    ))}
+
+    <SectionRule label={t(lang, 'editorial.section.allArticles')} />
+
+    <TrainingLibraryPage
+      client:load
+      initialItems={sortedTraining}
+      lang={lang}
+    />
+  </article>
 </BaseLayout>
 
 <style>
-  .page-title-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--color-border-rough);
-    padding-bottom: var(--space-md);
-  }
-
-  .title-content {
-    flex: 1;
-    min-width: 280px;
-  }
-
-  .title-content h1 {
-    margin-bottom: 0.5rem;
-  }
-
-
-
-  .empty-state {
-    text-align: center;
-    padding: var(--space-xl);
-    color: #666;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px dashed var(--color-border-rough);
-    border-radius: var(--radius-aero);
-    margin-top: var(--space-lg);
+  .training-library-page {
+    padding-bottom: 0;
   }
 </style>

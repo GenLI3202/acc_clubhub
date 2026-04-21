@@ -1,5 +1,6 @@
 ---
 slug: hill-climbing-tips
+category: physical
 title: Hill Climbing Tips & Training
 description: How to climb more efficiently and specific training methods.
 author: acc-training-team

@@ -5,6 +5,7 @@ description: 在寒冷天气中保持温暖和安全的必备装备。
 author: acc-
 date: 2026-01-08
 cover: /images/shared/placeholders/ai-gear-01.png
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

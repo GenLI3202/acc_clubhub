@@ -5,6 +5,7 @@ description: Must-have gear for staying warm and safe in cold weather.
 author: acc-
 date: 2026-01-08
 cover: /images/shared/placeholders/ai-gear-01.png
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

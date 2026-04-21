@@ -1,0 +1,87 @@
+@import "../knowledge/ArticleCard.css";
+
+.route-card__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.route-card__difficulty {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-main);
+}
+
+.route-card__difficulty::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--route-difficulty-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--route-difficulty-color), transparent 78%);
+}
+
+.route-card__difficulty--easy {
+  --route-difficulty-color: #22c55e;
+}
+
+.route-card__difficulty--medium {
+  --route-difficulty-color: #eab308;
+}
+
+.route-card__difficulty--hard {
+  --route-difficulty-color: #f97316;
+}
+
+.route-card__difficulty--expert {
+  --route-difficulty-color: #ef4444;
+}
+
+.route-card__region {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  line-height: 1.2;
+}
+
+.route-card__stats {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.15rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-main);
+}
+
+.route-card__surface {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}
+
+@media (max-width: 480px) {
+  .route-card__stats {
+    font-size: 1.05rem;
+  }
+}

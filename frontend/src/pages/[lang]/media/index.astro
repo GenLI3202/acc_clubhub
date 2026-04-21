@@ -1,12 +1,15 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/media/index.astro
-// 车影骑踪 - 列表页 (瀑布流布局)
+// Editorial hero + featured shelf above the existing MasonryGrid feed.
 
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../lib/i18n';
-
+import { getFilterLabel } from '../../../lib/i18n/filterTranslations';
+import EditorialHero from '../../../components/editorial/EditorialHero.astro';
+import SectionRule from '../../../components/editorial/SectionRule.astro';
+import FeaturedShelf from '../../../components/editorial/FeaturedShelf.astro';
 import MediaPage from '../../../components/content/MediaPage';
 
 export function getStaticPaths() {
@@ -15,71 +18,69 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params as { lang: Locale };
 
-// 使用 filePath 过滤语言 (稳健方式)
 const allMedia = await getCollection('media');
 const langMedia = allMedia.filter(
   (entry) => getLangFromEntry(entry.filePath, 'media') === lang && entry.data.status !== 'draft'
 );
 const sortedMedia = langMedia.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+// Top 3 featured items for the shelf
+const featuredEntries = sortedMedia.filter((e) => e.data.featured).slice(0, 3);
+const featuredSlugs = new Set(featuredEntries.map((e) => e.data.slug));
+
+const featuredItems = featuredEntries.map((e) => {
+  const d = new Date(e.data.date);
+  const meta = !isNaN(d.getTime())
+    ? d.toLocaleDateString(
+        lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+        { month: 'short', day: 'numeric', year: 'numeric' },
+      )
+    : e.data.date;
+  return {
+    href: `/${lang}/media/${e.data.slug}`,
+    title: e.data.title,
+    description: e.data.description,
+    cover: e.data.coverImage,
+    tagLabel: getFilterLabel('type', e.data.type, lang),
+    meta,
+  };
+});
+
+// Remove featured items from the masonry feed to avoid duplication
+const masonryItems = sortedMedia.filter((e) => !featuredSlugs.has(e.data.slug));
 
 const pageTitle = t(lang, 'nav.media');
 ---
 
-
 <BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title-header">
-    <div class="title-content">
-      <h1>🎬 {pageTitle}</h1>
-      <p class="page-subtitle">
-        {lang === 'zh'
-          ? '影像资料、骑友访谈、翻山越岭记录'
-          : lang === 'de'
-            ? 'Videos, Interviews, Bergabenteuer'
-            : 'Videos, Interviews, Mountain Adventures'}
-      </p>
-    </div>
-    <div id="filter-portal-target"></div>
-  </div>
+  <article class="media-editorial-page">
+    <EditorialHero
+      eyebrow={t(lang, 'editorial.eyebrow.media')}
+      title={pageTitle}
+      subtitle={t(lang, 'media.subtitle')}
+    />
 
-  <MediaPage 
-    client:load 
-    initialItems={sortedMedia} 
-    lang={lang} 
-  />
+    {featuredItems.length > 0 && (
+      <>
+        <SectionRule label={t(lang, 'editorial.section.featured')} />
+        <FeaturedShelf items={featuredItems} lang={lang} />
+      </>
+    )}
+
+    <SectionRule label={t(lang, 'editorial.section.allMedia')} />
+
+    <MediaPage
+      client:load
+      initialItems={masonryItems}
+      lang={lang}
+    />
+  </article>
 </BaseLayout>
 
 <style>
-  .page-title-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--color-border-rough);
-    padding-bottom: var(--space-md);
-  }
-
-  .title-content {
-    flex: 1;
-    min-width: 280px;
-  }
-
-  .title-content h1 {
-    margin-bottom: 0.5rem;
-  }
-
-
-
-  .empty-state {
-    text-align: center;
-    padding: var(--space-xl);
-    color: #666;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px dashed var(--color-border-rough);
-    border-radius: var(--radius-aero);
-    margin-top: var(--space-lg);
+  .media-editorial-page {
+    padding-bottom: 0;
   }
 </style>

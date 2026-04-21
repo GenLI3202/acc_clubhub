@@ -5,6 +5,7 @@ description: 锁鞋 vs 平底鞋，如何选择适合你的骑行鞋。
 author: acc-
 date: 2026-01-15
 cover: /images/shared/stock/bike.jpg
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

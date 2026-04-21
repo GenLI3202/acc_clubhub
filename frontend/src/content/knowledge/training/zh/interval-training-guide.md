@@ -1,5 +1,6 @@
 ---
 slug: interval-training-guide
+category: physical
 title: 间歇训练完全指南
 description: 如何通过间歇训练快速提升骑行能力。
 author: acc-

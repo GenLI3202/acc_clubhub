@@ -5,6 +5,7 @@ region: alps-bavaria
 distance: 120
 elevation: 1800
 difficulty: hard
+featured: true
 cover: /images/shared/stock/munich-cycling.jpg
 stravaUrl: https://www.strava.com/routes/123456
 komootUrl: https://www.komoot.com/tour/123456

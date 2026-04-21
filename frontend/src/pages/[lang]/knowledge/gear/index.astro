@@ -1,13 +1,17 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/knowledge/gear/index.astro
-// 器械知识 - 列表页 (瀑布流布局)
+// Library-style gear page: EditorialHero, Featured shelf, CategoryShelves, ArticleGrid
 
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
-
-import GearPage from '../../../../components/content/GearPage';
+import { getFilterLabel } from '../../../../lib/i18n/filterTranslations';
+import EditorialHero from '../../../../components/editorial/EditorialHero.astro';
+import SectionRule from '../../../../components/editorial/SectionRule.astro';
+import FeaturedShelf from '../../../../components/editorial/FeaturedShelf.astro';
+import CategoryShelf from '../../../../components/knowledge/CategoryShelf.astro';
+import GearLibraryPage from '../../../../components/content/GearLibraryPage';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -17,68 +21,116 @@ const { lang } = Astro.params as { lang: Locale };
 
 const allGear = await getCollection('gear');
 const langGear = allGear.filter(
-  (entry) => getLangFromEntry(entry.filePath, 'gear') === lang && entry.data.status !== 'draft'
+  (entry) => getLangFromEntry(entry.filePath, 'gear') === lang && entry.data.status !== 'draft',
 );
 const sortedGear = langGear.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
+
+const featuredItems = sortedGear
+  .filter((entry) => entry.data.featured)
+  .slice(0, 3)
+  .map((entry) => {
+    const date = new Date(entry.data.date);
+    const meta = !isNaN(date.getTime())
+      ? date.toLocaleDateString(
+          lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+          { month: 'short', day: 'numeric', year: 'numeric' },
+        )
+      : entry.data.date;
+
+    return {
+      href: `/${lang}/knowledge/gear/${entry.data.slug}`,
+      title: entry.data.title,
+      description: entry.data.description,
+      cover: entry.data.cover,
+      tagLabel: getFilterLabel('category', entry.data.category ?? '', lang),
+      meta,
+    };
+  });
+
+const CATEGORY_ORDER = [
+  'bike-build',
+  'electronics',
+  'apparel',
+  'maintenance',
+] as const;
+type GearCategory = (typeof CATEGORY_ORDER)[number];
+
+const byCategory: Record<GearCategory, typeof sortedGear> = {
+  'bike-build': sortedGear
+    .filter((entry) => entry.data.category === 'bike-build')
+    .slice(0, 4),
+  electronics: sortedGear
+    .filter((entry) => entry.data.category === 'electronics')
+    .slice(0, 4),
+  apparel: sortedGear
+    .filter((entry) => entry.data.category === 'apparel')
+    .slice(0, 4),
+  maintenance: sortedGear
+    .filter((entry) => entry.data.category === 'maintenance')
+    .slice(0, 4),
+};
+
+const categoryTitles: Record<GearCategory, string> = {
+  'bike-build': t(lang, 'knowledge.gear.category.bike-build'),
+  electronics: t(lang, 'knowledge.gear.category.electronics'),
+  apparel: t(lang, 'knowledge.gear.category.apparel'),
+  maintenance: t(lang, 'knowledge.gear.category.maintenance'),
+};
+
+const categoryDescs: Record<GearCategory, string> = {
+  'bike-build': t(lang, 'knowledge.gear.categoryDesc.bike-build'),
+  electronics: t(lang, 'knowledge.gear.categoryDesc.electronics'),
+  apparel: t(lang, 'knowledge.gear.categoryDesc.apparel'),
+  maintenance: t(lang, 'knowledge.gear.categoryDesc.maintenance'),
+};
 
 const pageTitle = t(lang, 'nav.gear');
 ---
 
 
 <BaseLayout title={pageTitle} lang={lang}>
-  <div class="page-title-header">
-    <div class="title-content">
-      <h1>🔧 {pageTitle}</h1>
-      <p class="page-subtitle">
-        {lang === 'zh'
-          ? '购车指南、维修 Workshop、新品解读'
-          : lang === 'de'
-            ? 'Kaufberatung, Workshops, Neuheiten'
-            : 'Buying Guide, Workshops, New Products'}
-      </p>
-    </div>
-    <div id="filter-portal-target"></div>
-  </div>
+  <article class="gear-library-page">
+    <EditorialHero
+      eyebrow={t(lang, 'editorial.eyebrow.gear')}
+      title={pageTitle}
+      subtitle={t(lang, 'knowledge.gear.subtitle')}
+    />
 
-  <GearPage 
-    client:load 
-    initialItems={sortedGear} 
-    lang={lang} 
-  />
+    {featuredItems.length > 0 && (
+      <>
+        <SectionRule label={t(lang, 'editorial.section.featured')} />
+        <FeaturedShelf items={featuredItems} lang={lang} />
+      </>
+    )}
+
+    <SectionRule label={t(lang, 'editorial.section.byCategory')} />
+
+    {CATEGORY_ORDER.map((cat) => (
+      <CategoryShelf
+        category={cat}
+        items={byCategory[cat]}
+        lang={lang}
+        viewAllHref={`/${lang}/knowledge/gear?category=${cat}#all-articles`}
+        categoryTitle={categoryTitles[cat]}
+        categoryDesc={categoryDescs[cat]}
+        basePath="/knowledge/gear"
+      />
+    ))}
+
+    <SectionRule label={t(lang, 'editorial.section.allArticles')} />
+
+    <GearLibraryPage
+      client:load
+      initialItems={sortedGear}
+      lang={lang}
+    />
+  </article>
 </BaseLayout>
 
 <style>
-  .page-title-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--color-border-rough);
-    padding-bottom: var(--space-md);
-  }
-
-  .title-content {
-    flex: 1;
-    min-width: 280px;
-  }
-
-  .title-content h1 {
-    margin-bottom: 0.5rem;
-  }
-
-
-
-  .empty-state {
-    text-align: center;
-    padding: var(--space-xl);
-    color: #666;
-    background: rgba(255, 255, 255, 0.5);
-    border: 2px dashed var(--color-border-rough);
-    border-radius: var(--radius-aero);
-    margin-top: var(--space-lg);
+  .gear-library-page {
+    padding-bottom: 0;
   }
 </style>

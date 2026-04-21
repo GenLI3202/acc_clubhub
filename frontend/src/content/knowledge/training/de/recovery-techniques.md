@@ -1,5 +1,6 @@
 ---
 slug: recovery-techniques
+category: wellness
 title: Erholungstechniken nach dem Radfahren
 description: Wissenschaftliche Erholung für schnellere Trainingsbereitschaft.
 author: acc-trainingsteam

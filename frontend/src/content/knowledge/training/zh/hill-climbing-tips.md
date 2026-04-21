@@ -1,5 +1,6 @@
 ---
 slug: hill-climbing-tips
+category: physical
 title: 爬坡技巧与训练
 description: 如何更高效地爬坡，以及针对性训练方法。
 author: acc-

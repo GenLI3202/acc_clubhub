@@ -5,6 +5,7 @@ region: munich-south
 distance: 75
 elevation: 380
 difficulty: easy
+featured: true
 cover: /images/shared/stock/munich-cycling.jpg
 stravaUrl: https://www.strava.com/routes/123456
 komootUrl: https://www.komoot.com/tour/123456

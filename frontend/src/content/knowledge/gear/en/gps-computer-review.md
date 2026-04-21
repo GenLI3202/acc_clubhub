@@ -5,6 +5,7 @@ description: Comparing Garmin, Wahoo, and Hammerhead - the big three.
 author: acc-gear-team
 date: 2026-01-02
 cover: /images/shared/stock/bike.jpg
+category: electronics
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

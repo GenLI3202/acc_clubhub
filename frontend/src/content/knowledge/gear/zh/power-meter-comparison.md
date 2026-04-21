@@ -5,6 +5,8 @@ description: 曲柄式、踏板式、花鼓式功率计全面对比。
 author: acc-
 date: 2026-01-12
 cover: /images/shared/placeholders/ai-placeholder-02.jpg
+featured: true
+category: electronics
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

@@ -5,6 +5,8 @@ description: 如何选择和正确佩戴骑行头盔。
 author: acc-
 date: 2026-01-18
 cover: /images/shared/stock/bike.jpg
+featured: true
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

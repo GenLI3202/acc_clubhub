@@ -139,6 +139,24 @@
   - [X] Replaced the legacy `gallery` type with `group-ride` for semantic accuracy across content configs and schemas.
   - [X] Authored the 2026 Season Opening Recap post, conforming to the new structural governance (`MAINTENANCE.md`).
   - [X] Bulk updated historical media posts to correctly reference images under the new architecture.
+- [X] **Knowledge Gear Editorial Redesign** (2026-04-21)
+  - [X] Rebuilt `/[lang]/knowledge/gear` with the shared editorial hero, featured shelf, category shelves, and bordered article grid used by the training library page.
+  - [X] Added gear `featured` schema support and marked three curated gear articles per locale as featured.
+  - [X] Backfilled gear content categories across zh/en/de for bike-build, electronics, apparel, and maintenance shelves.
+  - [X] Added gear subtitle and category description i18n keys across zh/en/de.
+  - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
+- [X] **Routes Editorial Redesign** (2026-04-21)
+  - [X] Rebuilt `/[lang]/routes` with editorial hero, featured shelf, difficulty shelves, and an all-routes FilterPanel grid.
+  - [X] Added data-first `RouteCard` variants for static shelves and interactive filtered results.
+  - [X] Added routes `featured` schema support and marked three curated routes per locale as featured.
+  - [X] Preserved existing region/difficulty/surface/distance/elevation filtering while replacing masonry cards.
+  - [X] Simplified route filters by removing surface/sort controls and replacing range controls with ClubHub-styled numeric range sliders.
+  - [X] Created follow-up Issue [#113](https://github.com/GenLI3202/acc_clubhub/issues/113) for future map data and Komoot-style split view.
+  - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
+- [X] **Knowledge Subtitle Improvements** (2026-04-21)
+  - [X] Replaced generic "ACROSS · KNOWLEDGE" eyebrow with specific "ACROSS · GEAR", "ACROSS · TRAINING", and "ACROSS · ROUTES" tags on their respective index pages.
+  - [X] Added new i18n translation keys for all three locales (zh/en/de).
+
 
 ## In Progress
 

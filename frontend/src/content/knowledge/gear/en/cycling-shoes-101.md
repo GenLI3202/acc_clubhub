@@ -5,6 +5,7 @@ description: Clipless vs flat pedals - how to choose the right cycling shoes.
 author: acc-gear-team
 date: 2026-01-15
 cover: /images/shared/stock/bike.jpg
+category: apparel
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

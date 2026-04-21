@@ -6,6 +6,7 @@ author: ''
 distance: 51
 elevation: 120
 difficulty: easy
+featured: true
 cover: /images/shared/stock/regatta.png
 stravaUrl: ''
 komootUrl: https://www.komoot.com/de-de/tour/2644949336

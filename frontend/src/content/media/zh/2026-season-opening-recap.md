@@ -6,6 +6,7 @@ type: group-ride
 date: 2026-04-20
 author: ACC Club
 status: published
+featured: true
 cover: /images/media/group-ride/2026-season-opening-recap/cover.jpg
 tags: ["social-ride", "munich-south", "season-opening"]
 ---

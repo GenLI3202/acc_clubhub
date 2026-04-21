@@ -43,6 +43,11 @@ export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, s
         'alps-italy': { zh: '多洛米蒂', de: 'Dolomiten', en: 'Dolomites' },
         'island-spain': { zh: '西班牙海岛', de: 'Spanische Inseln', en: 'Spanish Islands' }
     },
+    surface: {
+        tarmac: { zh: '铺装路面', de: 'Asphalt', en: 'Tarmac' },
+        gravel: { zh: '碎石路面', de: 'Gravel', en: 'Gravel' },
+        mixed: { zh: '混合路面', de: 'Gemischt', en: 'Mixed' }
+    },
     sort: {
         'date-desc': { zh: '最新发布', de: 'Neueste zuerst', en: 'Newest First' },
         'date-asc': { zh: '最早发布', de: 'Älteste zuerst', en: 'Oldest First' },

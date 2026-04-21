@@ -1,5 +1,6 @@
 ---
 slug: cadence-optimization
+category: physical
 title: Cadence Optimization Training
 description: Find your optimal cadence to improve cycling efficiency.
 author: acc-training-team

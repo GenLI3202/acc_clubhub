@@ -5,6 +5,8 @@ description: Vom Einsteiger bis Fortgeschrittene - so findest du das richtige Re
 author: acc-
 date: 2026-01-20
 cover: /images/shared/stock/canyon-road-bike.webp
+featured: true
+category: bike-build
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 

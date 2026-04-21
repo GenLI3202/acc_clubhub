@@ -1,5 +1,6 @@
 ---
 slug: race-day-preparation
+category: planning
 title: Race Day Preparation Guide
 description: Complete preparation from race week to race day.
 author: acc-training-team

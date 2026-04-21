@@ -1,5 +1,6 @@
 ---
 slug: recovery-techniques
+category: wellness
 title: 骑行后恢复技巧
 description: 科学恢复，让你更快地进入下一次训练。
 author: acc-

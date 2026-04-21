@@ -1,0 +1,41 @@
+---
+// components/knowledge/ArticleCard.astro
+// Bordered rectangle article card for CategoryShelf and FeaturedShelf (static/SSR).
+// CSS is shared with ArticleCard.tsx via ArticleCard.css.
+import './ArticleCard.css';
+
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  cover?: string;
+  date?: string | Date;
+  tagLabel?: string;
+  lang?: string;
+}
+
+const { href, title, description, cover, date, tagLabel, lang = 'zh' } = Astro.props;
+
+const dateObj = date ? new Date(date) : null;
+const formattedDate = dateObj && !isNaN(dateObj.getTime())
+  ? dateObj.toLocaleDateString(
+      lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+      { month: 'short', day: 'numeric', year: 'numeric' },
+    )
+  : null;
+---
+
+<a href={href} class="article-card">
+  <div class="article-card__cover">
+    {cover
+      ? <img src={cover} alt="" loading="lazy" />
+      : <div class="article-card__cover-placeholder" />
+    }
+  </div>
+  <div class="article-card__body">
+    {tagLabel && <span class="article-card__tag">{tagLabel}</span>}
+    <h3 class="article-card__title">{title}</h3>
+    {description && <p class="article-card__desc">{description}</p>}
+    {formattedDate && <div class="article-card__meta">{formattedDate}</div>}
+  </div>
+</a>

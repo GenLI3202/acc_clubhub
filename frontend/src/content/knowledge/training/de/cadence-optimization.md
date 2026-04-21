@@ -1,5 +1,6 @@
 ---
 slug: cadence-optimization
+category: physical
 title: Trittfrequenz-Optimierung
 description: Finde deine optimale Trittfrequenz für mehr Effizienz.
 author: acc-trainingsteam

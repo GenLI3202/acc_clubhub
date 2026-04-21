@@ -5,6 +5,7 @@ description: Frontlichter, Rücklichter, Tagfahrlichter - unverzichtbar für sic
 author: acc-
 date: 2026-01-10
 cover: /images/shared/placeholders/ai-gear-02.png
+category: electronics
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
 ---
 
