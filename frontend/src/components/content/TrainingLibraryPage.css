@@ -1,0 +1,41 @@
+/* components/content/TrainingLibraryPage.css
+   Styles for the interactive all-articles section. */
+
+.training-library-content {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 0 24px 80px;
+}
+
+.article-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.training-library-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-secondary);
+}
+
+.training-library-empty button {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background var(--transition-fast);
+}
+
+.training-library-empty button:hover {
+  background: var(--color-accent-dark);
+}

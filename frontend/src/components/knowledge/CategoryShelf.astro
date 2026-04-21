@@ -1,0 +1,114 @@
+---
+// components/knowledge/CategoryShelf.astro
+// One horizontal shelf per training category: header row + up to 4 article cards.
+// Does not render when items is empty.
+
+import ArticleCard from './ArticleCard.astro';
+
+interface Props {
+  category: string;
+  items: any[];
+  lang: string;
+  viewAllHref: string;
+  categoryTitle: string;
+  categoryDesc?: string;
+}
+
+const { items, lang, viewAllHref, categoryTitle, categoryDesc } = Astro.props;
+
+const viewAllLabel = lang === 'zh' ? '查看全部 →' : lang === 'de' ? 'Alle ansehen →' : 'View all →';
+---
+
+{items.length > 0 && (
+  <section class="category-shelf">
+    <div class="category-shelf__header">
+      <div class="category-shelf__title-group">
+        <h2 class="category-shelf__title">{categoryTitle}</h2>
+        {categoryDesc && <p class="category-shelf__desc">{categoryDesc}</p>}
+      </div>
+      <a href={viewAllHref} class="category-shelf__viewall">{viewAllLabel}</a>
+    </div>
+    <div class="category-shelf__grid">
+      {items.slice(0, 4).map((entry) => {
+        const data = entry.data || entry;
+        return (
+          <ArticleCard
+            href={`/${lang}/knowledge/training/${data.slug}`}
+            title={data.title}
+            description={data.description}
+            cover={data.coverImage || data.cover}
+            date={data.date}
+            tagLabel={categoryTitle}
+            lang={lang}
+          />
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<style>
+  .category-shelf {
+    max-width: 1200px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+  }
+
+  .category-shelf__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .category-shelf__title-group {
+    min-width: 0;
+  }
+
+  .category-shelf__title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .category-shelf__desc {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    margin: 4px 0 0;
+    line-height: 1.4;
+  }
+
+  .category-shelf__viewall {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .category-shelf__viewall:hover {
+    text-decoration: underline;
+  }
+
+  .category-shelf__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  @media (min-width: 900px) {
+    .category-shelf__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
