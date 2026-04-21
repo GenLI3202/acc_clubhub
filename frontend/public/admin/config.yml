@@ -323,3 +323,97 @@ collections:
         name: "body"
         widget: "markdown"
         i18n: true
+
+  # ────────────────────────────────
+  # 📅 活动 (Events)
+  # ────────────────────────────────
+  - name: events
+    label: "📅 活动"
+    label_singular: "活动"
+    folder: "frontend/src/content/events"
+    create: true
+    i18n: true
+    slug: "{{fields.slug}}"
+    summary: "{{title}} ({{eventType}}) - {{date}}"
+    fields:
+      - label: "URL 标识 (英文)"
+        name: "slug"
+        widget: "string"
+        hint: "用于 URL，只能使用英文、数字、连字符。例如: friday-social-ride"
+        i18n: duplicate
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        i18n: true
+      - label: "简介"
+        name: "description"
+        widget: "text"
+        required: false
+        hint: "简短描述，用于列表页卡片展示 (1-2 句话)"
+        i18n: true
+      - label: "活动日期"
+        name: "date"
+        widget: "datetime"
+        i18n: duplicate
+      - label: "活动类型"
+        name: "eventType"
+        widget: "select"
+        i18n: duplicate
+        options:
+          - { label: "🚴 社交骑行", value: "social-ride" }
+          - { label: "🏋️ 训练骑行", value: "training-ride" }
+          - { label: "🔧 工作坊", value: "workshop" }
+          - { label: "🎉 聚会", value: "gathering" }
+          - { label: "🏔️ 多日活动", value: "multi-day" }
+      - label: "地点"
+        name: "location"
+        widget: "string"
+        required: false
+        i18n: duplicate
+      - label: "作者"
+        name: "author"
+        widget: "string"
+        required: false
+        default: "ACC Club"
+        i18n: duplicate
+      - label: "封面图"
+        name: "cover"
+        widget: "image"
+        required: false
+        i18n: duplicate
+      - label: "展示位置"
+        name: "displaySection"
+        widget: "select"
+        required: false
+        i18n: duplicate
+        options:
+          - { label: "🌟 首页焦点", value: "hero" }
+          - { label: "📋 普通列表", value: "list" }
+      - label: "最大参与人数"
+        name: "maxParticipants"
+        widget: "number"
+        value_type: "int"
+        required: false
+        hint: "留空表示不限人数"
+        i18n: duplicate
+      - label: "报名截止日期"
+        name: "registrationDeadline"
+        widget: "datetime"
+        required: false
+        i18n: duplicate
+      - label: "报名链接"
+        name: "registrationLink"
+        widget: "string"
+        required: false
+        hint: "外部报名链接 (如不使用内置报名系统)"
+        i18n: duplicate
+      - label: "微信群二维码"
+        name: "wechatQrCode"
+        widget: "image"
+        required: false
+        hint: "活动微信群二维码图片"
+        i18n: duplicate
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+        i18n: true
