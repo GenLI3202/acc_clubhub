@@ -117,7 +117,7 @@ export const ui = {
         // Editorial redesign keys
         'editorial.eyebrow.knowledge': 'ACROSS · KNOWLEDGE',
         'editorial.eyebrow.media': 'ACROSS · MEDIA',
-        'knowledge.training.subtitle': '训练方法论与安全科普',
+        'knowledge.training.subtitle': '训练方法论 · 骑行技巧 · 膳食规划',
         'media.subtitle': '影像作品 · 骑友访谈 · 翻山越岭',
         'editorial.section.featured': 'FEATURED',
         'editorial.section.byCategory': 'BY CATEGORY',
@@ -130,7 +130,7 @@ export const ui = {
         'knowledge.training.category.analytics': '数据分析',
         'knowledge.training.categoryDesc.physical': '力量、耐力与骑行效率',
         'knowledge.training.categoryDesc.planning': '周期规划、训练营与赛季安排',
-        'knowledge.training.categoryDesc.wellness': '营养、恢复与伤病预防',
+        'knowledge.training.categoryDesc.wellness': '赛后恢复餐、备赛营养结构、长距离能量补给与伤期饮食',
         'knowledge.training.categoryDesc.analytics': '功率数据、心率与骑行分析',
     },
     en: {
@@ -222,7 +222,7 @@ export const ui = {
         // Editorial redesign keys
         'editorial.eyebrow.knowledge': 'ACROSS · KNOWLEDGE',
         'editorial.eyebrow.media': 'ACROSS · MEDIA',
-        'knowledge.training.subtitle': 'Training methodology & safety science',
+        'knowledge.training.subtitle': 'Training methodology · Riding technique · Sports nutrition',
         'media.subtitle': 'Films · Interviews · Adventures',
         'editorial.section.featured': 'FEATURED',
         'editorial.section.byCategory': 'BY CATEGORY',
@@ -235,7 +235,7 @@ export const ui = {
         'knowledge.training.category.analytics': 'Data & Analytics',
         'knowledge.training.categoryDesc.physical': 'Strength, endurance, and pedaling efficiency',
         'knowledge.training.categoryDesc.planning': 'Periodization, training camps, and season planning',
-        'knowledge.training.categoryDesc.wellness': 'Nutrition, recovery, and injury prevention',
+        'knowledge.training.categoryDesc.wellness': 'Post-ride meals, race-day nutrition, endurance fueling, and injury recovery diet',
         'knowledge.training.categoryDesc.analytics': 'Power data, heart rate, and ride analysis',
     },
     de: {
@@ -327,7 +327,7 @@ export const ui = {
         // Editorial redesign keys
         'editorial.eyebrow.knowledge': 'ACROSS · KNOWLEDGE',
         'editorial.eyebrow.media': 'ACROSS · MEDIA',
-        'knowledge.training.subtitle': 'Trainingsmethodik & Sicherheitswissen',
+        'knowledge.training.subtitle': 'Trainingsmethodik · Fahrtechnik · Sporternährung',
         'media.subtitle': 'Filme · Interviews · Abenteuer',
         'editorial.section.featured': 'FEATURED',
         'editorial.section.byCategory': 'BY CATEGORY',
@@ -340,7 +340,7 @@ export const ui = {
         'knowledge.training.category.analytics': 'Daten & Analyse',
         'knowledge.training.categoryDesc.physical': 'Kraft, Ausdauer und Pedaleffizienz',
         'knowledge.training.categoryDesc.planning': 'Periodisierung, Trainingslager und Saisonplanung',
-        'knowledge.training.categoryDesc.wellness': 'Ernährung, Erholung und Verletzungsprävention',
+        'knowledge.training.categoryDesc.wellness': 'Nachfahrt-Ernährung, Wettkampfvorbereitung, Ausdauerverpflegung und Verletzungsernährung',
         'knowledge.training.categoryDesc.analytics': 'Leistungsdaten, Herzfrequenz und Fahranalyse',
     },
 } as const;
