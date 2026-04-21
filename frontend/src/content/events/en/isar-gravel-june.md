@@ -8,6 +8,7 @@ date: 2026-06-07
 eventType: training-camp
 displaySection: upcoming
 cover: /images/shared/stock/munich-cycling.jpg
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

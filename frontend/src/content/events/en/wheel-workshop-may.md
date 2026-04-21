@@ -9,6 +9,7 @@ eventType: workshop
 displaySection: hero
 cover: /images/media/video/alps-summer-2025/cover.jpg
 maxParticipants: 12
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

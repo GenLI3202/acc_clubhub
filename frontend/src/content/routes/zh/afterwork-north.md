@@ -11,6 +11,7 @@ cover: /images/shared/stock/regatta.png
 stravaUrl: ''
 komootUrl: https://www.komoot.com/de-de/tour/2644949336
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

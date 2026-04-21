@@ -8,6 +8,7 @@ cover: /images/shared/stock/canyon-road-bike.webp
 featured: true
 category: bike-build
 xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.

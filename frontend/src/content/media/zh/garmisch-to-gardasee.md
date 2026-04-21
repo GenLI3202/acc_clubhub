@@ -9,6 +9,7 @@ cover: /images/media/adventure/garmisch-to-gardasee/cover.jpg
 videoUrl: ''
 xiaohongshuUrl: http://xhslink.com/o/lbkX7e7fwP
 featured: true
+aiTemplate: true
 ---
 
 > **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
