@@ -1,13 +1,12 @@
 // components/content/RoutesLibraryPage.tsx
 // Interactive all-routes section for the routes library page.
-import { h } from 'preact';
-import { useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import { FilterPanel } from '../filter/FilterPanel';
 import { RouteCard } from '../routes/RouteCard';
 import { useFilterState } from '../../lib/filter/useFilterState';
 import { filterItems } from '../../lib/filter/filterUtils';
 import { calculateFacets } from '../../lib/filter/facetUtils';
-import { routesFilters, sortFilters } from '../../lib/filter/filterConfig';
+import { routesFilters } from '../../lib/filter/filterConfig';
 import type { Locale } from '../../lib/i18n';
 import './RoutesLibraryPage.css';
 
@@ -17,6 +16,10 @@ interface RoutesLibraryPageProps {
   initialFilters?: Record<string, any>;
 }
 
+const routeLibraryFilters = routesFilters.filter(
+  (definition) => definition.key !== 'surface',
+);
+
 export default function RoutesLibraryPage({
   initialItems,
   lang,
@@ -24,11 +27,27 @@ export default function RoutesLibraryPage({
 }: RoutesLibraryPageProps) {
   const { filters, setFilter, resetFilters } = useFilterState(initialFilters);
 
-  const combinedFilters = useMemo(() => [...routesFilters, ...sortFilters], []);
+  const combinedFilters = useMemo(() => routeLibraryFilters, []);
+  const visibleFilters = useMemo(() => {
+    const nextFilters = { ...filters };
+    delete nextFilters.surface;
+    delete nextFilters.sort;
+
+    return nextFilters;
+  }, [filters]);
+
+  useEffect(() => {
+    if (filters.surface !== undefined) {
+      setFilter('surface', undefined);
+    }
+    if (filters.sort !== undefined) {
+      setFilter('sort', undefined);
+    }
+  }, [filters.surface, filters.sort, setFilter]);
 
   const filteredItems = useMemo(
-    () => filterItems(initialItems, filters, { filters: combinedFilters }),
-    [initialItems, filters, combinedFilters],
+    () => filterItems(initialItems, visibleFilters, { filters: combinedFilters }),
+    [initialItems, visibleFilters, combinedFilters],
   );
 
   const facetConfig = useMemo(
@@ -55,7 +74,7 @@ export default function RoutesLibraryPage({
       <FilterPanel
         title={filterTitle}
         config={facetConfig}
-        filters={filters}
+        filters={visibleFilters}
         onFilterChange={setFilter}
         onReset={resetFilters}
         className="mb-8"

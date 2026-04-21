@@ -150,6 +150,7 @@
   - [X] Added data-first `RouteCard` variants for static shelves and interactive filtered results.
   - [X] Added routes `featured` schema support and marked three curated routes per locale as featured.
   - [X] Preserved existing region/difficulty/surface/distance/elevation filtering while replacing masonry cards.
+  - [X] Simplified route filters by removing surface/sort controls and replacing range controls with ClubHub-styled numeric range sliders.
   - [X] Created follow-up Issue [#113](https://github.com/GenLI3202/acc_clubhub/issues/113) for future map data and Komoot-style split view.
   - [X] Verified `bun run build` succeeds; `astro check` remains blocked by pre-existing project-wide type errors outside this task.
 
