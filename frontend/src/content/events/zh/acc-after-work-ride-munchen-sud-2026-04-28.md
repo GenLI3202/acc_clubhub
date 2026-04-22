@@ -10,6 +10,7 @@ cover: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/cover.jpg
 displaySection: hero
 status: published
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png
+maxParticipants: 15
 ---
 
 下周二下班后，一起去 München Süd 轻松骑一圈。
@@ -28,6 +29,7 @@ wechatQrCode: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-q
 | **强度**       | 完成均速约 24 km/h，平路巡航约 28–30 km/h；偏轻松社交骑，但需具备基础骑行能力 |
 | **适合车辆**   | 建议使用 road bike 或 gravel bike |
 | **注意事项**   | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线 |
+| **人数限制**   | 限 15 人 |
 
 ---
 
