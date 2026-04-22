@@ -28,6 +28,7 @@ const mediaCollection = defineCollection({
 const eventsCollection = defineCollection({
     type: 'content',
     schema: z.object({
+        slug: z.string().optional(),
         title: z.string(),
         description: z.string().optional(),
         date: z.date(),

@@ -1,6 +1,10 @@
 ---
 // dashboard/events/index.astro — Admin event list with stats (SSR)
+// Source of truth: Markdown content collection (same as frontend)
+// RSVP stats: enriched from backend DB API
 export const prerender = false;
+
+import { getCollection } from 'astro:content';
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
@@ -17,24 +21,56 @@ try {
   return Astro.redirect("/dashboard/login");
 }
 
-// Fetch events with stats
-let events = [];
-let fetchError = null;
+// 1. Read events from Markdown (source of truth — same as frontend)
+const allEvents = await getCollection('events');
+const zhEvents = allEvents.filter((e) => {
+  const entryLang = e.id.includes('/') ? e.id.split('/')[0] : 'zh';
+  return entryLang === 'zh';
+});
+
+// 2. Fetch RSVP stats from DB (for enrichment only)
+const dbStatsMap = new Map<string, any>();
+let statsWarning: string | null = null;
 
 try {
   const res = await fetch(`${apiUrl}/api/admin/events`, {
     headers: { "Cookie": cookie },
   });
   if (res.ok) {
-    events = await res.json();
+    const dbEvents = await res.json();
+    for (const e of dbEvents) {
+      dbStatsMap.set(e.slug, e);
+    }
   } else if (res.status === 401) {
     return Astro.redirect("/dashboard/login");
   } else {
-    fetchError = `Failed to fetch events: ${res.status}`;
+    statsWarning = `RSVP stats unavailable (API returned ${res.status})`;
   }
-} catch (e) {
-  fetchError = `Failed to fetch events: ${e.message}`;
+} catch (e: any) {
+  statsWarning = `RSVP stats unavailable: ${e.message}`;
 }
+
+// 3. Merge: Markdown events + DB RSVP stats
+const events = zhEvents.map((e) => {
+  const slug = e.data.slug ?? e.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? '';
+  const stats = dbStatsMap.get(slug);
+  return {
+    slug,
+    title: e.data.title,
+    date: e.data.date instanceof Date ? e.data.date.toISOString() : String(e.data.date),
+    location: e.data.location ?? null,
+    eventType: e.data.eventType,
+    maxParticipants: e.data.maxParticipants ?? null,
+    confirmed_count: stats?.confirmed_count ?? 0,
+    waitlist_count: stats?.waitlist_count ?? 0,
+    cancelled_count: stats?.cancelled_count ?? 0,
+    spots_remaining: stats?.spots_remaining ?? null,
+    db_id: stats?.id ?? null,
+    in_db: !!stats,
+  };
+}).sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+
+let fetchError: string | null = null;
 
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "—";
@@ -130,6 +166,8 @@ function formatDate(dateStr: string | null): string {
       }
       .action-btn:hover { background: #0860ca; text-decoration: none; }
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .warning { background: #fff8c5; border: 1px solid #d4a72c66; padding: 1rem; border-radius: 6px; color: #9a6700; margin-bottom: 1rem; }
+      .no-db { color: #8b949e; font-size: 0.8rem; font-style: italic; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
     </style>
   </head>
@@ -144,6 +182,7 @@ function formatDate(dateStr: string | null): string {
       </div>
 
       {fetchError && <div class="error">{fetchError}</div>}
+      {statsWarning && <div class="warning">{statsWarning}</div>}
 
       {events.length === 0 && !fetchError ? (
         <div class="empty">No events found.</div>
@@ -164,7 +203,7 @@ function formatDate(dateStr: string | null): string {
             {events.map((event: any) => (
               <tr>
                 <td class="event-title">{event.title}</td>
-                <td>{formatDate(event.event_date)}</td>
+                <td>{formatDate(event.date)}</td>
                 <td>{event.location || "—"}</td>
                 <td>
                   <span class="badge badge-confirmed">
@@ -180,9 +219,13 @@ function formatDate(dateStr: string | null): string {
                   {event.spots_remaining !== null ? event.spots_remaining : "∞"}
                 </td>
                 <td>
-                  <a href={`/dashboard/events/${event.id}`} class="action-btn">
-                    View RSVPs
-                  </a>
+                  {event.db_id ? (
+                    <a href={`/dashboard/events/${event.db_id}`} class="action-btn">
+                      View RSVPs
+                    </a>
+                  ) : (
+                    <span class="no-db" title="Event not yet synced to database">No RSVPs</span>
+                  )}
                 </td>
               </tr>
             ))}
