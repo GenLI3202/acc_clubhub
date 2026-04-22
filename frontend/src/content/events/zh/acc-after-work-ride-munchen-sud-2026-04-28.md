@@ -7,7 +7,7 @@ author: ACC Club
 date: 2026-04-28
 eventType: social-ride
 cover: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/cover.jpg
-displaySection: upcoming
+displaySection: hero
 status: published
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png
 ---
