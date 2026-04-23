@@ -66,6 +66,7 @@ The 企划书 already described this sequence: 私下沟通 → 集体聚餐 →
 ## What This Doc Adds to the 企划书
 
 The 企划书 is a vision document written in January. Three months later:
+
 - The website exists and is functional (the 企划书 listed it as a to-do)
 - The governance still isn't done (the 企划书 assumed this would happen quickly)
 - You are, in practice, the only person executing
@@ -80,6 +81,7 @@ a club-sized ambition. The April 19 event is the catalyst for that conversation 
 not just a ride, but proof that ACC can execute, which makes it easier to recruit.
 
 **The priority order is therefore:**
+
 1. April 19 event ships — proves the relaunch is real
 2. 聚餐 happens — activates the team
 3. Everything else in this doc — becomes a team effort instead of a solo one
@@ -94,6 +96,7 @@ One real post before April 19 is fine. Writing 5 posts solo is a trap.
 ### Track 1A: April 19 Season Opening (MUST ship by April 16)
 
 Outstanding dependencies — resolve TODAY before writing anything:
+
 - Exact route link (Komoot or Strava)
 - Ride leader name (who is leading this?)
 - WeChat QR code for the event group
@@ -104,10 +107,10 @@ a delayed trilingual one. See also: multilingual decision below.
 
 - [ ] Resolve the 3 dependencies above (today, April 14)
 - [ ] Write the event description: 慕尼黑动物园出发 → Ludwigshoehe → Schaeftlarn
-      → cafe终点. Time: 9:00–12:00, ~50km. Max 50 registrants.
+  → cafe终点. Time: 9:00–12:00, ~50km. Max 50 registrants.
 - [ ] Embed WeChat QR code in the event post body (simpler than email)
-      Note: the registration flow and email templates are already working.
-      Do a test registration to confirm before publishing.
+  Note: the registration flow and email templates are already working.
+  Do a test registration to confirm before publishing.
 - [ ] Publish (zh required, en/de if time permits)
 - [ ] Share to existing WeChat channels
 
@@ -120,7 +123,7 @@ Current state: frontend/public/images/uploads/ contains files like
 This is a mess that will compound as real content arrives.
 
 - [ ] Define a naming convention: {year}-{event-slug}-{description}.{ext}
-      e.g. 2026-spring-classic-group.jpg, 2024-rad-race-120-finish.jpg
+  e.g. 2026-spring-classic-group.jpg, 2024-rad-race-120-finish.jpg
 - [ ] Rename all existing files using the new convention
 - [ ] Update all markdown references to match
 - [ ] Add naming convention to MAINTENANCE.md so contributors know the rule
@@ -134,13 +137,11 @@ Priority order — start with content you already have:
 1. **Garmisch → Gardasee 300km** (garmisch-to-gardasee.md already exists)
    5-6 riders, one day, Munich to Lake Garda north shore. This is a legendary
    ride. Find the photos. Write the real story. This is your hero piece.
-
 2. **Rad Race 120 2024 or 2025** (rad-race-120_2025.md exists)
    ACC members at a real race in SW Bavaria. Find the photos.
    "征稿" — ask whoever was there to write 300-500 characters about their experience.
    Fallback if no response within 3 days: write it yourself from memory and photos.
    A published post with minor gaps beats waiting for a perfect draft.
-
 3. **One route post** — pick the most-ridden local route (Isar south? Ammersee?)
    and write real route notes: start point, distance, elevation, where to stop,
    what to avoid. Replace the AI template.
@@ -151,6 +152,7 @@ The 企划书 defined: Social Ride, Training Day, Weekend Long Ride, 力量训�
 Translate this into concrete publishing cadence:
 
 Suggested weekly structure:
+
 - Tuesday after-work: 北边 (north) fixed route, 1-2 ride leaders confirmed
 - Thursday after-work: 南边 (south/Isar) fixed route, 1-2 ride leaders confirmed
 - Alternating weekends: Social Ride (60km) / Training Ride (100km)
@@ -170,15 +172,15 @@ The action isn't to redesign it — it's to execute the conversation plan.
 
 **Suggested minimum viable 核心班子:**
 
-| Role | Responsibility | Suggested |
-|------|---------------|-----------|
-| 骑行活动组织 | Regular ride scheduling + ride leaders | 张怎样, ZDY |
-| 内容组织 (骑行故事) | Media posts, interview coordination | 小沈 (you) |
-| 器械知识 | Maintenance workshops, gear posts | 林哥 |
-| 科学训练 | Training content, safety posts | 马公梅, 说话人B |
-| 影像记录 | Photos + video every major ride | 小沈, 张怎样 |
-| 平台运营 | 小红书 + B站 posting | 小沈, 沈Pro |
-| 网站运维 | Website updates, tech issues | 小沈 (you) |
+| Role                | Responsibility                         | Suggested   |
+| ------------------- | -------------------------------------- | ----------- |
+| 骑行活动组织        | Regular ride scheduling + ride leaders | ZZY         |
+| 内容组织 (骑行故事) | Media posts, interview coordination    | 小沈 (you)  |
+| 器械知识            | Maintenance workshops, gear posts      | 林哥        |
+| 科学训练            | Training content, safety posts         | 马公梅, YTY |
+| 影像记录            | Photos + video every major ride        | 小沈, ZZY   |
+| 平台运营            | 小红书 + B站 posting                   | 沈Pro       |
+| 网站运维            | Website updates, tech issues           | Gen, 袁哥   |
 
 Note: 小沈 (you) currently holds 网站运维 + 内容组织 as minimums. 影像记录
 and 平台运营 need to transfer to other named members at the 聚餐 — otherwise
@@ -200,12 +202,13 @@ This is a real differentiator that currently has no visibility on the website.
 Someone landing on across-cc.de today has no idea this exists.
 
 Actions:
+
 - [ ] Add a membership section to the website (FAQ-style: what you get, how to join,
-      what the association connection means, insurance coverage explained simply)
+  what the association connection means, insurance coverage explained simply)
 - [ ] Reference membership in event posts: "ACC members are covered by group ride
-      insurance" is a real selling point for attracting serious riders
+  insurance" is a real selling point for attracting serious riders
 - [ ] Growing membership is an explicit goal — the registration flow + membership
-      upsell is the business model for covering club expenses (per 企划书 商业展望)
+  upsell is the business model for covering club expenses (per 企划书 商业展望)
 
 This is not urgent for April 19 but belongs on the near-term list.
 
@@ -216,16 +219,20 @@ This is not urgent for April 19 but belongs on the near-term list.
 These don't appear in your brain dump but are load-bearing for the system to work:
 
 ### 1. Photo/media pipeline SOP (owned task — post-April 19 backlog, owner: 影像记录 role)
+
 "一石多鸟" only works if there's a process. Right now, after every ride, photos
 are in people's phones and nothing gets published. Suggest:
+
 - Designate one person per major ride as 影像官 (photo lead)
 - Within 48 hours: send photos to a shared folder (WeChat group album or Google Drive)
 - Within 1 week: one media post published using those photos
 - This is the flywheel. Without this process, 车影骑踪 stays empty.
 
 ### 2. New member onboarding flow
+
 The site has event registration (email + database). But what happens next?
 Currently: nothing formal. Suggest:
+
 - New registrant → added to event-specific WeChat group
 - After first ride → invited to main ACC member WeChat group
 - This is low-effort and dramatically improves belonging (归属感).
@@ -246,11 +253,13 @@ Recommendation: Option A for real posts, AI-assisted EN/DE for event listings
 (events have short structured fields that translate cleanly).
 
 ### 4. Content calendar (publishing schedule)
+
 You have content pillars and a pile of ideas. Without a calendar, nothing ships.
 Suggest: one shared doc (Notion, Feishu, or even a WeChat doc) with a 4-week
 rolling calendar. What's being published, who's responsible, what status.
 
 ### 5. Platform accounts: post-April 19 work
+
 The 企划书 names B站, 小红书, YouTube. Confirm these accounts exist and
 are linked from the website. Do not create new accounts during the April 19
 sprint — it's a distraction. Add to backlog for late April.
