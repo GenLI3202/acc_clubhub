@@ -64,4 +64,6 @@ Du kannst auf zwei Arten teilnehmen:
 
 ### Streckenübersicht
 
-![Route overview](/images/events/acc-after-work-ride-munchen-sud-2026-04-28/gallery/01-route-overview.jpg)
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its)
+
+<iframe src="https://www.komoot.com/tour/2901905197/embed?share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
