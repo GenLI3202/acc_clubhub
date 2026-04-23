@@ -8,6 +8,21 @@ import { getCollection } from 'astro:content';
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
+// ── Category navigation configuration ────────────────────────
+// Edit this array to add/remove/reorder categories without touching UI code.
+const EVENT_CATEGORIES = [
+  { key: "all",           label: "📋 All Events",     types: null },
+  { key: "after-work",    label: "🍻 After Work",     types: ["after-work"] },
+  { key: "social-ride",   label: "🚴 Social Ride",    types: ["social-ride"] },
+  { key: "training-ride", label: "🏋️ Training Ride",  types: ["training-ride", "training-camp"] },
+  { key: "workshop",      label: "🔧 Workshop",       types: ["workshop"] },
+  { key: "special",       label: "🎉 Special Events", types: ["special", "gathering", "multi-day"] },
+] as const;
+
+// Read active filter from query param (?category=social-ride)
+const activeCategory = Astro.url.searchParams.get("category") || "all";
+const activeCfg = EVENT_CATEGORIES.find((c) => c.key === activeCategory) ?? EVENT_CATEGORIES[0];
+
 // Verify authentication — forward browser cookies to backend
 const cookie = Astro.request.headers.get("cookie") || "";
 try {
@@ -51,7 +66,7 @@ try {
 }
 
 // 3. Merge: Markdown events + DB RSVP stats
-const events = zhEvents.map((e) => {
+const allMerged = zhEvents.map((e) => {
   const slug = e.data.slug ?? e.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? '';
   const stats = dbStatsMap.get(slug);
   return {
@@ -69,6 +84,22 @@ const events = zhEvents.map((e) => {
     in_db: !!stats,
   };
 }).sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+
+// 4. Apply category filter
+const events = activeCfg.types
+  ? allMerged.filter((e) => (activeCfg.types as readonly string[]).includes(e.eventType))
+  : allMerged;
+
+// Category counts (for badges)
+const categoryCounts = new Map<string, number>();
+for (const cat of EVENT_CATEGORIES) {
+  categoryCounts.set(
+    cat.key,
+    cat.types
+      ? allMerged.filter((e) => (cat.types as readonly string[]).includes(e.eventType)).length
+      : allMerged.length,
+  );
+}
 
 let fetchError: string | null = null;
 
@@ -169,6 +200,66 @@ function formatDate(dateStr: string | null): string {
       .warning { background: #fff8c5; border: 1px solid #d4a72c66; padding: 1rem; border-radius: 6px; color: #9a6700; margin-bottom: 1rem; }
       .no-db { color: #8b949e; font-size: 0.8rem; font-style: italic; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
+
+      /* Category navigation tabs */
+      .category-nav {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .category-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.9rem;
+        border: 1px solid #d0d7de;
+        border-radius: 20px;
+        background: white;
+        color: #57606a;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        cursor: pointer;
+      }
+      .category-tab:hover {
+        background: #f6f8fa;
+        border-color: #0969da;
+        color: #0969da;
+        text-decoration: none;
+      }
+      .category-tab.active {
+        background: #0969da;
+        border-color: #0969da;
+        color: white;
+      }
+      .category-tab.active:hover {
+        background: #0860ca;
+      }
+      .tab-count {
+        display: inline-block;
+        min-width: 1.3rem;
+        padding: 0.05rem 0.35rem;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.08);
+      }
+      .category-tab.active .tab-count {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .type-badge {
+        display: inline-block;
+        padding: 0.1rem 0.45rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        background: #eef1f5;
+        color: #57606a;
+        margin-left: 0.3rem;
+      }
     </style>
   </head>
   <body>
@@ -181,6 +272,19 @@ function formatDate(dateStr: string | null): string {
         <h1>Events</h1>
       </div>
 
+      <!-- Category navigation tabs -->
+      <nav class="category-nav">
+        {EVENT_CATEGORIES.map((cat) => (
+          <a
+            href={cat.key === "all" ? "/dashboard/events" : `/dashboard/events?category=${cat.key}`}
+            class={`category-tab ${activeCategory === cat.key ? "active" : ""}`}
+          >
+            {cat.label}
+            <span class="tab-count">{categoryCounts.get(cat.key) ?? 0}</span>
+          </a>
+        ))}
+      </nav>
+
       {fetchError && <div class="error">{fetchError}</div>}
       {statsWarning && <div class="warning">{statsWarning}</div>}
 
@@ -191,6 +295,7 @@ function formatDate(dateStr: string | null): string {
           <thead>
             <tr>
               <th>Event</th>
+              <th>Type</th>
               <th>Date</th>
               <th>Location</th>
               <th>Confirmed</th>
@@ -203,6 +308,7 @@ function formatDate(dateStr: string | null): string {
             {events.map((event: any) => (
               <tr>
                 <td class="event-title">{event.title}</td>
+                <td><span class="type-badge">{event.eventType}</span></td>
                 <td>{formatDate(event.date)}</td>
                 <td>{event.location || "—"}</td>
                 <td>
