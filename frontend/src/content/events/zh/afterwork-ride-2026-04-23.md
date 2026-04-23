@@ -1,20 +1,25 @@
 ---
-slug: afterwork-ride-2026-04-23
+slug: afterwork-ride-Munich-North
 title: Afterwork Ride
-location: 路线起点
-date: 2026-04-23 17:30
-displaySections:
-  - regular
-eventType: social-ride
 description: 下班后 17:30 出发的一次轻松社交骑。
+date: 2026-04-23 17:30
+eventType: social-ride
+location: 路线起点
 author: ACC Club
 cover: /images/events/afterwork-ride-2026-04-23/cover.jpg
+displaySections:
+  - regular
+  - hero
+  - upcoming
+maxParticipants: null
+registrationDeadline: ''
+registrationLink: ''
 status: published
 recurring:
   frequency: weekly
   intervalWeeks: 1
   timezone: Europe/Berlin
-  rolloverTime: "22:00"
+  rolloverTime: 22:00
   slugBase: afterwork-ride
   registrationDeadlineHoursBefore: 19.5
 ---
