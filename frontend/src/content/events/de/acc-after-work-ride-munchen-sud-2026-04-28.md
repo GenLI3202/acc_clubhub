@@ -2,17 +2,19 @@
 slug: acc-after-work-ride-munchen-sud-2026-04-28
 title: ACC After Work Ride · München Süd
 description: Eine entspannte Social After-Work-Runde im Münchner Süden mit Start am Tierpark Hellabrunn.
-location: Tierpark Hellabrunn, Isar Eingang Tor 4
-author: ACC Club
 date: 2026-04-28
 eventType: social-ride
+location: Tierpark Hellabrunn, Isar Eingang Tor 4
+author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/cover.jpg
 displaySections:
   - hero
   - upcoming
-status: published
-wechatQrCode: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png
 maxParticipants: 15
+registrationDeadline: ''
+registrationLink: ''
+wechatQrCode: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png
+status: published
 ---
 
 Komm nächsten Dienstag nach Feierabend mit auf eine entspannte Runde durch den Münchner Süden.
