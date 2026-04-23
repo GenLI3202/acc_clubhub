@@ -11,7 +11,6 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-registrationDeadline: ''
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png
 status: published
