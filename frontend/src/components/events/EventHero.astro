@@ -56,7 +56,6 @@ function formatDate(dateStr: string): string {
     {/* Content layer — updates via JS */}
     <div class="event-hero-content" id="heroContent">
       {events.map((event, i) => {
-        const slug = event.id.split('/').pop();
         return (
           <div class:list={['slide-content', { active: i === 0 }]} data-content={i}>
             <span class="event-type-badge">{typeLabels[event.data.eventType] ?? event.data.eventType}</span>
@@ -65,8 +64,8 @@ function formatDate(dateStr: string): string {
             {event.data.description && <p class="event-hero-desc">{event.data.description}</p>}
             <div class="event-hero-actions">
               {event.data.registrationDeadline
-                ? <a href={`/${lang}/events/${slug}`} class="btn-hero-primary">{registerLabel}</a>
-                : <a href={`/${lang}/events/${slug}`} class="btn-hero-ghost">{detailsLabel}</a>
+                ? <a href={`/${lang}/events/${event.data.slug}`} class="btn-hero-primary">{registerLabel}</a>
+                : <a href={`/${lang}/events/${event.data.slug}`} class="btn-hero-ghost">{detailsLabel}</a>
               }
             </div>
           </div>

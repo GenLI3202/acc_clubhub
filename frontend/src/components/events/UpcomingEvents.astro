@@ -35,9 +35,8 @@ function formatDate(dateStr: string): string {
     <h2 class="section-heading">{heading}</h2>
     <div class="upcoming-grid">
       {cards.map((event) => {
-        const slug = event.id.split('/').pop();
         return (
-          <a href={`/${lang}/events/${slug}`} class="upcoming-card">
+          <a href={`/${lang}/events/${event.data.slug}`} class="upcoming-card">
             {event.data.coverImage && (
               <div class="upcoming-card-img" style={`background-image: url('${event.data.coverImage}')`}></div>
             )}

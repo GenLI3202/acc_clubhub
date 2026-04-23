@@ -26,9 +26,8 @@ function formatDate(dateStr: string): string {
     <h2 class="section-heading">{heading}</h2>
     <div class="regulars-list">
       {events.map((event) => {
-        const slug = event.id.split('/').pop();
         return (
-          <a href={`/${lang}/events/${slug}`} class="regular-row">
+          <a href={`/${lang}/events/${event.data.slug}`} class="regular-row">
             <span class="regular-badge">{badge}</span>
             <div class="regular-info">
               <span class="regular-title">{event.data.title}</span>

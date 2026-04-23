@@ -2,13 +2,20 @@
 slug: afterwork-ride-2026-04-23
 title: Afterwork Ride
 location: Route starting point
-date: 2026-04-23
+date: 2026-04-23 17:30
 displaySection: regular
 eventType: social-ride
 description: A relaxed social afterwork ride starting at 17:30.
 author: ACC Club
 cover: /images/events/afterwork-ride-2026-04-23/cover.jpg
 status: published
+recurring:
+  frequency: weekly
+  intervalWeeks: 1
+  timezone: Europe/Berlin
+  rolloverTime: "22:00"
+  slugBase: afterwork-ride
+  registrationDeadlineHoursBefore: 19.5
 ---
 
 Join us for an easy spin after work.

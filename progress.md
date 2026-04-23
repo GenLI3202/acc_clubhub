@@ -156,6 +156,10 @@
 - [X] **Knowledge Subtitle Improvements** (2026-04-21)
   - [X] Replaced generic "ACROSS · KNOWLEDGE" eyebrow with specific "ACROSS · GEAR", "ACROSS · TRAINING", and "ACROSS · ROUTES" tags on their respective index pages.
   - [X] Added new i18n translation keys for all three locales (zh/en/de).
+- [X] **Weekly Regular Event Auto-Rollover** (Issue [#121](https://github.com/GenLI3202/acc_clubhub/issues/121)) (2026-04-23)
+  - [X] Added recurring metadata for weekly regular events with Berlin-time rollover support.
+  - [X] Events list and detail pages resolve generated occurrence slugs, dates, and registration deadlines.
+  - [X] Markdown-to-database sync upserts the current occurrence for RSVP management.
 
 
 ## In Progress

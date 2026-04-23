@@ -12,10 +12,8 @@ Requires DATABASE_URL to be set (or a .env file in backend/).
 """
 from __future__ import annotations
 
-import os
 import re
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 # Ensure backend package is importable
@@ -25,6 +23,7 @@ sys.path.insert(0, str(_backend_dir))
 import yaml
 from database import get_db
 from models import Event
+from services.recurring_events import parse_datetime, resolve_weekly_occurrence
 
 
 EVENTS_DIR = (
@@ -41,22 +40,6 @@ def _parse_frontmatter(path: Path) -> dict | None:
     if not m:
         return None
     return yaml.safe_load(m.group(1))
-
-
-def _parse_date(value: object) -> datetime:
-    """Coerce various date representations to timezone-aware datetime."""
-    if isinstance(value, datetime):
-        if value.tzinfo is None:
-            return value.replace(tzinfo=timezone.utc)
-        return value
-    s = str(value).strip()
-    for fmt in ("%Y-%m-%d %H:%M", "%Y-%m-%d"):
-        try:
-            dt = datetime.strptime(s, fmt)
-            return dt.replace(tzinfo=timezone.utc)
-        except ValueError:
-            continue
-    raise ValueError(f"Cannot parse date: {value!r}")
 
 
 def sync() -> None:
@@ -78,10 +61,24 @@ def sync() -> None:
             skipped += 1
             continue
 
-        slug = fm.get("slug") or md_file.stem
+        source_slug = fm.get("slug") or md_file.stem
+        event_date = parse_datetime(fm["date"], "Europe/Berlin")
+        registration_deadline = (
+            parse_datetime(fm["registrationDeadline"], "Europe/Berlin")
+            if fm.get("registrationDeadline")
+            else None
+        )
+        occurrence = resolve_weekly_occurrence(
+            slug=source_slug,
+            event_date=event_date,
+            recurring=fm.get("recurring") or {},
+            registration_deadline=registration_deadline,
+        )
+        slug = occurrence["slug"]
+        event_date = occurrence["event_date"]
+        registration_deadline = occurrence["registration_deadline"]
         md_slugs.add(slug)
 
-        event_date = _parse_date(fm["date"])
         title = fm.get("title", slug)
         description = fm.get("description")
         location = fm.get("location")
@@ -97,6 +94,7 @@ def sync() -> None:
             existing.location = location
             existing.event_type = event_type
             existing.max_participants = max_participants
+            existing.registration_deadline = registration_deadline
             existing.is_public = True
             print(f"  UPDATE: {slug}")
         else:
@@ -108,6 +106,7 @@ def sync() -> None:
                 location=location,
                 event_type=event_type,
                 max_participants=max_participants,
+                registration_deadline=registration_deadline,
                 current_participants=0,
                 is_public=True,
             )

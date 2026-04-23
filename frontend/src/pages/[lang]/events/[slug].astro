@@ -4,8 +4,9 @@
 
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 import { getCollection, render } from 'astro:content';
-import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+import { t, type Locale } from '../../../lib/i18n';
 import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
+import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
@@ -15,16 +16,14 @@ export const prerender = false;
 // SSR: fetch content collection per request
 const { lang, slug } = Astro.params as { lang: Locale; slug: string };
 const allEvents = await getCollection('events');
-// Fix #93: match by both slug AND lang; fall back to zh if no lang-specific version exists
-const entry =
-  allEvents.find((e) => e.data.slug === slug && e.id.startsWith(`${lang}/`)) ??
-  allEvents.find((e) => e.data.slug === slug && e.id.startsWith('zh/'));
+const entry = resolveEventEntryBySlug(allEvents, slug, lang);
 
 if (!entry) {
   return Astro.redirect(`/${lang}/events`);
 }
 
-const { Content } = await render(entry);
+const sourceEntry = allEvents.find((e) => e.id === entry.id) ?? entry;
+const { Content } = await render(sourceEntry);
 
 // API URL from environment
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";

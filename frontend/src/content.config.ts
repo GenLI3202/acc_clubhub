@@ -64,6 +64,10 @@ const EVENT_TYPES = [
   'workshop'        // 工作坊
 ] as const;
 
+const RECURRENCE_FREQUENCIES = [
+  'weekly',
+] as const;
+
 // Surface Types
 const SURFACES = [
   'tarmac',  // 铺装路面
@@ -248,6 +252,16 @@ const eventsCollection = defineCollection({
     // 'regular'  → weekly regulars compact list (recurring rides)
     // Past events (date < today) always appear in the archive regardless of this field.
     displaySection: z.enum(['hero', 'upcoming', 'regular']).optional().default('upcoming'),
+    recurring: z.object({
+      enabled: z.boolean().optional().default(true),
+      frequency: z.enum(RECURRENCE_FREQUENCIES).default('weekly'),
+      intervalWeeks: z.number().int().positive().optional().default(1),
+      timezone: z.string().optional().default('Europe/Berlin'),
+      rolloverTime: z.string().regex(/^\d{2}:\d{2}$/).optional().default('22:00'),
+      slugBase: z.string().optional(),
+      registrationDeadlineHoursBefore: z.number().nonnegative().optional(),
+      paused: z.boolean().optional().default(false),
+    }).optional(),
     // featured is deprecated — use displaySection: 'hero' instead. Kept for parse compatibility.
     featured: z.boolean().optional(),
   }).transform((data) => ({

@@ -1,10 +1,11 @@
 ---
-export const prerender = true;
+export const prerender = false;
 // src/pages/[lang]/events/index.astro
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, defaultLocale, t, type Locale } from '../../../lib/i18n';
 import { splitEvents, getRegulars } from '../../../lib/events/eventHelpers';
+import { resolveRecurringEvents } from '../../../lib/events/recurringEvents';
 import EventHero from '../../../components/events/EventHero.astro';
 import UpcomingEvents from '../../../components/events/UpcomingEvents.astro';
 import WeeklyRegulars from '../../../components/events/WeeklyRegulars.astro';
@@ -24,7 +25,8 @@ const langEvents = allEvents.filter((e) => {
   return entryLang === lang && e.data.status !== 'draft';
 });
 
-const { upcoming, past } = splitEvents(langEvents);
+const effectiveEvents = resolveRecurringEvents(langEvents);
+const { upcoming, past } = splitEvents(effectiveEvents);
 
 // Carousel hero: events with displaySection === 'hero', sorted by date
 const carouselEvents = upcoming
