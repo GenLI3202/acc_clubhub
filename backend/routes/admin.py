@@ -113,6 +113,7 @@ def get_event_rsvps(
                 "name": r.name,
                 "email": r.email,
                 "status": r.status,
+                "cancel_reason": r.cancel_reason,
                 "notes": r.notes,
                 "created_at": r.created_at.isoformat() if r.created_at else None,
             }
@@ -166,8 +167,7 @@ def cancel_rsvp(
 
     was_confirmed = rsvp.status == "confirmed"
     rsvp.status = "cancelled"
-
-
+    rsvp.cancel_reason = "admin_cancelled"
 
     # Promote the first waitlisted RSVP when a confirmed slot opens
     promoted = None
@@ -201,6 +201,59 @@ def cancel_rsvp(
     if promoted:
         result["promoted"] = promoted.name
     return result
+
+
+# ── Admin Restore RSVP ────────────────────────────────────────
+
+class RestoreRsvpRequest(BaseModel):
+    rsvp_id: int
+
+
+@router.post("/api/admin/events/{event_id}/rsvp/restore")
+def restore_rsvp(
+    event_id: int,
+    body: RestoreRsvpRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Restore a cancelled RSVP back to confirmed (or waitlist if full).
+
+    Requires admin authentication.
+    """
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    rsvp = db.query(RSVP).filter(
+        RSVP.id == body.rsvp_id,
+        RSVP.event_id == event_id,
+    ).first()
+    if not rsvp:
+        raise HTTPException(status_code=404, detail="RSVP not found")
+
+    if rsvp.status != "cancelled":
+        return {"success": True, "message": "RSVP is not cancelled"}
+
+    # Determine restored status based on available spots
+    new_status = "confirmed"
+    if event.max_participants is not None:
+        confirmed_count = db.query(RSVP).filter(
+            RSVP.event_id == event_id,
+            RSVP.status == "confirmed",
+        ).count()
+        if confirmed_count >= event.max_participants:
+            new_status = "waitlist"
+
+    rsvp.status = new_status
+    rsvp.cancel_reason = None
+    db.commit()
+
+    return {
+        "success": True,
+        "message": f"RSVP for {rsvp.name} restored to {new_status}",
+        "new_status": new_status,
+    }
 
 
 # ── Admin CSV Export ──────────────────────────────────────────

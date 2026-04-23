@@ -184,6 +184,19 @@ const statusClass: Record<string, string> = {
       }
       .cancel-btn:hover { background: #ffc9c9; }
       .cancel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .restore-btn {
+        padding: 0.25rem 0.6rem;
+        background: #dafbe1;
+        color: #1a7f37 !important;
+        border: 1px solid #4ac26b66;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .restore-btn:hover { background: #a7f3d0; }
+      .restore-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .cancel-reason { font-size: 0.7rem; color: #8b949e; margin-left: 0.3rem; }
       .notes { max-width: 200px; font-size: 0.8rem; color: #57606a; }
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
@@ -272,11 +285,23 @@ const statusClass: Record<string, string> = {
                       <span class={`badge badge-${rsvp.status}`}>
                         {rsvp.status}
                       </span>
+                      {rsvp.cancel_reason && (
+                        <span class="cancel-reason">({rsvp.cancel_reason === "admin_cancelled" ? "by admin" : "by user"})</span>
+                      )}
                     </td>
                     <td class="notes">{rsvp.notes || "—"}</td>
                     <td>{formatDate(rsvp.created_at)}</td>
                     <td>
-                      {rsvp.status !== "cancelled" && (
+                      {rsvp.status === "cancelled" ? (
+                        <button
+                          class="restore-btn"
+                          data-rsvp-id={rsvp.id}
+                          data-rsvp-name={rsvp.name}
+                          id={`restore-btn-${rsvp.id}`}
+                        >
+                          Restore
+                        </button>
+                      ) : rsvp.status !== "cancelled" && (
                         <button
                           class="cancel-btn"
                           data-rsvp-id={rsvp.id}
@@ -345,6 +370,35 @@ const statusClass: Record<string, string> = {
       document.querySelectorAll(".cancel-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           cancelRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
+        });
+      });
+
+      // Restore a cancelled RSVP
+      async function restoreRsvp(rsvpId, rsvpName, btn) {
+        if (!confirm(`Restore RSVP for ${rsvpName}?`)) return;
+        btn.disabled = true;
+        try {
+          const res = await fetch(`/api/admin/events/${id}/rsvp/restore`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
+          });
+          if (res.ok) {
+            window.location.reload();
+          } else {
+            alert("Failed to restore RSVP");
+            btn.disabled = false;
+          }
+        } catch (e) {
+          alert("Error: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      document.querySelectorAll(".restore-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          restoreRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
         });
       });
 

@@ -92,6 +92,7 @@ class RSVP(Base):
     email = Column(String(255), nullable=False, index=True)
     name = Column(String(100), nullable=False)
     status = Column(String(20), default="confirmed", index=True)
+    cancel_reason = Column(String(20), nullable=True)  # 'admin_cancelled' | 'user_cancelled'
     notes = Column(Text, nullable=True)
     privacy_accepted = Column(Boolean, default=False)
     view_token = Column(String(64), nullable=True, index=True)
