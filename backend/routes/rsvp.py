@@ -132,10 +132,14 @@ def create_rsvp(
         RSVP.email == rsvp_data.email,
     ).first()
     if existing:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="This email is already registered for this event",
-        )
+        if existing.status == "cancelled":
+            # Allow re-registration: reactivate the cancelled record
+            pass
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This email is already registered for this event",
+            )
 
     # 4. 检查席位
     rsvp_status = "confirmed"
@@ -150,17 +154,26 @@ def create_rsvp(
                 RSVP.status == "waitlist",
             ).count() + 1
 
-    # 5. 创建 RSVP
-    new_rsvp = RSVP(
-        event_id=event_id,
-        email=rsvp_data.email,
-        name=rsvp_data.name,
-        status=rsvp_status,
-        notes=rsvp_data.notes,
-        privacy_accepted=rsvp_data.privacy_accepted,
-        view_token=secrets.token_urlsafe(32),
-    )
-    db.add(new_rsvp)
+    # 5. 创建 or reactivate RSVP
+    if existing and existing.status == "cancelled":
+        existing.status = rsvp_status
+        existing.name = rsvp_data.name
+        existing.notes = rsvp_data.notes
+        existing.privacy_accepted = rsvp_data.privacy_accepted
+        existing.view_token = secrets.token_urlsafe(32)
+        existing.cancel_reason = None
+        new_rsvp = existing
+    else:
+        new_rsvp = RSVP(
+            event_id=event_id,
+            email=rsvp_data.email,
+            name=rsvp_data.name,
+            status=rsvp_status,
+            notes=rsvp_data.notes,
+            privacy_accepted=rsvp_data.privacy_accepted,
+            view_token=secrets.token_urlsafe(32),
+        )
+        db.add(new_rsvp)
 
     # NOTE: current_participants 由数据库触发器自动更新
 
@@ -289,10 +302,14 @@ def create_rsvp_v2(
         RSVP.email == data.email,
     ).first()
     if existing:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="This email is already registered for this event",
-        )
+        if existing.status == "cancelled":
+            # Allow re-registration: reactivate the cancelled record
+            pass
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This email is already registered for this event",
+            )
 
     # 4. Determine status (confirmed vs waitlist)
     rsvp_status = "confirmed"
@@ -308,17 +325,26 @@ def create_rsvp_v2(
                 RSVP.status == "waitlist",
             ).count() + 1
 
-    # 5. Create RSVP
-    new_rsvp = RSVP(
-        event_id=event.id,
-        email=data.email,
-        name=data.name,
-        status=rsvp_status,
-        notes=data.notes,
-        privacy_accepted=data.privacy_accepted,
-        view_token=secrets.token_urlsafe(32),
-    )
-    db.add(new_rsvp)
+    # 5. Create or reactivate RSVP
+    if existing and existing.status == "cancelled":
+        existing.status = rsvp_status
+        existing.name = data.name
+        existing.notes = data.notes
+        existing.privacy_accepted = data.privacy_accepted
+        existing.view_token = secrets.token_urlsafe(32)
+        existing.cancel_reason = None
+        new_rsvp = existing
+    else:
+        new_rsvp = RSVP(
+            event_id=event.id,
+            email=data.email,
+            name=data.name,
+            status=rsvp_status,
+            notes=data.notes,
+            privacy_accepted=data.privacy_accepted,
+            view_token=secrets.token_urlsafe(32),
+        )
+        db.add(new_rsvp)
 
     # 6. Handle subscription
     new_subscriber = False
