@@ -158,7 +158,7 @@ export const eventsFilters: FilterDefinition[] = [
         label: 'Type',
         type: 'select',
         options: [
-            { value: 'social-ride', label: 'Coffee Ride' },
+            { value: 'social-ride', label: 'Social Ride' },
             { value: 'training-camp', label: 'Training Camp' },
             { value: 'race', label: 'Race' },
             { value: 'workshop', label: 'Workshop' }
