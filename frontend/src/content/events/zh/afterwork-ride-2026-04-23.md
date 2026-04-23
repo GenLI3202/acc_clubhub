@@ -3,7 +3,8 @@ slug: afterwork-ride-2026-04-23
 title: Afterwork Ride
 location: 路线起点
 date: 2026-04-23 17:30
-displaySection: regular
+displaySections:
+  - regular
 eventType: social-ride
 description: 下班后 17:30 出发的一次轻松社交骑。
 author: ACC Club

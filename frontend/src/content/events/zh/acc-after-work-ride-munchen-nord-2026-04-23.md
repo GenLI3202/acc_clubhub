@@ -7,7 +7,8 @@ author: ACC Club
 date: 2026-04-23
 eventType: social-ride
 cover: /images/events/acc-after-work-ride-munchen-nord-2026-04-23/cover.jpg
-displaySection: hero
+displaySections:
+  - hero
 status: published
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord-2026-04-23/wechat-qr.png
 maxParticipants: 15

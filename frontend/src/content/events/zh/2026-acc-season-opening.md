@@ -7,7 +7,8 @@ author: ACC Club
 date: 2026-04-18 10:30
 eventType: social-ride
 cover: /images/events/2026-acc-season-opening/cover.jpg
-displaySection: hero
+displaySections:
+  - hero
 maxParticipants: 35
 wechatQrCode: /images/events/2026-acc-season-opening/wechat-qr.jpg
 ---

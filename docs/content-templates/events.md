@@ -5,12 +5,13 @@ title: Event Title
 location: Meeting point / venue
 date: 2026-06-01             # ISO date YYYY-MM-DD
 
-# DISPLAY SECTION — controls which part of the events page this event appears in
+# DISPLAY SECTIONS — controls which parts of the events page this event appears in
 # 'hero'     → featured carousel at the top (use for 2-3 flagship events max)
 # 'upcoming' → upcoming events card grid (default for most events)
 # 'regular'  → weekly regulars compact list (use for recurring social rides)
 # Note: events with date < today automatically appear in Past Archive, regardless of this field.
-displaySection: upcoming
+displaySections:
+  - upcoming
 
 # EVENT TYPE — used for badge display only, does not affect layout
 # social-ride | training-camp | race | workshop

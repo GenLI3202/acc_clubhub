@@ -6,7 +6,8 @@ location: ACC Club House
 author: ACC Club
 date: 2026-05-09
 eventType: workshop
-displaySection: hero
+displaySections:
+  - hero
 cover: /images/media/video/alps-summer-2025/cover.jpg
 maxParticipants: 12
 aiTemplate: true

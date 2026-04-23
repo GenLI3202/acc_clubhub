@@ -382,13 +382,16 @@ collections:
         required: false
         i18n: duplicate
       - label: "展示位置"
-        name: "displaySection"
+        name: "displaySections"
         widget: "select"
+        multiple: true
         required: false
         i18n: duplicate
+        hint: "可同时选择多个展示区域；新内容统一使用 displaySections"
         options:
           - { label: "🌟 首页焦点", value: "hero" }
-          - { label: "📋 普通列表", value: "list" }
+          - { label: "📋 即将开始", value: "upcoming" }
+          - { label: "🔁 固定活动", value: "regular" }
       - label: "最大参与人数"
         name: "maxParticipants"
         widget: "number"

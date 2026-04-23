@@ -80,12 +80,13 @@ title: 春季经典骑行 2026
 location: 慕尼黑英国花园南门
 date: 2026-04-19           # ISO date YYYY-MM-DD
 
-# displaySection — 控制出现在 events 页的哪个板块
+# displaySections — 控制出现在 events 页的哪些板块
 # 'hero'     → 顶部轮播（限 2-3 个旗舰活动）
 # 'upcoming' → 即将举办卡片网格（默认）
 # 'regular'  → 每周例行活动紧凑列表（循环社交骑）
 # 注意：date < 今天 的活动无论此字段为何都会出现在往期回顾
-displaySection: hero
+displaySections:
+  - hero
 
 # eventType — 仅用于徽章显示，不影响布局
 # social-ride | training-camp | race | workshop
@@ -343,4 +344,4 @@ Sveltia 通过 GitHub OAuth 登录，OAuth 代理托管在 Cloudflare Workers。
 |-----|------------------------------| ---------- |
 | #10 | CMS 为单一数据源；DB 仅存 RSVP 交互数据；后端首次报名时自动创建 Event 记录 | 2026-03-27 |
 | #13 | 手写 CSS 而非 Tailwind        | 2026-03-29 |
-| #14 | `displaySection` 字段替代 `featured` 布尔值控制 Events 页轮播 | 2026-03-29 |
+| #14 | `displaySections` 成为 canonical 字段，`displaySection` 仅作 legacy 兼容读取 | 2026-03-29 |

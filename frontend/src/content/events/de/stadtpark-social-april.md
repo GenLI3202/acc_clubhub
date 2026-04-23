@@ -6,7 +6,8 @@ location: Englischer Garten Südeingang
 author: ACC Club
 date: 2026-04-05
 eventType: social-ride
-displaySection: regular
+displaySections:
+  - regular
 cover: /images/media/adventure/rad-race-120-2025/cover.jpg
 aiTemplate: true
 ---

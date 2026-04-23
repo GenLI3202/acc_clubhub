@@ -6,7 +6,8 @@ location: München Thalkirchen Parkplatz
 author: ACC Club
 date: 2026-06-07
 eventType: training-camp
-displaySection: upcoming
+displaySections:
+  - upcoming
 cover: /images/shared/stock/munich-cycling.jpg
 aiTemplate: true
 ---

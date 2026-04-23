@@ -248,7 +248,7 @@ const eventsCollection = defineCollection({
     maxParticipants: z.number().optional(),
     registrationDeadline: z.coerce.date().optional(),
     registrationLink: z.string().optional(),
-    // displaySection controls which section of the events page this event appears in.
+    // displaySections is the canonical frontmatter field for which sections of the events page this event appears in.
     // 'hero'     → featured carousel at the top (max 2-3 events)
     // 'upcoming' → upcoming events card grid
     // 'regular'  → weekly regulars compact list (recurring rides)
@@ -265,7 +265,7 @@ const eventsCollection = defineCollection({
       registrationDeadlineHoursBefore: z.number().nonnegative().optional(),
       paused: z.boolean().optional().default(false),
     }).optional(),
-    // featured is deprecated — use displaySection: 'hero' instead. Kept for parse compatibility.
+    // featured is deprecated. displaySection remains only for legacy parse compatibility; new content should use displaySections.
     featured: z.boolean().optional(),
   }).transform((data) => ({
     ...data,

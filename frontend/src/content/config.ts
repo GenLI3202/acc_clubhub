@@ -37,6 +37,7 @@ const eventsCollection = defineCollection({
         location: z.string().optional(),
         registrationLink: z.string().optional(),
         author: z.string().optional(),
+        // displaySections is canonical; displaySection stays only for legacy compatibility.
         displaySection: z.string().optional(),
         displaySections: z.array(z.string()).optional(),
         maxParticipants: z.number().int().optional(),
