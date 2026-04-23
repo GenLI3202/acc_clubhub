@@ -4,7 +4,7 @@ export const prerender = false;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { locales, defaultLocale, t, type Locale } from '../../../lib/i18n';
-import { splitEvents, getRegulars } from '../../../lib/events/eventHelpers';
+import { splitEvents, getRegulars, isEventInSection } from '../../../lib/events/eventHelpers';
 import { resolveRecurringEvents } from '../../../lib/events/recurringEvents';
 import EventHero from '../../../components/events/EventHero.astro';
 import UpcomingEvents from '../../../components/events/UpcomingEvents.astro';
@@ -28,13 +28,13 @@ const langEvents = allEvents.filter((e) => {
 const effectiveEvents = resolveRecurringEvents(langEvents);
 const { upcoming, past } = splitEvents(effectiveEvents);
 
-// Carousel hero: events with displaySection === 'hero', sorted by date
+// Carousel hero: events configured for the hero section, sorted by date
 const carouselEvents = upcoming
-  .filter((e) => e.data.displaySection === 'hero')
+  .filter((e) => isEventInSection(e, 'hero'))
   .sort((a, b) => new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf());
 
-// Upcoming cards: events with displaySection === 'upcoming'
-const upcomingCards = upcoming.filter((e) => e.data.displaySection === 'upcoming');
+// Upcoming cards: events configured for the upcoming section
+const upcomingCards = upcoming.filter((e) => isEventInSection(e, 'upcoming'));
 
 const regulars = getRegulars(upcoming);
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";

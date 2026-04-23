@@ -1,6 +1,16 @@
 import type { CollectionEntry } from 'astro:content';
 
 type EventEntry = CollectionEntry<'events'>;
+export type EventSection = 'hero' | 'upcoming' | 'regular';
+
+type EventSectionData = {
+  displaySection?: EventSection;
+  displaySections?: EventSection[] | null;
+};
+
+type EventWithSections = {
+  data: EventSectionData;
+};
 
 export function getTodayAtMidnight(): Date {
   const d = new Date();
@@ -20,6 +30,21 @@ export function splitEvents(events: EventEntry[]): { upcoming: EventEntry[]; pas
   return { upcoming, past };
 }
 
+export function getEventDisplaySections(event: EventWithSections): EventSection[] {
+  if (event.data.displaySections && event.data.displaySections.length > 0) {
+    return event.data.displaySections;
+  }
+
+  return [event.data.displaySection ?? 'upcoming'];
+}
+
+export function isEventInSection(
+  event: EventWithSections,
+  section: EventSection,
+): boolean {
+  return getEventDisplaySections(event).includes(section);
+}
+
 export function getRegulars(events: EventEntry[]): EventEntry[] {
-  return events.filter((e) => e.data.displaySection === 'regular');
+  return events.filter((e) => isEventInSection(e, 'regular'));
 }

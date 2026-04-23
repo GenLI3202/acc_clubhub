@@ -38,6 +38,7 @@ const eventsCollection = defineCollection({
         registrationLink: z.string().optional(),
         author: z.string().optional(),
         displaySection: z.string().optional(),
+        displaySections: z.array(z.string()).optional(),
         maxParticipants: z.number().int().optional(),
         registrationDeadline: z.string().optional(),
         wechatQrCode: z.string().optional(),

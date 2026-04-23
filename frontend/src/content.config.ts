@@ -64,6 +64,8 @@ const EVENT_TYPES = [
   'workshop'        // 工作坊
 ] as const;
 
+const EVENT_SECTIONS = ['hero', 'upcoming', 'regular'] as const;
+
 const RECURRENCE_FREQUENCIES = [
   'weekly',
 ] as const;
@@ -251,7 +253,8 @@ const eventsCollection = defineCollection({
     // 'upcoming' → upcoming events card grid
     // 'regular'  → weekly regulars compact list (recurring rides)
     // Past events (date < today) always appear in the archive regardless of this field.
-    displaySection: z.enum(['hero', 'upcoming', 'regular']).optional().default('upcoming'),
+    displaySection: z.enum(EVENT_SECTIONS).optional().default('upcoming'),
+    displaySections: z.array(z.enum(EVENT_SECTIONS)).min(1).optional(),
     recurring: z.object({
       enabled: z.boolean().optional().default(true),
       frequency: z.enum(RECURRENCE_FREQUENCIES).default('weekly'),
@@ -272,6 +275,7 @@ const eventsCollection = defineCollection({
     eventType: data.eventType || 'social-ride' as const,
     description: data.description || '',
     registrationDeadline: data.registrationDeadline?.toISOString() ?? null,
+    displaySections: data.displaySections ?? [data.displaySection],
   })),
 });
 
