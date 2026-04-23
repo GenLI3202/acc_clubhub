@@ -45,6 +45,6 @@ export function isEventInSection(
   return getEventDisplaySections(event).includes(section);
 }
 
-export function getRegulars(events: EventEntry[]): EventEntry[] {
+export function getRegulars<T extends EventWithSections>(events: T[]): T[] {
   return events.filter((e) => isEventInSection(e, 'regular'));
 }
