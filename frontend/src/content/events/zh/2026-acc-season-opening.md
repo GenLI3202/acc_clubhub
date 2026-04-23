@@ -29,6 +29,12 @@ ACC 慕城骑行俱乐部邀请大家一起加入我们的 2026 开春咖啡骑�
 
 ---
 
+## 路线预览
+
+<iframe src="https://www.komoot.com/tour/2885696236/embed?share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
+---
+
 ### 🏁 返程方式
 
 在 Biergarten 结束之后，返程有两个选择：

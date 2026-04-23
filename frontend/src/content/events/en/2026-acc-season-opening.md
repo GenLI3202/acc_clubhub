@@ -29,6 +29,12 @@ We roll out from Munich Zoo, through the shaded paths of Perlacher Forst and out
 
 ---
 
+### Route Preview
+
+<iframe src="https://www.komoot.com/tour/2885696236/embed?share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
+---
+
 ### 🏁 Getting Back to Munich
 
 After the Biergarten, you have two options for the return:

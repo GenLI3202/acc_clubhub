@@ -29,6 +29,12 @@ Wir starten am Münchner Tierpark, fahren durch die schattigen Wege des Perlache
 
 ---
 
+### Routenvorschau
+
+<iframe src="https://www.komoot.com/tour/2885696236/embed?share_token=aMrYJKHgszpUD8b6vKIGuJcMd60S6rgIzL4azLiF5Mr77KYGfa&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
+---
+
 ### 🏁 Rückfahrt
 
 Nach dem Biergarten habt ihr zwei Möglichkeiten für die Heimreise:
