@@ -5,6 +5,7 @@
 export const prerender = false;
 
 import { getCollection } from 'astro:content';
+import { resolveRecurringEvents } from '../../../lib/events/recurringEvents';
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
@@ -38,10 +39,12 @@ try {
 
 // 1. Read events from Markdown (source of truth — same as frontend)
 const allEvents = await getCollection('events');
-const zhEvents = allEvents.filter((e) => {
-  const entryLang = e.id.includes('/') ? e.id.split('/')[0] : 'zh';
-  return entryLang === 'zh';
-});
+const zhEvents = resolveRecurringEvents(
+  allEvents.filter((e) => {
+    const entryLang = e.id.includes('/') ? e.id.split('/')[0] : 'zh';
+    return entryLang === 'zh';
+  })
+);
 
 // 2. Fetch RSVP stats from DB (for enrichment only)
 const dbStatsMap = new Map<string, any>();
