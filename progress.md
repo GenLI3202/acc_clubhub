@@ -186,6 +186,9 @@
   - [X] Added tested admin event helpers for classification, status derivation, filtering, and sorting.
   - [X] Corrected After Work ride content to use the dedicated `after-work` event type across zh/en/de.
   - [X] Added status badges and compact registration summaries for faster admin scanning.
+- [X] **Dashboard Confirmation Modal Fix** (2026-04-25)
+  - [X] Replaced native `confirm()` prompts on event detail actions with a stable in-page confirmation dialog.
+  - [X] Added local preview fixture for event detail pages to verify Check in, Cancel, Restore, and Notify interactions without auth.
 
 
 ## In Progress

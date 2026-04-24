@@ -4,40 +4,90 @@ export const prerender = false;
 
 const { id } = Astro.params;
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+const isLocalPreview = import.meta.env.DEV
+  && ["127.0.0.1", "localhost"].includes(Astro.url.hostname)
+  && Astro.url.searchParams.get("preview") === "1";
 
 // Verify authentication — forward browser cookies to backend
 const cookie = Astro.request.headers.get("cookie") || "";
-try {
-  const meRes = await fetch(`${apiUrl}/auth/me`, {
-    headers: { "Cookie": cookie },
-  });
-  if (!meRes.ok) {
+if (!isLocalPreview) {
+  try {
+    const meRes = await fetch(`${apiUrl}/auth/me`, {
+      headers: { "Cookie": cookie },
+    });
+    if (!meRes.ok) {
+      return Astro.redirect("/dashboard/login", 302);
+    }
+  } catch {
     return Astro.redirect("/dashboard/login", 302);
   }
-} catch {
-  return Astro.redirect("/dashboard/login", 302);
 }
 
 // Fetch event RSVPs
 let eventData = null;
 let fetchError = null;
 
-try {
-  const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvps`, {
-    headers: { "Cookie": cookie },
-  });
-  if (res.ok) {
-    eventData = await res.json();
-  } else if (res.status === 401) {
-    return Astro.redirect("/dashboard/login", 302);
-  } else if (res.status === 404) {
-    fetchError = "Event not found";
-  } else {
-    fetchError = `Failed to fetch RSVPs: ${res.status}`;
+if (isLocalPreview) {
+  eventData = {
+    event: {
+      id,
+      title: "Preview After Work Ride",
+      slug: "preview-after-work-ride",
+      event_date: "2026-04-30T15:30:00.000Z",
+      location: "Munich",
+      max_participants: 15,
+      current_participants: 2,
+    },
+    rsvps: [
+      {
+        id: 101,
+        name: "Preview Confirmed Rider",
+        email: "confirmed@example.com",
+        status: "confirmed",
+        attendance_status: "registered",
+        checked_in_at: null,
+        cancel_reason: null,
+        notes: "Needs a stable confirm modal",
+        created_at: "2026-04-24T12:00:00.000Z",
+      },
+      {
+        id: 102,
+        name: "Preview Cancelled Rider",
+        email: "cancelled@example.com",
+        status: "cancelled",
+        attendance_status: "registered",
+        checked_in_at: null,
+        cancel_reason: "admin_cancelled",
+        notes: "",
+        created_at: "2026-04-23T12:00:00.000Z",
+      },
+    ],
+    summary: {
+      total: 2,
+      confirmed: 1,
+      waitlist: 0,
+      cancelled: 1,
+      checked_in: 0,
+    },
+  };
+} else {
+  try {
+    const res = await fetch(`${apiUrl}/api/admin/events/${id}/rsvps`, {
+      headers: { "Cookie": cookie },
+    });
+    if (res.ok) {
+      eventData = await res.json();
+    } else if (res.status === 401) {
+      return Astro.redirect("/dashboard/login", 302);
+    } else if (res.status === 404) {
+      fetchError = "Event not found";
+    } else {
+      fetchError = `Failed to fetch RSVPs: ${res.status}`;
+    }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    fetchError = `Failed to fetch RSVPs: ${message}`;
   }
-} catch (e) {
-  const message = e instanceof Error ? e.message : String(e);
-  fetchError = `Failed to fetch RSVPs: ${message}`;
 }
 
 function formatDate(dateStr: string | null): string {
@@ -212,6 +262,65 @@ function formatDate(dateStr: string | null): string {
       .empty { text-align: center; padding: 3rem; color: #57606a; }
       .email-cell { font-family: monospace; font-size: 0.85rem; }
       #notify-status { font-size: 0.85rem; margin-left: 0.5rem; }
+      .confirm-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: rgba(36, 41, 47, 0.38);
+      }
+      .confirm-overlay.is-open { display: flex; }
+      .confirm-dialog {
+        width: min(420px, 100%);
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        box-shadow: 0 16px 48px rgba(36, 41, 47, 0.18);
+        padding: 1.25rem;
+      }
+      .confirm-dialog h2 {
+        margin: 0 0 0.5rem;
+        color: #24292f;
+        font-size: 1.05rem;
+      }
+      .confirm-dialog p {
+        margin: 0;
+        color: #57606a;
+        line-height: 1.45;
+      }
+      .confirm-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+      .confirm-cancel,
+      .confirm-accept {
+        border-radius: 6px;
+        border: 1px solid #d0d7de;
+        cursor: pointer;
+        font-weight: 600;
+        padding: 0.45rem 0.9rem;
+      }
+      .confirm-cancel {
+        background: white;
+        color: #24292f;
+      }
+      .confirm-cancel:hover { background: #f6f8fa; }
+      .confirm-accept {
+        background: #0969da;
+        border-color: #0969da;
+        color: white;
+      }
+      .confirm-accept:hover { background: #0860ca; }
+      .confirm-accept.danger {
+        background: #cf222e;
+        border-color: #cf222e;
+      }
+      .confirm-accept.danger:hover { background: #a40e26; }
     </style>
   </head>
   <body>
@@ -356,9 +465,82 @@ function formatDate(dateStr: string | null): string {
       )}
     </div>
 
+    <div
+      class="confirm-overlay"
+      id="confirm-overlay"
+      aria-hidden="true"
+    >
+      <div
+        class="confirm-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        aria-describedby="confirm-message"
+      >
+        <h2 id="confirm-title">Confirm action</h2>
+        <p id="confirm-message"></p>
+        <div class="confirm-actions">
+          <button type="button" class="confirm-cancel" id="confirm-cancel">
+            Cancel
+          </button>
+          <button type="button" class="confirm-accept" id="confirm-accept">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script define:vars={{ id }}>
+      const confirmOverlay = document.getElementById("confirm-overlay");
+      const confirmTitle = document.getElementById("confirm-title");
+      const confirmMessage = document.getElementById("confirm-message");
+      const confirmCancel = document.getElementById("confirm-cancel");
+      const confirmAccept = document.getElementById("confirm-accept");
+      let activeConfirmResolve = null;
+
+      function closeConfirm(result) {
+        confirmOverlay?.classList.remove("is-open");
+        confirmOverlay?.setAttribute("aria-hidden", "true");
+        confirmAccept?.classList.remove("danger");
+        if (activeConfirmResolve) {
+          activeConfirmResolve(result);
+          activeConfirmResolve = null;
+        }
+      }
+
+      function confirmAction({ title, message, confirmLabel = "Confirm", danger = false }) {
+        return new Promise((resolve) => {
+          activeConfirmResolve = resolve;
+          if (confirmTitle) confirmTitle.textContent = title;
+          if (confirmMessage) confirmMessage.textContent = message;
+          if (confirmAccept) {
+            confirmAccept.textContent = confirmLabel;
+            confirmAccept.classList.toggle("danger", danger);
+          }
+          confirmOverlay?.classList.add("is-open");
+          confirmOverlay?.setAttribute("aria-hidden", "false");
+          confirmCancel?.focus();
+        });
+      }
+
+      confirmCancel?.addEventListener("click", () => closeConfirm(false));
+      confirmAccept?.addEventListener("click", () => closeConfirm(true));
+      confirmOverlay?.addEventListener("click", (event) => {
+        if (event.target === confirmOverlay) closeConfirm(false);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && confirmOverlay?.classList.contains("is-open")) {
+          closeConfirm(false);
+        }
+      });
+
       async function checkInRsvp(rsvpId, rsvpName, btn) {
-        if (!confirm(`Check in ${rsvpName}?`)) return;
+        const confirmed = await confirmAction({
+          title: "Check in rider",
+          message: `Mark ${rsvpName} as checked in?`,
+          confirmLabel: "Check in",
+        });
+        if (!confirmed) return;
         btn.disabled = true;
         try {
           const res = await fetch(`/dashboard/api/events/${id}/rsvp/check-in`, {
@@ -383,7 +565,13 @@ function formatDate(dateStr: string | null): string {
       });
 
       async function cancelRsvp(rsvpId, rsvpName, btn) {
-        if (!confirm(`Cancel RSVP for ${rsvpName}?`)) return;
+        const confirmed = await confirmAction({
+          title: "Cancel RSVP",
+          message: `Cancel RSVP for ${rsvpName}?`,
+          confirmLabel: "Cancel RSVP",
+          danger: true,
+        });
+        if (!confirmed) return;
         btn.disabled = true;
         try {
           const res = await fetch(`/api/admin/events/${id}/rsvp/cancel`, {
@@ -435,7 +623,12 @@ function formatDate(dateStr: string | null): string {
 
       // Restore a cancelled RSVP
       async function restoreRsvp(rsvpId, rsvpName, btn) {
-        if (!confirm(`Restore RSVP for ${rsvpName}?`)) return;
+        const confirmed = await confirmAction({
+          title: "Restore RSVP",
+          message: `Restore RSVP for ${rsvpName}?`,
+          confirmLabel: "Restore",
+        });
+        if (!confirmed) return;
         btn.disabled = true;
         try {
           const res = await fetch(`/api/admin/events/${id}/rsvp/restore`, {
@@ -466,7 +659,12 @@ function formatDate(dateStr: string | null): string {
       document.getElementById("notify-btn")?.addEventListener("click", async () => {
         const btn = document.getElementById("notify-btn");
         const status = document.getElementById("notify-status");
-        if (!confirm("Send a notification email to all confirmed and waitlisted registrants?")) return;
+        const confirmed = await confirmAction({
+          title: "Notify registrants",
+          message: "Send a notification email to all confirmed and waitlisted registrants?",
+          confirmLabel: "Send email",
+        });
+        if (!confirmed) return;
 
         btn.disabled = true;
         status.textContent = "Sending…";
