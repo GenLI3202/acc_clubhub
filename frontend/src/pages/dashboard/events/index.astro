@@ -46,10 +46,41 @@ const zhEvents = resolveRecurringEvents(
   })
 );
 
-// 2. Fetch RSVP stats from DB (for enrichment only)
+// 2. Sync resolved occurrences to DB before fetching RSVP stats
 const dbStatsMap = new Map<string, any>();
 let statsWarning: string | null = null;
 
+const occurrencePayload = zhEvents.map((e) => ({
+  slug: e.data.slug,
+  title: e.data.title,
+  event_date: e.data.date,
+  location: e.data.location ?? null,
+  event_type: e.data.eventType,
+  max_participants: e.data.maxParticipants ?? null,
+  registration_deadline: e.data.registrationDeadline ?? null,
+  description: e.data.description ?? null,
+}));
+
+try {
+  const syncRes = await fetch(`${apiUrl}/api/admin/sync-occurrences`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Cookie": cookie,
+    },
+    body: JSON.stringify(occurrencePayload),
+  });
+  if (syncRes.status === 401) {
+    return Astro.redirect("/dashboard/login");
+  }
+  if (!syncRes.ok) {
+    statsWarning = `Occurrence sync unavailable (API returned ${syncRes.status})`;
+  }
+} catch (e: any) {
+  statsWarning = `Occurrence sync unavailable: ${e.message}`;
+}
+
+// 3. Fetch RSVP stats from DB (for enrichment only)
 try {
   const res = await fetch(`${apiUrl}/api/admin/events`, {
     headers: { "Cookie": cookie },
@@ -68,14 +99,14 @@ try {
   statsWarning = `RSVP stats unavailable: ${e.message}`;
 }
 
-// 3. Merge: Markdown events + DB RSVP stats
+// 4. Merge: Markdown events + DB RSVP stats
 const allMerged = zhEvents.map((e) => {
   const slug = e.data.slug ?? e.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? '';
   const stats = dbStatsMap.get(slug);
   return {
     slug,
     title: e.data.title,
-    date: e.data.date instanceof Date ? e.data.date.toISOString() : String(e.data.date),
+    date: String(e.data.date),
     location: e.data.location ?? null,
     eventType: e.data.eventType,
     maxParticipants: e.data.maxParticipants ?? null,
@@ -88,7 +119,7 @@ const allMerged = zhEvents.map((e) => {
   };
 }).sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
 
-// 4. Apply category filter
+// 5. Apply category filter
 const events = activeCfg.types
   ? allMerged.filter((e) => (activeCfg.types as readonly string[]).includes(e.eventType))
   : allMerged;

@@ -2,10 +2,13 @@
 ACC ClubHub Backend - Admin API Routes
 Phase 4.3.4: Admin dashboard API endpoints (JWT protected)
 """
+from __future__ import annotations
 
 import csv
 import io
 import logging
+from datetime import datetime
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -21,6 +24,81 @@ from services.email import (
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+class SyncOccurrenceRequest(BaseModel):
+    slug: str
+    title: str
+    event_date: datetime
+    location: Optional[str] = None
+    event_type: str = "social-ride"
+    max_participants: Optional[int] = None
+    registration_deadline: Optional[datetime] = None
+    description: Optional[str] = None
+
+
+class SyncOccurrencesResponse(BaseModel):
+    created: int
+    updated: int
+
+
+# ── Admin Occurrence Sync ─────────────────────────────────────
+
+@router.post(
+    "/api/admin/sync-occurrences",
+    response_model=SyncOccurrencesResponse,
+)
+def sync_occurrences(
+    occurrences: List[SyncOccurrenceRequest],
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> SyncOccurrencesResponse:
+    """
+    Upsert frontend-resolved event occurrences into the registration DB.
+
+    Existing rows keep operational counters such as current_participants while
+    content-owned fields are refreshed from Markdown.
+    """
+    created = 0
+    updated = 0
+
+    try:
+        for occurrence in occurrences:
+            event = db.query(Event).filter(Event.slug == occurrence.slug).first()
+            if event:
+                event.title = occurrence.title
+                event.description = occurrence.description
+                event.event_date = occurrence.event_date
+                event.location = occurrence.location
+                event.event_type = occurrence.event_type
+                event.max_participants = occurrence.max_participants
+                event.registration_deadline = occurrence.registration_deadline
+                event.is_public = True
+                updated += 1
+                continue
+
+            db.add(
+                Event(
+                    slug=occurrence.slug,
+                    title=occurrence.title,
+                    description=occurrence.description,
+                    event_date=occurrence.event_date,
+                    location=occurrence.location,
+                    event_type=occurrence.event_type,
+                    max_participants=occurrence.max_participants,
+                    current_participants=0,
+                    registration_deadline=occurrence.registration_deadline,
+                    is_public=True,
+                )
+            )
+            created += 1
+
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
+    return SyncOccurrencesResponse(created=created, updated=updated)
 
 
 # ── Admin Event List ──────────────────────────────────────────
