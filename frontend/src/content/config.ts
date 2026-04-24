@@ -43,6 +43,7 @@ const eventsCollection = defineCollection({
         maxParticipants: z.number().int().optional(),
         registrationDeadline: z.string().optional(),
         wechatQrCode: z.string().optional(),
+        ACCOfficialRide: z.boolean().optional(),
     }),
 });
 
