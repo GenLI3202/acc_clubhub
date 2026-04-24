@@ -1,0 +1,372 @@
+---
+export const prerender = true;
+// src/pages/[lang]/insurance.astro
+// ACC Insurance Notice & Leader Liability Disclaimer
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { type Locale, locales } from '../../lib/i18n';
+import { marked } from 'marked';
+
+export async function getStaticPaths() {
+  return locales.map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+const content = {
+  zh: {
+    title: 'ACC保险告知与免责声明',
+    subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
+    intro: '本页面说明ACC通过BLSV为非会员参与者提供的团体保险范围，以及参与者在报名时应知悉的相关费用与免责条款。',
+    sections: [
+      {
+        title: '一、非会员保险说明（Nichtmitgliederversicherung）',
+        content: `
+为保障每一位参与ACC活动的骑友安全，我们通过 **BLSV**（Bayerischer Landes-Sportverband，巴伐利亚州体育联合会）为所有非ACC正式会员的活动参与者购买了专项团体保险，由 **ARAG** 承保。
+
+**保险对象：** 所有报名参加ACC骑行活动且非ACC注册会员的人员。
+
+**保障内容：**
+
+1. **意外伤害险（Unfallversicherung）**：赔付因骑行事故导致的医疗、残疾等费用。常规医疗费用仍由个人医保覆盖，本险种针对严重意外。
+
+2. **第三方责任险（Haftpflichtversicherung）**：若您在活动中因过失造成他人人身伤害或财产损失（如撞坏他人车辆），由保险代为承担合理赔偿。
+
+3. **刑事法律保护（Straf-Rechtsschutz）**：若骑行事故引发刑事调查或指控（如过失致人伤害），提供刑事辩护相关法律费用支持。
+
+4. **直接返程保障（Rückweg）**：活动正式结束后，直接骑车/驾车返回家中的路程同在保障范围内。
+
+**保障时效：** 从进入活动集合点开始，至活动正式结束（含直接返程）。
+
+> **免责说明：** 本告知为摘要，所有具体险种细节、理赔条件及除外责任均以ARAG出具的保险原文件及德国相关法律为最终依据。ACC作为活动组织方仅提供此团体险覆盖，不承担最终的理赔审核与连带赔付责任。
+        `,
+      },
+      {
+        title: '二、活动参加费用（Teilnahmegebühr）',
+        content: `
+因ACC为每位非会员提供了上述专业的体育保险覆盖，我们将对参加活动的非ACC会员收取小额保险管理费：
+
+| 参与者类别 | 费用 |
+|---|---|
+| 非学生人员 | **2 欧元 / 人** |
+| 学生（含博士生） | **1 欧元 / 人** |
+| ACC正式会员 | **免费**（已包含在年度会费中） |
+
+**缴费方式：** 请在活动集合时向领骑出示学生证（如适用）并完成现场支付。
+
+**享受保险的前提：** 完成官网实名报名。理赔时将核对活动签到记录。
+        `,
+      },
+      {
+        title: '三、领骑免责与参与者责任声明（Haftungsausschluss）',
+        content: `
+ACC骑行活动为非营利性的结伴骑行，领骑（Tourguides）均为无偿付出的志愿者。报名参与即视为知悉并同意以下条款：
+
+**1. 志愿性质与风险自担（Gefälligkeit & auf eigene Gefahr）**
+
+本次活动纯属车友间的互助结伴行为，非商业导游服务。所收取的费用仅为非会员保险的代收费，不构成服务合同（Kein Dienstleistungsvertrag）。参与者需对自身安全负绝对责任，并自行承担骑行运动的固有风险。
+
+**2. 独立遵守交规（StVO & Eigenverantwortung）**
+
+无论队伍阵型如何，每位参与者在法律上均是独立的交通参与者，必须严格遵守德国道路交通法规（StVO）。在通过路口、红绿灯或让行标志时，必须自行判断路况，严禁盲目跟随领骑。领骑的手势路况提示仅为自愿协助，不承担因未提示或提示错误而产生的法律责任。
+
+**3. 责任豁免（Haftungsbeschränkung）**
+
+除蓄意（Vorsatz）或重大过失（grobe Fahrlässigkeit）行为外，领骑个人及ACC针对参与者在活动中发生的任何财产及财务损失（Sach- und Vermögensschäden），免除一切赔偿责任——即排除一般过失（leichte Fahrlässigkeit）的赔偿责任。
+
+**4. 安全强制权（Weisungsrecht）**
+
+所有参与者必须佩戴头盔。对于车辆存在明显安全隐患、严重违反交规或做出危险举动者，领骑有权在任何时候强制要求其离队。
+        `,
+      },
+    ],
+  },
+  en: {
+    title: 'ACC Insurance Notice & Liability Disclaimer',
+    subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
+    intro: 'This page explains the group insurance ACC provides for non-member participants through BLSV, along with the associated fees and liability disclaimers that participants should be aware of when registering.',
+    sections: [
+      {
+        title: '1. Non-Member Insurance (Nichtmitgliederversicherung)',
+        content: `
+To protect every participant in ACC events, we purchase a group insurance policy through **BLSV** (Bayerischer Landes-Sportverband, Bavarian State Sports Association) for all non-ACC-member participants, underwritten by **ARAG**.
+
+**Covered persons:** All registered participants who are not ACC members.
+
+**Coverage includes:**
+
+1. **Accident Insurance (Unfallversicherung):** Covers costs arising from cycling accidents including medical treatment, disability, etc. Standard medical costs remain covered by personal health insurance; this policy covers serious accidents.
+
+2. **Third-Party Liability (Haftpflichtversicherung):** If you negligently cause bodily injury or property damage to a third party during the event (e.g. colliding with another person's vehicle), this insurance covers reasonable compensation.
+
+3. **Criminal Legal Protection (Straf-Rechtsschutz):** If a cycling accident leads to a criminal investigation or charges (e.g. negligent bodily harm), this covers legal defence costs.
+
+4. **Return Trip Coverage (Rückweg):** The direct journey home by bicycle or vehicle immediately after the event ends is also covered.
+
+**Coverage period:** From arrival at the assembly point until the official end of the event (including direct return trip home).
+
+> **Disclaimer:** This is a summary only. All specific policy details, claim conditions, and exclusions are governed by the original ARAG insurance documents and applicable German law. ACC as event organiser provides this group coverage only and is not liable for insurance claim decisions or joint indemnification.
+        `,
+      },
+      {
+        title: '2. Participation Fee (Teilnahmegebühr)',
+        content: `
+Because ACC provides the above professional sports insurance coverage for every non-member, a small insurance administration fee is charged for non-ACC members:
+
+| Participant category | Fee |
+|---|---|
+| Non-students | **€2 per person** |
+| Students (incl. PhD students) | **€1 per person** |
+| ACC full members | **Free** (included in annual membership fee) |
+
+**Payment:** Please present your student ID (if applicable) to the ride leader at the start of the event and complete on-site payment.
+
+**Insurance prerequisite:** Registration on the official website using your real name is required. Attendance records will be cross-checked in the event of a claim.
+        `,
+      },
+      {
+        title: '3. Leader Liability & Participant Responsibility (Haftungsausschluss)',
+        content: `
+ACC rides are non-commercial group rides and all ride leaders (Tourguides) are unpaid volunteers. By registering you acknowledge and agree to the following:
+
+**1. Volunteer nature & self-assumed risk (Gefälligkeit & auf eigene Gefahr)**
+
+This event is a voluntary mutual-aid group activity between cyclists, not a commercial guide service. Any fee collected is solely for non-member insurance and does not constitute a service contract (Kein Dienstleistungsvertrag). Participants bear full responsibility for their own safety and accept the inherent risks of cycling.
+
+**2. Independent compliance with traffic law (StVO & Eigenverantwortung)**
+
+Regardless of group formation, every participant is legally an independent road user and must strictly comply with German road traffic law (StVO). At intersections, traffic lights, or yield signs, each rider must independently assess road conditions — blindly following the ride leader is prohibited. Gesture-based route signals from the leader are voluntary assistance only; the leader accepts no legal liability for missed or incorrect signals.
+
+**3. Limitation of liability (Haftungsbeschränkung)**
+
+Except in cases of intent (Vorsatz) or gross negligence (grobe Fahrlässigkeit), ride leaders individually and ACC collectively disclaim all liability for any property or financial damage (Sach- und Vermögensschäden) suffered by participants during the event — i.e. liability for ordinary negligence (leichte Fahrlässigkeit) is excluded.
+
+**4. Safety authority (Weisungsrecht)**
+
+All participants must wear a helmet. The ride leader has the right to require any participant to leave the group at any time if their equipment presents a clear safety hazard, they commit serious traffic violations, or they engage in dangerous behaviour.
+        `,
+      },
+    ],
+  },
+  de: {
+    title: 'ACC-Versicherungshinweis & Haftungsausschluss',
+    subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
+    intro: 'Diese Seite erklärt die Gruppenversicherung, die ACC über den BLSV für Nichtmitglieder bereitstellt, sowie die damit verbundenen Gebühren und Haftungsausschlüsse, die Teilnehmer bei der Anmeldung kennen sollten.',
+    sections: [
+      {
+        title: '1. Nichtmitgliederversicherung',
+        content: `
+Zum Schutz jedes Teilnehmers an ACC-Veranstaltungen schließen wir über den **BLSV** (Bayerischer Landes-Sportverband) eine Gruppen-Sportversicherung für alle Nicht-ACC-Mitglieder ab, versichert bei **ARAG**.
+
+**Versicherte Personen:** Alle angemeldeten Teilnehmer, die keine ACC-Mitglieder sind.
+
+**Versicherungsschutz umfasst:**
+
+1. **Unfallversicherung:** Deckung von Kosten durch Fahrradunfälle, einschließlich ärztlicher Behandlung, Invalidität usw. Die regulären Krankenkosten bleiben bei der persönlichen Krankenversicherung; diese Police greift bei schweren Unfällen.
+
+2. **Haftpflichtversicherung:** Wenn Sie fahrlässig Körperverletzung oder Sachschäden bei Dritten verursachen (z. B. Kollision mit einem fremden Fahrzeug), übernimmt die Versicherung angemessene Schadensersatzleistungen.
+
+3. **Straf-Rechtsschutz:** Wenn ein Fahrradunfall zu einer strafrechtlichen Ermittlung oder Anklage führt (z. B. fahrlässige Körperverletzung), werden die Kosten für die Strafverteidigung gedeckt.
+
+4. **Rückwegschutz (Rückweg):** Die direkte Heimfahrt mit dem Fahrrad oder Auto unmittelbar nach Veranstaltungsende ist ebenfalls mitversichert.
+
+**Versicherungszeitraum:** Ab Ankunft am Treffpunkt bis zum offiziellen Veranstaltungsende (einschließlich direkter Rückfahrt).
+
+> **Haftungshinweis:** Dies ist nur eine Zusammenfassung. Alle spezifischen Versicherungsdetails, Schadensersatzbedingungen und Ausschlüsse richten sich nach den Original-ARAG-Versicherungsunterlagen und dem deutschen Recht. ACC als Veranstalter stellt nur diese Gruppenversicherung zur Verfügung und haftet nicht für Versicherungsentscheidungen oder gemeinsame Schadensersatzleistungen.
+        `,
+      },
+      {
+        title: '2. Teilnahmegebühr',
+        content: `
+Da ACC den oben genannten professionellen Sportversicherungsschutz für jeden Nichtmitglieder bereitstellt, wird von Nicht-ACC-Mitgliedern eine kleine Versicherungsverwaltungsgebühr erhoben:
+
+| Teilnehmerkategorie | Gebühr |
+|---|---|
+| Nicht-Studenten | **2 € pro Person** |
+| Studenten (inkl. Doktoranden) | **1 € pro Person** |
+| ACC-Vollmitglieder | **Kostenlos** (im Jahresbeitrag enthalten) |
+
+**Zahlung:** Bitte zeigen Sie Ihren Studienausweis (falls zutreffend) dem Tourguide am Startpunkt und zahlen Sie vor Ort.
+
+**Voraussetzung für Versicherungsschutz:** Anmeldung auf der offiziellen Website mit Klarnamen erforderlich. Anwesenheitslisten werden im Schadensfall abgeglichen.
+        `,
+      },
+      {
+        title: '3. Haftungsausschluss für Tourguides & Eigenverantwortung',
+        content: `
+ACC-Ausfahrten sind nicht-kommerzielle Gruppenfahrten, alle Tourguides sind ehrenamtliche Freiwillige. Mit der Anmeldung erkennen Sie folgende Bedingungen an:
+
+**1. Ehrenamtlicher Charakter & Eigenverantwortung (Gefälligkeit & auf eigene Gefahr)**
+
+Diese Veranstaltung ist eine freiwillige gegenseitige Hilfsaktivität unter Radfahrern, kein kommerzieller Führungsservice. Jede erhobene Gebühr dient ausschließlich der Nichtmitgliederversicherung und begründet keinen Dienstleistungsvertrag. Teilnehmer tragen die volle Verantwortung für ihre eigene Sicherheit und akzeptieren die inhärenten Risiken des Radfahrens.
+
+**2. Eigenständige Einhaltung der Verkehrsregeln (StVO & Eigenverantwortung)**
+
+Unabhängig von der Gruppenformation ist jeder Teilnehmer rechtlich ein eigenständiger Verkehrsteilnehmer und muss die Straßenverkehrsordnung (StVO) strikt einhalten. An Kreuzungen, Ampeln oder Vorfahrtsschildern muss jeder Fahrer die Verkehrslage selbst beurteilen — das blinde Folgen des Tourguides ist untersagt. Handzeichenbasierte Streckenhinweise des Tourguides sind freiwillige Hilfestellung; der Tourguide übernimmt keine rechtliche Haftung für ausgebliebene oder fehlerhafte Signale.
+
+**3. Haftungsbeschränkung**
+
+Außer bei Vorsatz oder grober Fahrlässigkeit schließen Tourguides persönlich und ACC insgesamt jede Haftung für Sach- und Vermögensschäden der Teilnehmer während der Veranstaltung aus — d.h. die Haftung für leichte Fahrlässigkeit ist ausgeschlossen.
+
+**4. Sicherheitsweisungsrecht (Weisungsrecht)**
+
+Alle Teilnehmer müssen einen Helm tragen. Der Tourguide hat das Recht, Teilnehmer jederzeit aus der Gruppe auszuschließen, wenn deren Ausrüstung eine offensichtliche Sicherheitsgefahr darstellt, sie schwere Verkehrsverstöße begehen oder gefährliches Verhalten zeigen.
+        `,
+      },
+    ],
+  },
+};
+
+const pageContent = content[lang];
+---
+
+<BaseLayout title={pageContent.title} lang={lang}>
+  <article class="insurance-page">
+    <header class="insurance-header">
+      <h1>{pageContent.title}</h1>
+      <p class="insurance-subtitle">{pageContent.subtitle}</p>
+    </header>
+
+    <div class="insurance-intro">
+      <p>{pageContent.intro}</p>
+    </div>
+
+    <div class="insurance-content">
+      {pageContent.sections.map((section) => (
+        <section class="insurance-section">
+          <h2>{section.title}</h2>
+          <div class="section-content" set:html={marked.parse(section.content.trim())} />
+        </section>
+      ))}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .insurance-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .insurance-header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 3px solid var(--color-border-rough);
+  }
+
+  .insurance-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .insurance-subtitle {
+    color: #888;
+    font-size: 0.95rem;
+    font-style: italic;
+    margin: 0;
+  }
+
+  .insurance-intro {
+    background: rgba(42, 92, 166, 0.05);
+    padding: var(--space-lg);
+    border-left: 4px solid var(--color-primary);
+    margin-bottom: var(--space-xl);
+    border-radius: 4px;
+  }
+
+  .insurance-intro p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .insurance-content {
+    line-height: 1.8;
+  }
+
+  .insurance-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .insurance-section h2 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid var(--color-border-rough);
+  }
+
+  .section-content {
+    font-size: 1.05rem;
+    color: #333;
+  }
+
+  .section-content :global(strong) {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .section-content :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .section-content :global(a:hover) {
+    color: var(--color-primary);
+  }
+
+  .section-content :global(blockquote) {
+    border-left: 3px solid #ddd;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #666;
+    font-size: 0.95rem;
+  }
+
+  .section-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .section-content :global(th),
+  .section-content :global(td) {
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+    border: 1px solid var(--color-border-rough);
+  }
+
+  .section-content :global(th) {
+    background: rgba(42, 92, 166, 0.08);
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .section-content :global(ul),
+  .section-content :global(ol) {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .section-content :global(li) {
+    margin-bottom: 0.4rem;
+  }
+
+  @media (max-width: 768px) {
+    .insurance-page {
+      padding: var(--space-md);
+    }
+
+    .insurance-header h1 {
+      font-size: 1.9rem;
+    }
+
+    .insurance-section h2 {
+      font-size: 1.25rem;
+    }
+  }
+</style>
