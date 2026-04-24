@@ -167,6 +167,12 @@
   - [X] Added recurring metadata for weekly regular events with Berlin-time rollover support.
   - [X] Events list and detail pages resolve generated occurrence slugs, dates, and registration deadlines.
   - [X] Markdown-to-database sync upserts the current occurrence for RSVP management.
+- [X] **Admin Occurrence Sync** (Issue [#128](https://github.com/GenLI3202/acc_clubhub/issues/128)) (2026-04-25)
+  - [X] Added authenticated `POST /api/admin/sync-occurrences` upsert endpoint for resolved event occurrences.
+  - [X] Dashboard syncs resolved recurring occurrences before fetching RSVP stats.
+  - [X] Added backend coverage for auth, insert, update, idempotency, null fields, and participant preservation.
+- [X] **Admin Dashboard Cleanup** (2026-04-25)
+  - [X] Removed the `/dashboard/tools/heic-convert` HEIC converter tool page from the admin dashboard codebase.
 
 
 ## In Progress
