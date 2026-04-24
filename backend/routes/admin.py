@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Event, RSVP, Subscriber
@@ -24,6 +25,16 @@ from services.email import (
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+def _count_rsvps_by_status(db: Session, event_id: int, status: str) -> int:
+    """
+    Count RSVPs without selecting full RSVP rows.
+    """
+    return db.query(func.count(RSVP.id)).filter(
+        RSVP.event_id == event_id,
+        RSVP.status == status,
+    ).scalar() or 0
 
 
 class SyncOccurrenceRequest(BaseModel):
@@ -116,18 +127,9 @@ def list_events(
 
     result = []
     for event in events:
-        confirmed_count = db.query(RSVP).filter(
-            RSVP.event_id == event.id,
-            RSVP.status == "confirmed",
-        ).count()
-        waitlist_count = db.query(RSVP).filter(
-            RSVP.event_id == event.id,
-            RSVP.status == "waitlist",
-        ).count()
-        cancelled_count = db.query(RSVP).filter(
-            RSVP.event_id == event.id,
-            RSVP.status == "cancelled",
-        ).count()
+        confirmed_count = _count_rsvps_by_status(db, event.id, "confirmed")
+        waitlist_count = _count_rsvps_by_status(db, event.id, "waitlist")
+        cancelled_count = _count_rsvps_by_status(db, event.id, "cancelled")
 
         result.append({
             "id": event.id,
