@@ -14,6 +14,7 @@ displaySections:
 maxParticipants: 15
 registrationDeadline: 2026-04-29T22:58:00
 registrationLink: ''
+wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
 status: published
 ACCOfficialRide: true
 recurring:
@@ -52,3 +53,11 @@ Für diese Ausfahrt ist keine Anmeldung nötig. Komm einfach pünktlich zum Tref
 ## Hinweise
 
 Bitte prüfe vorher das Wetter, bring passende Ausrüstung mit und kontrolliere kurz dein Rad vor der Abfahrt.
+
+***
+
+### WeChat QR-Code
+
+![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+
+***

@@ -70,7 +70,7 @@ You can join in either of the following ways:
 
 ### WeChat QR Code
 
-![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png)
+![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
 
 ***
 

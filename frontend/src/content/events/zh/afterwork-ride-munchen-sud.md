@@ -77,6 +77,6 @@ recurring:
 
 ### 活动二维码
 
-![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-sud-2026-04-28/wechat-qr.png)
+![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
 
 ***
