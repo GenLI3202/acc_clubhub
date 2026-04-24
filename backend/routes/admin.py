@@ -21,6 +21,11 @@ from services.email import (
     send_broadcast_email,
     send_registrant_notification_email,
 )
+from services.event_counts import (
+    count_confirmed_rsvps,
+    get_available_spots,
+    sync_event_current_participants,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -164,7 +169,7 @@ def list_events(
 
     result = []
     for event in events:
-        confirmed_count = _count_rsvps_by_status(db, event.id, "confirmed")
+        confirmed_count = count_confirmed_rsvps(db, event.id)
         waitlist_count = _count_rsvps_by_status(db, event.id, "waitlist")
         cancelled_count = _count_rsvps_by_status(db, event.id, "cancelled")
 
@@ -176,11 +181,14 @@ def list_events(
             "location": event.location,
             "event_type": event.event_type,
             "max_participants": event.max_participants,
-            "current_participants": event.current_participants,
+            "current_participants": confirmed_count,
             "confirmed_count": confirmed_count,
             "waitlist_count": waitlist_count,
             "cancelled_count": cancelled_count,
-            "spots_remaining": event.available_spots,
+            "spots_remaining": get_available_spots(
+                event.max_participants,
+                confirmed_count,
+            ),
             "is_public": event.is_public,
             "registration_deadline": (
                 event.registration_deadline.isoformat()
@@ -207,6 +215,10 @@ def get_event_rsvps(
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
+    confirmed_count = sync_event_current_participants(db, event)
+    db.commit()
+    db.refresh(event)
+
     rsvps = (
         db.query(RSVP)
         .filter(RSVP.event_id == event_id)
@@ -222,7 +234,7 @@ def get_event_rsvps(
             "event_date": event.event_date.isoformat() if event.event_date else None,
             "location": event.location,
             "max_participants": event.max_participants,
-            "current_participants": event.current_participants,
+            "current_participants": confirmed_count,
         },
         "rsvps": [
             {
@@ -247,7 +259,10 @@ def get_event_rsvps(
             "confirmed": len([r for r in rsvps if r.status == "confirmed"]),
             "waitlist": len([r for r in rsvps if r.status == "waitlist"]),
             "cancelled": len([r for r in rsvps if r.status == "cancelled"]),
-            "checked_in": len([r for r in rsvps if r.checked_in_at]),
+            "checked_in": len([
+                r for r in rsvps
+                if r.status == "confirmed" and r.checked_in_at
+            ]),
         },
     }
 
@@ -342,6 +357,7 @@ def cancel_rsvp(
     was_confirmed = rsvp.status == "confirmed"
     rsvp.status = "cancelled"
     rsvp.cancel_reason = "admin_cancelled"
+    rsvp.checked_in_at = None
 
     # Promote the first waitlisted RSVP when a confirmed slot opens
     promoted = None
@@ -356,6 +372,8 @@ def cancel_rsvp(
             next_waitlisted.status = "confirmed"
             promoted = next_waitlisted
 
+    db.flush()
+    sync_event_current_participants(db, event)
     db.commit()
 
     # Send cancellation notification (non-fatal)
@@ -412,15 +430,15 @@ def restore_rsvp(
     # Determine restored status based on available spots
     new_status = "confirmed"
     if event.max_participants is not None:
-        confirmed_count = db.query(RSVP).filter(
-            RSVP.event_id == event_id,
-            RSVP.status == "confirmed",
-        ).count()
+        confirmed_count = count_confirmed_rsvps(db, event_id)
         if confirmed_count >= event.max_participants:
             new_status = "waitlist"
 
     rsvp.status = new_status
     rsvp.cancel_reason = None
+    rsvp.checked_in_at = None
+    db.flush()
+    sync_event_current_participants(db, event)
     db.commit()
 
     return {

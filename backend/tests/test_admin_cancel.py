@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import pytest
 from unittest.mock import patch, MagicMock
+from datetime import datetime, timezone
 from models import Event, RSVP
 
 
@@ -33,6 +34,14 @@ def _cancel(client, event_id: int, rsvp_id: int, extra_json: dict | None = None)
     return client.post(
         f"/api/admin/events/{event_id}/rsvp/cancel",
         json=body,
+    )
+
+
+def _restore(client, event_id: int, rsvp_id: int):
+    """POST to restore RSVP endpoint."""
+    return client.post(
+        f"/api/admin/events/{event_id}/rsvp/restore",
+        json={"rsvp_id": rsvp_id},
     )
 
 
@@ -114,3 +123,55 @@ class TestCancelRsvpEdgeCases:
     ):
         resp = _cancel(client, event_id=99999, rsvp_id=confirmed_rsvp.id)
         assert resp.status_code == 404
+
+
+class TestCancelRestoreParticipantCount:
+    def test_cancel_restore_cycles_reconcile_current_participants(
+        self, client, db, sample_event, confirmed_rsvp
+    ):
+        """
+        Repeated admin cancel/restore cycles must not drive participant count
+        below the actual number of confirmed RSVPs.
+        """
+        sample_event.current_participants = 0
+        db.commit()
+
+        first_cancel = _cancel(client, sample_event.id, confirmed_rsvp.id)
+        first_restore = _restore(client, sample_event.id, confirmed_rsvp.id)
+        second_cancel = _cancel(client, sample_event.id, confirmed_rsvp.id)
+
+        assert first_cancel.status_code == 200
+        assert first_restore.status_code == 200
+        assert second_cancel.status_code == 200
+
+        db.refresh(sample_event)
+        assert sample_event.current_participants == 0
+
+        restored_again = _restore(client, sample_event.id, confirmed_rsvp.id)
+
+        assert restored_again.status_code == 200
+        db.refresh(sample_event)
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.status == "confirmed"
+        assert sample_event.current_participants == 1
+
+        final_cancel = _cancel(client, sample_event.id, confirmed_rsvp.id)
+
+        assert final_cancel.status_code == 200
+        db.refresh(sample_event)
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.status == "cancelled"
+        assert sample_event.current_participants == 0
+
+    def test_cancel_checked_in_rsvp_clears_attendance(
+        self, client, db, sample_event, confirmed_rsvp
+    ):
+        confirmed_rsvp.checked_in_at = datetime.now(timezone.utc)
+        db.commit()
+
+        resp = _cancel(client, sample_event.id, confirmed_rsvp.id)
+
+        assert resp.status_code == 200
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.status == "cancelled"
+        assert confirmed_rsvp.checked_in_at is None

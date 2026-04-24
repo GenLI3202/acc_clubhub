@@ -10,6 +10,10 @@ from database import get_db
 from models import Event
 from pydantic import BaseModel
 from datetime import datetime, timezone
+from services.event_counts import (
+    get_available_spots,
+    sync_event_current_participants,
+)
 
 router = APIRouter()
 
@@ -40,6 +44,37 @@ class EventListResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+def _event_response(db: Session, event: Event) -> dict:
+    """
+    Serialize an event with participant count reconciled from RSVP rows.
+
+    Args:
+        db: Active database session.
+        event: Event row to serialize.
+
+    Returns:
+        Event response dictionary.
+    """
+    confirmed_count = sync_event_current_participants(db, event)
+    return {
+        "id": event.id,
+        "slug": event.slug,
+        "title": event.title,
+        "description": event.description,
+        "event_date": event.event_date,
+        "location": event.location,
+        "event_type": event.event_type,
+        "max_participants": event.max_participants,
+        "current_participants": confirmed_count,
+        "registration_deadline": event.registration_deadline,
+        "available_spots": get_available_spots(
+            event.max_participants,
+            confirmed_count,
+        ),
+        "is_public": event.is_public,
+    }
 
 
 @router.get("/api/events", response_model=List[EventResponse])
@@ -77,7 +112,7 @@ def get_events(
     # Apply pagination
     events = query.offset(skip).limit(limit).all()
 
-    return events
+    return [_event_response(db, event) for event in events]
 
 
 @router.get("/api/events/{slug}", response_model=EventResponse)
@@ -99,7 +134,7 @@ def get_event(slug: str, db: Session = Depends(get_db)):
             detail=f"Event with slug '{slug}' not found"
         )
 
-    return event
+    return _event_response(db, event)
 
 
 @router.get("/api/events/{event_id}/details", response_model=EventResponse)
@@ -121,7 +156,7 @@ def get_event_by_id(event_id: int, db: Session = Depends(get_db)):
             detail=f"Event with id {event_id} not found"
         )
 
-    return event
+    return _event_response(db, event)
 
 
 class EventCreate(BaseModel):

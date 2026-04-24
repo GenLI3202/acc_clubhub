@@ -17,6 +17,10 @@ from services.email import (
     send_waitlist_email,
     send_subscription_confirmation_email,
 )
+from services.event_counts import (
+    count_confirmed_rsvps,
+    sync_event_current_participants,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +150,8 @@ def create_rsvp(
     waitlist_pos = None
 
     if event.max_participants is not None:
-        spots = event.max_participants - event.current_participants
+        confirmed_count = count_confirmed_rsvps(db, event_id)
+        spots = event.max_participants - confirmed_count
         if spots <= 0:
             rsvp_status = "waitlist"
             waitlist_pos = db.query(RSVP).filter(
@@ -162,6 +167,7 @@ def create_rsvp(
         existing.privacy_accepted = rsvp_data.privacy_accepted
         existing.view_token = secrets.token_urlsafe(32)
         existing.cancel_reason = None
+        existing.checked_in_at = None
         new_rsvp = existing
     else:
         new_rsvp = RSVP(
@@ -175,7 +181,8 @@ def create_rsvp(
         )
         db.add(new_rsvp)
 
-    # NOTE: current_participants 由数据库触发器自动更新
+    db.flush()
+    sync_event_current_participants(db, event)
 
     # 6. 处理订阅
     new_subscriber = False
@@ -316,8 +323,8 @@ def create_rsvp_v2(
     waitlist_pos = None
 
     if event.max_participants is not None:
-        current = event.current_participants or 0
-        spots = event.max_participants - current
+        confirmed_count = count_confirmed_rsvps(db, event.id)
+        spots = event.max_participants - confirmed_count
         if spots <= 0:
             rsvp_status = "waitlist"
             waitlist_pos = db.query(RSVP).filter(
@@ -333,6 +340,7 @@ def create_rsvp_v2(
         existing.privacy_accepted = data.privacy_accepted
         existing.view_token = secrets.token_urlsafe(32)
         existing.cancel_reason = None
+        existing.checked_in_at = None
         new_rsvp = existing
     else:
         new_rsvp = RSVP(
@@ -345,6 +353,9 @@ def create_rsvp_v2(
             view_token=secrets.token_urlsafe(32),
         )
         db.add(new_rsvp)
+
+    db.flush()
+    sync_event_current_participants(db, event)
 
     # 6. Handle subscription
     new_subscriber = False

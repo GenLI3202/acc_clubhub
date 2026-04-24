@@ -189,6 +189,10 @@
 - [X] **Dashboard Confirmation Modal Fix** (2026-04-25)
   - [X] Replaced native `confirm()` prompts on event detail actions with a stable in-page confirmation dialog.
   - [X] Added local preview fixture for event detail pages to verify Check in, Cancel, Restore, and Notify interactions without auth.
+- [X] **Participant Count Reconciliation Fix** (2026-04-25)
+  - [X] Reconciled `current_participants` from confirmed RSVP rows after admin cancel/restore and public registration changes.
+  - [X] Cleared `checked_in_at` when an RSVP is cancelled so cancelled participants no longer count as checked in.
+  - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
 
 
 ## In Progress
