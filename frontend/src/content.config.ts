@@ -249,6 +249,7 @@ const eventsCollection = defineCollection({
     registrationDeadline: z.coerce.date().optional(),
     registrationLink: z.string().optional(),
     ACCOfficialRide: z.boolean().optional(),
+    wechatQrCode: z.string().optional(),
     // displaySections is the canonical frontmatter field for which sections of the events page this event appears in.
     // 'hero'     → featured carousel at the top (max 2-3 events)
     // 'upcoming' → upcoming events card grid

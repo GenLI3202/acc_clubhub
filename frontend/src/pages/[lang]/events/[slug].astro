@@ -60,7 +60,7 @@ const eventTypeLabel = (eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? en
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
 // Effective registration deadline: explicit value in frontmatter, or default to day before event at 22:00
-const rawDeadline = (entry.data as any).registrationDeadline;
+const rawDeadline = entry.data.registrationDeadline;
 const effectiveDeadline = rawDeadline
   ? String(rawDeadline)
   : (() => {
@@ -146,7 +146,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
       data-event-type={entry.data.eventType}
       data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
       data-registration-deadline={effectiveDeadline}
-      data-wechat-qr-code={(entry.data as any).wechatQrCode ?? ''}
+      data-wechat-qr-code={entry.data.wechatQrCode ?? ''}
       data-acc-official-ride={isACCOfficialRide ? 'true' : ''}
       data-lang={lang}
       data-api-url={apiUrl}
