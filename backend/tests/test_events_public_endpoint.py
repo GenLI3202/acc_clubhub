@@ -42,6 +42,24 @@ class TestAdminEventsEndpoint:
         assert "event_date" in data[0]
 
 
+class TestAdminSchemaHealthEndpoint:
+    """GET /api/admin/health/schema — verifies DB migrations are applied."""
+
+    def test_returns_ok_when_required_columns_exist(self, client):
+        res = client.get("/api/admin/health/schema")
+
+        assert res.status_code == 200
+        assert res.json() == {
+            "ok": True,
+            "missing_columns": [],
+        }
+
+    def test_returns_401_without_auth(self, client_no_auth):
+        res = client_no_auth.get("/api/admin/health/schema")
+
+        assert res.status_code == 401
+
+
 class TestSubscriberToggleEndpoint:
     """POST /api/admin/subscribers/{id}/toggle — called by Astro proxy."""
 

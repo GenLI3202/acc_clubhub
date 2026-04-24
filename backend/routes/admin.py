@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from sqlalchemy import func
+from sqlalchemy import func, inspect
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Event, RSVP, Subscriber
@@ -37,6 +37,15 @@ def _count_rsvps_by_status(db: Session, event_id: int, status: str) -> int:
     ).scalar() or 0
 
 
+REQUIRED_SCHEMA_COLUMNS = {
+    "rsvps": {
+        "view_token",
+        "cancel_reason",
+        "checked_in_at",
+    },
+}
+
+
 class SyncOccurrenceRequest(BaseModel):
     slug: str
     title: str
@@ -51,6 +60,34 @@ class SyncOccurrenceRequest(BaseModel):
 class SyncOccurrencesResponse(BaseModel):
     created: int
     updated: int
+
+
+# ── Admin Schema Health ──────────────────────────────────────
+
+@router.get("/api/admin/health/schema")
+def get_schema_health(
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Check that production database columns required by current code exist.
+    """
+    missing_columns = []
+
+    inspector = inspect(db.bind)
+
+    for table_name, required_columns in REQUIRED_SCHEMA_COLUMNS.items():
+        existing_columns = {
+            column["name"]
+            for column in inspector.get_columns(table_name)
+        }
+        for column_name in sorted(required_columns - existing_columns):
+            missing_columns.append(f"{table_name}.{column_name}")
+
+    return {
+        "ok": len(missing_columns) == 0,
+        "missing_columns": missing_columns,
+    }
 
 
 # ── Admin Occurrence Sync ─────────────────────────────────────

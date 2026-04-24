@@ -49,6 +49,27 @@ const zhEvents = resolveRecurringEvents(
 // 2. Sync resolved occurrences to DB before fetching RSVP stats
 const dbStatsMap = new Map<string, any>();
 let statsWarning: string | null = null;
+let schemaWarning: string | null = null;
+
+try {
+  const schemaRes = await fetch(`${apiUrl}/api/admin/health/schema`, {
+    headers: { "Cookie": cookie },
+  });
+  if (schemaRes.status === 401) {
+    return Astro.redirect("/dashboard/login");
+  }
+  if (schemaRes.ok) {
+    const schemaHealth = await schemaRes.json();
+    if (!schemaHealth.ok && schemaHealth.missing_columns?.length) {
+      schemaWarning = `Database schema missing: ${schemaHealth.missing_columns.join(", ")}`;
+    }
+  } else {
+    schemaWarning = `Database schema check unavailable (API returned ${schemaRes.status})`;
+  }
+} catch (e) {
+  const message = e instanceof Error ? e.message : String(e);
+  schemaWarning = `Database schema check unavailable: ${message}`;
+}
 
 const occurrencePayload = zhEvents.map((e) => ({
   slug: e.data.slug,
@@ -320,6 +341,7 @@ function formatDate(dateStr: string | null): string {
       </nav>
 
       {fetchError && <div class="error">{fetchError}</div>}
+      {schemaWarning && <div class="warning">{schemaWarning}</div>}
       {statsWarning && <div class="warning">{statsWarning}</div>}
 
       {events.length === 0 && !fetchError ? (

@@ -178,6 +178,9 @@
   - [X] Added authenticated Dashboard check-in endpoint for confirmed RSVPs.
   - [X] Dashboard event detail now shows registered vs checked-in attendance separately from RSVP status.
   - [X] Added backend coverage for check-in, idempotency, invalid statuses, and RSVP list summary output.
+- [X] **Admin Schema Health Check** (2026-04-25)
+  - [X] Added authenticated schema health endpoint for required RSVP columns.
+  - [X] Dashboard events page now warns explicitly when required DB columns are missing.
 
 
 ## In Progress
