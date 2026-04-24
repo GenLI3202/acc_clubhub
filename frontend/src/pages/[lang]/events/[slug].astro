@@ -75,7 +75,7 @@ const endedLabels: Record<string, string> = {
   de: 'Diese Veranstaltung ist beendet. Die Anmeldung ist geschlossen.',
 };
 
-const isACCOfficialRide = (entry.data as any).ACCOfficialRide === true;
+const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 
 const insuranceNoticeTitle: Record<string, string> = {
   zh: 'ACC官方骑行 · 保险告知',
