@@ -178,6 +178,20 @@ export function EventRegistrationForm({
 
     return (
         <form className="event-registration-form" onSubmit={handleSubmit} data-title={formTitle}>
+            {isACCOfficialRide && (
+                <div className="acc-insurance-notice">
+                    <p className="acc-insurance-notice-text">
+                        &#128737; {t(lang, 'event.insuranceNoticeTitle')}
+                    </p>
+                    <p className="acc-insurance-notice-fee">
+                        &#128176; {t(lang, 'event.insuranceNoticeFee')}
+                    </p>
+                    <a href={`/${lang}/insurance`} target="_blank" rel="noopener" className="acc-insurance-notice-link">
+                        {t(lang, 'event.insuranceLinkText')}
+                    </a>
+                </div>
+            )}
+
             {maxParticipants !== null && (
                 <div className="spots-indicator">
                     <span className={`spots-available${spotsRemaining === 0 ? ' spots-full' : ''}`}>
@@ -245,6 +259,7 @@ export function EventRegistrationForm({
                                 <a href={`/${lang}/privacy`} target="_blank" rel="noopener" className="privacy-link">
                                     {t(lang, 'event.privacyPolicy')}
                                 </a>
+                                <span className="required-star"> *</span>
                             </span>
                         </label>
                     </div>
@@ -263,6 +278,7 @@ export function EventRegistrationForm({
                                     <a href={`/${lang}/insurance`} target="_blank" rel="noopener" className="privacy-link">
                                         {t(lang, 'event.insuranceCheckboxLink')}
                                     </a>
+                                    <span className="required-star"> *</span>
                                 </span>
                             </label>
                         </div>

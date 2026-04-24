@@ -11,6 +11,47 @@
   transform-origin: center top;
 }
 
+/* Insurance notice — shown for ACC official rides */
+.acc-insurance-notice {
+  margin-bottom: 1rem;
+  padding: 0.75rem 0.9rem;
+  background: rgba(42, 92, 166, 0.05);
+  border: 1px solid rgba(42, 92, 166, 0.18);
+  border-left: 3px solid var(--color-primary, #2A5CA6);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.acc-insurance-notice-text {
+  margin: 0 0 0.3rem 0;
+  color: #333;
+}
+
+.acc-insurance-notice-fee {
+  margin: 0 0 0.5rem 0;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.acc-insurance-notice-link {
+  display: inline-block;
+  color: var(--color-accent, #F4A261);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.acc-insurance-notice-link:hover {
+  text-decoration: underline;
+}
+
+/* Required field marker */
+.required-star {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
 /* Two-column grid for form fields */
 .form-row {
   display: grid;
