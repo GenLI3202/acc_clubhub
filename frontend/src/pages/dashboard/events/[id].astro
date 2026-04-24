@@ -12,10 +12,10 @@ try {
     headers: { "Cookie": cookie },
   });
   if (!meRes.ok) {
-    return Astro.redirect("/dashboard/login");
+    return Astro.redirect("/dashboard/login", 302);
   }
 } catch {
-  return Astro.redirect("/dashboard/login");
+  return Astro.redirect("/dashboard/login", 302);
 }
 
 // Fetch event RSVPs
@@ -29,7 +29,7 @@ try {
   if (res.ok) {
     eventData = await res.json();
   } else if (res.status === 401) {
-    return Astro.redirect("/dashboard/login");
+    return Astro.redirect("/dashboard/login", 302);
   } else if (res.status === 404) {
     fetchError = "Event not found";
   } else {

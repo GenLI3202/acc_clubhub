@@ -16,7 +16,7 @@ try {
   if (meRes.ok) {
     adminUser = await meRes.json();
   } else if (meRes.status === 401) {
-    return Astro.redirect("/dashboard/login");
+    return Astro.redirect("/dashboard/login", 302);
   } else {
     authError = `Auth check failed: ${meRes.status}`;
   }

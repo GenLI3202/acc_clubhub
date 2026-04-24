@@ -181,6 +181,11 @@
 - [X] **Admin Schema Health Check** (2026-04-25)
   - [X] Added authenticated schema health endpoint for required RSVP columns.
   - [X] Dashboard events page now warns explicitly when required DB columns are missing.
+- [X] **Events Admin Dashboard Redesign** (2026-04-25)
+  - [X] Replaced category-first event management with workflow views: Upcoming, Needs Attention, Past, and All.
+  - [X] Added tested admin event helpers for classification, status derivation, filtering, and sorting.
+  - [X] Corrected After Work ride content to use the dedicated `after-work` event type across zh/en/de.
+  - [X] Added status badges and compact registration summaries for faster admin scanning.
 
 
 ## In Progress

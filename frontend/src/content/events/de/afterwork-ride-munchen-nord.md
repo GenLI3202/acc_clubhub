@@ -3,7 +3,7 @@ slug: afterwork-ride-Munich-North
 title: ACC After Work Ride · München Nord
 description: Wöchentliche entspannte Social Ride nach der Arbeit, jeden Donnerstag um 17:30 Uhr im Münchner Norden.
 date: 2026-04-23 17:30
-eventType: social-ride
+eventType: after-work
 location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg

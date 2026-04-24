@@ -48,10 +48,15 @@ export type MediaType =
 
 // Event Types
 export type EventType =
+  | 'after-work'     // 下班骑
   | 'social-ride'    // 休闲骑
+  | 'training-ride'  // 训练骑
   | 'training-camp'  // 训练营
   | 'race'           // 比赛
-  | 'workshop';      // 工作坊
+  | 'workshop'       // 工作坊
+  | 'special'        // 特别活动
+  | 'gathering'      // 聚会
+  | 'multi-day';     // 多日活动
 
 // Surface Types
 export type Surface =
@@ -196,4 +201,3 @@ export interface AssetValidationResult {
   warnings: string[];
   errors: string[];
 }
-

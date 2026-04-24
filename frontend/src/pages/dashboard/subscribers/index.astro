@@ -10,9 +10,9 @@ try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
     headers: { "Cookie": cookie },
   });
-  if (!meRes.ok) return Astro.redirect("/dashboard/login");
+  if (!meRes.ok) return Astro.redirect("/dashboard/login", 302);
 } catch {
-  return Astro.redirect("/dashboard/login");
+  return Astro.redirect("/dashboard/login", 302);
 }
 
 // Fetch subscribers
@@ -26,7 +26,7 @@ try {
   if (res.ok) {
     subscribers = await res.json();
   } else if (res.status === 401) {
-    return Astro.redirect("/dashboard/login");
+    return Astro.redirect("/dashboard/login", 302);
   } else {
     fetchError = `Failed to fetch subscribers: ${res.status}`;
   }
