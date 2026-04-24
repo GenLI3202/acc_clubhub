@@ -1,12 +1,12 @@
 ---
 slug: afterwork-ride-Munich-North
-title: Afterwork Ride
-description: Eine entspannte Social Ride nach der Arbeit mit Start um 17:30 Uhr.
+title: ACC After Work Ride · München Nord
+description: Wöchentliche entspannte Social Ride nach der Arbeit, jeden Donnerstag um 17:30 Uhr im Münchner Norden.
 date: 2026-04-23 17:30
 eventType: social-ride
-location: 路线起点
+location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
-cover: /images/events/afterwork-ride-2026-04-23/cover.jpg
+cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
   - regular
   - hero
@@ -26,19 +26,19 @@ recurring:
 
 Komm nach der Arbeit mit auf eine entspannte Runde.
 
-Diese Afterwork Ride ist als lockere Social Ride geplant und eignet sich für alle, die sich am Abend noch ein wenig bewegen, abschalten und gemeinsam in ruhigem Tempo fahren möchten. Wir treffen uns am Startpunkt der Route und fahren dann wie geplant los.
+Diese Afterwork Ride ist als lockere Social Ride geplant und eignet sich für alle, die sich am Abend noch ein wenig bewegen, abschalten und gemeinsam in ruhigem Tempo fahren möchten. Wir treffen uns am OEZ Decathlon und fahren dann wie geplant los.
 
 ## Infos zur Ausfahrt
 
 - **Uhrzeit:** 17:30 Uhr
-- **Treffpunkt:** Startpunkt der Route
+- **Treffpunkt:** OEZ Decathlon, Pelkovenstraße 143, 80992 München
 - **Charakter:** Entspannte Social Ride
 - **Teilnahme:** Einfach vorbeikommen
-- **Komoot-Route:** [Route ansehen](https://www.komoot.de/tour/2902292294?ref=aso&share_token=aoqDvKq5NkiE6l5LqS4x6Ns1sIlJBi5F7KizXJ9fgOpT1Iwtum)
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd)
 
 ## Routenvorschau
 
-<iframe src="https://www.komoot.com/tour/2902292294/embed?share_token=aoqDvKq5NkiE6l5LqS4x6Ns1sIlJBi5F7KizXJ9fgOpT1Iwtum&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/2905259081/embed?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ## Für wen ist die Runde gedacht
 

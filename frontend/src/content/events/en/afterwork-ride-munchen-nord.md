@@ -1,12 +1,12 @@
 ---
 slug: afterwork-ride-Munich-North
-title: Afterwork Ride
-description: A relaxed social afterwork ride starting at 17:30.
+title: ACC After Work Ride · München Nord
+description: Weekly relaxed social afterwork ride every Thursday at 17:30 from München Nord.
 date: 2026-04-23 17:30
 eventType: social-ride
-location: 路线起点
+location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
-cover: /images/events/afterwork-ride-2026-04-23/cover.jpg
+cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
   - regular
   - hero
@@ -26,19 +26,19 @@ recurring:
 
 Join us for an easy spin after work.
 
-This Afterwork Ride is planned as a relaxed social ride, ideal for anyone who wants to move a little after work, unwind, and enjoy an easy pace together. We will meet at the route starting point and roll out as planned.
+This Afterwork Ride is planned as a relaxed social ride, ideal for anyone who wants to move a little after work, unwind, and enjoy an easy pace together. We will meet at OEZ Decathlon and roll out as planned.
 
 ## Event Info
 
 - **Time:** 17:30
-- **Meeting point:** Route starting point
+- **Meeting point:** OEZ Decathlon, Pelkovenstraße 143, 80992 München
 - **Ride type:** Relaxed social ride
 - **Join:** Just show up
-- **Komoot route:** [View route](https://www.komoot.de/tour/2902292294?ref=aso&share_token=aoqDvKq5NkiE6l5LqS4x6Ns1sIlJBi5F7KizXJ9fgOpT1Iwtum)
+- **Komoot route:** [View route](https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd)
 
 ## Route Preview
 
-<iframe src="https://www.komoot.com/tour/2902292294/embed?share_token=aoqDvKq5NkiE6l5LqS4x6Ns1sIlJBi5F7KizXJ9fgOpT1Iwtum&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/2905259081/embed?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ## Who is it for
 

@@ -1,12 +1,12 @@
 ---
 slug: afterwork-ride-Munich-North
-title: Afterwork Ride
-description: 下班后 17:30 出发的一次轻松社交骑。
+title: ACC After Work Ride · München Nord
+description: 每周四下班后 17:30 从慕尼黑北区出发的轻松社交骑。
 date: 2026-04-23 17:30
 eventType: social-ride
-location: 路线起点
+location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
-cover: /images/events/afterwork-ride-2026-04-23/cover.jpg
+cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
   - regular
   - hero
@@ -26,19 +26,19 @@ recurring:
 
 下班后一起出来骑一圈。
 
-这次 Afterwork Ride 以轻松社交骑为主，适合想在工作日傍晚活动一下、放松一下、顺便和大家一起骑车聊天的人。大家将在路线起点集合，按计划出发。
+这次 Afterwork Ride 以轻松社交骑为主，适合想在工作日傍晚活动一下、放松一下、顺便和大家一起骑车聊天的人。大家将在 OEZ Decathlon 集合，按计划出发。
 
 ## 活动信息
 
 - **时间**：17:30
-- **集合地点**：路线起点
+- **集合地点**：OEZ Decathlon, Pelkovenstraße 143, 80992 München
 - **骑行类型**：轻松社交骑
 - **参与方式**：直接来
-- **Komoot 路线**：[查看路线](https://www.komoot.de/tour/2902292294?ref=aso&share_token=aoqDvKq5NkiE6l5LqS4x6Ns1sIlJBi5F7KizXJ9fgOpT1Iwtum)
+- **Komoot 路线**：[查看路线](https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd)
 
 ## 路线预览
 
-<iframe src="https://www.komoot.com/tour/2902292294/embed?share_token=aoqDvKq5NkiE6l5LqS4x6Ns1sIlJBi5F7KizXJ9fgOpT1Iwtum&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/2905259081/embed?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ## 适合谁来
 
