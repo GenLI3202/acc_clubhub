@@ -13,6 +13,7 @@ interface EventRegistrationFormProps {
     maxParticipants: number | null;
     registrationDeadline: string | null;
     wechatQrCode: string | null;
+    isACCOfficialRide: boolean;
     lang: Locale;
     apiUrl: string;
 }
@@ -22,6 +23,7 @@ interface FormData {
     name: string;
     notes: string;
     privacy_accepted: boolean;
+    insurance_accepted: boolean;
     subscribe: boolean;
     lang: string;
 }
@@ -35,6 +37,7 @@ export function EventRegistrationForm({
     maxParticipants,
     registrationDeadline,
     wechatQrCode,
+    isACCOfficialRide,
     lang,
     apiUrl,
 }: EventRegistrationFormProps): VNode {
@@ -47,6 +50,7 @@ export function EventRegistrationForm({
         name: '',
         notes: '',
         privacy_accepted: false,
+        insurance_accepted: false,
         subscribe: false,
         lang,
     });
@@ -77,6 +81,12 @@ export function EventRegistrationForm({
 
         if (!formData.privacy_accepted) {
             setError(t(lang, 'event.errorPrivacy'));
+            setLoading(false);
+            return;
+        }
+
+        if (isACCOfficialRide && !formData.insurance_accepted) {
+            setError(t(lang, 'event.errorInsurance'));
             setLoading(false);
             return;
         }
@@ -129,6 +139,7 @@ export function EventRegistrationForm({
                 name: '',
                 notes: '',
                 privacy_accepted: false,
+                insurance_accepted: false,
                 subscribe: false,
                 lang,
             });
@@ -237,6 +248,25 @@ export function EventRegistrationForm({
                             </span>
                         </label>
                     </div>
+
+                    {isACCOfficialRide && (
+                        <div className="form-group checkbox">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.insurance_accepted}
+                                    onChange={(e) => setFormData({ ...formData, insurance_accepted: (e.target as HTMLInputElement).checked })}
+                                    disabled={loading}
+                                />
+                                <span>
+                                    {t(lang, 'event.insuranceCheckboxPrefix')}{' '}
+                                    <a href={`/${lang}/insurance`} target="_blank" rel="noopener" className="privacy-link">
+                                        {t(lang, 'event.insuranceCheckboxLink')}
+                                    </a>
+                                </span>
+                            </label>
+                        </div>
+                    )}
 
                     <div className="form-group checkbox">
                         <label>
