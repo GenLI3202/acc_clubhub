@@ -15,6 +15,7 @@ maxParticipants: 15
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
 status: published
+ACCOfficialRide: true
 recurring:
   frequency: weekly
   intervalWeeks: 1

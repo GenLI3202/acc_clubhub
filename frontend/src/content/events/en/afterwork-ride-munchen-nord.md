@@ -15,6 +15,7 @@ maxParticipants: 15
 registrationDeadline: 2026-04-29T22:58:00
 registrationLink: ''
 status: published
+ACCOfficialRide: true
 recurring:
   frequency: weekly
   intervalWeeks: 1
