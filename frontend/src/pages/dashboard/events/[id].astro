@@ -36,7 +36,8 @@ try {
     fetchError = `Failed to fetch RSVPs: ${res.status}`;
   }
 } catch (e) {
-  fetchError = `Failed to fetch RSVPs: ${e.message}`;
+  const message = e instanceof Error ? e.message : String(e);
+  fetchError = `Failed to fetch RSVPs: ${message}`;
 }
 
 function formatDate(dateStr: string | null): string {
@@ -54,11 +55,6 @@ function formatDate(dateStr: string | null): string {
   }
 }
 
-const statusClass: Record<string, string> = {
-  confirmed: "badge-confirmed",
-  waitlist: "badge-waitlist",
-  cancelled: "badge-cancelled",
-};
 ---
 
 <!doctype html>
@@ -172,6 +168,20 @@ const statusClass: Record<string, string> = {
       .badge-confirmed { background: #dafbe1; color: #1a7f37; }
       .badge-waitlist { background: #fff8c5; color: #9a6700; }
       .badge-cancelled { background: #ffebe9; color: #cf222e; }
+      .badge-registered { background: #ddf4ff; color: #0969da; }
+      .badge-checked-in { background: #dafbe1; color: #1a7f37; }
+      .check-in-btn {
+        padding: 0.25rem 0.6rem;
+        background: #ddf4ff;
+        color: #0969da !important;
+        border: 1px solid #54aeff66;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .check-in-btn:hover { background: #b6e3ff; }
+      .check-in-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .cancel-btn {
         padding: 0.25rem 0.6rem;
         background: #ffebe9;
@@ -241,6 +251,10 @@ const statusClass: Record<string, string> = {
               <div class="value">{eventData.summary.cancelled}</div>
             </div>
             <div class="summary-card">
+              <div class="label">Checked In</div>
+              <div class="value">{eventData.summary.checked_in ?? 0}</div>
+            </div>
+            <div class="summary-card">
               <div class="label">Total</div>
               <div class="value">{eventData.summary.total}</div>
             </div>
@@ -271,6 +285,7 @@ const statusClass: Record<string, string> = {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Status</th>
+                  <th>Attendance</th>
                   <th>Notes</th>
                   <th>Registered</th>
                   <th>Actions</th>
@@ -289,6 +304,14 @@ const statusClass: Record<string, string> = {
                         <span class="cancel-reason">({rsvp.cancel_reason === "admin_cancelled" ? "by admin" : "by user"})</span>
                       )}
                     </td>
+                    <td>
+                      <span class={`badge badge-${rsvp.attendance_status === "checked_in" ? "checked-in" : "registered"}`}>
+                        {rsvp.attendance_status === "checked_in" ? "checked_in" : "registered"}
+                      </span>
+                      {rsvp.checked_in_at && (
+                        <div class="cancel-reason">{formatDate(rsvp.checked_in_at)}</div>
+                      )}
+                    </td>
                     <td class="notes">{rsvp.notes || "—"}</td>
                     <td>{formatDate(rsvp.created_at)}</td>
                     <td>
@@ -302,14 +325,26 @@ const statusClass: Record<string, string> = {
                           Restore
                         </button>
                       ) : rsvp.status !== "cancelled" && (
-                        <button
-                          class="cancel-btn"
-                          data-rsvp-id={rsvp.id}
-                          data-rsvp-name={rsvp.name}
-                          id={`cancel-btn-${rsvp.id}`}
-                        >
-                          Cancel
-                        </button>
+                        <div class="actions">
+                          {rsvp.status === "confirmed" && !rsvp.checked_in_at && (
+                            <button
+                              class="check-in-btn"
+                              data-rsvp-id={rsvp.id}
+                              data-rsvp-name={rsvp.name}
+                              id={`check-in-btn-${rsvp.id}`}
+                            >
+                              Check in
+                            </button>
+                          )}
+                          <button
+                            class="cancel-btn"
+                            data-rsvp-id={rsvp.id}
+                            data-rsvp-name={rsvp.name}
+                            id={`cancel-btn-${rsvp.id}`}
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>
@@ -322,6 +357,31 @@ const statusClass: Record<string, string> = {
     </div>
 
     <script define:vars={{ id }}>
+      async function checkInRsvp(rsvpId, rsvpName, btn) {
+        if (!confirm(`Check in ${rsvpName}?`)) return;
+        btn.disabled = true;
+        try {
+          const res = await fetch(`/dashboard/api/events/${id}/rsvp/check-in`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          window.location.reload();
+        } catch (e) {
+          alert("Failed to check in RSVP: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      document.querySelectorAll(".check-in-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          checkInRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
+        });
+      });
+
       async function cancelRsvp(rsvpId, rsvpName, btn) {
         if (!confirm(`Cancel RSVP for ${rsvpName}?`)) return;
         btn.disabled = true;

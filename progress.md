@@ -173,6 +173,11 @@
   - [X] Added backend coverage for auth, insert, update, idempotency, null fields, and participant preservation.
 - [X] **Admin Dashboard Cleanup** (2026-04-25)
   - [X] Removed the `/dashboard/tools/heic-convert` HEIC converter tool page from the admin dashboard codebase.
+- [X] **Admin Event Check-in** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105)) (2026-04-25)
+  - [X] Added RSVP `checked_in_at` storage and migration for attendance confirmation.
+  - [X] Added authenticated Dashboard check-in endpoint for confirmed RSVPs.
+  - [X] Dashboard event detail now shows registered vs checked-in attendance separately from RSVP status.
+  - [X] Added backend coverage for check-in, idempotency, invalid statuses, and RSVP list summary output.
 
 
 ## In Progress
@@ -181,6 +186,9 @@
   - [ ] **BLOCKED** — `/dashboard/login` returns 404 (Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67))
   - [ ] Registration spot count mismatch in dashboard (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
   - [ ] Participant portal not tested end-to-end
+- [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
+  - [ ] Survey delivery mechanism and trigger timing still pending.
+  - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.
 - [ ] **E2E Testing**
   - [ ] E2E functional testing for registration flow (8 test scenarios)
   - [ ] Email delivery monitoring

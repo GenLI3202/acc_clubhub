@@ -7,7 +7,7 @@ from __future__ import annotations
 import csv
 import io
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -192,6 +192,12 @@ def get_event_rsvps(
                 "email": r.email,
                 "status": r.status,
                 "cancel_reason": r.cancel_reason,
+                "attendance_status": (
+                    "checked_in" if r.checked_in_at else "registered"
+                ),
+                "checked_in_at": (
+                    r.checked_in_at.isoformat() if r.checked_in_at else None
+                ),
                 "notes": r.notes,
                 "created_at": r.created_at.isoformat() if r.created_at else None,
             }
@@ -202,7 +208,58 @@ def get_event_rsvps(
             "confirmed": len([r for r in rsvps if r.status == "confirmed"]),
             "waitlist": len([r for r in rsvps if r.status == "waitlist"]),
             "cancelled": len([r for r in rsvps if r.status == "cancelled"]),
+            "checked_in": len([r for r in rsvps if r.checked_in_at]),
         },
+    }
+
+
+# ── Admin RSVP Check-in ──────────────────────────────────────
+
+class CheckInRsvpRequest(BaseModel):
+    rsvp_id: int
+
+
+@router.post("/api/admin/events/{event_id}/rsvp/check-in")
+def check_in_rsvp(
+    event_id: int,
+    body: CheckInRsvpRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Mark a confirmed RSVP as checked in.
+
+    Requires admin authentication.
+    """
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    rsvp = db.query(RSVP).filter(
+        RSVP.id == body.rsvp_id,
+        RSVP.event_id == event_id,
+    ).first()
+    if not rsvp:
+        raise HTTPException(status_code=404, detail="RSVP not found")
+
+    if rsvp.status != "confirmed":
+        raise HTTPException(
+            status_code=400,
+            detail="Only confirmed RSVPs can be checked in",
+        )
+
+    if not rsvp.checked_in_at:
+        rsvp.checked_in_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(rsvp)
+
+    return {
+        "success": True,
+        "message": f"RSVP for {rsvp.name} checked in",
+        "attendance_status": "checked_in",
+        "checked_in_at": (
+            rsvp.checked_in_at.isoformat() if rsvp.checked_in_at else None
+        ),
     }
 
 
@@ -359,13 +416,23 @@ def export_rsvps_csv(
 
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["Name", "Email", "Status", "Notes", "Registered At"])
+    writer.writerow([
+        "Name",
+        "Email",
+        "Status",
+        "Attendance",
+        "Checked In At",
+        "Notes",
+        "Registered At",
+    ])
 
     for r in rsvps:
         writer.writerow([
             r.name,
             r.email,
             r.status,
+            "checked_in" if r.checked_in_at else "registered",
+            r.checked_in_at.isoformat() if r.checked_in_at else "",
             r.notes or "",
             r.created_at.isoformat() if r.created_at else "",
         ])

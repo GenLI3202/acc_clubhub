@@ -96,6 +96,7 @@ class RSVP(Base):
     notes = Column(Text, nullable=True)
     privacy_accepted = Column(Boolean, default=False)
     view_token = Column(String(64), nullable=True, index=True)
+    checked_in_at = Column(DateTime(timezone=True), nullable=True, index=True)
     created_at = Column(
         DateTime(timezone=True), default=_utcnow, index=True,
     )
