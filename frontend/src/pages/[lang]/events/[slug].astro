@@ -74,6 +74,24 @@ const endedLabels: Record<string, string> = {
   en: 'This event has ended. Registration is closed.',
   de: 'Diese Veranstaltung ist beendet. Die Anmeldung ist geschlossen.',
 };
+
+const isACCOfficialRide = (entry.data as any).ACCOfficialRide === true;
+
+const insuranceNoticeTitle: Record<string, string> = {
+  zh: 'ACC官方骑行 · 保险告知',
+  en: 'ACC Official Ride · Insurance Notice',
+  de: 'ACC Offizielle Ausfahrt · Versicherungshinweis',
+};
+const insuranceNoticeFee: Record<string, string> = {
+  zh: '非会员保险管理费：非学生 2€ | 学生 1€ | ACC会员免费',
+  en: 'Non-member insurance fee: Non-student 2€ | Student 1€ | ACC member free',
+  de: 'Versicherungsbeitrag: Nicht-Student 2€ | Student 1€ | ACC-Mitglied kostenlos',
+};
+const insuranceLinkText: Record<string, string> = {
+  zh: '查看保险及免责详情 →',
+  en: 'View insurance & liability details →',
+  de: 'Versicherungs- und Haftungsdetails →',
+};
 ---
 
 <ArticleLayout
@@ -100,6 +118,20 @@ const endedLabels: Record<string, string> = {
       <span class="event-location">📍 {entry.data.location}</span>
     )}
   </div>
+
+  <!-- Insurance notice for ACC official rides -->
+  {isACCOfficialRide && (
+    <div class="insurance-notice">
+      <span class="insurance-notice-icon">&#128737;</span>
+      <div class="insurance-notice-body">
+        <strong>{insuranceNoticeTitle[lang]}</strong>
+        <span>{insuranceNoticeFee[lang]}</span>
+        <a href={`/${lang}/insurance`} target="_blank" rel="noopener" class="insurance-notice-link">
+          {insuranceLinkText[lang]}
+        </a>
+      </div>
+    </div>
+  )}
 
   <!-- Main Content -->
   <Content />
@@ -145,6 +177,7 @@ const endedLabels: Record<string, string> = {
       data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
       data-registration-deadline={effectiveDeadline}
       data-wechat-qr-code={(entry.data as any).wechatQrCode ?? ''}
+      data-acc-official-ride={isACCOfficialRide ? 'true' : ''}
       data-lang={lang}
       data-api-url={apiUrl}
     >
@@ -174,6 +207,7 @@ const endedLabels: Record<string, string> = {
     const maxParticipants = maxParticipantsRaw ? parseInt(maxParticipantsRaw, 10) : null;
     const registrationDeadline = container.dataset.registrationDeadline || null;
     const wechatQrCode = container.dataset.wechatQrCode || null;
+    const isACCOfficialRide = container.dataset.accOfficialRide === 'true';
     const lang = (container.dataset.lang ?? 'zh') as Locale;
     const apiUrl = container.dataset.apiUrl ?? '';
 
@@ -192,6 +226,7 @@ const endedLabels: Record<string, string> = {
         maxParticipants,
         registrationDeadline,
         wechatQrCode,
+        isACCOfficialRide,
         lang,
         apiUrl,
       }),
@@ -231,6 +266,53 @@ const endedLabels: Record<string, string> = {
   .event-location {
     font-size: 0.95rem;
     color: #666;
+  }
+
+  .insurance-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    background: rgba(42, 92, 166, 0.05);
+    border: 1px solid rgba(42, 92, 166, 0.2);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 6px;
+    margin-bottom: var(--space-lg);
+    font-size: 0.9rem;
+  }
+
+  .insurance-notice-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  .insurance-notice-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.6rem;
+    line-height: 1.5;
+  }
+
+  .insurance-notice-body strong {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .insurance-notice-body span {
+    color: #555;
+  }
+
+  .insurance-notice-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .insurance-notice-link:hover {
+    text-decoration: underline;
   }
 
   .event-register-btn {
