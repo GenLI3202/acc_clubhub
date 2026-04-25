@@ -1,9 +1,9 @@
 ---
 slug: munich-to-venice-solo
-title: From the Gateway to the Alps to the City on Water: A Solo Crossing Ride
+title: "From the Gateway to the Alps to the City on Water: A Solo Crossing Ride"
 date: 2026-04-25
 type: adventure
-description: A four-day solo ride in summer 2024 from Munich across Brenner Pass to Venice.
+description: "A four-day solo ride in summer 2024 from Munich across Brenner Pass to Venice."
 author: Gen Li
 cover: /images/media/adventure/munich-to-venice-solo/cover.jpg
 tags: [solo, bikepacking, alps, brenner-pass, munich, venice]

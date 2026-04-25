@@ -1,9 +1,9 @@
 ---
 slug: munich-to-venice-solo
-title: Vom Tor zu den Alpen bis in die Lagunenstadt: Eine Solo-Durchquerung mit dem Rad
+title: "Vom Tor zu den Alpen bis in die Lagunenstadt: Eine Solo-Durchquerung mit dem Rad"
 date: 2026-04-25
 type: adventure
-description: Eine viertägige Solo-Fahrt im Sommer 2024 von München über den Brenner bis nach Venedig.
+description: "Eine viertägige Solo-Fahrt im Sommer 2024 von München über den Brenner bis nach Venedig."
 author: Gen Li
 cover: /images/media/adventure/munich-to-venice-solo/cover.jpg
 tags: [solo, bikepacking, alps, brenner-pass, munich, venice]
