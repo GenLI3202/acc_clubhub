@@ -7,7 +7,8 @@ description: 2024 年夏天，一场从慕尼黑翻越 Brenner Pass 到威尼斯
 author: Gen Li
 cover: /images/media/adventure/munich-to-venice-solo/cover.jpg
 tags: [solo, bikepacking, alps, brenner-pass, munich, venice]
-status: draft
+featured: true
+status: published
 ---
 
 2024 年 7 月，我用一场四天三夜的 solo 骑行，度过了自己的 29 岁生日。
