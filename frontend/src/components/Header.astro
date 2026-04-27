@@ -42,6 +42,17 @@ function getLangSwitchUrl(targetLang: Locale): string {
           </a>
         </li>
       ))}
+      <li>
+        <a
+          class:list={[
+            'join-cta',
+            { active: currentPath === `/${lang}/membership` },
+          ]}
+          href={`/${lang}/membership`}
+        >
+          {t(lang, 'nav.join')}
+        </a>
+      </li>
     </ul>
 
     <div class="header-actions">
@@ -309,11 +320,44 @@ function getLangSwitchUrl(targetLang: Locale): string {
     font-weight: 600;
   }
 
+  li a.join-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    background: var(--color-accent);
+    color: #ffffff;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 200ms ease, color 200ms ease;
+  }
+
+  li a.join-cta:hover,
+  li a.join-cta.active {
+    background: var(--color-accent-dark);
+    color: #ffffff;
+  }
+
+  li a.join-cta::after {
+    display: none;
+  }
+
   header.header-transparent li a.active {
     color: #ffffff;
   }
   header.header-transparent.header-scrolled li a.active {
     color: var(--color-accent);
+  }
+
+  header.header-transparent li a.join-cta,
+  header.header-transparent li a.join-cta.active,
+  header.header-transparent.header-scrolled li a.join-cta,
+  header.header-transparent.header-scrolled li a.join-cta.active {
+    color: #ffffff;
   }
 
   /* Mobile hamburger */
@@ -358,6 +402,12 @@ function getLangSwitchUrl(targetLang: Locale): string {
 
     li a { display: block; padding: 0.5rem 0; }
 
+    li a.join-cta {
+      display: inline-flex;
+      margin-top: 0.5rem;
+      padding: 0.55rem 1rem;
+    }
+
     .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
       transform: rotate(45deg) translate(5px, 5px);
     }
@@ -393,6 +443,13 @@ function getLangSwitchUrl(targetLang: Locale): string {
     header:has(#nav-toggle:checked) li a.active,
     header.nav-open li a.active {
       color: var(--color-accent) !important;
+    }
+
+    header:has(#nav-toggle:checked) li a.join-cta,
+    header:has(#nav-toggle:checked) li a.join-cta.active,
+    header.nav-open li a.join-cta,
+    header.nav-open li a.join-cta.active {
+      color: #ffffff !important;
     }
 
     header:has(#nav-toggle:checked) .nav-toggle-label span,

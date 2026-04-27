@@ -193,6 +193,10 @@
   - [X] Reconciled `current_participants` from confirmed RSVP rows after admin cancel/restore and public registration changes.
   - [X] Cleared `checked_in_at` when an RSVP is cancelled so cancelled participants no longer count as checked in.
   - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
+- [X] **Membership Entry Page** (Issue [#129](https://github.com/GenLI3202/acc_clubhub/issues/129)) (2026-04-27)
+  - [X] Added `/zh/membership`, `/en/membership`, and `/de/membership` with 2026 founding pricing, quantified benefits, member terms, and signup CTA placeholder.
+  - [X] Added membership i18n strings across zh/en/de.
+  - [X] Added the Header join CTA and removed the duplicate Home nav link.
 
 
 ## In Progress
