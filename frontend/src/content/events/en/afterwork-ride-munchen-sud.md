@@ -61,10 +61,10 @@ The ride is expected to return to the starting point at around **20:30**, which 
 
 ### Join
 
-You can join in either of the following ways:
+If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
+This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
 
-- Scan the QR code to join the group
-- Or register via the email listed on the event page
+Joining the group via QR code is only for ride communication. It **does not count as a successful registration** and cannot replace email registration.
 
 ***
 

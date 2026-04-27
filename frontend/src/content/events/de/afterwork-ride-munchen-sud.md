@@ -61,10 +61,10 @@ Die Runde endet voraussichtlich gegen **20:30 Uhr wieder am Startpunkt** und eig
 
 ### Anmeldung
 
-Du kannst auf zwei Arten teilnehmen:
+Wenn du an dieser Ausfahrt teilnehmen möchtest, melde dich bitte unbedingt **über die auf der Event-Seite angegebene E-Mail-Adresse** an.  
+Nur so können wir Anwesenheit und Teilnahme korrekt dokumentieren; falls später ein Nachweis für Versicherung oder Teilnahme erforderlich ist, gelten **Anmeldedatensatz und Sign-in-Datensatz** als Grundlage.
 
-- QR-Code scannen und der Gruppe beitreten
-- Oder dich per E-Mail über die Event-Seite anmelden
+Der Beitritt zur Gruppe per QR-Code dient nur der Kommunikation rund um die Ausfahrt. Er **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
 
 ---
 
