@@ -232,6 +232,18 @@ function formatDate(dateStr: string | null): string {
       }
       .check-in-btn:hover { background: #b6e3ff; }
       .check-in-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .undo-check-in-btn {
+        padding: 0.25rem 0.6rem;
+        background: #fff8c5;
+        color: #9a6700 !important;
+        border: 1px solid #d4a72c66;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .undo-check-in-btn:hover { background: #f7e78b; }
+      .undo-check-in-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .cancel-btn {
         padding: 0.25rem 0.6rem;
         background: #ffebe9;
@@ -445,6 +457,16 @@ function formatDate(dateStr: string | null): string {
                               Check in
                             </button>
                           )}
+                          {rsvp.status === "confirmed" && rsvp.checked_in_at && (
+                            <button
+                              class="undo-check-in-btn"
+                              data-rsvp-id={rsvp.id}
+                              data-rsvp-name={rsvp.name}
+                              id={`undo-check-in-btn-${rsvp.id}`}
+                            >
+                              Undo check-in
+                            </button>
+                          )}
                           <button
                             class="cancel-btn"
                             data-rsvp-id={rsvp.id}
@@ -561,6 +583,39 @@ function formatDate(dateStr: string | null): string {
       document.querySelectorAll(".check-in-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           checkInRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
+        });
+      });
+
+      async function undoCheckInRsvp(rsvpId, rsvpName, btn) {
+        const confirmed = await confirmAction({
+          title: "Undo check-in",
+          message: `Move ${rsvpName} back to registered?`,
+          confirmLabel: "Undo check-in",
+        });
+        if (!confirmed) return;
+        btn.disabled = true;
+        try {
+          const res = await fetch(
+            `/dashboard/api/events/${id}/rsvp/check-in/undo`,
+            {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
+            }
+          );
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          window.location.reload();
+        } catch (e) {
+          alert("Failed to undo check-in: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      document.querySelectorAll(".undo-check-in-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          undoCheckInRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
         });
       });
 

@@ -3,6 +3,8 @@ Tests for admin RSVP check-in.
 """
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from models import RSVP
 
 
@@ -10,6 +12,14 @@ def _check_in(client, event_id: int, rsvp_id: int):
     """POST to RSVP check-in endpoint."""
     return client.post(
         f"/api/admin/events/{event_id}/rsvp/check-in",
+        json={"rsvp_id": rsvp_id},
+    )
+
+
+def _undo_check_in(client, event_id: int, rsvp_id: int):
+    """POST to undo RSVP check-in endpoint."""
+    return client.post(
+        f"/api/admin/events/{event_id}/rsvp/check-in/undo",
         json={"rsvp_id": rsvp_id},
     )
 
@@ -48,6 +58,86 @@ class TestAdminRsvpCheckIn:
         assert second.status_code == 200
         db.refresh(confirmed_rsvp)
         assert confirmed_rsvp.checked_in_at == checked_in_at
+
+    def test_undo_check_in_clears_attendance(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ):
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.checked_in_at is not None
+
+        resp = _undo_check_in(client, sample_event.id, confirmed_rsvp.id)
+
+        assert resp.status_code == 200
+        assert resp.json()["attendance_status"] == "registered"
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.status == "confirmed"
+        assert confirmed_rsvp.checked_in_at is None
+
+    def test_undo_check_in_updates_rsvp_summary(
+        self,
+        client,
+        sample_event,
+        confirmed_rsvp,
+    ):
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+
+        checked_in_resp = client.get(f"/api/admin/events/{sample_event.id}/rsvps")
+
+        assert checked_in_resp.status_code == 200
+        assert checked_in_resp.json()["summary"]["checked_in"] == 1
+
+        undo_resp = _undo_check_in(client, sample_event.id, confirmed_rsvp.id)
+        summary_resp = client.get(f"/api/admin/events/{sample_event.id}/rsvps")
+
+        assert undo_resp.status_code == 200
+        assert summary_resp.status_code == 200
+        assert summary_resp.json()["summary"]["checked_in"] == 0
+
+    def test_undo_check_in_is_idempotent(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ):
+        resp = _undo_check_in(client, sample_event.id, confirmed_rsvp.id)
+
+        assert resp.status_code == 200
+        assert resp.json()["attendance_status"] == "registered"
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.checked_in_at is None
+
+    def test_undo_check_in_cancelled_rsvp_returns_400(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ):
+        confirmed_rsvp.status = "cancelled"
+        confirmed_rsvp.checked_in_at = datetime.now(timezone.utc)
+        db.commit()
+
+        resp = _undo_check_in(client, sample_event.id, confirmed_rsvp.id)
+
+        assert resp.status_code == 400
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.checked_in_at is not None
+
+    def test_undo_check_in_wrong_event_returns_404(
+        self,
+        client,
+        sample_event,
+        confirmed_rsvp,
+    ):
+        resp = _undo_check_in(client, event_id=99999, rsvp_id=confirmed_rsvp.id)
+
+        assert resp.status_code == 404
 
     def test_check_in_cancelled_rsvp_returns_400(
         self,

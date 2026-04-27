@@ -317,6 +317,48 @@ def check_in_rsvp(
     }
 
 
+@router.post("/api/admin/events/{event_id}/rsvp/check-in/undo")
+def undo_check_in_rsvp(
+    event_id: int,
+    body: CheckInRsvpRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """
+    Clear check-in for a confirmed RSVP.
+
+    Requires admin authentication.
+    """
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    rsvp = db.query(RSVP).filter(
+        RSVP.id == body.rsvp_id,
+        RSVP.event_id == event_id,
+    ).first()
+    if not rsvp:
+        raise HTTPException(status_code=404, detail="RSVP not found")
+
+    if rsvp.status != "confirmed":
+        raise HTTPException(
+            status_code=400,
+            detail="Only confirmed RSVPs can have check-in undone",
+        )
+
+    if rsvp.checked_in_at:
+        rsvp.checked_in_at = None
+        db.commit()
+        db.refresh(rsvp)
+
+    return {
+        "success": True,
+        "message": f"Check-in for {rsvp.name} undone",
+        "attendance_status": "registered",
+        "checked_in_at": None,
+    }
+
+
 # ── Admin Cancel RSVP ─────────────────────────────────────────
 
 class CancelRsvpRequest(BaseModel):
