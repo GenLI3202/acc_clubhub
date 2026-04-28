@@ -15,6 +15,9 @@ maxParticipants: 15
 registrationDeadline: 2026-04-29T22:58:00
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
+routeKomootUrl: https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd
+routeMapTitle: After Work Ride Route
+routeGeoJsonFile: /src/data/routes/afterwork-ride-2026-04-30.geojson
 status: published
 ACCOfficialRide: true
 recurring:
@@ -87,4 +90,3 @@ Teilnahmegebühr für Nichtmitglieder: **2 € für Nicht-Studierende / 1 € f�
 
 - **Komoot-Route:** [Route ansehen](https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd)
 
-<iframe src="https://www.komoot.com/tour/2905259081/embed?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>

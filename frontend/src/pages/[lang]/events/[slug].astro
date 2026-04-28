@@ -11,6 +11,7 @@ import { EventRegistrationForm } from '../../../components/EventRegistrationForm
 import '../../../components/EventRegistrationForm.css';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
 import RouteMap from '../../../components/routes/RouteMap.astro';
+import route0430GeoJson from '../../../data/routes/afterwork-ride-2026-04-30.geojson';
 
 export const prerender = false;
 
@@ -77,6 +78,12 @@ const endedLabels: Record<string, string> = {
 };
 
 const isACCOfficialRide = entry.data.ACCOfficialRide === true;
+
+const routeGeoJson = (() => {
+  if (entry.data.routeGeoJson) return entry.data.routeGeoJson;
+  if (entry.data.routeGeoJsonFile === '/src/data/routes/afterwork-ride-2026-04-30.geojson') return route0430GeoJson;
+  return null;
+})();
 ---
 
 <ArticleLayout
@@ -104,9 +111,9 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
     )}
   </div>
 
-  {entry.data.routeGeoJson && (
+  {routeGeoJson && (
     <RouteMap
-      geojson={entry.data.routeGeoJson}
+      geojson={routeGeoJson}
       title={entry.data.routeMapTitle ?? 'Route map'}
       komootUrl={entry.data.routeKomootUrl}
       stravaUrl={entry.data.routeStravaUrl}

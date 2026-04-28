@@ -256,6 +256,7 @@ const eventsCollection = defineCollection({
     ACCOfficialRide: z.boolean().optional(),
     wechatQrCode: z.string().optional(),
     routeGeoJson: z.any().optional(),
+    routeGeoJsonFile: z.string().optional(),
     routeKomootUrl: z.string().optional(),
     routeStravaUrl: z.string().optional(),
     routeMapTitle: z.string().optional(),
