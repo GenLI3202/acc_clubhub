@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC After Work Ride · München Nord
-description: Weekly relaxed social afterwork ride every Thursday at 17:30 from München Nord.
-date: 2026-04-23 17:30
+description: Weekly relaxed social after-work ride every Thursday with meet-up at 17:30 and rollout at 17:45 from OEZ Decathlon in München Nord.
+date: 2026-04-30 17:30
 eventType: after-work
 location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
@@ -26,33 +26,54 @@ recurring:
   registrationDeadlineHoursBefore: 19.5
 ---
 
-Join us for an easy spin after work.
+Join us for a relaxed ride through München Nord after work.
 
-This Afterwork Ride is planned as a relaxed social ride, ideal for anyone who wants to move a little after work, unwind, and enjoy an easy pace together. We will meet at OEZ Decathlon and roll out as planned.
+This After Work Ride is designed as a relaxed social ride for anyone who wants to get some movement after work, unwind a bit, and enjoy an easy evening ride together. The pace is social and friendly, but participants should be comfortable with basic road riding.
 
-## Event Info
+We will meet on **Thursday, April 30 at 17:30** at **OEZ Decathlon**, with a **prompt rollout at 17:45**, and head out for an after-work route through the north of Munich. The route is about **48.5 km** with around **110 m** of elevation gain, and we expect to return to the starting point at around **20:00**.
 
-- **Time:** 17:30
-- **Meeting point:** OEZ Decathlon, Pelkovenstraße 143, 80992 München
-- **Ride type:** Relaxed social ride
-- **Join:** Just show up
-- **Komoot route:** [View route](https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd)
+***
 
-## Route Preview
+|  | Details |
+| --- | --- |
+| **Time** | Thursday, April 30 · Meet-up at 17:30 · Rollout at 17:45 sharp · Expected return around 20:00 |
+| **Meeting point** | OEZ Decathlon, Pelkovenstraße 143, 80992 München |
+| **Route** | Approx. 48.5 km · Approx. 110 m elevation gain |
+| **Pace** | Relaxed social ride, but basic road riding ability is required |
+| **Bike type** | Road bike or gravel bike recommended |
+| **Notes** | Please wear a helmet and bring suitable gear based on the weather; if visibility may be low on the way back, please also bring lights; bring water and basic nutrition, and make sure your bike is in good condition; the ride will be automatically cancelled in case of severe weather or if fewer than 2 participants register, excluding the ride leader |
+| **Capacity** | Limited to 15 riders |
 
-<iframe src="https://www.komoot.com/tour/2905259081/embed?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+***
 
-## Who is it for
+### About the ride
 
-This ride is a good fit if you want a light afterwork spin and a social pace rather than a hard training effort.
+This is not intended as a hard training ride. The idea is to enjoy an easy **after-work ride**, relax a bit after the day, and spend time riding together socially.
 
-## How to join
+All cycling enthusiasts are welcome. If you feel comfortable with the expected pace, feel free to join.
 
-No registration is needed for this ride. Just come to the starting point on time and we will head out as planned.
+***
 
-## Notes
+### Logistics
 
-Please check the weather, bring suitable gear, and make sure your bike is ready to ride.
+The ride is expected to return to the starting point at around **20:00**, making it a good option for a weekday evening outing after work.
+
+***
+
+### Join
+
+If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
+This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
+
+Joining the group via QR code is only for ride communication. It **does not count as a successful registration** and cannot replace email registration.
+
+***
+
+### Insurance and Fee
+
+ACC provides activity insurance for **non-members** who complete实名 registration via the official event page.
+
+Participation fee for non-members: **€2 for non-students / €1 for students (including PhD students)**; **free for official ACC members**. Students should show a valid student ID, and the fee is collected on site at the meeting point.
 
 ***
 
@@ -61,3 +82,9 @@ Please check the weather, bring suitable gear, and make sure your bike is ready 
 ![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
 
 ***
+
+### Route Preview
+
+- **Komoot route:** [View route](https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd)
+
+<iframe src="https://www.komoot.com/tour/2905259081/embed?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
