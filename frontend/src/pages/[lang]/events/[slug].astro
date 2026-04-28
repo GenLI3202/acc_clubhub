@@ -10,6 +10,7 @@ import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
+import RouteMap from '../../../components/routes/RouteMap.astro';
 
 export const prerender = false;
 
@@ -102,6 +103,15 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
       <span class="event-location">📍 {entry.data.location}</span>
     )}
   </div>
+
+  {entry.data.routeGeoJson && (
+    <RouteMap
+      geojson={entry.data.routeGeoJson}
+      title={entry.data.routeMapTitle ?? 'Route map'}
+      komootUrl={entry.data.routeKomootUrl}
+      stravaUrl={entry.data.routeStravaUrl}
+    />
+  )}
 
   <!-- Main Content -->
   <Content />

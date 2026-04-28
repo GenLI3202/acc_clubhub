@@ -255,6 +255,10 @@ const eventsCollection = defineCollection({
     registrationLink: z.string().optional(),
     ACCOfficialRide: z.boolean().optional(),
     wechatQrCode: z.string().optional(),
+    routeGeoJson: z.any().optional(),
+    routeKomootUrl: z.string().optional(),
+    routeStravaUrl: z.string().optional(),
+    routeMapTitle: z.string().optional(),
     // displaySections is the canonical frontmatter field for which sections of the events page this event appears in.
     // 'hero'     → featured carousel at the top (max 2-3 events)
     // 'upcoming' → upcoming events card grid
@@ -283,6 +287,8 @@ const eventsCollection = defineCollection({
     description: data.description || '',
     registrationDeadline: data.registrationDeadline?.toISOString() ?? null,
     displaySections: data.displaySections ?? [data.displaySection],
+    routeKomootUrl: data.routeKomootUrl || undefined,
+    routeStravaUrl: data.routeStravaUrl || undefined,
   })),
 });
 
