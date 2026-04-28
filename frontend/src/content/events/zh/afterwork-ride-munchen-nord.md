@@ -17,7 +17,7 @@ registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
 routeKomootUrl: https://www.komoot.com/de-de/tour/2905259081?share_token=aC611DCgbwYZdHjZGzBAIjymm2w0lSA38Mchl7R4vZxXcoa1xv&ref=wtd
 routeMapTitle: After Work Ride Route
-routeGeoJsonFile: /src/data/routes/afterwork-ride-2026-04-30.geojson
+routeGeoJsonFile: /src/data/routes/afterwork-ride-2026-04-30.ts
 status: published
 ACCOfficialRide: true
 recurring:

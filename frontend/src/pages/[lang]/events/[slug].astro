@@ -11,7 +11,7 @@ import { EventRegistrationForm } from '../../../components/EventRegistrationForm
 import '../../../components/EventRegistrationForm.css';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
 import RouteMap from '../../../components/routes/RouteMap.astro';
-import route0430GeoJson from '../../../data/routes/afterwork-ride-2026-04-30.geojson';
+import route0430GeoJson from '../../../data/routes/afterwork-ride-2026-04-30.ts';
 
 export const prerender = false;
 
@@ -81,7 +81,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 
 const routeGeoJson = (() => {
   if (entry.data.routeGeoJson) return entry.data.routeGeoJson;
-  if (entry.data.routeGeoJsonFile === '/src/data/routes/afterwork-ride-2026-04-30.geojson') return route0430GeoJson;
+  if (entry.data.routeGeoJsonFile === '/src/data/routes/afterwork-ride-2026-04-30.ts') return route0430GeoJson;
   return null;
 })();
 ---

@@ -1,4 +1,6 @@
 ---
+import RouteMapLeaflet from './RouteMapLeaflet';
+
 interface Props {
   geojson: any;
   title?: string;
@@ -14,105 +16,18 @@ const {
   stravaUrl,
   height = 420,
 } = Astro.props;
-
-function collectLineStrings(input: any): number[][][] {
-  if (!input) return [];
-  if (input.type === 'FeatureCollection') {
-    return (input.features ?? []).flatMap((feature: any) => collectLineStrings(feature));
-  }
-  if (input.type === 'Feature') {
-    return collectLineStrings(input.geometry);
-  }
-  if (input.type === 'LineString') {
-    return [input.coordinates ?? []];
-  }
-  if (input.type === 'MultiLineString') {
-    return input.coordinates ?? [];
-  }
-  if (input.type === 'GeometryCollection') {
-    return (input.geometries ?? []).flatMap((geometry: any) => collectLineStrings(geometry));
-  }
-  return [];
-}
-
-const lines = collectLineStrings(geojson).filter((line) => line.length >= 2);
-
-if (lines.length === 0) {
-  throw new Error('RouteMap requires a GeoJSON LineString/MultiLineString/FeatureCollection with coordinates.');
-}
-
-const points = lines.flat();
-const lngs = points.map(([lng]) => Number(lng));
-const lats = points.map(([, lat]) => Number(lat));
-
-const minLng = Math.min(...lngs);
-const maxLng = Math.max(...lngs);
-const minLat = Math.min(...lats);
-const maxLat = Math.max(...lats);
-const width = 1000;
-const latSpan = Math.max(maxLat - minLat, 0.00001);
-const lngSpan = Math.max(maxLng - minLng, 0.00001);
-const padding = 48;
-const innerWidth = width - padding * 2;
-const innerHeight = Math.max(height - padding * 2, 120);
-const scale = Math.min(innerWidth / lngSpan, innerHeight / latSpan);
-const projectedWidth = lngSpan * scale;
-const projectedHeight = latSpan * scale;
-const xOffset = (width - projectedWidth) / 2;
-const yOffset = (height - projectedHeight) / 2;
-
-function project([lng, lat]: number[]) {
-  const x = xOffset + (Number(lng) - minLng) * scale;
-  const y = yOffset + (maxLat - Number(lat)) * scale;
-  return `${x.toFixed(2)},${y.toFixed(2)}`;
-}
-
-const polylines = lines.map((line) => line.map(project).join(' '));
-const start = project(lines[0][0]);
-const end = project(lines[lines.length - 1][lines[lines.length - 1].length - 1]);
-const uid = `route-map-${Math.random().toString(36).slice(2, 10)}`;
 ---
 
-<section class="route-map-card" aria-label={title}>
-  <div class="route-map-head">
-    <h3>{title}</h3>
-    <div class="route-map-links">
-      {stravaUrl && <a href={stravaUrl} target="_blank" rel="noopener">Strava ↗</a>}
-      {komootUrl && <a href={komootUrl} target="_blank" rel="noopener">Komoot ↗</a>}
-    </div>
-  </div>
+<RouteMapLeaflet
+  client:load
+  geojson={geojson}
+  title={title}
+  komootUrl={komootUrl}
+  stravaUrl={stravaUrl}
+  height={height}
+/>
 
-  <div class="route-map-shell" data-route-map id={uid}>
-    <div class="route-map-toolbar" aria-label="Map controls">
-      <button type="button" data-zoom-in aria-label="Zoom in">＋</button>
-      <button type="button" data-zoom-out aria-label="Zoom out">－</button>
-      <button type="button" data-reset aria-label="Reset view">Reset</button>
-    </div>
-
-    <svg
-      class="route-map-svg"
-      viewBox={`0 0 ${width} ${height}`}
-      preserveAspectRatio="xMidYMid meet"
-      role="img"
-      aria-label={title}
-    >
-      <g data-viewport>
-        <rect x="0" y="0" width={width} height={height} fill="#f6f8f7" rx="18" />
-        <g opacity="0.5">
-          <path d={`M 0 ${height / 2} L ${width} ${height / 2}`} class="route-map-grid" />
-          <path d={`M ${width / 2} 0 L ${width / 2} ${height}`} class="route-map-grid" />
-        </g>
-        {polylines.map((points) => (
-          <polyline points={points} fill="none" stroke="#2d5d9b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
-        ))}
-        <circle cx={start.split(',')[0]} cy={start.split(',')[1]} r="10" fill="#16a34a" />
-        <circle cx={end.split(',')[0]} cy={end.split(',')[1]} r="10" fill="#dc2626" />
-      </g>
-    </svg>
-  </div>
-</section>
-
-<style>
+<style is:global>
   .route-map-card {
     margin: 2rem 0;
     padding: 1rem;
@@ -120,6 +35,7 @@ const uid = `route-map-${Math.random().toString(36).slice(2, 10)}`;
     border-radius: 16px;
     background: #fff;
   }
+
   .route-map-head {
     display: flex;
     justify-content: space-between;
@@ -128,127 +44,33 @@ const uid = `route-map-${Math.random().toString(36).slice(2, 10)}`;
     flex-wrap: wrap;
     margin-bottom: 0.75rem;
   }
+
   .route-map-head h3 {
     margin: 0;
     font-size: 1.1rem;
   }
+
   .route-map-links {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
   }
-  .route-map-shell {
-    position: relative;
-    overflow: hidden;
+
+  .route-map-leaflet {
+    width: 100%;
     border-radius: 14px;
+    overflow: hidden;
     border: 1px solid #d8dee4;
     background: #f6f8f7;
-    touch-action: none;
-    cursor: grab;
   }
-  .route-map-shell.is-dragging {
-    cursor: grabbing;
-  }
-  .route-map-toolbar {
-    position: absolute;
-    z-index: 2;
-    top: 12px;
-    right: 12px;
-    display: flex;
-    gap: 0.5rem;
-  }
-  .route-map-toolbar button {
-    border: 1px solid #c9d1d9;
-    background: rgba(255,255,255,0.95);
-    border-radius: 10px;
-    padding: 0.4rem 0.7rem;
-    font: inherit;
-    cursor: pointer;
-  }
-  .route-map-svg {
-    display: block;
+
+  .route-map-leaflet .leaflet-container {
     width: 100%;
-    height: auto;
-    user-select: none;
+    height: 100%;
+    font: inherit;
   }
-  .route-map-grid {
-    stroke: #d9e1e8;
-    stroke-width: 2;
-    stroke-dasharray: 10 10;
+
+  .route-map-leaflet .leaflet-control-attribution {
+    font-size: 11px;
   }
 </style>
-
-<script define:vars={{ uid, height }}>
-  const root = document.getElementById(uid);
-  if (root) {
-    const viewport = root.querySelector('[data-viewport]');
-    const zoomIn = root.querySelector('[data-zoom-in]');
-    const zoomOut = root.querySelector('[data-zoom-out]');
-    const reset = root.querySelector('[data-reset]');
-
-    let scale = 1;
-    let tx = 0;
-    let ty = 0;
-    let dragging = false;
-    let startX = 0;
-    let startY = 0;
-
-    const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
-    const render = () => {
-      viewport?.setAttribute('transform', `translate(${tx} ${ty}) scale(${scale})`);
-    };
-
-    const zoomAt = (factor, clientX, clientY) => {
-      const rect = root.getBoundingClientRect();
-      const px = ((clientX - rect.left) / rect.width) * 1000;
-      const py = ((clientY - rect.top) / rect.height) * height;
-      const next = clamp(scale * factor, 1, 8);
-      const ratio = next / scale;
-      tx = px - (px - tx) * ratio;
-      ty = py - (py - ty) * ratio;
-      scale = next;
-      render();
-    };
-
-    zoomIn?.addEventListener('click', () => zoomAt(1.25, root.getBoundingClientRect().left + 200, root.getBoundingClientRect().top + 120));
-    zoomOut?.addEventListener('click', () => zoomAt(0.8, root.getBoundingClientRect().left + 200, root.getBoundingClientRect().top + 120));
-    reset?.addEventListener('click', () => {
-      scale = 1;
-      tx = 0;
-      ty = 0;
-      render();
-    });
-
-    root.addEventListener('wheel', (event) => {
-      event.preventDefault();
-      zoomAt(event.deltaY < 0 ? 1.1 : 0.9, event.clientX, event.clientY);
-    }, { passive: false });
-
-    root.addEventListener('pointerdown', (event) => {
-      dragging = true;
-      startX = event.clientX - tx;
-      startY = event.clientY - ty;
-      root.classList.add('is-dragging');
-      root.setPointerCapture(event.pointerId);
-    });
-
-    root.addEventListener('pointermove', (event) => {
-      if (!dragging) return;
-      tx = event.clientX - startX;
-      ty = event.clientY - startY;
-      render();
-    });
-
-    const stopDrag = (event) => {
-      dragging = false;
-      root.classList.remove('is-dragging');
-      if (root.hasPointerCapture(event.pointerId)) {
-        root.releasePointerCapture(event.pointerId);
-      }
-    };
-
-    root.addEventListener('pointerup', stopDrag);
-    root.addEventListener('pointercancel', stopDrag);
-    render();
-  }
-</script>
