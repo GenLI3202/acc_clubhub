@@ -8,6 +8,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.
 const cookie = Astro.request.headers.get("cookie") || "";
 let adminUser = null;
 let authError = null;
+let adminLabel = "";
 
 try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
@@ -22,6 +23,10 @@ try {
   }
 } catch (e) {
   authError = `Auth check error: ${e.message}`;
+}
+
+if (adminUser) {
+  adminLabel = adminUser.email || adminUser.admin_id || adminUser.github_login || "admin";
 }
 ---
 
@@ -95,7 +100,7 @@ try {
       <div class="header">
         <h1>ACC ClubHub Admin</h1>
         <div class="user-info">
-          {adminUser && <span>@{adminUser.github_login}</span>}
+          {adminUser && <span>{adminLabel}</span>}
           <a href="/auth/logout" class="logout-btn">Logout</a>
         </div>
       </div>
