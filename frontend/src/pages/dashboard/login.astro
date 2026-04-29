@@ -199,14 +199,18 @@ try {
     </div>
 
     <script>
-      const form = document.getElementById("email-login-form");
+      const formElement = document.getElementById("email-login-form");
       const message = document.getElementById("login-message");
 
-      form?.addEventListener("submit", async (event) => {
+      if (!(formElement instanceof HTMLFormElement)) {
+        throw new Error("Dashboard login form was not found.");
+      }
+
+      formElement.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const submit = form.querySelector("button[type='submit']");
-        const formData = new FormData(form);
+        const submit = formElement.querySelector("button[type='submit']");
+        const formData = new FormData(formElement);
         const email = formData.get("email");
         const password = formData.get("password");
         if (
