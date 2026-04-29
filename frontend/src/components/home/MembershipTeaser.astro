@@ -9,24 +9,21 @@ const { lang } = Astro.props;
 
 const copy = {
     zh: {
-        badge: "新增 · NEW",
         eyebrow: "会员 · 2026 / 27",
         headline: "不只是来骑车 —— 加入 ACC，成为这件事的一部分。",
-        body: "约 75 次团骑、领骑补贴、官方活动保险、ACC 会员身份。非营利俱乐部，会费 10–49€，全部用于会员回报。",
+        body: "70+ 次保险覆盖的团骑、骑行进阶培训、ACC 周边与赛事优惠，以及更多。",
         cta: "了解会员",
     },
     en: {
-        badge: "NEW",
         eyebrow: "Membership · 2026 / 27",
         headline: "More than rides — join ACC and be part of this.",
-        body: "~75 group rides, ride-leader stipends, official activity insurance, ACC member status. Non-profit club, fee 10–49€, all goes back to members.",
+        body: "70+ insured group rides, cycling coaching, ACC gear & race discounts, and more.",
         cta: "Learn more",
     },
     de: {
-        badge: "NEU",
         eyebrow: "Mitgliedschaft · 2026 / 27",
         headline: "Mehr als Radfahren — werde Teil von ACC.",
-        body: "Ca. 75 Gruppenfahrten, Ride-Leader-Förderung, offizielle Aktivitätsversicherung, ACC-Mitgliedschaft. Gemeinnütziger Verein, Beitrag 10–49€, alles für die Mitglieder.",
+        body: "70+ versicherte Gruppenfahrten, Radtraining, ACC-Ausrüstungs- & Rennrabatte und mehr.",
         cta: "Mehr erfahren",
     },
 } as const;
@@ -44,7 +41,6 @@ const c = copy[lang] ?? copy.zh;
         />
 
         <div class="mem-teaser-body">
-            <span class="mem-teaser-badge">{c.badge}</span>
             <p class="mem-teaser-eyebrow">{c.eyebrow}</p>
             <h2 class="mem-teaser-headline">{c.headline}</h2>
             <p class="mem-teaser-text">{c.body}</p>
@@ -70,69 +66,52 @@ const c = copy[lang] ?? copy.zh;
         position: relative;
         max-width: var(--max-width);
         margin: 0 auto;
-        padding: 2.5rem 2rem 2.5rem;
+        padding: var(--space-lg) var(--space-md);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 2rem;
-        border: 1.5px dashed var(--color-accent);
-        border-radius: 4px;
+        gap: var(--space-lg);
         overflow: hidden;
     }
 
     .mem-teaser-watermark {
         position: absolute;
-        right: -40px;
+        right: -20px;
         top: 50%;
         transform: translateY(-50%);
-        width: 260px;
-        height: 260px;
+        width: 220px;
+        height: 220px;
         opacity: 0.07;
         pointer-events: none;
         user-select: none;
     }
 
-    .mem-teaser-badge {
-        display: inline-block;
-        font-family: var(--font-heading);
-        font-size: 0.65rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        padding: 3px 10px;
-        border-radius: var(--radius-full);
-        background: var(--color-accent);
-        color: #fff;
-        margin-bottom: 0.75rem;
-    }
-
     .mem-teaser-eyebrow {
         font-family: var(--font-heading);
-        font-size: 0.72rem;
+        font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.12em;
         color: var(--color-accent);
-        margin: 0 0 0.6rem;
+        margin: 0 0 0.3rem;
     }
 
     .mem-teaser-headline {
         font-family: var(--font-heading);
-        font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+        font-size: 1.5rem;
         font-weight: 700;
         letter-spacing: -0.02em;
         line-height: 1.2;
         color: var(--color-text-main);
-        margin: 0 0 0.75rem;
+        margin: 0 0 0.3rem;
     }
 
     .mem-teaser-text {
         font-family: var(--font-body);
-        font-size: 0.9375rem;
-        line-height: 1.6;
+        font-size: 0.95rem;
+        line-height: 1.55;
         color: var(--color-text-secondary);
         margin: 0;
-        max-width: 52ch;
     }
 
     .mem-teaser-action {
@@ -146,13 +125,13 @@ const c = copy[lang] ?? copy.zh;
         align-items: center;
         gap: 0.4rem;
         font-family: var(--font-heading);
-        font-size: 0.8125rem;
+        font-size: 0.85rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        padding: 0.8rem 1.6rem;
+        letter-spacing: 0.06em;
+        padding: 0.7rem 1.8rem;
         border-radius: var(--radius-btn);
-        border: 1.5px solid var(--color-text-main);
+        border: 1.5px solid var(--color-border-strong);
         color: var(--color-text-main);
         background: transparent;
         text-decoration: none;
@@ -169,21 +148,16 @@ const c = copy[lang] ?? copy.zh;
         background: var(--color-text-main);
         color: var(--color-bg-canvas);
         border-color: var(--color-text-main);
-        transform: translateY(-1px);
+        transform: translateY(-2px);
         box-shadow: var(--shadow-md);
         text-decoration: none;
-    }
-
-    :global(:root.dark) .mem-teaser-inner {
-        border-color: rgba(198, 40, 40, 0.5);
     }
 
     @media (max-width: 768px) {
         .mem-teaser-inner {
             flex-direction: column;
             align-items: flex-start;
-            gap: 1.5rem;
-            padding: 2rem 1.25rem;
+            gap: var(--space-md);
         }
 
         .mem-teaser-watermark {
@@ -191,8 +165,8 @@ const c = copy[lang] ?? copy.zh;
             top: auto;
             bottom: -20px;
             transform: none;
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
         }
     }
 </style>

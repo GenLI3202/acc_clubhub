@@ -253,6 +253,7 @@ function getLangSwitchUrl(targetLang: Locale): string {
     margin-left: 1rem;
   }
 
+  /* JOIN pill — default (opaque header, non-transparent pages) */
   .join-cta {
     background: var(--color-accent);
     color: #fff;
@@ -277,6 +278,42 @@ function getLangSwitchUrl(targetLang: Locale): string {
     box-shadow: var(--shadow-md);
     color: #fff;
     text-decoration: none;
+  }
+
+  /* Transparent header, not yet scrolled: ghost frosted-glass pill */
+  header.header-transparent .join-cta {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  header.header-transparent .join-cta:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: none;
+    color: #ffffff;
+  }
+
+  /* After scrolling: revert to solid red pill */
+  header.header-transparent.header-scrolled .join-cta {
+    background: var(--color-accent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+
+  header.header-transparent.header-scrolled .join-cta:hover,
+  header.header-transparent.header-scrolled .join-cta--active {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: #fff;
   }
 
   ul {
