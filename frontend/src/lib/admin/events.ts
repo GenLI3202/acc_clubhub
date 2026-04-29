@@ -40,6 +40,7 @@ export type AdminEventRow = {
   spots_remaining: number | null;
   db_id: number | null;
   in_db: boolean;
+  distance_km?: number | null;
 };
 
 const EVENT_TYPE_LABELS: Record<AdminEventType, string> = {
