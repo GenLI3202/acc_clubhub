@@ -148,7 +148,6 @@ def sync_occurrences(
                 event.distance_km = occurrence.distance_km
                 event.is_public = True
                 updated += 1
-                recalculate_event_ride_leader_state(db, event.id)
                 continue
 
             db.add(

@@ -7,6 +7,8 @@ is implemented in routes/admin.py.
 
 import pytest
 from datetime import datetime, timezone
+from unittest.mock import patch
+
 from models import Event
 
 
@@ -145,6 +147,18 @@ class TestSyncOccurrencesUpsert:
 
         db.refresh(sample_event)
         assert sample_event.is_public is True
+
+
+class TestSyncOccurrencesPerformance:
+    def test_update_path_does_not_trigger_ride_leader_recalculation(self, client, db):
+        client.post("/api/admin/sync-occurrences", json=[NORD_PAYLOAD])
+
+        updated = {**NORD_PAYLOAD, "title": "Updated title"}
+        with patch("routes.admin.recalculate_event_ride_leader_state") as mock_recalc:
+            res = client.post("/api/admin/sync-occurrences", json=[updated])
+
+        assert res.status_code == 200
+        mock_recalc.assert_not_called()
 
 
 class TestSyncOccurrencesEdgeCases:
