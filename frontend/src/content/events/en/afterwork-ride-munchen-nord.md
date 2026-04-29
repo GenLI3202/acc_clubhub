@@ -23,7 +23,7 @@ recurring:
   timezone: Europe/Berlin
   rolloverTime: 22:00
   slugBase: afterwork-ride
-  registrationDeadlineHoursBefore: 19.5
+  registrationDeadlineHoursBefore: 2
 ---
 
 Join us for a relaxed ride through München Nord after work.

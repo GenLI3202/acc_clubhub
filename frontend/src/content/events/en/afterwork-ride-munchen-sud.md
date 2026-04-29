@@ -22,7 +22,7 @@ recurring:
   timezone: Europe/Berlin
   rolloverTime: 22:00
   slugBase: afterwork-ride-sud
-  registrationDeadlineHoursBefore: 19.5
+  registrationDeadlineHoursBefore: 2
 ---
 
 Join us for a relaxed ride through München Süd after work next Tuesday.

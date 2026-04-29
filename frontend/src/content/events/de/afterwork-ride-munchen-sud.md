@@ -22,7 +22,7 @@ recurring:
   timezone: Europe/Berlin
   rolloverTime: 22:00
   slugBase: afterwork-ride-sud
-  registrationDeadlineHoursBefore: 19.5
+  registrationDeadlineHoursBefore: 2
 ---
 
 Komm nächsten Dienstag nach Feierabend mit auf eine entspannte Runde durch den Münchner Süden.
