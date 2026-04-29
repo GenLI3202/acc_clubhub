@@ -1,10 +1,9 @@
 ---
-// dashboard/login.astro — GitHub OAuth login page (SSR)
+// dashboard/login.astro - Admin magic link login page (SSR)
 export const prerender = false;
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
-// Check if already authenticated (server-side, no cookies forwarded)
 try {
   const cookie = Astro.request.headers.get("cookie") || "";
   const meRes = await fetch(`${apiUrl}/auth/me`, {
@@ -14,7 +13,7 @@ try {
     return Astro.redirect("/dashboard", 302);
   }
 } catch {
-  // Not authenticated — show login page
+  // Not authenticated - show login page.
 }
 ---
 
@@ -34,42 +33,219 @@ try {
         margin: 0;
         background: #f6f8fa;
       }
+
       .login-box {
         background: white;
         padding: 3rem;
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         text-align: center;
-        max-width: 400px;
+        max-width: 430px;
+        width: calc(100% - 2rem);
       }
-      h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #24292f; }
-      p { color: #57606a; margin-bottom: 2rem; }
-      .login-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: #24292f;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
+
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #24292f;
+      }
+
+      p {
+        color: #57606a;
+        margin-bottom: 2rem;
+      }
+
+      form {
+        display: grid;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        color: #24292f;
         font-weight: 600;
+        text-align: left;
+      }
+
+      input {
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        color: #24292f;
+        font: inherit;
+        padding: 0.75rem 0.875rem;
+      }
+
+      input:focus {
+        border-color: #C62828;
+        box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.18);
+        outline: none;
+      }
+
+      .login-btn {
+        align-items: center;
+        border: 0;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        font: inherit;
+        font-weight: 600;
+        gap: 0.5rem;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
         transition: background 0.2s;
       }
-      .login-btn:hover { background: #3d444d; }
-      .login-btn svg { width: 20px; height: 20px; }
+
+      .login-btn--primary {
+        background: #C62828;
+        color: white;
+      }
+
+      .login-btn--primary:hover {
+        background: #a81f1f;
+      }
+
+      .login-btn--github {
+        background: #24292f;
+        color: white;
+        width: 100%;
+      }
+
+      .login-btn--github:hover {
+        background: #3d444d;
+      }
+
+      .login-btn svg {
+        height: 20px;
+        width: 20px;
+      }
+
+      .divider {
+        align-items: center;
+        color: #6e7781;
+        display: flex;
+        gap: 0.75rem;
+        margin: 1.25rem 0;
+      }
+
+      .divider::before,
+      .divider::after {
+        background: #d8dee4;
+        content: "";
+        flex: 1;
+        height: 1px;
+      }
+
+      .message {
+        border-radius: 6px;
+        display: none;
+        margin: 1rem 0 0;
+        padding: 0.75rem;
+        text-align: left;
+      }
+
+      .message.is-visible {
+        display: block;
+      }
+
+      .message--success {
+        background: #dafbe1;
+        color: #1a7f37;
+      }
+
+      .message--error {
+        background: #ffebe9;
+        color: #cf222e;
+      }
     </style>
   </head>
   <body>
     <div class="login-box">
       <h1>ACC ClubHub Admin</h1>
-      <p>Sign in with your GitHub account to access the admin dashboard.</p>
-      <a href="/auth/login" class="login-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor">
+      <p>Enter an authorized ride leader email and dashboard password.</p>
+
+      <form id="magic-link-form">
+        <label for="admin-email">Email address</label>
+        <input
+          id="admin-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+        />
+        <label for="admin-password">Dashboard password</label>
+        <input
+          id="admin-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+        <button type="submit" class="login-btn login-btn--primary">
+          Send magic link
+        </button>
+      </form>
+
+      <div id="login-message" class="message" role="status" aria-live="polite"></div>
+
+      <div class="divider">or</div>
+
+      <a href="/auth/login" class="login-btn login-btn--github">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
         </svg>
-        Login with GitHub
+        Continue with GitHub
       </a>
     </div>
+
+    <script>
+      const form = document.getElementById("magic-link-form");
+      const message = document.getElementById("login-message");
+
+      form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submit = form.querySelector("button[type='submit']");
+        const formData = new FormData(form);
+        const email = formData.get("email");
+        const password = formData.get("password");
+        if (
+          !(submit instanceof HTMLButtonElement) ||
+          typeof email !== "string" ||
+          typeof password !== "string"
+        ) {
+          return;
+        }
+
+        submit.disabled = true;
+        submit.textContent = "Sending...";
+        message?.classList.remove("is-visible", "message--success", "message--error");
+
+        try {
+          const response = await fetch("/auth/magic-link", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Unable to send login link.");
+          }
+
+          if (message) {
+            message.textContent = "Check your email for the dashboard login link.";
+            message.classList.add("is-visible", "message--success");
+          }
+        } catch {
+          if (message) {
+            message.textContent = "The email or password is incorrect, or the link could not be sent.";
+            message.classList.add("is-visible", "message--error");
+          }
+        } finally {
+          submit.disabled = false;
+          submit.textContent = "Send magic link";
+        }
+      });
+    </script>
   </body>
 </html>

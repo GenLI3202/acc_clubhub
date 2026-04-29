@@ -8,6 +8,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.
 const cookie = Astro.request.headers.get("cookie") || "";
 let adminUser = null;
 let authError = null;
+let adminLabel = "";
 
 try {
   const meRes = await fetch(`${apiUrl}/auth/me`, {
@@ -22,6 +23,10 @@ try {
   }
 } catch (e) {
   authError = `Auth check error: ${e.message}`;
+}
+
+if (adminUser) {
+  adminLabel = adminUser.email || adminUser.admin_id || adminUser.github_login || "admin";
 }
 ---
 
@@ -81,11 +86,11 @@ try {
         transition: border-color 0.2s, box-shadow 0.2s;
       }
       .nav-card:hover {
-        border-color: #0969da;
-        box-shadow: 0 2px 8px rgba(9,105,218,0.1);
+        border-color: #C62828;
+        box-shadow: 0 2px 8px rgba(198, 40, 40, 0.12);
         text-decoration: none;
       }
-      .nav-card h2 { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #0969da; }
+      .nav-card h2 { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #C62828; }
       .nav-card p { margin: 0; color: #57606a; font-size: 0.9rem; }
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; }
     </style>
@@ -95,7 +100,7 @@ try {
       <div class="header">
         <h1>ACC ClubHub Admin</h1>
         <div class="user-info">
-          {adminUser && <span>@{adminUser.github_login}</span>}
+          {adminUser && <span>{adminLabel}</span>}
           <a href="/auth/logout" class="logout-btn">Logout</a>
         </div>
       </div>

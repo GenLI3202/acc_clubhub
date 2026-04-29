@@ -22,6 +22,35 @@ if settings.RESEND_API_KEY:
     resend.api_key = settings.RESEND_API_KEY
 
 
+def send_admin_magic_link_email(email: str, magic_link: str) -> dict:
+    """Send an admin dashboard magic link email."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping admin magic link email (no RESEND_API_KEY): %s", email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    html_body = f"""<div style="font-family: Arial, sans-serif; max-width: 600px;">
+<h2 style="color: #2A5CA6;">ACC ClubHub Admin Login</h2>
+<p>Use the link below to sign in to the ACC ClubHub admin dashboard.</p>
+<p><a href="{magic_link}">Sign in to dashboard</a></p>
+<p>This link expires in 15 minutes. If you did not request it, you can ignore
+this email.</p>
+{_CONTACT["en"]}
+</div>"""
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
+        "to": [email],
+        "subject": "ACC ClubHub admin login link",
+        "html": html_body,
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send admin magic link email: %s", e, exc_info=True)
+        return {"status": "error", "message": str(e)}
+
+
 def send_confirmation_email(
     user_email: str,
     user_name: str,
