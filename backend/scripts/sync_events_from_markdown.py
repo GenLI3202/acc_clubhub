@@ -84,6 +84,9 @@ def sync() -> None:
         location = fm.get("location")
         event_type = fm.get("eventType", "social-ride")
         max_participants = fm.get("maxParticipants")
+        distance_km = fm.get("distanceKm")
+        if distance_km is None:
+            distance_km = fm.get("routeDistanceKm")
 
         existing = db.query(Event).filter(Event.slug == slug).first()
 
@@ -95,6 +98,7 @@ def sync() -> None:
             existing.event_type = event_type
             existing.max_participants = max_participants
             existing.registration_deadline = registration_deadline
+            existing.distance_km = distance_km
             existing.is_public = True
             print(f"  UPDATE: {slug}")
         else:
@@ -107,6 +111,7 @@ def sync() -> None:
                 event_type=event_type,
                 max_participants=max_participants,
                 registration_deadline=registration_deadline,
+                distance_km=distance_km,
                 current_participants=0,
                 is_public=True,
             )
