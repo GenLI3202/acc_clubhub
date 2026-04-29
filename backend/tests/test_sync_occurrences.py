@@ -22,6 +22,7 @@ NORD_PAYLOAD = {
     "max_participants": 15,
     "registration_deadline": DEADLINE,
     "description": "每周四下班后出发的社交骑。",
+    "distance_km": 48.5,
 }
 
 SUD_PAYLOAD = {
@@ -55,6 +56,7 @@ class TestSyncOccurrencesInsert:
         assert event.location == NORD_PAYLOAD["location"]
         assert event.event_type == NORD_PAYLOAD["event_type"]
         assert event.max_participants == NORD_PAYLOAD["max_participants"]
+        assert float(event.distance_km) == NORD_PAYLOAD["distance_km"]
         assert event.is_public is True
 
     def test_returns_created_count(self, client):
