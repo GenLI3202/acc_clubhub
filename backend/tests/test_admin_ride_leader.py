@@ -3,7 +3,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from models import EventRideLeaderAssignment, EventRideLeaderCredit, EventRideLeaderSnapshot, RSVP
+from models import Event, EventRideLeaderAssignment, EventRideLeaderCredit, EventRideLeaderSnapshot, RSVP
+from services.ride_leader_credits import compute_credit_snapshot, compute_group_count
 
 
 def _check_in(client, event_id: int, rsvp_id: int):
@@ -33,6 +34,55 @@ def _leader_summary(client, year: int):
 
 def _leader_detail(client, leader_name: str, year: int):
     return client.get(f"/api/admin/ride-leaders/{leader_name}?year={year}")
+
+
+def _make_checked_in_rsvp(db, event_id: int, email: str, name: str) -> RSVP:
+    rsvp = RSVP(
+        event_id=event_id,
+        email=email,
+        name=name,
+        status="confirmed",
+        privacy_accepted=True,
+        view_token=f"tok-{email}",
+        checked_in_at=datetime.now(timezone.utc),
+    )
+    db.add(rsvp)
+    db.commit()
+    db.refresh(rsvp)
+    return rsvp
+
+
+class TestRideLeaderMath:
+    def test_group_count_boundaries(self):
+        assert compute_group_count(0) == 0
+        assert compute_group_count(1) == 1
+        assert compute_group_count(6) == 1
+        assert compute_group_count(7) == 2
+        assert compute_group_count(12) == 2
+        assert compute_group_count(13) == 3
+
+    def test_credit_snapshot_splits_distance_across_multiple_leaders(self):
+        snapshot = compute_credit_snapshot(
+            distance_km=Decimal("48.50"),
+            checked_in_count=7,
+            leader_count=2,
+        )
+
+        assert snapshot.effective_group_count == 2
+        assert snapshot.max_credited_leader_count == 4
+        assert snapshot.total_credited_km == Decimal("97.00")
+        assert snapshot.credit_per_leader_km == Decimal("48.50")
+
+    def test_credit_snapshot_rounds_fractional_split(self):
+        snapshot = compute_credit_snapshot(
+            distance_km=Decimal("50.00"),
+            checked_in_count=13,
+            leader_count=4,
+        )
+
+        assert snapshot.effective_group_count == 3
+        assert snapshot.total_credited_km == Decimal("150.00")
+        assert snapshot.credit_per_leader_km == Decimal("37.50")
 
 
 class TestRideLeaderWorkflow:
@@ -147,6 +197,47 @@ class TestRideLeaderWorkflow:
         assert third_leader.status_code == 400
         assert "cap" in third_leader.json()["detail"]
 
+    def test_multi_leader_credit_recalculates_when_second_leader_added(self, client, db, sample_event, confirmed_rsvp):
+        sample_event.distance_km = Decimal("30.00")
+        db.commit()
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        second_rsvp = _make_checked_in_rsvp(db, sample_event.id, "leader2@example.com", "Leader 2")
+        for idx in range(3, 8):
+            _make_checked_in_rsvp(db, sample_event.id, f"rider{idx}@example.com", f"Rider {idx}")
+
+        first_resp = _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+        second_resp = _mark_leader(client, sample_event.id, second_rsvp.id)
+
+        assert first_resp.status_code == 200
+        assert second_resp.status_code == 200
+        credits = db.query(EventRideLeaderCredit).filter_by(event_id=sample_event.id, is_active=True).all()
+        assert len(credits) == 2
+        assert sorted(float(c.credit_km) for c in credits) == [30.0, 30.0]
+        snapshot = db.query(EventRideLeaderSnapshot).filter_by(event_id=sample_event.id).first()
+        assert snapshot.effective_group_count == 2
+        assert float(snapshot.total_credited_km) == 60.0
+        assert float(snapshot.credit_per_leader_km) == 30.0
+
+    def test_undo_leader_recalculates_remaining_credit(self, client, db, sample_event, confirmed_rsvp):
+        sample_event.distance_km = Decimal("30.00")
+        db.commit()
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        second_rsvp = _make_checked_in_rsvp(db, sample_event.id, "leader2@example.com", "Leader 2")
+        for idx in range(3, 8):
+            _make_checked_in_rsvp(db, sample_event.id, f"rider{idx}@example.com", f"Rider {idx}")
+        _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+        _mark_leader(client, sample_event.id, second_rsvp.id)
+
+        undo_resp = _undo_leader(client, sample_event.id, second_rsvp.id)
+
+        assert undo_resp.status_code == 200
+        active_credits = db.query(EventRideLeaderCredit).filter_by(event_id=sample_event.id, is_active=True).all()
+        assert len(active_credits) == 1
+        assert float(active_credits[0].credit_km) == 60.0
+        snapshot = db.query(EventRideLeaderSnapshot).filter_by(event_id=sample_event.id).first()
+        assert snapshot.credited_leader_count == 1
+        assert float(snapshot.credit_per_leader_km) == 60.0
+
     def test_undo_check_in_auto_revokes_leader(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("48.50")
         db.commit()
@@ -200,6 +291,31 @@ class TestRideLeaderWorkflow:
         assert restored["is_ride_leader"] is False
         assert restored["ride_leader_credit_km"] is None
 
+    def test_cancel_restore_recheckin_remark_state_machine(self, client, db, sample_event, confirmed_rsvp):
+        sample_event.distance_km = Decimal("42.00")
+        db.commit()
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+
+        cancel_resp = client.post(
+            f"/api/admin/events/{sample_event.id}/rsvp/cancel",
+            json={"rsvp_id": confirmed_rsvp.id},
+        )
+        restore_resp = client.post(
+            f"/api/admin/events/{sample_event.id}/rsvp/restore",
+            json={"rsvp_id": confirmed_rsvp.id},
+        )
+        recheck_resp = _check_in(client, sample_event.id, confirmed_rsvp.id)
+        remark_resp = _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+
+        assert cancel_resp.status_code == 200
+        assert restore_resp.status_code == 200
+        assert recheck_resp.status_code == 200
+        assert remark_resp.status_code == 200
+        active_credits = db.query(EventRideLeaderCredit).filter_by(event_id=sample_event.id, is_active=True).all()
+        assert len(active_credits) == 1
+        assert float(active_credits[0].credit_km) == 42.0
+
 
 class TestRideLeaderReporting:
     def test_annual_aggregation_by_name_and_history(self, client, db, sample_event, confirmed_rsvp):
@@ -208,19 +324,6 @@ class TestRideLeaderReporting:
         db.commit()
         _check_in(client, sample_event.id, confirmed_rsvp.id)
         _mark_leader(client, sample_event.id, confirmed_rsvp.id)
-
-        second_event = RSVP(
-            event_id=sample_event.id,
-            email="duplicate@example.com",
-            name=confirmed_rsvp.name,
-            status="confirmed",
-            privacy_accepted=True,
-            view_token="tok-dup",
-            checked_in_at=datetime.now(timezone.utc),
-        )
-        second_host = sample_event
-        db.add(second_event)
-        db.commit()
 
         summary_resp = _leader_summary(client, 2026)
         detail_resp = _leader_detail(client, confirmed_rsvp.name, 2026)
@@ -234,3 +337,97 @@ class TestRideLeaderReporting:
         assert detail["lead_events_count"] >= 1
         assert len(detail["history"]) >= 1
         assert len(detail["progress"]) >= 1
+
+    def test_same_name_aggregates_across_events_and_filters_year(self, client, db, sample_event, confirmed_rsvp):
+        sample_event.distance_km = Decimal("50.00")
+        sample_event.event_date = datetime(2026, 4, 18, 10, 30, tzinfo=timezone.utc)
+        second_event = Event(
+            slug="second-ride-2026",
+            title="Second Ride 2026",
+            event_date=datetime(2026, 6, 1, 9, 0, tzinfo=timezone.utc),
+            location="Munich",
+            event_type="social-ride",
+            max_participants=12,
+            current_participants=0,
+            distance_km=Decimal("70.00"),
+        )
+        old_year_event = Event(
+            slug="old-ride-2025",
+            title="Old Ride 2025",
+            event_date=datetime(2025, 9, 1, 9, 0, tzinfo=timezone.utc),
+            location="Munich",
+            event_type="social-ride",
+            max_participants=12,
+            current_participants=0,
+            distance_km=Decimal("80.00"),
+        )
+        db.add_all([second_event, old_year_event])
+        db.commit()
+        db.refresh(second_event)
+        db.refresh(old_year_event)
+
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+
+        second_rsvp = _make_checked_in_rsvp(db, second_event.id, "same-name-2@example.com", confirmed_rsvp.name)
+        old_year_rsvp = _make_checked_in_rsvp(db, old_year_event.id, "same-name-3@example.com", confirmed_rsvp.name)
+        _mark_leader(client, second_event.id, second_rsvp.id)
+        _mark_leader(client, old_year_event.id, old_year_rsvp.id)
+
+        summary_2026 = _leader_summary(client, 2026)
+        detail_2026 = _leader_detail(client, confirmed_rsvp.name, 2026)
+        summary_2025 = _leader_summary(client, 2025)
+
+        assert summary_2026.status_code == 200
+        assert detail_2026.status_code == 200
+        assert summary_2025.status_code == 200
+
+        leader_2026 = next(
+            leader for leader in summary_2026.json()["leaders"]
+            if leader["leader_name"] == confirmed_rsvp.name
+        )
+        assert leader_2026["lead_events_count"] == 2
+        assert leader_2026["total_credited_km"] == 120.0
+
+        detail = detail_2026.json()
+        assert detail["lead_events_count"] == 2
+        assert detail["total_credited_km"] == 120.0
+        assert [point["cumulative_km"] for point in detail["progress"]] == [50.0, 120.0]
+        assert len(detail["history"]) == 2
+
+        leader_2025 = next(
+            leader for leader in summary_2025.json()["leaders"]
+            if leader["leader_name"] == confirmed_rsvp.name
+        )
+        assert leader_2025["lead_events_count"] == 1
+        assert leader_2025["total_credited_km"] == 80.0
+
+    def test_reimbursement_and_subsidy_thresholds_are_reported(self, client, db, sample_event, confirmed_rsvp):
+        sample_event.distance_km = Decimal("320.00")
+        sample_event.event_date = datetime(2026, 5, 1, 9, 0, tzinfo=timezone.utc)
+        extra_event = Event(
+            slug="bonus-ride-2026",
+            title="Bonus Ride 2026",
+            event_date=datetime(2026, 7, 1, 9, 0, tzinfo=timezone.utc),
+            location="Munich",
+            event_type="social-ride",
+            max_participants=12,
+            current_participants=0,
+            distance_km=Decimal("40.00"),
+        )
+        db.add(extra_event)
+        db.commit()
+        db.refresh(extra_event)
+
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+        extra_rsvp = _make_checked_in_rsvp(db, extra_event.id, "bonus@example.com", confirmed_rsvp.name)
+        _mark_leader(client, extra_event.id, extra_rsvp.id)
+
+        detail_resp = _leader_detail(client, confirmed_rsvp.name, 2026)
+        assert detail_resp.status_code == 200
+        detail = detail_resp.json()
+        assert detail["total_credited_km"] == 360.0
+        assert detail["reimbursement_eligible"] is True
+        assert detail["excess_km"] == 40.0
+        assert detail["estimated_subsidy_eur"] == 2.0
