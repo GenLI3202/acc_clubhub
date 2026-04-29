@@ -81,10 +81,6 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   <section slot="hero" class="mem-hero" style={`background-image: url(${HERO_IMG});`}>
     <div class="mem-hero-overlay" aria-hidden="true"></div>
     <div class="mem-hero-content">
-      <div class="mem-hero-eyebrow">
-        <span class="mem-hero-rule" aria-hidden="true"></span>
-        <span class="mem-hero-eyebrow-text">Across mountains · across paths · across borders</span>
-      </div>
       <h1 class="mem-hero-h1">加入 ACC</h1>
       <p class="mem-hero-subtitle">
         Let us ride —
@@ -98,21 +94,20 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
      ============================================================ */}
   <section class="mem-intro">
     <div class="mem-eyebrow mem-eyebrow--accent">关于 ACC</div>
-    <h2 class="mem-intro-h2">为骑行者，建一个家。</h2>
+    <h2 class="mem-intro-h2">不止是骑行，更是同频的连结。</h2>
     <p class="mem-intro-body">
-      ACC 起源于慕尼黑的华人骑行社群 —— 但从不止步于此。
-      我们是一个 <em class="mem-intro-em">international cycling club</em>，
-      欢迎所有热爱骑行、热爱户外的朋友加入。无论你来自哪里、说什么语言，只要你想和一群人一起骑车，这里就有你的位置。
+      ACC (Across Cycling Club) 扎根慕尼黑，背靠阿尔卑斯。我们始于华人骑行社群，但向所有热爱公路与砾石 (Gravel) 的朋友敞开大门。
     </p>
     <p class="mem-intro-body">
-      ACC 也不是一个卷功率、比谁更快的俱乐部。我们更想做的，是为骑行者建一个能让人舒服的地方 ——
-      有归属感，有同行者；让骑行把人和人、人和这片土地之间，搭起一座桥。
+      我们相信，纯粹的热爱不应该伴随内耗，因此 ACC 的第一准则是：让自己人舒服。我们拒绝无意义的"卷功率"，抵制身材与装备焦虑。我们存在的意义，是为 ACC 成员提供一个纯粹、没有压力的骑行根据地。
     </p>
     <p class="mem-intro-body">
-      透过一辆自行车，我们一起认识阿尔卑斯的山口、巴伐利亚的乡村、莱茵河谷的清晨；
-      一起在不同的语言、不同的背景之间，找到共同的节奏 ——
-      这是 ACC 想要促成的文化交流：自然的、平等的、在路上的。
+      无论你追求的是巴伐利亚乡间的轻松周末 <em class="mem-intro-em">social ride</em>，还是下班后酣畅淋漓的硬核训练 <em class="mem-intro-em">training day</em>；无论是莱茵河畔的微风，还是阿尔卑斯山口的挑战，只要你想和一群人一起感受在路上的自由，这里就有你的位置。跨越语言与背景，我们在轮流破风与沿途的咖啡小憩中，找到共同的节奏。
     </p>
+    <p class="mem-intro-body">
+      在这里，我们不仅组织规律的团骑，也分享专业的器械知识与硬核路线。ACC 致力于成为欧洲骑行文化中的一面旗帜，为每一位热爱户外的骑行者提供最好的体验和最可靠的后勤支持。
+    </p>
+    <p class="mem-intro-tagline">Let us ride, free and together.</p>
     <hr class="mem-intro-rule" />
   </section>
 
@@ -377,6 +372,11 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     text-align: center;
   }
 
+  .mem-intro .mem-eyebrow {
+    font-size: 23px;
+    letter-spacing: 0.08em;
+  }
+
   .mem-intro-h2 {
     font-family: var(--font-heading);
     font-size: clamp(28px, 3vw, 36px);
@@ -398,6 +398,16 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   .mem-intro-em {
     font-style: italic;
     color: var(--color-accent);
+  }
+
+  .mem-intro-tagline {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: 0.01em;
+    color: var(--color-accent);
+    margin: 36px 0 0;
+    text-align: center;
   }
 
   .mem-intro-rule {
