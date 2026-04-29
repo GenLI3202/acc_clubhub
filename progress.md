@@ -193,9 +193,9 @@
   - [X] Reconciled `current_participants` from confirmed RSVP rows after admin cancel/restore and public registration changes.
   - [X] Cleared `checked_in_at` when an RSVP is cancelled so cancelled participants no longer count as checked in.
   - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
-- [X] **Dashboard Magic Link Admin Auth** (2026-04-29)
-  - [X] Added email allowlist magic link login for ride leader dashboard access.
-  - [X] Required a shared dashboard password before magic links are sent.
+- [X] **Dashboard Email Password Admin Auth** (2026-04-29)
+  - [X] Added email allowlist login for ride leader dashboard access.
+  - [X] Required a shared dashboard password before creating a 24-hour session.
   - [X] Kept GitHub OAuth allowlist login as a fallback during migration.
   - [X] Reused the existing admin session cookie for both login methods.
 - [X] **Dashboard ACC Red Theme Refresh** (2026-04-29)

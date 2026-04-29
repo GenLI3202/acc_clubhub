@@ -1,5 +1,5 @@
 import pytest
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 
 from routes import auth
 
@@ -43,88 +43,48 @@ def test_is_admin_email_allowed_matches_case_insensitively(monkeypatch):
     assert auth.is_admin_email_allowed(" Captain@Example.com ")
 
 
-def test_request_magic_link_rejects_unknown_email(monkeypatch):
+def test_email_login_rejects_unknown_email(monkeypatch):
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
     monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
 
     with pytest.raises(HTTPException) as exc_info:
-        auth.request_magic_link(
-            auth.MagicLinkRequest(email="unknown@example.com", password="secret"),
+        auth.email_login(
+            auth.EmailLoginRequest(email="unknown@example.com", password="secret"),
+            Response(),
         )
 
     assert exc_info.value.status_code == 403
     assert "Invalid login credentials" in exc_info.value.detail
 
 
-def test_request_magic_link_rejects_wrong_password(monkeypatch):
+def test_email_login_rejects_wrong_password(monkeypatch):
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
     monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
 
     with pytest.raises(HTTPException) as exc_info:
-        auth.request_magic_link(
-            auth.MagicLinkRequest(email="leader@example.com", password="wrong"),
+        auth.email_login(
+            auth.EmailLoginRequest(email="leader@example.com", password="wrong"),
+            Response(),
         )
 
     assert exc_info.value.status_code == 403
     assert "Invalid login credentials" in exc_info.value.detail
 
 
-def test_request_magic_link_sends_email_for_allowlisted_address(monkeypatch):
-    sent = {}
+def test_email_login_sets_24_hour_session_for_allowlisted_address(monkeypatch):
     monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
     monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
-    monkeypatch.setattr(
-        auth.settings,
-        "PUBLIC_FRONTEND_URL",
-        "https://www.across-cc.de",
+
+    response = Response()
+    result = auth.email_login(
+        auth.EmailLoginRequest(email="Leader@Example.com", password="secret"),
+        response,
     )
 
-    def fake_send(email: str, magic_link: str) -> dict:
-        sent["email"] = email
-        sent["magic_link"] = magic_link
-        return {"status": "sent"}
-
-    monkeypatch.setattr(auth, "send_admin_magic_link_email", fake_send)
-
-    response = auth.request_magic_link(
-        auth.MagicLinkRequest(email="Leader@Example.com", password="secret"),
-    )
-
-    assert response == {"status": "sent"}
-    assert sent["email"] == "leader@example.com"
-    assert sent["magic_link"].startswith("https://www.across-cc.de/auth/callback")
-    assert "token=" in sent["magic_link"]
-
-
-def test_request_magic_link_fails_when_email_cannot_send(monkeypatch):
-    monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
-    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
-    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
-    monkeypatch.setattr(
-        auth,
-        "send_admin_magic_link_email",
-        lambda email, magic_link: {"status": "error"},
-    )
-
-    with pytest.raises(HTTPException) as exc_info:
-        auth.request_magic_link(
-            auth.MagicLinkRequest(email="leader@example.com", password="secret"),
-        )
-
-    assert exc_info.value.status_code == 503
-
-
-def test_magic_link_callback_sets_email_session(monkeypatch):
-    monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
-    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
-
-    token = auth.create_magic_link_token("Leader@Example.com")
-    response = auth.callback(request=None, token=token)
-
-    assert response.status_code == 302
-    assert response.headers["location"] == "/dashboard/events"
+    assert result == {"status": "authenticated", "redirect_to": "/dashboard/events"}
     assert "admin_session=" in response.headers["set-cookie"]
+    assert "Max-Age=86400" in response.headers["set-cookie"]
 
 
 def test_email_session_is_revoked_when_email_removed(monkeypatch):
