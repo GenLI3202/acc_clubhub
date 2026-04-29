@@ -198,6 +198,8 @@
   - [X] Required a shared dashboard password before magic links are sent.
   - [X] Kept GitHub OAuth allowlist login as a fallback during migration.
   - [X] Reused the existing admin session cookie for both login methods.
+- [X] **Dashboard ACC Red Theme Refresh** (2026-04-29)
+  - [X] Replaced dashboard blue accent states with ACC red across admin pages.
 
 
 ## In Progress
