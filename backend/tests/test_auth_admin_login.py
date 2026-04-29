@@ -45,18 +45,35 @@ def test_is_admin_email_allowed_matches_case_insensitively(monkeypatch):
 
 def test_request_magic_link_rejects_unknown_email(monkeypatch):
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
 
     with pytest.raises(HTTPException) as exc_info:
-        auth.request_magic_link(auth.MagicLinkRequest(email="unknown@example.com"))
+        auth.request_magic_link(
+            auth.MagicLinkRequest(email="unknown@example.com", password="secret"),
+        )
 
     assert exc_info.value.status_code == 403
-    assert "not authorized" in exc_info.value.detail
+    assert "Invalid login credentials" in exc_info.value.detail
+
+
+def test_request_magic_link_rejects_wrong_password(monkeypatch):
+    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
+
+    with pytest.raises(HTTPException) as exc_info:
+        auth.request_magic_link(
+            auth.MagicLinkRequest(email="leader@example.com", password="wrong"),
+        )
+
+    assert exc_info.value.status_code == 403
+    assert "Invalid login credentials" in exc_info.value.detail
 
 
 def test_request_magic_link_sends_email_for_allowlisted_address(monkeypatch):
     sent = {}
     monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
     monkeypatch.setattr(
         auth.settings,
         "PUBLIC_FRONTEND_URL",
@@ -71,7 +88,7 @@ def test_request_magic_link_sends_email_for_allowlisted_address(monkeypatch):
     monkeypatch.setattr(auth, "send_admin_magic_link_email", fake_send)
 
     response = auth.request_magic_link(
-        auth.MagicLinkRequest(email="Leader@Example.com"),
+        auth.MagicLinkRequest(email="Leader@Example.com", password="secret"),
     )
 
     assert response == {"status": "sent"}
@@ -83,6 +100,7 @@ def test_request_magic_link_sends_email_for_allowlisted_address(monkeypatch):
 def test_request_magic_link_fails_when_email_cannot_send(monkeypatch):
     monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
     monkeypatch.setattr(
         auth,
         "send_admin_magic_link_email",
@@ -90,7 +108,9 @@ def test_request_magic_link_fails_when_email_cannot_send(monkeypatch):
     )
 
     with pytest.raises(HTTPException) as exc_info:
-        auth.request_magic_link(auth.MagicLinkRequest(email="leader@example.com"))
+        auth.request_magic_link(
+            auth.MagicLinkRequest(email="leader@example.com", password="secret"),
+        )
 
     assert exc_info.value.status_code == 503
 

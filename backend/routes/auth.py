@@ -31,6 +31,7 @@ class MagicLinkRequest(BaseModel):
     """Magic link login request payload."""
 
     email: EmailStr
+    password: str
 
 
 def _get_session_secret() -> str:
@@ -74,6 +75,14 @@ def _get_admin_email_allowlist() -> set[str]:
 def is_admin_email_allowed(email: str) -> bool:
     """Check whether an email address is authorized for admin access."""
     return _normalize_email(email) in _get_admin_email_allowlist()
+
+
+def is_magic_link_password_valid(password: str) -> bool:
+    """Check whether the shared dashboard password matches configuration."""
+    expected_password = settings.ADMIN_MAGIC_LINK_PASSWORD
+    if not expected_password:
+        return False
+    return secrets.compare_digest(password, expected_password)
 
 
 def _get_github_allowlist() -> set[str]:
@@ -269,8 +278,10 @@ def login(request: Request) -> RedirectResponse:
 def request_magic_link(payload: MagicLinkRequest) -> dict:
     """Send a dashboard login magic link when the email is authorized."""
     email = _normalize_email(payload.email)
-    if not is_admin_email_allowed(email):
-        raise HTTPException(status_code=403, detail="Email is not authorized")
+    if not is_admin_email_allowed(email) or not is_magic_link_password_valid(
+        payload.password,
+    ):
+        raise HTTPException(status_code=403, detail="Invalid login credentials")
 
     token = create_magic_link_token(email)
     frontend_url = settings.PUBLIC_FRONTEND_URL.rstrip("/")

@@ -195,6 +195,7 @@
   - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
 - [X] **Dashboard Magic Link Admin Auth** (2026-04-29)
   - [X] Added email allowlist magic link login for ride leader dashboard access.
+  - [X] Required a shared dashboard password before magic links are sent.
   - [X] Kept GitHub OAuth allowlist login as a fallback during migration.
   - [X] Reused the existing admin session cookie for both login methods.
 

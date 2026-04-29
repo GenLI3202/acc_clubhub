@@ -162,7 +162,7 @@ try {
   <body>
     <div class="login-box">
       <h1>ACC ClubHub Admin</h1>
-      <p>Enter an authorized ride leader email to receive a login link.</p>
+      <p>Enter an authorized ride leader email and dashboard password.</p>
 
       <form id="magic-link-form">
         <label for="admin-email">Email address</label>
@@ -171,6 +171,14 @@ try {
           name="email"
           type="email"
           autocomplete="email"
+          required
+        />
+        <label for="admin-password">Dashboard password</label>
+        <input
+          id="admin-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
           required
         />
         <button type="submit" class="login-btn login-btn--primary">
@@ -198,8 +206,14 @@ try {
         event.preventDefault();
 
         const submit = form.querySelector("button[type='submit']");
-        const email = new FormData(form).get("email");
-        if (!(submit instanceof HTMLButtonElement) || typeof email !== "string") {
+        const formData = new FormData(form);
+        const email = formData.get("email");
+        const password = formData.get("password");
+        if (
+          !(submit instanceof HTMLButtonElement) ||
+          typeof email !== "string" ||
+          typeof password !== "string"
+        ) {
           return;
         }
 
@@ -211,7 +225,7 @@ try {
           const response = await fetch("/auth/magic-link", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email, password }),
           });
 
           if (!response.ok) {
@@ -224,7 +238,7 @@ try {
           }
         } catch {
           if (message) {
-            message.textContent = "This email is not authorized or the link could not be sent.";
+            message.textContent = "The email or password is incorrect, or the link could not be sent.";
             message.classList.add("is-visible", "message--error");
           }
         } finally {
