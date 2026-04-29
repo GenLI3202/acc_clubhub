@@ -34,12 +34,35 @@ const activeCategory: AdminEventCategory = requestedCategory && ADMIN_EVENT_CATE
   : "all";
 
 const now = new Date();
+const REQUEST_TIMEOUT_MS = 5000;
+
+async function fetchWithTimeout(url: string, init?: RequestInit, timeoutMs: number = REQUEST_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.name === "AbortError"
+      ? `request timed out after ${REQUEST_TIMEOUT_MS}ms`
+      : error.message;
+  }
+  return String(error);
+}
 
 // Verify authentication — forward browser cookies to backend
 const cookie = Astro.request.headers.get("cookie") || "";
 if (!isLocalPreview) {
   try {
-    const meRes = await fetch(`${apiUrl}/auth/me`, {
+    const meRes = await fetchWithTimeout(`${apiUrl}/auth/me`, {
       headers: { "Cookie": cookie },
     });
     if (!meRes.ok) {
@@ -65,7 +88,7 @@ let statsWarning: string | null = null;
 let schemaWarning: string | null = null;
 
 try {
-  const schemaRes = await fetch(`${apiUrl}/api/admin/health/schema`, {
+  const schemaRes = await fetchWithTimeout(`${apiUrl}/api/admin/health/schema`, {
     headers: { "Cookie": cookie },
   });
   if (schemaRes.status === 401) {
@@ -80,8 +103,7 @@ try {
     schemaWarning = `Database schema check unavailable (API returned ${schemaRes.status})`;
   }
 } catch (e) {
-  const message = e instanceof Error ? e.message : String(e);
-  schemaWarning = `Database schema check unavailable: ${message}`;
+  schemaWarning = `Database schema check unavailable: ${getErrorMessage(e)}`;
 }
 
 const occurrencePayload = zhEvents.map((e) => ({
@@ -100,7 +122,7 @@ if (isLocalPreview) {
   statsWarning = "Local preview mode: RSVP stats and admin actions are not loaded.";
 } else {
   try {
-    const syncRes = await fetch(`${apiUrl}/api/admin/sync-occurrences`, {
+    const syncRes = await fetchWithTimeout(`${apiUrl}/api/admin/sync-occurrences`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,15 +136,15 @@ if (isLocalPreview) {
     if (!syncRes.ok) {
       statsWarning = `Occurrence sync unavailable (API returned ${syncRes.status})`;
     }
-  } catch (e: any) {
-    statsWarning = `Occurrence sync unavailable: ${e.message}`;
+  } catch (e) {
+    statsWarning = `Occurrence sync unavailable: ${getErrorMessage(e)}`;
   }
 }
 
 // 3. Fetch RSVP stats from DB (for enrichment only)
 if (!isLocalPreview) {
   try {
-    const res = await fetch(`${apiUrl}/api/admin/events`, {
+    const res = await fetchWithTimeout(`${apiUrl}/api/admin/events`, {
       headers: { "Cookie": cookie },
     });
     if (res.ok) {
@@ -135,8 +157,8 @@ if (!isLocalPreview) {
     } else {
       statsWarning = `RSVP stats unavailable (API returned ${res.status})`;
     }
-  } catch (e: any) {
-    statsWarning = `RSVP stats unavailable: ${e.message}`;
+  } catch (e) {
+    statsWarning = `RSVP stats unavailable: ${getErrorMessage(e)}`;
   }
 }
 
