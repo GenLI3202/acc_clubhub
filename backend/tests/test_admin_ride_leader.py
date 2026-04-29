@@ -125,7 +125,7 @@ class TestRideLeaderWorkflow:
         _mark_leader(client, sample_event.id, confirmed_rsvp.id)
 
         riders = []
-        for idx in range(2, 5):
+        for idx in range(2, 7):
             rsvp = RSVP(
                 event_id=sample_event.id,
                 email=f"leader{idx}@example.com",
@@ -139,13 +139,13 @@ class TestRideLeaderWorkflow:
             riders.append(rsvp)
         db.commit()
 
-        for rider in riders[:3]:
-            resp = _mark_leader(client, sample_event.id, rider.id)
-            if rider is riders[2]:
-                assert resp.status_code == 400
-                assert "cap" in resp.json()["detail"]
-            else:
-                assert resp.status_code == 200
+        # checked-in count = 6 => 1 group => max 2 credited leaders total
+        second_leader = _mark_leader(client, sample_event.id, riders[0].id)
+        third_leader = _mark_leader(client, sample_event.id, riders[1].id)
+
+        assert second_leader.status_code == 200
+        assert third_leader.status_code == 400
+        assert "cap" in third_leader.json()["detail"]
 
     def test_undo_check_in_auto_revokes_leader(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("48.50")
