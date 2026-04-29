@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from sqlalchemy import func, inspect
+from sqlalchemy import case, func, inspect
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Event, RSVP, Subscriber
@@ -41,16 +41,6 @@ from services.ride_leader_credits import (
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-
-
-def _count_rsvps_by_status(db: Session, event_id: int, status: str) -> int:
-    """
-    Count RSVPs without selecting full RSVP rows.
-    """
-    return db.query(func.count(RSVP.id)).filter(
-        RSVP.event_id == event_id,
-        RSVP.status == status,
-    ).scalar() or 0
 
 
 REQUIRED_SCHEMA_COLUMNS = {
@@ -186,13 +176,29 @@ def list_events(
     List all events with registration statistics.
     Requires admin authentication.
     """
+    count_rows = db.query(
+        RSVP.event_id.label("event_id"),
+        func.sum(case((RSVP.status == "confirmed", 1), else_=0)).label("confirmed_count"),
+        func.sum(case((RSVP.status == "waitlist", 1), else_=0)).label("waitlist_count"),
+        func.sum(case((RSVP.status == "cancelled", 1), else_=0)).label("cancelled_count"),
+    ).group_by(RSVP.event_id).all()
+    counts_by_event_id = {
+        row.event_id: {
+            "confirmed_count": int(row.confirmed_count or 0),
+            "waitlist_count": int(row.waitlist_count or 0),
+            "cancelled_count": int(row.cancelled_count or 0),
+        }
+        for row in count_rows
+    }
+
     events = db.query(Event).order_by(Event.event_date.desc()).all()
 
     result = []
     for event in events:
-        confirmed_count = count_confirmed_rsvps(db, event.id)
-        waitlist_count = _count_rsvps_by_status(db, event.id, "waitlist")
-        cancelled_count = _count_rsvps_by_status(db, event.id, "cancelled")
+        counts = counts_by_event_id.get(event.id, {})
+        confirmed_count = counts.get("confirmed_count", 0)
+        waitlist_count = counts.get("waitlist_count", 0)
+        cancelled_count = counts.get("cancelled_count", 0)
 
         result.append({
             "id": event.id,
