@@ -1,0 +1,198 @@
+---
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+    lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+    zh: {
+        badge: "新增 · NEW",
+        eyebrow: "会员 · 2026 / 27",
+        headline: "不只是来骑车 —— 加入 ACC，成为这件事的一部分。",
+        body: "约 75 次团骑、领骑补贴、官方活动保险、ACC 会员身份。非营利俱乐部，会费 10–49€，全部用于会员回报。",
+        cta: "了解会员",
+    },
+    en: {
+        badge: "NEW",
+        eyebrow: "Membership · 2026 / 27",
+        headline: "More than rides — join ACC and be part of this.",
+        body: "~75 group rides, ride-leader stipends, official activity insurance, ACC member status. Non-profit club, fee 10–49€, all goes back to members.",
+        cta: "Learn more",
+    },
+    de: {
+        badge: "NEU",
+        eyebrow: "Mitgliedschaft · 2026 / 27",
+        headline: "Mehr als Radfahren — werde Teil von ACC.",
+        body: "Ca. 75 Gruppenfahrten, Ride-Leader-Förderung, offizielle Aktivitätsversicherung, ACC-Mitgliedschaft. Gemeinnütziger Verein, Beitrag 10–49€, alles für die Mitglieder.",
+        cta: "Mehr erfahren",
+    },
+} as const;
+
+const c = copy[lang] ?? copy.zh;
+---
+
+<section class="mem-teaser">
+    <div class="mem-teaser-inner">
+        <img
+            src="/images/about/logo-stamp-red-transparent.png"
+            alt=""
+            aria-hidden="true"
+            class="mem-teaser-watermark"
+        />
+
+        <div class="mem-teaser-body">
+            <span class="mem-teaser-badge">{c.badge}</span>
+            <p class="mem-teaser-eyebrow">{c.eyebrow}</p>
+            <h2 class="mem-teaser-headline">{c.headline}</h2>
+            <p class="mem-teaser-text">{c.body}</p>
+        </div>
+
+        <div class="mem-teaser-action">
+            <a href={`/${lang}/membership`} class="mem-teaser-cta">
+                {c.cta} →
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .mem-teaser {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        background: var(--color-bg-canvas);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .mem-teaser-inner {
+        position: relative;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 2.5rem 2rem 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        border: 1.5px dashed var(--color-accent);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .mem-teaser-watermark {
+        position: absolute;
+        right: -40px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 260px;
+        height: 260px;
+        opacity: 0.07;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .mem-teaser-badge {
+        display: inline-block;
+        font-family: var(--font-heading);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        background: var(--color-accent);
+        color: #fff;
+        margin-bottom: 0.75rem;
+    }
+
+    .mem-teaser-eyebrow {
+        font-family: var(--font-heading);
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--color-accent);
+        margin: 0 0 0.6rem;
+    }
+
+    .mem-teaser-headline {
+        font-family: var(--font-heading);
+        font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        color: var(--color-text-main);
+        margin: 0 0 0.75rem;
+    }
+
+    .mem-teaser-text {
+        font-family: var(--font-body);
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--color-text-secondary);
+        margin: 0;
+        max-width: 52ch;
+    }
+
+    .mem-teaser-action {
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mem-teaser-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--font-heading);
+        font-size: 0.8125rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.8rem 1.6rem;
+        border-radius: var(--radius-btn);
+        border: 1.5px solid var(--color-text-main);
+        color: var(--color-text-main);
+        background: transparent;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            background var(--transition-fast),
+            color var(--transition-fast),
+            border-color var(--transition-fast),
+            transform var(--transition-fast),
+            box-shadow var(--transition-fast);
+    }
+
+    .mem-teaser-cta:hover {
+        background: var(--color-text-main);
+        color: var(--color-bg-canvas);
+        border-color: var(--color-text-main);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        text-decoration: none;
+    }
+
+    :global(:root.dark) .mem-teaser-inner {
+        border-color: rgba(198, 40, 40, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .mem-teaser-inner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 2rem 1.25rem;
+        }
+
+        .mem-teaser-watermark {
+            right: -60px;
+            top: auto;
+            bottom: -20px;
+            transform: none;
+            width: 180px;
+            height: 180px;
+        }
+    }
+</style>
