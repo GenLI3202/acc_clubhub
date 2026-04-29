@@ -96,7 +96,7 @@
   - [X] Protected by admin JWT cookie; Astro SSR proxy at `/dashboard/broadcast`
   - [X] Backend tests: 4 scenarios (broadcast, no subscribers, unknown slug, unauthorized)
 - [X] **Phase 4.3.5 — Admin Dashboard** (Issue [#53](https://github.com/GenLI3202/acc_clubhub/issues/53)) (2026-04-06)
-  - [X] GitHub OAuth login flow (state token, collaborator check, JWT cookie)
+  - [X] GitHub OAuth login flow (state token, username allowlist, JWT cookie)
   - [X] Backend: `auth.py` (login / callback / me / logout), `admin.py` (events list, RSVP detail, cancel, CSV)
   - [X] Frontend: `/dashboard/login`, `/dashboard/`, `/dashboard/events`, `/dashboard/events/[id]`
   - [X] Subscriber list dashboard page at `/dashboard/subscribers`
@@ -177,6 +177,9 @@
   - [X] Added RSVP `checked_in_at` storage and migration for attendance confirmation.
   - [X] Added authenticated Dashboard check-in endpoint for confirmed RSVPs.
   - [X] Dashboard event detail now shows registered vs checked-in attendance separately from RSVP status.
+  - [X] Ride leaders can undo mistaken check-ins from the Dashboard event detail page.
+  - [X] Replaced unstable native confirmation prompts with a stable in-page confirmation dialog.
+  - [X] Reconciled participant counts from confirmed RSVP rows so cancel/restore cannot create negative capacity.
   - [X] Added backend coverage for check-in, idempotency, invalid statuses, and RSVP list summary output.
 - [X] **Admin Schema Health Check** (2026-04-25)
   - [X] Added authenticated schema health endpoint for required RSVP columns.
@@ -193,6 +196,10 @@
   - [X] Reconciled `current_participants` from confirmed RSVP rows after admin cancel/restore and public registration changes.
   - [X] Cleared `checked_in_at` when an RSVP is cancelled so cancelled participants no longer count as checked in.
   - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
+- [X] **Dashboard GitHub Allowlist Auth** (2026-04-27)
+  - [X] Replaced repo collaborator authorization with `ADMIN_GITHUB_ALLOWLIST`.
+  - [X] Reduced GitHub OAuth scope from `read:user,repo` to `read:user`.
+  - [X] Added backend tests for allowlist matching, denied callbacks, session cookies, and OAuth scope.
 - [X] **Dashboard Email Password Admin Auth** (2026-04-29)
   - [X] Added email allowlist login for ride leader dashboard access.
   - [X] Required a shared dashboard password before creating a 24-hour session.
@@ -209,8 +216,10 @@
   - [ ] Registration spot count mismatch in dashboard (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
   - [ ] Participant portal not tested end-to-end
 - [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
+  - [X] Attendance tracking foundation complete via `checked_in_at`.
+  - [X] Cancelled RSVPs no longer retain check-in status.
   - [ ] Survey delivery mechanism and trigger timing still pending.
-  - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.
+  - [ ] Survey recipient list should use confirmed RSVPs with `checked_in_at IS NOT NULL`.
 - [ ] **E2E Testing**
   - [ ] E2E functional testing for registration flow (8 test scenarios)
   - [ ] Email delivery monitoring
