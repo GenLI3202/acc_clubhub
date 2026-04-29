@@ -26,6 +26,17 @@ from services.event_counts import (
     get_available_spots,
     sync_event_current_participants,
 )
+from services.ride_leader_credits import (
+    get_annual_ride_leader_progress,
+    get_annual_ride_leader_summary,
+    get_event_active_leader_rsvp_ids,
+    get_event_ride_leader_credit_map,
+    get_ride_leader_detail,
+    mark_rsvp_as_ride_leader,
+    recalculate_event_ride_leader_state,
+    serialize_ride_leader_snapshot,
+    unmark_rsvp_as_ride_leader,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +59,9 @@ REQUIRED_SCHEMA_COLUMNS = {
         "cancel_reason",
         "checked_in_at",
     },
+    "events": {
+        "distance_km",
+    },
 }
 
 
@@ -60,11 +74,16 @@ class SyncOccurrenceRequest(BaseModel):
     max_participants: Optional[int] = None
     registration_deadline: Optional[datetime] = None
     description: Optional[str] = None
+    distance_km: Optional[float] = None
 
 
 class SyncOccurrencesResponse(BaseModel):
     created: int
     updated: int
+
+
+class RideLeaderRequest(BaseModel):
+    rsvp_id: int
 
 
 # ── Admin Schema Health ──────────────────────────────────────
@@ -126,8 +145,10 @@ def sync_occurrences(
                 event.event_type = occurrence.event_type
                 event.max_participants = occurrence.max_participants
                 event.registration_deadline = occurrence.registration_deadline
+                event.distance_km = occurrence.distance_km
                 event.is_public = True
                 updated += 1
+                recalculate_event_ride_leader_state(db, event.id)
                 continue
 
             db.add(
@@ -141,6 +162,7 @@ def sync_occurrences(
                     max_participants=occurrence.max_participants,
                     current_participants=0,
                     registration_deadline=occurrence.registration_deadline,
+                    distance_km=occurrence.distance_km,
                     is_public=True,
                 )
             )
@@ -194,6 +216,7 @@ def list_events(
                 event.registration_deadline.isoformat()
                 if event.registration_deadline else None
             ),
+            "distance_km": float(event.distance_km) if event.distance_km is not None else None,
         })
 
     return result
@@ -216,6 +239,9 @@ def get_event_rsvps(
         raise HTTPException(status_code=404, detail="Event not found")
 
     confirmed_count = sync_event_current_participants(db, event)
+    snapshot = recalculate_event_ride_leader_state(db, event_id)
+    active_leader_ids = get_event_active_leader_rsvp_ids(db, event_id)
+    credit_map = get_event_ride_leader_credit_map(db, event_id)
     db.commit()
     db.refresh(event)
 
@@ -226,6 +252,8 @@ def get_event_rsvps(
         .all()
     )
 
+    ride_leader_summary = serialize_ride_leader_snapshot(snapshot)
+
     return {
         "event": {
             "id": event.id,
@@ -235,6 +263,7 @@ def get_event_rsvps(
             "location": event.location,
             "max_participants": event.max_participants,
             "current_participants": confirmed_count,
+            "distance_km": float(event.distance_km) if event.distance_km is not None else None,
         },
         "rsvps": [
             {
@@ -251,6 +280,11 @@ def get_event_rsvps(
                 ),
                 "notes": r.notes,
                 "created_at": r.created_at.isoformat() if r.created_at else None,
+                "is_ride_leader": r.id in active_leader_ids,
+                "ride_leader_credit_km": (
+                    float(credit_map[r.id].credit_km)
+                    if r.id in credit_map else None
+                ),
             }
             for r in rsvps
         ],
@@ -263,6 +297,7 @@ def get_event_rsvps(
                 r for r in rsvps
                 if r.status == "confirmed" and r.checked_in_at
             ]),
+            **ride_leader_summary,
         },
     }
 
@@ -304,8 +339,10 @@ def check_in_rsvp(
 
     if not rsvp.checked_in_at:
         rsvp.checked_in_at = datetime.now(timezone.utc)
-        db.commit()
-        db.refresh(rsvp)
+
+    snapshot = recalculate_event_ride_leader_state(db, event_id)
+    db.commit()
+    db.refresh(rsvp)
 
     return {
         "success": True,
@@ -314,6 +351,7 @@ def check_in_rsvp(
         "checked_in_at": (
             rsvp.checked_in_at.isoformat() if rsvp.checked_in_at else None
         ),
+        "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
     }
 
 
@@ -348,14 +386,51 @@ def undo_check_in_rsvp(
 
     if rsvp.checked_in_at:
         rsvp.checked_in_at = None
-        db.commit()
-        db.refresh(rsvp)
+
+    snapshot = recalculate_event_ride_leader_state(db, event_id)
+    db.commit()
+    db.refresh(rsvp)
 
     return {
         "success": True,
         "message": f"Check-in for {rsvp.name} undone",
         "attendance_status": "registered",
         "checked_in_at": None,
+        "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
+    }
+
+
+# ── Admin Ride Leader Actions ────────────────────────────────
+
+@router.post("/api/admin/events/{event_id}/rsvp/ride-leader")
+def activate_ride_leader(
+    event_id: int,
+    body: RideLeaderRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    snapshot = mark_rsvp_as_ride_leader(db, event_id, body.rsvp_id)
+    db.commit()
+    return {
+        "success": True,
+        "message": "Ride leader marked",
+        "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
+    }
+
+
+@router.post("/api/admin/events/{event_id}/rsvp/ride-leader/undo")
+def deactivate_ride_leader(
+    event_id: int,
+    body: RideLeaderRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    snapshot = unmark_rsvp_as_ride_leader(db, event_id, body.rsvp_id)
+    db.commit()
+    return {
+        "success": True,
+        "message": "Ride leader removed",
+        "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
     }
 
 
@@ -416,6 +491,7 @@ def cancel_rsvp(
 
     db.flush()
     sync_event_current_participants(db, event)
+    recalculate_event_ride_leader_state(db, event_id)
     db.commit()
 
     # Send cancellation notification (non-fatal)
@@ -481,12 +557,43 @@ def restore_rsvp(
     rsvp.checked_in_at = None
     db.flush()
     sync_event_current_participants(db, event)
+    recalculate_event_ride_leader_state(db, event_id)
     db.commit()
 
     return {
         "success": True,
         "message": f"RSVP for {rsvp.name} restored to {new_status}",
         "new_status": new_status,
+    }
+
+
+# ── Annual Ride Leader Board ─────────────────────────────────
+
+@router.get("/api/admin/ride-leaders")
+def list_ride_leaders(
+    year: Optional[int] = None,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    target_year = year or datetime.now(timezone.utc).year
+    return {
+        "year": target_year,
+        "leaders": get_annual_ride_leader_summary(db, target_year),
+    }
+
+
+@router.get("/api/admin/ride-leaders/{leader_name}")
+def get_ride_leader(
+    leader_name: str,
+    year: Optional[int] = None,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    target_year = year or datetime.now(timezone.utc).year
+    detail = get_ride_leader_detail(db, target_year, leader_name)
+    return {
+        "year": target_year,
+        **detail,
     }
 
 
@@ -521,9 +628,14 @@ def export_rsvps_csv(
         "Status",
         "Attendance",
         "Checked In At",
+        "Ride Leader",
+        "Ride Leader Credit KM",
         "Notes",
         "Registered At",
     ])
+
+    credit_map = get_event_ride_leader_credit_map(db, event_id)
+    active_leader_ids = get_event_active_leader_rsvp_ids(db, event_id)
 
     for r in rsvps:
         writer.writerow([
@@ -532,6 +644,8 @@ def export_rsvps_csv(
             r.status,
             "checked_in" if r.checked_in_at else "registered",
             r.checked_in_at.isoformat() if r.checked_in_at else "",
+            "yes" if r.id in active_leader_ids else "no",
+            float(credit_map[r.id].credit_km) if r.id in credit_map else "",
             r.notes or "",
             r.created_at.isoformat() if r.created_at else "",
         ])

@@ -5,6 +5,7 @@ Phase 4.3: Email-based event registration + subscription system
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from decimal import Decimal
 from sqlalchemy import (
     Column,
     Integer,
@@ -14,9 +15,9 @@ from sqlalchemy import (
     Boolean,
     Text,
     UniqueConstraint,
+    Numeric,
 )
 from sqlalchemy.orm import DeclarativeBase, relationship
-from sqlalchemy.dialects.postgresql import JSONB
 
 
 def _utcnow() -> datetime:
@@ -45,6 +46,7 @@ class Event(Base):
     max_participants = Column(Integer, nullable=True)
     current_participants = Column(Integer, default=0)
     registration_deadline = Column(DateTime(timezone=True), nullable=True)
+    distance_km = Column(Numeric(8, 2), nullable=True)
     is_public = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(
@@ -53,6 +55,22 @@ class Event(Base):
 
     rsvps = relationship(
         "RSVP", back_populates="event", cascade="all, delete-orphan",
+    )
+    ride_leader_assignments = relationship(
+        "EventRideLeaderAssignment",
+        back_populates="event",
+        cascade="all, delete-orphan",
+    )
+    ride_leader_snapshot = relationship(
+        "EventRideLeaderSnapshot",
+        back_populates="event",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+    ride_leader_credits = relationship(
+        "EventRideLeaderCredit",
+        back_populates="event",
+        cascade="all, delete-orphan",
     )
 
     @property
@@ -102,12 +120,135 @@ class RSVP(Base):
     )
 
     event = relationship("Event", back_populates="rsvps")
+    ride_leader_assignments = relationship(
+        "EventRideLeaderAssignment",
+        back_populates="rsvp",
+        cascade="all, delete-orphan",
+    )
+    ride_leader_credits = relationship(
+        "EventRideLeaderCredit",
+        back_populates="rsvp",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         return (
             f"<RSVP(id={self.id}, event_id={self.event_id}, "
             f"email='{self.email}', status='{self.status}')>"
         )
+
+
+class EventRideLeaderAssignment(Base):
+    """Maps an RSVP to ride leader credit eligibility for one event."""
+
+    __tablename__ = "event_ride_leader_assignments"
+    __table_args__ = (
+        UniqueConstraint(
+            "event_id",
+            "rsvp_id",
+            name="uq_event_ride_leader_assignment",
+        ),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(
+        Integer,
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    rsvp_id = Column(
+        Integer,
+        ForeignKey("rsvps.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+    revoked_at = Column(DateTime(timezone=True), nullable=True)
+
+    event = relationship("Event", back_populates="ride_leader_assignments")
+    rsvp = relationship("RSVP", back_populates="ride_leader_assignments")
+
+
+class EventRideLeaderSnapshot(Base):
+    """Stores latest event-level ride leader credit calculation snapshot."""
+
+    __tablename__ = "event_ride_leader_snapshots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(
+        Integer,
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+        index=True,
+    )
+    distance_km = Column(Numeric(8, 2), nullable=True)
+    checked_in_count = Column(Integer, default=0, nullable=False)
+    group_size_cap = Column(Integer, default=6, nullable=False)
+    effective_group_count = Column(Integer, default=0, nullable=False)
+    credited_leader_count = Column(Integer, default=0, nullable=False)
+    max_credited_leader_count = Column(Integer, default=0, nullable=False)
+    credit_per_leader_km = Column(Numeric(8, 2), nullable=True)
+    total_credited_km = Column(
+        Numeric(10, 2), default=Decimal("0"), nullable=False,
+    )
+    calculated_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+    calculation_version = Column(String(32), default="v1", nullable=False)
+
+    event = relationship("Event", back_populates="ride_leader_snapshot")
+    credits = relationship(
+        "EventRideLeaderCredit",
+        back_populates="snapshot",
+        cascade="all, delete-orphan",
+    )
+
+
+class EventRideLeaderCredit(Base):
+    """Ledger rows for per-event per-leader credited mileage."""
+
+    __tablename__ = "event_ride_leader_credits"
+    __table_args__ = (
+        UniqueConstraint(
+            "event_id",
+            "rsvp_id",
+            name="uq_event_ride_leader_credit",
+        ),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(
+        Integer,
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    rsvp_id = Column(
+        Integer,
+        ForeignKey("rsvps.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    leader_name = Column(String(100), nullable=False, index=True)
+    credit_km = Column(Numeric(8, 2), nullable=False)
+    distance_km = Column(Numeric(8, 2), nullable=True)
+    checked_in_count = Column(Integer, default=0, nullable=False)
+    effective_group_count = Column(Integer, default=0, nullable=False)
+    credited_leader_count = Column(Integer, default=0, nullable=False)
+    snapshot_id = Column(
+        Integer,
+        ForeignKey("event_ride_leader_snapshots.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+    revoked_at = Column(DateTime(timezone=True), nullable=True)
+
+    event = relationship("Event", back_populates="ride_leader_credits")
+    rsvp = relationship("RSVP", back_populates="ride_leader_credits")
+    snapshot = relationship("EventRideLeaderSnapshot", back_populates="credits")
 
 
 class Subscriber(Base):

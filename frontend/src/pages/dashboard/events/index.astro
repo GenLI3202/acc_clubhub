@@ -93,6 +93,7 @@ const occurrencePayload = zhEvents.map((e) => ({
   max_participants: e.data.maxParticipants ?? null,
   registration_deadline: e.data.registrationDeadline ?? null,
   description: e.data.description ?? null,
+  distance_km: e.data.distanceKm ?? null,
 }));
 
 if (isLocalPreview) {
@@ -157,6 +158,7 @@ const allMerged: AdminEventRow[] = zhEvents.map((e) => {
     spots_remaining: stats?.spots_remaining ?? null,
     db_id: stats?.id ?? null,
     in_db: !!stats,
+    distance_km: stats?.distance_km ?? (e.data.distanceKm ?? null),
   };
 });
 
@@ -191,6 +193,11 @@ function formatDate(dateStr: string | null): string {
   } catch {
     return dateStr;
   }
+}
+
+function formatKm(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return "—";
+  return `${Number(value).toFixed(1)} km`;
 }
 
 function getViewUrl(view: AdminEventView): string {
@@ -292,6 +299,11 @@ function getCategoryUrl(category: AdminEventCategory): string {
         line-height: 1.35;
       }
       .spots-left {
+        color: #57606a;
+        font-size: 0.78rem;
+        margin-top: 0.2rem;
+      }
+      .distance-note {
         color: #57606a;
         font-size: 0.78rem;
         margin-top: 0.2rem;
@@ -459,6 +471,7 @@ function getCategoryUrl(category: AdminEventCategory): string {
                         ? "No capacity limit"
                         : `${event.spots_remaining ?? event.maxParticipants} spots left`}
                     </div>
+                    <div class="distance-note">Distance: {formatKm(event.distance_km)}</div>
                   </td>
                   <td>
                     {event.db_id ? (

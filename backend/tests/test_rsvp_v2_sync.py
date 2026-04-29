@@ -2,6 +2,7 @@ import pytest
 from datetime import datetime, timezone
 from models import Event
 
+
 def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
     """
     Verify that POST /api/rsvp (v2) correctly updates an existing event's 
@@ -36,6 +37,7 @@ def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
         "event_date": new_date_iso,
         "event_type": "training-camp",
         "max_participants": 25,
+        "distance_km": 48.5,
         "lang": "en"
     }
 
@@ -53,6 +55,7 @@ def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
     assert updated_event.location == new_location
     assert updated_event.event_type == "training-camp"
     assert updated_event.max_participants == 25
+    assert float(updated_event.distance_km) == 48.5
     
     # Verify exact time parsing (14:45 UTC)
     db_date = updated_event.event_date

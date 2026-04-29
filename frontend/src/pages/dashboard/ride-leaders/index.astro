@@ -1,0 +1,464 @@
+---
+export const prerender = false;
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+const isLocalPreview = import.meta.env.DEV
+  && ["127.0.0.1", "localhost"].includes(Astro.url.hostname)
+  && Astro.url.searchParams.get("preview") === "1";
+
+const cookie = Astro.request.headers.get("cookie") || "";
+if (!isLocalPreview) {
+  try {
+    const meRes = await fetch(`${apiUrl}/auth/me`, {
+      headers: { "Cookie": cookie },
+    });
+    if (!meRes.ok) {
+      return Astro.redirect("/dashboard/login", 302);
+    }
+  } catch {
+    return Astro.redirect("/dashboard/login", 302);
+  }
+}
+
+const now = new Date();
+const requestedYear = Number(Astro.url.searchParams.get("year") || now.getUTCFullYear());
+const year = Number.isFinite(requestedYear) ? requestedYear : now.getUTCFullYear();
+const selectedLeader = Astro.url.searchParams.get("leader") || "";
+
+let summaryData = { year, leaders: [] as any[] };
+let detailData: any = null;
+let fetchError: string | null = null;
+
+if (isLocalPreview) {
+  summaryData = {
+    year,
+    leaders: [
+      {
+        leader_name: "Alice Zhang",
+        lead_events_count: 4,
+        total_credited_km: 186.5,
+        reimbursement_eligible: false,
+        annual_target_km: 320,
+        excess_km: 0,
+        estimated_subsidy_eur: 0,
+      },
+      {
+        leader_name: "Bob Li",
+        lead_events_count: 7,
+        total_credited_km: 332,
+        reimbursement_eligible: true,
+        annual_target_km: 320,
+        excess_km: 12,
+        estimated_subsidy_eur: 1,
+      },
+    ],
+  };
+  detailData = {
+    year,
+    leader_name: selectedLeader || "Bob Li",
+    lead_events_count: 7,
+    total_credited_km: 332,
+    reimbursement_eligible: true,
+    annual_target_km: 320,
+    excess_km: 12,
+    estimated_subsidy_eur: 1,
+    progress: [
+      { event_id: 1, event_date: `${year}-03-15T09:00:00Z`, cumulative_km: 45, credit_km: 45 },
+      { event_id: 2, event_date: `${year}-04-05T09:00:00Z`, cumulative_km: 102, credit_km: 57 },
+      { event_id: 3, event_date: `${year}-05-11T09:00:00Z`, cumulative_km: 175, credit_km: 73 },
+      { event_id: 4, event_date: `${year}-06-09T09:00:00Z`, cumulative_km: 245, credit_km: 70 },
+      { event_id: 5, event_date: `${year}-07-19T09:00:00Z`, cumulative_km: 332, credit_km: 87 },
+    ],
+    history: [
+      {
+        event_id: 5,
+        event_slug: "preview-alps-ride",
+        event_title: "Preview Alps Ride",
+        event_date: `${year}-07-19T09:00:00Z`,
+        distance_km: 87,
+        checked_in_count: 18,
+        effective_group_count: 3,
+        credited_leader_count: 3,
+        credit_km: 87,
+      },
+    ],
+  };
+} else {
+  try {
+    const summaryRes = await fetch(`${apiUrl}/api/admin/ride-leaders?year=${year}`, {
+      headers: { "Cookie": cookie },
+    });
+    if (summaryRes.ok) {
+      summaryData = await summaryRes.json();
+    } else if (summaryRes.status === 401) {
+      return Astro.redirect("/dashboard/login", 302);
+    } else {
+      fetchError = `Failed to fetch ride leader summary: ${summaryRes.status}`;
+    }
+
+    const leaderForDetail = selectedLeader || summaryData.leaders[0]?.leader_name;
+    if (leaderForDetail && !fetchError) {
+      const detailRes = await fetch(
+        `${apiUrl}/api/admin/ride-leaders/${encodeURIComponent(leaderForDetail)}?year=${year}`,
+        { headers: { "Cookie": cookie } }
+      );
+      if (detailRes.ok) {
+        detailData = await detailRes.json();
+      } else if (detailRes.status === 401) {
+        return Astro.redirect("/dashboard/login", 302);
+      } else {
+        fetchError = `Failed to fetch ride leader detail: ${detailRes.status}`;
+      }
+    }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    fetchError = `Failed to load ride leader board: ${message}`;
+  }
+}
+
+function formatDate(value: string | null): string {
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatKm(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return "—";
+  return `${Number(value).toFixed(1)} km`;
+}
+
+function buildLeaderUrl(leaderName: string): string {
+  const params = new URLSearchParams();
+  params.set("year", String(year));
+  params.set("leader", leaderName);
+  return `/dashboard/ride-leaders?${params.toString()}`;
+}
+
+function buildYearUrl(nextYear: number): string {
+  const params = new URLSearchParams();
+  params.set("year", String(nextYear));
+  if (selectedLeader) params.set("leader", selectedLeader);
+  return `/dashboard/ride-leaders?${params.toString()}`;
+}
+
+const chartPoints = detailData?.progress ?? [];
+const chartMax = Math.max(
+  320,
+  300,
+  ...chartPoints.map((point: any) => point.cumulative_km ?? 0),
+  1,
+);
+const chartWidth = Math.max(chartPoints.length - 1, 1);
+const polylinePoints = chartPoints.map((point: any, index: number) => {
+  const x = (index / chartWidth) * 100;
+  const y = 100 - ((point.cumulative_km ?? 0) / chartMax) * 100;
+  return `${x},${y}`;
+}).join(" ");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ride Leader Board | ACC ClubHub Admin</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 1200px; margin: 0 auto; }
+      .breadcrumb { margin-bottom: 1.5rem; }
+      .breadcrumb a { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+      .year-switcher {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .year-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2rem;
+        height: 2rem;
+        border-radius: 999px;
+        border: 1px solid #d0d7de;
+        background: white;
+        color: #24292f;
+        text-decoration: none;
+      }
+      .year-link:hover { background: #f6f8fa; }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .summary-card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 1rem 1.2rem;
+      }
+      .summary-card .label {
+        font-size: 0.75rem;
+        color: #57606a;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .summary-card .value {
+        margin-top: 0.35rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #24292f;
+      }
+      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .panel {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 1.5rem;
+      }
+      .panel h2 {
+        margin: 0 0 1rem;
+        font-size: 1.05rem;
+        color: #24292f;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 0.75rem 0.6rem;
+        border-bottom: 1px solid #eaeef2;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      th {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #57606a;
+      }
+      tr:last-child td { border-bottom: none; }
+      .leader-link {
+        color: #0969da;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .leader-link:hover { text-decoration: underline; }
+      .chart-shell {
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 1rem;
+        background: linear-gradient(to top, #fafbfc 0%, white 100%);
+      }
+      .chart-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+        color: #57606a;
+        font-size: 0.85rem;
+      }
+      .chart-svg {
+        width: 100%;
+        height: 280px;
+        overflow: visible;
+      }
+      .chart-empty {
+        color: #57606a;
+        padding: 2rem 0;
+      }
+      .history-layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 1.5rem;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: #eef1f5;
+        color: #57606a;
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+      .pill.good {
+        background: #dafbe1;
+        color: #1a7f37;
+      }
+      @media (max-width: 900px) {
+        body { padding: 1rem; }
+        .history-layout { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">&larr; Admin Dashboard</a>
+      </div>
+
+      <div class="header">
+        <h1>Ride Leader Board</h1>
+        <div class="year-switcher">
+          <a class="year-link" href={buildYearUrl(year - 1)} aria-label="Previous year">←</a>
+          <strong>{year}</strong>
+          <a class="year-link" href={buildYearUrl(year + 1)} aria-label="Next year">→</a>
+        </div>
+      </div>
+
+      {fetchError && <div class="error">{fetchError}</div>}
+
+      {detailData && (
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="label">Selected Leader</div>
+            <div class="value">{detailData.leader_name}</div>
+          </div>
+          <div class="summary-card">
+            <div class="label">Lead Events</div>
+            <div class="value">{detailData.lead_events_count}</div>
+          </div>
+          <div class="summary-card">
+            <div class="label">Total Credited</div>
+            <div class="value">{formatKm(detailData.total_credited_km)}</div>
+          </div>
+          <div class="summary-card">
+            <div class="label">Reimbursement</div>
+            <div class="value">
+              <span class={`pill ${detailData.reimbursement_eligible ? 'good' : ''}`}>
+                {detailData.reimbursement_eligible ? 'Eligible' : 'In progress'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <section class="panel">
+        <h2>Annual Board</h2>
+        {summaryData.leaders.length === 0 ? (
+          <div class="chart-empty">No ride leader credits recorded for {year} yet.</div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Ride Leader</th>
+                <th>Lead Events</th>
+                <th>Total Credited</th>
+                <th>300 km Threshold</th>
+                <th>Annual Target</th>
+                <th>Excess</th>
+                <th>Estimated Subsidy</th>
+              </tr>
+            </thead>
+            <tbody>
+              {summaryData.leaders.map((leader: any) => (
+                <tr>
+                  <td>
+                    <a class="leader-link" href={buildLeaderUrl(leader.leader_name)}>
+                      {leader.leader_name}
+                    </a>
+                  </td>
+                  <td>{leader.lead_events_count}</td>
+                  <td>{formatKm(leader.total_credited_km)}</td>
+                  <td>
+                    <span class={`pill ${leader.reimbursement_eligible ? 'good' : ''}`}>
+                      {leader.reimbursement_eligible ? 'Reached' : 'Not yet'}
+                    </span>
+                  </td>
+                  <td>{formatKm(leader.annual_target_km)}</td>
+                  <td>{formatKm(leader.excess_km)}</td>
+                  <td>€{Number(leader.estimated_subsidy_eur ?? 0).toFixed(0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      {detailData && (
+        <div class="history-layout">
+          <section class="panel">
+            <h2>{detailData.leader_name} · Cumulative Progress</h2>
+            <div class="chart-shell">
+              <div class="chart-meta">
+                <span>Threshold: 300 km</span>
+                <span>Target: {formatKm(detailData.annual_target_km)}</span>
+                <span>Total: {formatKm(detailData.total_credited_km)}</span>
+              </div>
+              {chartPoints.length === 0 ? (
+                <div class="chart-empty">No credited events for this ride leader in {year}.</div>
+              ) : (
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="chart-svg" aria-label="Ride leader cumulative credit chart">
+                  <line x1="0" y1="100" x2="100" y2="100" stroke="#d0d7de" stroke-width="1" />
+                  <line x1="0" y1={100 - (300 / chartMax) * 100} x2="100" y2={100 - (300 / chartMax) * 100} stroke="#cf222e" stroke-width="1" stroke-dasharray="2 2" />
+                  <line x1="0" y1={100 - ((detailData.annual_target_km ?? 320) / chartMax) * 100} x2="100" y2={100 - ((detailData.annual_target_km ?? 320) / chartMax) * 100} stroke="#9a6700" stroke-width="1" stroke-dasharray="3 2" />
+                  <polyline fill="none" stroke="#0969da" stroke-width="2.5" points={polylinePoints} />
+                  {chartPoints.map((point: any, index: number) => {
+                    const x = (index / chartWidth) * 100;
+                    const y = 100 - ((point.cumulative_km ?? 0) / chartMax) * 100;
+                    return <circle cx={x} cy={y} r="1.6" fill="#0969da" />;
+                  })}
+                </svg>
+              )}
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>{detailData.leader_name} · Event History</h2>
+            {detailData.history.length === 0 ? (
+              <div class="chart-empty">No event history available.</div>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Event</th>
+                    <th>Distance</th>
+                    <th>Checked-in</th>
+                    <th>Groups</th>
+                    <th>Leaders</th>
+                    <th>Credited</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detailData.history.map((row: any) => (
+                    <tr>
+                      <td>{formatDate(row.event_date)}</td>
+                      <td>{row.event_title}</td>
+                      <td>{formatKm(row.distance_km)}</td>
+                      <td>{row.checked_in_count}</td>
+                      <td>{row.effective_group_count}</td>
+                      <td>{row.credited_leader_count}</td>
+                      <td>{formatKm(row.credit_km)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+        </div>
+      )}
+    </div>
+  </body>
+</html>
