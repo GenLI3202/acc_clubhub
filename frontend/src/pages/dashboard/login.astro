@@ -1,5 +1,5 @@
 ---
-// dashboard/login.astro - Admin magic link login page (SSR)
+// dashboard/login.astro - Admin direct email login page (SSR)
 export const prerender = false;
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -164,7 +164,7 @@ try {
       <h1>ACC ClubHub Admin</h1>
       <p>Enter an authorized ride leader email and dashboard password.</p>
 
-      <form id="magic-link-form">
+      <form id="email-login-form">
         <label for="admin-email">Email address</label>
         <input
           id="admin-email"
@@ -182,7 +182,7 @@ try {
           required
         />
         <button type="submit" class="login-btn login-btn--primary">
-          Send magic link
+          Sign in
         </button>
       </form>
 
@@ -199,14 +199,18 @@ try {
     </div>
 
     <script>
-      const form = document.getElementById("magic-link-form");
+      const formElement = document.getElementById("email-login-form");
       const message = document.getElementById("login-message");
 
-      form?.addEventListener("submit", async (event) => {
+      if (!(formElement instanceof HTMLFormElement)) {
+        throw new Error("Dashboard login form was not found.");
+      }
+
+      formElement.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const submit = form.querySelector("button[type='submit']");
-        const formData = new FormData(form);
+        const submit = formElement.querySelector("button[type='submit']");
+        const formData = new FormData(formElement);
         const email = formData.get("email");
         const password = formData.get("password");
         if (
@@ -218,32 +222,34 @@ try {
         }
 
         submit.disabled = true;
-        submit.textContent = "Sending...";
+        submit.textContent = "Signing in...";
         message?.classList.remove("is-visible", "message--success", "message--error");
 
         try {
-          const response = await fetch("/auth/magic-link", {
+          const response = await fetch("/auth/email-login", {
             method: "POST",
+            credentials: "same-origin",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
           });
 
           if (!response.ok) {
-            throw new Error("Unable to send login link.");
+            throw new Error("Unable to sign in.");
           }
 
-          if (message) {
-            message.textContent = "Check your email for the dashboard login link.";
-            message.classList.add("is-visible", "message--success");
-          }
+          const result = await response.json();
+          window.location.href = result.redirect_to || "/dashboard/events";
         } catch {
           if (message) {
-            message.textContent = "The email or password is incorrect, or the link could not be sent.";
+            message.textContent = "The email or password is incorrect.";
             message.classList.add("is-visible", "message--error");
           }
-        } finally {
           submit.disabled = false;
-          submit.textContent = "Send magic link";
+          submit.textContent = "Sign in";
+        } finally {
+          if (!submit.disabled) {
+            submit.textContent = "Sign in";
+          }
         }
       });
     </script>

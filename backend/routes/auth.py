@@ -8,12 +8,11 @@ from typing import Optional
 
 import httpx
 import jwt
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr
 
 from config import settings
-from services.email import send_admin_magic_link_email
 
 router = APIRouter()
 
@@ -23,12 +22,11 @@ GITHUB_API_URL = "https://api.github.com"
 
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRY_HOURS = 24
-MAGIC_LINK_EXPIRY_MINUTES = 15
 STATE_EXPIRY_MINUTES = 10
 
 
-class MagicLinkRequest(BaseModel):
-    """Magic link login request payload."""
+class EmailLoginRequest(BaseModel):
+    """Email and password dashboard login request payload."""
 
     email: EmailStr
     password: str
@@ -77,7 +75,7 @@ def is_admin_email_allowed(email: str) -> bool:
     return _normalize_email(email) in _get_admin_email_allowlist()
 
 
-def is_magic_link_password_valid(password: str) -> bool:
+def is_dashboard_password_valid(password: str) -> bool:
     """Check whether the shared dashboard password matches configuration."""
     expected_password = settings.ADMIN_MAGIC_LINK_PASSWORD
     if not expected_password:
@@ -176,39 +174,6 @@ def get_github_user(access_token: str) -> dict:
         return response.json()
 
 
-def create_magic_link_token(email: str) -> str:
-    """Create a short-lived magic link token for an authorized admin email."""
-    secret = _get_session_secret()
-    now = int(time.time())
-    payload = {
-        "type": "admin_magic_link",
-        "email": _normalize_email(email),
-        "exp": now + (MAGIC_LINK_EXPIRY_MINUTES * 60),
-        "iat": now,
-    }
-    return jwt.encode(payload, secret, algorithm=JWT_ALGORITHM)
-
-
-def verify_magic_link_token(token: str) -> str:
-    """Verify a magic link token and return the authorized admin email."""
-    secret = _get_session_secret()
-    try:
-        payload = jwt.decode(token, secret, algorithms=[JWT_ALGORITHM])
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=400, detail="Magic link expired")
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=400, detail="Invalid magic link")
-
-    if payload.get("type") != "admin_magic_link":
-        raise HTTPException(status_code=400, detail="Invalid magic link")
-
-    email = payload.get("email")
-    if not isinstance(email, str) or not is_admin_email_allowed(email):
-        raise HTTPException(status_code=403, detail="Email is not authorized")
-
-    return _normalize_email(email)
-
-
 def create_jwt_session(
     admin_id: str,
     auth_provider: str,
@@ -274,22 +239,29 @@ def login(request: Request) -> RedirectResponse:
     return RedirectResponse(url=get_github_auth_url(redirect_to), status_code=302)
 
 
-@router.post("/auth/magic-link")
-def request_magic_link(payload: MagicLinkRequest) -> dict:
-    """Send a dashboard login magic link when the email is authorized."""
+@router.post("/auth/email-login")
+def email_login(payload: EmailLoginRequest, response: Response) -> dict:
+    """Create a dashboard session when email and shared password are valid."""
     email = _normalize_email(payload.email)
-    if not is_admin_email_allowed(email) or not is_magic_link_password_valid(
+    if not is_admin_email_allowed(email) or not is_dashboard_password_valid(
         payload.password,
     ):
         raise HTTPException(status_code=403, detail="Invalid login credentials")
 
-    token = create_magic_link_token(email)
-    frontend_url = settings.PUBLIC_FRONTEND_URL.rstrip("/")
-    magic_link = f"{frontend_url}/auth/callback?token={token}"
-    result = send_admin_magic_link_email(email=email, magic_link=magic_link)
-    if result.get("status") in {"skipped", "error"}:
-        raise HTTPException(status_code=503, detail="Could not send magic link")
-    return {"status": result.get("status", "sent")}
+    session_token = create_jwt_session(
+        admin_id=email,
+        auth_provider="email",
+        email=email,
+    )
+    response.set_cookie(
+        key="admin_session",
+        value=session_token,
+        max_age=JWT_EXPIRY_HOURS * 3600,
+        httponly=True,
+        samesite="lax",
+        secure=True,
+    )
+    return {"status": "authenticated", "redirect_to": "/dashboard/events"}
 
 
 @router.get("/auth/callback")
@@ -297,17 +269,9 @@ def callback(
     request: Request,
     code: Optional[str] = None,
     state: Optional[str] = None,
-    token: Optional[str] = None,
 ) -> RedirectResponse:
-    """Handle GitHub OAuth callbacks and email magic link callbacks."""
-    if token:
-        email = verify_magic_link_token(token)
-        session_token = create_jwt_session(
-            admin_id=email,
-            auth_provider="email",
-            email=email,
-        )
-    elif code and state:
+    """Handle GitHub OAuth callbacks."""
+    if code and state:
         if not _verify_state_token(state):
             raise HTTPException(
                 status_code=400,
@@ -334,7 +298,7 @@ def callback(
             github_user_id=github_user_id,
         )
     else:
-        raise HTTPException(status_code=400, detail="Missing login callback token")
+        raise HTTPException(status_code=400, detail="Missing GitHub callback token")
 
     response = RedirectResponse(url="/dashboard/events", status_code=302)
     response.set_cookie(
