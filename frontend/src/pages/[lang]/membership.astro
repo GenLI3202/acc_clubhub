@@ -116,15 +116,14 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   <section class="mem-photo-strip">
     <div class="mem-photo-grid">
       {[
-        { img: CAFE_IMG, label: "After Work", meta: "Tierpark 出发 · 每周二 18:15" },
-        { img: ALPS_IMG, label: "多日远征", meta: "Tegernsee · 1,800 m · 一年 1–2 次" },
-        { img: GROUP_IMG, label: "周末团骑", meta: "Weekend Long Ride · Starnberg loop" },
+        { img: CAFE_IMG, label: "After Work" },
+        { img: ALPS_IMG, label: "多日远征" },
+        { img: GROUP_IMG, label: "周末团骑" },
       ].map((p) => (
         <div class="mem-photo-item">
           <div class="mem-photo-img" style={`background-image: url(${p.img});`}></div>
           <div class="mem-photo-caption">
             <div class="mem-photo-label">{p.label}</div>
-            <div class="mem-photo-meta">{p.meta}</div>
           </div>
         </div>
       ))}
@@ -447,13 +446,6 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--color-text-main);
-  }
-
-  .mem-photo-meta {
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    color: var(--color-text-secondary);
-    margin-top: 2px;
   }
 
   /* ============================================================
