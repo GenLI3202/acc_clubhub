@@ -137,11 +137,7 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   <section class="mem-benefits-section">
     <div class="mem-benefits-inner">
       <div class="mem-benefits-header">
-        <div class="mem-eyebrow">会员权益</div>
         <h2 class="mem-benefits-h2">会员权益</h2>
-        <p class="mem-benefits-charter-link">
-          加入之前，也请了解 <a href="#charter" class="mem-link">会员章程与责任义务 →</a>
-        </p>
       </div>
 
       <div class="mem-benefits-list">
@@ -158,6 +154,9 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
           </div>
         ))}
         <div class="mem-benefits-more">更多权益陆续公布 ——</div>
+        <div class="mem-benefits-charter-link">
+          详情请了解 <a href="#charter" class="mem-link">会员章程与责任义务 →</a>
+        </div>
       </div>
     </div>
   </section>
@@ -166,13 +165,26 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
       PRICING
      ============================================================ */}
   <section class="mem-pricing-section">
-    <div class="mem-eyebrow">会费 · 仅作告知</div>
-    <p class="mem-pricing-headline">
-      2026 / 27 会员年，
-      <span class="mem-pricing-tier">老会员 10€</span>，
-      <span class="mem-pricing-tier">学生 29€</span>，
-      <span class="mem-pricing-tier">非学生 49€</span>。
-    </p>
+    <div class="mem-eyebrow mem-eyebrow--accent mem-eyebrow--lg">会费</div>
+    <p class="mem-pricing-year">2026 / 27 会员年</p>
+    <div class="mem-pricing-table">
+      <div class="mem-pricing-row">
+        <div class="mem-pricing-row-label">老会员</div>
+        <div class="mem-pricing-row-tiers">
+          <span class="mem-pricing-tier">学生 10€</span>
+          <span class="mem-pricing-row-sep">·</span>
+          <span class="mem-pricing-tier">非学生 15€</span>
+        </div>
+      </div>
+      <div class="mem-pricing-row">
+        <div class="mem-pricing-row-label">新会员</div>
+        <div class="mem-pricing-row-tiers">
+          <span class="mem-pricing-tier">学生 29€</span>
+          <span class="mem-pricing-row-sep">·</span>
+          <span class="mem-pricing-tier">非学生 49€</span>
+        </div>
+      </div>
+    </div>
     <p class="mem-pricing-note">
       会员年自每年 6 月 1 日起，至次年 5 月 31 日止。
       2026 年 5 月 1 日至 5 月 31 日期间报名者，会籍同样至 2027 年 5 月 31 日。
@@ -567,19 +579,59 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     text-align: center;
   }
 
-  .mem-pricing-headline {
+  .mem-eyebrow--lg {
+    font-size: 15px;
+  }
+
+  .mem-pricing-year {
     font-family: var(--font-heading);
-    font-size: clamp(20px, 2.5vw, 28px);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin: 4px 0 28px;
+    text-transform: uppercase;
+  }
+
+  .mem-pricing-table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 auto 40px;
+  }
+
+  .mem-pricing-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .mem-pricing-row-label {
+    font-family: var(--font-heading);
+    font-size: 16px;
     font-weight: 500;
-    line-height: 1.5;
-    letter-spacing: -0.015em;
-    color: var(--color-text-main);
-    margin: 0 0 36px;
+    color: var(--color-text-secondary);
+    min-width: 56px;
+    text-align: right;
+  }
+
+  .mem-pricing-row-tiers {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .mem-pricing-row-sep {
+    color: var(--color-text-muted);
+    font-size: 13px;
   }
 
   .mem-pricing-tier {
-    color: var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: clamp(20px, 2.2vw, 26px);
     font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-accent);
   }
 
   .mem-pricing-note {
