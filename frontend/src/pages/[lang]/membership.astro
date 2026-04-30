@@ -61,7 +61,7 @@ const BENEFITS = [
 ];
 
 const TERMS = [
-  { q: "有效期", a: "缴费当月起至次年 5 月 31 日。每年 6 月 1 日为统一续费日。" },
+  { q: "有效期", a: "缴费当月起至次年 5 月 31 日。每年 6 月 1 日为统一续费日。会员年自每年 6 月 1 日起，至次年 5 月 31 日止。2026 年 5 月 1 日至 5 月 31 日期间报名者，会籍同样至 2027 年 5 月 31 日。" },
   { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€（含会员事故保险）。新会员首次办理须另缴华人体协 10€ 开户费。其余部分进入俱乐部公共账户。" },
   { q: "退款政策", a: "会费一经缴纳，概不退款。" },
   { q: "活动参与", a: "骑行活动存在固有风险，参与者须自行承担。官方注册活动涵盖 BLSV 事故保险。详细参与规则见会员章程。" },
@@ -173,6 +173,7 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
 
       {/* ── pricing block ── */}
       <div class="mem-pricing-block">
+        <p class="mem-pricing-year-label">2026 / 27 会员年 年费</p>
         <div class="mem-pricing-grid">
           <div class="mem-pricing-col-head"></div>
           <div class="mem-pricing-col-head">学生</div>
@@ -188,8 +189,6 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
 
           <div class="mem-pricing-footnote">首次办理须另缴华人体协 10€ 开户费</div>
         </div>
-        <p class="mem-pricing-caption">2026 / 27 会员年 · 自 6 月 1 日起，至次年 5 月 31 日止。2026 年 5 月报名者会籍同至 2027 年 5 月 31 日。</p>
-        <p class="mem-pricing-caption mem-pricing-caption--note">老会员价为本届（2025/26）会员续费优惠，适用范围以每届公告为准。</p>
       </div>
 
       {/* ── terms accordion ── */}
@@ -599,6 +598,17 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     margin-bottom: 28px;
   }
 
+  .mem-pricing-year-label {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 0 0 16px;
+  }
+
   .mem-pricing-grid {
     display: grid;
     grid-template-columns: auto 1fr 1fr;
@@ -651,12 +661,6 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     margin: 0;
     max-width: 480px;
     margin-inline: auto;
-  }
-
-  .mem-pricing-caption--note {
-    margin-top: 6px;
-    font-style: italic;
-    font-size: 12px;
   }
 
   .mem-pricing-footnote {
