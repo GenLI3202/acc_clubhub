@@ -23,9 +23,6 @@ class Settings(BaseSettings):
     ADMIN_SESSION_SECRET: Optional[str] = None
     ADMIN_EMAIL_ALLOWLIST: str = ""
     ADMIN_MAGIC_LINK_PASSWORD: Optional[str] = None
-    ADMIN_GITHUB_ALLOWLIST: str = ""
-    GITHUB_CLIENT_ID: Optional[str] = None
-    GITHUB_CLIENT_SECRET: Optional[str] = None
 
     # CORS Configuration
     ALLOWED_ORIGINS: str = "*"

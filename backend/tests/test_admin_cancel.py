@@ -21,7 +21,7 @@ from models import Event, RSVP
 
 def _admin_headers() -> dict:
     """
-    Skip real GitHub OAuth — override get_current_admin dependency instead.
+    Override get_current_admin dependency to skip real auth.
     """
     return {}
 
