@@ -201,6 +201,13 @@
   - [X] Updated membership page charter links to open the full charter page.
 - [X] **Membership Hero Photo Refresh** (2026-05-01)
   - [X] Replaced the membership page hero asset with the ACC group ride photo.
+- [X] **Dashboard Email Password Admin Auth** (2026-04-29)
+  - [X] Added email allowlist login for ride leader dashboard access.
+  - [X] Required a shared dashboard password before creating a 24-hour session.
+  - [X] Kept GitHub OAuth allowlist login as a fallback during migration.
+  - [X] Reused the existing admin session cookie for both login methods.
+- [X] **Dashboard ACC Red Theme Refresh** (2026-04-29)
+  - [X] Replaced dashboard blue accent states with ACC red across admin pages.
 
 
 ## In Progress

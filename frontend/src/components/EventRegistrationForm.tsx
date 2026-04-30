@@ -13,6 +13,7 @@ interface EventRegistrationFormProps {
     maxParticipants: number | null;
     registrationDeadline: string | null;
     wechatQrCode: string | null;
+    distanceKm: number | null;
     isACCOfficialRide: boolean;
     lang: Locale;
     apiUrl: string;
@@ -37,6 +38,7 @@ export function EventRegistrationForm({
     maxParticipants,
     registrationDeadline,
     wechatQrCode,
+    distanceKm,
     isACCOfficialRide,
     lang,
     apiUrl,
@@ -107,6 +109,7 @@ export function EventRegistrationForm({
                     max_participants: maxParticipants,
                     registration_deadline: registrationDeadline,
                     wechat_qr_code: wechatQrCode,
+                    distance_km: distanceKm,
                 }),
             });
 

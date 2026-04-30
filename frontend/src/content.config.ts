@@ -255,6 +255,8 @@ const eventsCollection = defineCollection({
     registrationLink: z.string().optional(),
     ACCOfficialRide: z.boolean().optional(),
     wechatQrCode: z.string().optional(),
+    distanceKm: z.number().optional(),
+    routeDistanceKm: z.number().optional(),
     // displaySections is the canonical frontmatter field for which sections of the events page this event appears in.
     // 'hero'     → featured carousel at the top (max 2-3 events)
     // 'upcoming' → upcoming events card grid
@@ -282,7 +284,10 @@ const eventsCollection = defineCollection({
     eventType: data.eventType || 'social-ride' as const,
     description: data.description || '',
     registrationDeadline: data.registrationDeadline?.toISOString() ?? null,
+    distanceKm: data.distanceKm ?? data.routeDistanceKm ?? undefined,
     displaySections: data.displaySections ?? [data.displaySection],
+    routeKomootUrl: data.routeKomootUrl || undefined,
+    routeStravaUrl: data.routeStravaUrl || undefined,
   })),
 });
 

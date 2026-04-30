@@ -42,6 +42,29 @@ class TestAdminEventsEndpoint:
         assert "event_date" in data[0]
 
 
+
+    def test_event_items_include_aggregated_counts(self, client, db, sample_event, confirmed_rsvp, waitlisted_rsvp):
+        from models import RSVP
+
+        cancelled = RSVP(
+            event_id=sample_event.id,
+            email="cancelled@example.com",
+            name="Cancelled Rider",
+            status="cancelled",
+            privacy_accepted=True,
+            view_token="tok-cancelled",
+        )
+        db.add(cancelled)
+        db.commit()
+
+        res = client.get("/api/admin/events")
+
+        assert res.status_code == 200
+        event = next(item for item in res.json() if item["slug"] == sample_event.slug)
+        assert event["confirmed_count"] == 2
+        assert event["waitlist_count"] == 1
+        assert event["cancelled_count"] == 1
+
 class TestAdminSchemaHealthEndpoint:
     """GET /api/admin/health/schema — verifies DB migrations are applied."""
 

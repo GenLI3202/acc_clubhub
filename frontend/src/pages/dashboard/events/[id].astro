@@ -37,6 +37,7 @@ if (isLocalPreview) {
       location: "Munich",
       max_participants: 15,
       current_participants: 2,
+      distance_km: 48.5,
     },
     rsvps: [
       {
@@ -44,11 +45,13 @@ if (isLocalPreview) {
         name: "Preview Confirmed Rider",
         email: "confirmed@example.com",
         status: "confirmed",
-        attendance_status: "registered",
-        checked_in_at: null,
+        attendance_status: "checked_in",
+        checked_in_at: "2026-04-24T12:10:00.000Z",
         cancel_reason: null,
         notes: "Needs a stable confirm modal",
         created_at: "2026-04-24T12:00:00.000Z",
+        is_ride_leader: true,
+        ride_leader_credit_km: 48.5,
       },
       {
         id: 102,
@@ -60,6 +63,8 @@ if (isLocalPreview) {
         cancel_reason: "admin_cancelled",
         notes: "",
         created_at: "2026-04-23T12:00:00.000Z",
+        is_ride_leader: false,
+        ride_leader_credit_km: null,
       },
     ],
     summary: {
@@ -67,7 +72,13 @@ if (isLocalPreview) {
       confirmed: 1,
       waitlist: 0,
       cancelled: 1,
-      checked_in: 0,
+      checked_in: 1,
+      distance_km: 48.5,
+      effective_group_count: 1,
+      credited_leader_count: 1,
+      max_credited_leader_count: 2,
+      credit_per_leader_km: 48.5,
+      total_credited_km: 48.5,
     },
   };
 } else {
@@ -105,6 +116,11 @@ function formatDate(dateStr: string | null): string {
   }
 }
 
+function formatKm(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return "—";
+  return `${Number(value).toFixed(1)} km`;
+}
+
 ---
 
 <!doctype html>
@@ -121,7 +137,7 @@ function formatDate(dateStr: string | null): string {
         margin: 0;
         padding: 2rem;
       }
-      .container { max-width: 1100px; margin: 0 auto; }
+      .container { max-width: 1180px; margin: 0 auto; }
       .header {
         display: flex;
         justify-content: space-between;
@@ -132,9 +148,9 @@ function formatDate(dateStr: string | null): string {
       }
       h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
       .breadcrumb { margin-bottom: 1.5rem; }
-      .breadcrumb a { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .breadcrumb a { color: #C62828; text-decoration: none; font-size: 0.9rem; }
       .breadcrumb a:hover { text-decoration: underline; }
-      .back-link { color: #0969da; text-decoration: none; font-size: 0.9rem; }
+      .back-link { color: #C62828; text-decoration: none; font-size: 0.9rem; }
       .back-link:hover { text-decoration: underline; }
       .event-header {
         background: white;
@@ -147,25 +163,55 @@ function formatDate(dateStr: string | null): string {
       .event-meta { display: flex; gap: 2rem; flex-wrap: wrap; font-size: 0.9rem; color: #57606a; }
       .event-meta span { display: flex; align-items: center; gap: 0.3rem; }
       .summary-bar {
-        display: flex;
+        display: grid;
         gap: 1rem;
         margin-bottom: 1.5rem;
-        flex-wrap: wrap;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       }
       .summary-card {
         background: white;
         border: 1px solid #d0d7de;
         border-radius: 6px;
-        padding: 1rem 1.5rem;
+        padding: 1rem 1.25rem;
         min-width: 120px;
       }
       .summary-card .label { font-size: 0.75rem; color: #57606a; text-transform: uppercase; letter-spacing: 0.05em; }
-      .summary-card .value { font-size: 1.75rem; font-weight: 700; color: #24292f; }
+      .summary-card .value { font-size: 1.55rem; font-weight: 700; color: #24292f; }
+      .ride-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .ride-summary-card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 1rem 1.2rem;
+      }
+      .ride-summary-card h3 {
+        margin: 0 0 0.8rem;
+        font-size: 0.95rem;
+        color: #24292f;
+      }
+      .ride-summary-list {
+        display: grid;
+        gap: 0.5rem;
+        margin: 0;
+      }
+      .ride-summary-list div {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        font-size: 0.88rem;
+      }
+      .ride-summary-list dt { color: #57606a; }
+      .ride-summary-list dd { margin: 0; font-weight: 600; color: #24292f; }
       .actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
       .action-btn {
         display: inline-block;
         padding: 0.4rem 0.9rem;
-        background: #0969da;
+        background: #C62828;
         color: white !important;
         border-radius: 6px;
         text-decoration: none;
@@ -175,7 +221,7 @@ function formatDate(dateStr: string | null): string {
         cursor: pointer;
         transition: background 0.2s;
       }
-      .action-btn:hover { background: #0860ca; text-decoration: none; }
+      .action-btn:hover { background: #a81f1f; text-decoration: none; }
       .action-btn.secondary {
         background: white;
         color: #24292f !important;
@@ -205,6 +251,7 @@ function formatDate(dateStr: string | null): string {
         padding: 0.75rem 1rem;
         border-bottom: 1px solid #eaeef2;
         font-size: 0.9rem;
+        vertical-align: top;
       }
       tr:last-child td { border-bottom: none; }
       tr:hover td { background: #f6f8fa; }
@@ -218,61 +265,76 @@ function formatDate(dateStr: string | null): string {
       .badge-confirmed { background: #dafbe1; color: #1a7f37; }
       .badge-waitlist { background: #fff8c5; color: #9a6700; }
       .badge-cancelled { background: #ffebe9; color: #cf222e; }
-      .badge-registered { background: #ddf4ff; color: #0969da; }
+      .badge-registered { background: #fde8e8; color: #C62828; }
       .badge-checked-in { background: #dafbe1; color: #1a7f37; }
-      .check-in-btn {
+      .badge-ride-leader { background: #ede9fe; color: #6d28d9; }
+      .row-state {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        align-items: center;
+      }
+      .check-in-btn,
+      .undo-check-in-btn,
+      .cancel-btn,
+      .restore-btn,
+      .ride-leader-btn,
+      .undo-ride-leader-btn {
         padding: 0.25rem 0.6rem;
-        background: #ddf4ff;
-        color: #0969da !important;
-        border: 1px solid #54aeff66;
         border-radius: 6px;
         font-size: 0.75rem;
         cursor: pointer;
         transition: background 0.2s;
+        border: 1px solid transparent;
       }
-      .check-in-btn:hover { background: #b6e3ff; }
-      .check-in-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .check-in-btn {
+        background: #fde8e8;
+        color: #C62828 !important;
+        border-color: #f2a7a766;
+      }
+      .check-in-btn:hover { background: #f9caca; }
       .undo-check-in-btn {
-        padding: 0.25rem 0.6rem;
         background: #fff8c5;
         color: #9a6700 !important;
-        border: 1px solid #d4a72c66;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: background 0.2s;
+        border-color: #d4a72c66;
       }
       .undo-check-in-btn:hover { background: #f7e78b; }
-      .undo-check-in-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .cancel-btn {
-        padding: 0.25rem 0.6rem;
         background: #ffebe9;
         color: #cf222e !important;
-        border: 1px solid #ff818266;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: background 0.2s;
+        border-color: #ff818266;
       }
       .cancel-btn:hover { background: #ffc9c9; }
-      .cancel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .restore-btn {
-        padding: 0.25rem 0.6rem;
         background: #dafbe1;
         color: #1a7f37 !important;
-        border: 1px solid #4ac26b66;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        cursor: pointer;
-        transition: background 0.2s;
+        border-color: #4ac26b66;
       }
       .restore-btn:hover { background: #a7f3d0; }
-      .restore-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .ride-leader-btn {
+        background: #ede9fe;
+        color: #6d28d9 !important;
+        border-color: #c4b5fd;
+      }
+      .ride-leader-btn:hover { background: #ddd6fe; }
+      .undo-ride-leader-btn {
+        background: #f5f3ff;
+        color: #6d28d9 !important;
+        border-color: #d8b4fe;
+      }
+      .undo-ride-leader-btn:hover { background: #ede9fe; }
+      .check-in-btn:disabled,
+      .undo-check-in-btn:disabled,
+      .cancel-btn:disabled,
+      .restore-btn:disabled,
+      .ride-leader-btn:disabled,
+      .undo-ride-leader-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .cancel-reason { font-size: 0.7rem; color: #8b949e; margin-left: 0.3rem; }
-      .notes { max-width: 200px; font-size: 0.8rem; color: #57606a; }
+      .notes { max-width: 220px; font-size: 0.8rem; color: #57606a; }
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
       .email-cell { font-family: monospace; font-size: 0.85rem; }
+      .leader-credit { color: #6d28d9; font-size: 0.78rem; margin-top: 0.2rem; }
       #notify-status { font-size: 0.85rem; margin-left: 0.5rem; }
       .confirm-overlay {
         position: fixed;
@@ -323,11 +385,11 @@ function formatDate(dateStr: string | null): string {
       }
       .confirm-cancel:hover { background: #f6f8fa; }
       .confirm-accept {
-        background: #0969da;
-        border-color: #0969da;
+        background: #C62828;
+        border-color: #C62828;
         color: white;
       }
-      .confirm-accept:hover { background: #0860ca; }
+      .confirm-accept:hover { background: #a81f1f; }
       .confirm-accept.danger {
         background: #cf222e;
         border-color: #cf222e;
@@ -355,6 +417,7 @@ function formatDate(dateStr: string | null): string {
               <span>📅 {formatDate(eventData.event.event_date)}</span>
               <span>📍 {eventData.event.location || "—"}</span>
               <span>👥 {eventData.event.current_participants}/{eventData.event.max_participants || "∞"}</span>
+              <span>📏 {formatKm(eventData.event.distance_km)}</span>
             </div>
           </div>
 
@@ -379,6 +442,25 @@ function formatDate(dateStr: string | null): string {
               <div class="label">Total</div>
               <div class="value">{eventData.summary.total}</div>
             </div>
+          </div>
+
+          <div class="ride-summary-grid">
+            <section class="ride-summary-card">
+              <h3>Ride Leader Summary</h3>
+              <dl class="ride-summary-list">
+                <div><dt>Distance</dt><dd>{formatKm(eventData.summary.distance_km)}</dd></div>
+                <div><dt>Checked-in</dt><dd>{eventData.summary.checked_in_count ?? 0}</dd></div>
+                <div><dt>Effective Groups</dt><dd>{eventData.summary.effective_group_count ?? 0}</dd></div>
+              </dl>
+            </section>
+            <section class="ride-summary-card">
+              <h3>Credit Status</h3>
+              <dl class="ride-summary-list">
+                <div><dt>Active Leaders</dt><dd>{eventData.summary.credited_leader_count ?? 0} / {eventData.summary.max_credited_leader_count ?? 0}</dd></div>
+                <div><dt>Credit / Leader</dt><dd>{formatKm(eventData.summary.credit_per_leader_km)}</dd></div>
+                <div><dt>Total Credited</dt><dd>{formatKm(eventData.summary.total_credited_km)}</dd></div>
+              </dl>
+            </section>
           </div>
 
           <div class="actions">
@@ -407,6 +489,7 @@ function formatDate(dateStr: string | null): string {
                   <th>Email</th>
                   <th>Status</th>
                   <th>Attendance</th>
+                  <th>Ride Leader</th>
                   <th>Notes</th>
                   <th>Registered</th>
                   <th>Actions</th>
@@ -431,6 +514,18 @@ function formatDate(dateStr: string | null): string {
                       </span>
                       {rsvp.checked_in_at && (
                         <div class="cancel-reason">{formatDate(rsvp.checked_in_at)}</div>
+                      )}
+                    </td>
+                    <td>
+                      <div class="row-state">
+                        {rsvp.is_ride_leader ? (
+                          <span class="badge badge-ride-leader">ride leader</span>
+                        ) : (
+                          <span style="color:#8b949e; font-size:0.8rem;">—</span>
+                        )}
+                      </div>
+                      {rsvp.ride_leader_credit_km != null && (
+                        <div class="leader-credit">{formatKm(rsvp.ride_leader_credit_km)}</div>
                       )}
                     </td>
                     <td class="notes">{rsvp.notes || "—"}</td>
@@ -465,6 +560,26 @@ function formatDate(dateStr: string | null): string {
                               id={`undo-check-in-btn-${rsvp.id}`}
                             >
                               Undo check-in
+                            </button>
+                          )}
+                          {rsvp.status === "confirmed" && rsvp.checked_in_at && !rsvp.is_ride_leader && (
+                            <button
+                              class="ride-leader-btn"
+                              data-rsvp-id={rsvp.id}
+                              data-rsvp-name={rsvp.name}
+                              id={`ride-leader-btn-${rsvp.id}`}
+                            >
+                              Ride Leader
+                            </button>
+                          )}
+                          {rsvp.is_ride_leader && (
+                            <button
+                              class="undo-ride-leader-btn"
+                              data-rsvp-id={rsvp.id}
+                              data-rsvp-name={rsvp.name}
+                              id={`undo-ride-leader-btn-${rsvp.id}`}
+                            >
+                              Undo Leader
                             </button>
                           )}
                           <button
@@ -619,6 +734,66 @@ function formatDate(dateStr: string | null): string {
         });
       });
 
+      async function markRideLeader(rsvpId, rsvpName, btn) {
+        const confirmed = await confirmAction({
+          title: "Mark ride leader",
+          message: `Credit ${rsvpName} as ride leader for this event?`,
+          confirmLabel: "Mark leader",
+        });
+        if (!confirmed) return;
+        btn.disabled = true;
+        try {
+          const res = await fetch(`/dashboard/api/events/${id}/rsvp/ride-leader`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          window.location.reload();
+        } catch (e) {
+          alert("Failed to mark ride leader: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      document.querySelectorAll(".ride-leader-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          markRideLeader(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
+        });
+      });
+
+      async function undoRideLeader(rsvpId, rsvpName, btn) {
+        const confirmed = await confirmAction({
+          title: "Undo ride leader",
+          message: `Remove ride leader credit from ${rsvpName}?`,
+          confirmLabel: "Undo leader",
+        });
+        if (!confirmed) return;
+        btn.disabled = true;
+        try {
+          const res = await fetch(`/dashboard/api/events/${id}/rsvp/ride-leader/undo`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          window.location.reload();
+        } catch (e) {
+          alert("Failed to undo ride leader: " + e.message);
+          btn.disabled = false;
+        }
+      }
+
+      document.querySelectorAll(".undo-ride-leader-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          undoRideLeader(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
+        });
+      });
+
       async function cancelRsvp(rsvpId, rsvpName, btn) {
         const confirmed = await confirmAction({
           title: "Cancel RSVP",
@@ -647,7 +822,6 @@ function formatDate(dateStr: string | null): string {
             }
             btn.style.display = "none";
 
-            // If a waitlisted RSVP was promoted, update their badge in the table
             if (data.promoted) {
               document.querySelectorAll(".badge-waitlist").forEach((b) => {
                 if (b.closest("tr")?.querySelector("td strong")?.textContent === data.promoted) {
@@ -657,8 +831,6 @@ function formatDate(dateStr: string | null): string {
               });
             }
 
-            // Reload the page to get accurate spot counts from the server
-            // (summary cards and event meta header can't be updated client-side reliably)
             window.location.reload();
           } else {
             alert("Failed to cancel RSVP");
@@ -676,7 +848,6 @@ function formatDate(dateStr: string | null): string {
         });
       });
 
-      // Restore a cancelled RSVP
       async function restoreRsvp(rsvpId, rsvpName, btn) {
         const confirmed = await confirmAction({
           title: "Restore RSVP",
@@ -710,7 +881,6 @@ function formatDate(dateStr: string | null): string {
         });
       });
 
-      // Notify all confirmed + waitlisted registrants
       document.getElementById("notify-btn")?.addEventListener("click", async () => {
         const btn = document.getElementById("notify-btn");
         const status = document.getElementById("notify-status");

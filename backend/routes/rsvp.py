@@ -72,6 +72,7 @@ class RSVPCreateV2(BaseModel):
     max_participants: Optional[int] = None
     registration_deadline: Optional[datetime] = None
     wechat_qr_code: Optional[str] = None
+    distance_km: Optional[float] = None
 
 
 class SubscribeRequest(BaseModel):
@@ -280,6 +281,7 @@ def create_rsvp_v2(
             event_type=data.event_type,
             max_participants=data.max_participants,
             registration_deadline=reg_deadline,
+            distance_km=data.distance_km,
         )
         db.add(event)
         db.flush()  # populate event.id before RSVP insert
@@ -291,6 +293,7 @@ def create_rsvp_v2(
         event.event_type = data.event_type
         event.max_participants = data.max_participants
         event.registration_deadline = reg_deadline
+        event.distance_km = data.distance_km
 
     # 2. Check registration deadline (guard against naive vs aware mismatch)
     if event.registration_deadline is not None:

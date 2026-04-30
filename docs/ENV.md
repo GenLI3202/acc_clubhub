@@ -13,6 +13,12 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
 | `DATABASE_URL` | Yes | PostgreSQL connection string (Neon / Vercel Postgres) | `postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require` |
 | `RESEND_API_KEY` | Yes | Resend email service API key | `re_xxxxxxxxxxxxx` |
 | `ALLOWED_ORIGINS` | Yes | Comma-separated list of allowed CORS origins | `http://localhost:4321,https://acc-clubhub.vercel.app` |
+| `ADMIN_SESSION_SECRET` | Yes | Secret used to sign admin session cookies | `replace-with-a-long-random-secret` |
+| `ADMIN_EMAIL_ALLOWLIST` | Yes | Comma-separated ride leader emails allowed to access `/dashboard` by email login | `liu_su@hotmail.com,hiligen723@gmail.com,15990575011@163.com,gongmei.ma@proton.me,taoyue.yang@helmholtz-munich.de,sheng.yuan@hotmail.com,shenzhikuan619@gmail.com` |
+| `ADMIN_MAGIC_LINK_PASSWORD` | Yes | Shared password required before direct dashboard email login | `replace-with-dashboard-password` |
+| `ADMIN_GITHUB_ALLOWLIST` | No | Optional fallback GitHub usernames allowed to access `/dashboard` | `genli3202,rideleader1` |
+| `GITHUB_CLIENT_ID` | No | Optional fallback GitHub OAuth App client ID | `Ov23lixxxxxxxxxxxxxx` |
+| `GITHUB_CLIENT_SECRET` | No | Optional fallback GitHub OAuth App client secret | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
 | `APP_NAME` | No | Application display name (default: `ACC ClubHub API`) | `ACC ClubHub API` |
 | `DEBUG` | No | Enable debug mode (default: `false`) | `true`, `false` |
 
@@ -20,6 +26,11 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
 
 - **DATABASE_URL**: Vercel Dashboard → Storage → your Postgres instance → `.env` tab
 - **RESEND_API_KEY**: [resend.com/api-keys](https://resend.com/api-keys)
+- **Dashboard email login**: configure `ADMIN_EMAIL_ALLOWLIST` in the
+  backend Vercel project with a comma-separated list of ride leader emails.
+  Configure `ADMIN_MAGIC_LINK_PASSWORD` in the same backend project.
+- **GitHub OAuth**: GitHub Developer settings → OAuth Apps. Callback URL:
+  `https://www.across-cc.de/auth/callback`
 
 ## Frontend (`frontend/.env`)
 
