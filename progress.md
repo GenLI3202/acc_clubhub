@@ -199,6 +199,8 @@
 - [X] **Membership Charter Page** (2026-04-30)
   - [X] Added the public member charter and liability disclaimer page at `/zh/membership-charter`.
   - [X] Updated membership page charter links to open the full charter page.
+- [X] **Membership Hero Photo Refresh** (2026-05-01)
+  - [X] Replaced the membership page hero asset with the ACC group ride photo.
 
 
 ## In Progress
