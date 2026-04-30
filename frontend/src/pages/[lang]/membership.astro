@@ -162,47 +162,34 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   </section>
 
   {/* ============================================================
-      PRICING
+      入会须知 — pricing + terms combined
      ============================================================ */}
-  <section class="mem-pricing-section">
-    <div class="mem-eyebrow mem-eyebrow--accent mem-eyebrow--lg">会费</div>
-    <p class="mem-pricing-year">2026 / 27 会员年</p>
-    <div class="mem-pricing-table">
-      <div class="mem-pricing-row">
-        <div class="mem-pricing-row-label">老会员</div>
-        <div class="mem-pricing-row-tiers">
-          <span class="mem-pricing-tier">学生 10€</span>
-          <span class="mem-pricing-row-sep">·</span>
-          <span class="mem-pricing-tier">非学生 15€</span>
-        </div>
-      </div>
-      <div class="mem-pricing-row">
-        <div class="mem-pricing-row-label">新会员</div>
-        <div class="mem-pricing-row-tiers">
-          <span class="mem-pricing-tier">学生 29€</span>
-          <span class="mem-pricing-row-sep">·</span>
-          <span class="mem-pricing-tier">非学生 49€</span>
-        </div>
-      </div>
-    </div>
-    <p class="mem-pricing-note">
-      会员年自每年 6 月 1 日起，至次年 5 月 31 日止。
-      2026 年 5 月 1 日至 5 月 31 日期间报名者，会籍同样至 2027 年 5 月 31 日。
-    </p>
-    <p class="mem-pricing-footer">
-      ACC 是隶属于巴伐利亚州体育协会（BLSV）的非营利运动组织。
-      会费用于体协年费、官方活动保险、领骑补贴与赛事储备金，账目对全体会员透明。
-    </p>
-  </section>
+  <section class="mem-joinnote-section" id="charter">
+    <div class="mem-joinnote-inner">
 
-  {/* ============================================================
-      TERMS ACCORDION — default open, collapsible
-     ============================================================ */}
-  <section class="mem-terms-section" id="charter">
-    <div class="mem-terms-inner">
-      <div class="mem-terms-header">
-        <h2 class="mem-terms-h2">会员须知</h2>
+      <div class="mem-joinnote-heading-row">
+        <h2 class="mem-joinnote-h2">入会须知</h2>
       </div>
+
+      {/* ── pricing block ── */}
+      <div class="mem-pricing-block">
+        <div class="mem-pricing-grid">
+          <div class="mem-pricing-col-head"></div>
+          <div class="mem-pricing-col-head">学生</div>
+          <div class="mem-pricing-col-head">非学生</div>
+
+          <div class="mem-pricing-row-label">老会员</div>
+          <div class="mem-pricing-amount">10€</div>
+          <div class="mem-pricing-amount">15€</div>
+
+          <div class="mem-pricing-row-label">新会员</div>
+          <div class="mem-pricing-amount">29€</div>
+          <div class="mem-pricing-amount">49€</div>
+        </div>
+        <p class="mem-pricing-caption">2026 / 27 会员年 · 自 6 月 1 日起，至次年 5 月 31 日止。2026 年 5 月报名者会籍同至 2027 年 5 月 31 日。</p>
+      </div>
+
+      {/* ── terms accordion ── */}
       <div class="mem-terms-list" id="mem-terms-list">
         {TERMS.map((t, i) => (
           <div class="mem-term-item" data-term-index={i}>
@@ -219,9 +206,11 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
           </div>
         ))}
       </div>
+
       <div class="mem-terms-charter-link">
         <a href="#charter" class="mem-link-sm">查看完整会员章程 →</a>
       </div>
+
     </div>
   </section>
 
@@ -485,11 +474,11 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
 
   .mem-benefits-h2 {
     font-family: var(--font-heading);
-    font-size: clamp(32px, 4vw, 44px);
+    font-size: clamp(28px, 3.2vw, 36px);
     font-weight: 700;
     letter-spacing: -0.025em;
     margin: 0;
-    color: var(--color-text-main);
+    color: var(--color-accent);
   }
 
   .mem-benefits-charter-link {
@@ -570,116 +559,91 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   }
 
   /* ============================================================
-     PRICING
+     入会须知 (pricing + terms combined)
      ============================================================ */
-  .mem-pricing-section {
-    padding: 100px 40px;
-    max-width: 760px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .mem-eyebrow--lg {
-    font-size: 15px;
-  }
-
-  .mem-pricing-year {
-    font-family: var(--font-heading);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    color: var(--color-text-muted);
-    margin: 4px 0 28px;
-    text-transform: uppercase;
-  }
-
-  .mem-pricing-table {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 0 auto 40px;
-  }
-
-  .mem-pricing-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .mem-pricing-row-label {
-    font-family: var(--font-heading);
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    min-width: 56px;
-    text-align: right;
-  }
-
-  .mem-pricing-row-tiers {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-  }
-
-  .mem-pricing-row-sep {
-    color: var(--color-text-muted);
-    font-size: 13px;
-  }
-
-  .mem-pricing-tier {
-    font-family: var(--font-heading);
-    font-size: clamp(20px, 2.2vw, 26px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--color-accent);
-  }
-
-  .mem-pricing-note {
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--color-text-secondary);
-    margin: 0 0 24px;
-    max-width: 600px;
-    margin-inline: auto;
-  }
-
-  .mem-pricing-footer {
-    font-family: var(--font-heading);
-    font-style: italic;
-    font-size: 14.5px;
-    line-height: 1.7;
-    color: var(--color-text-muted);
-    margin: 0;
-    max-width: 580px;
-    margin-inline: auto;
-  }
-
-  /* ============================================================
-     TERMS ACCORDION
-     ============================================================ */
-  .mem-terms-section {
+  .mem-joinnote-section {
     background: var(--color-bg-secondary);
     padding: 80px 40px;
   }
 
-  .mem-terms-inner {
+  .mem-joinnote-inner {
     max-width: 760px;
     margin: 0 auto;
   }
 
-  .mem-terms-header {
+  .mem-joinnote-heading-row {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
   }
 
-  .mem-terms-h2 {
+  .mem-joinnote-h2 {
     font-family: var(--font-heading);
-    font-size: clamp(26px, 3vw, 32px);
+    font-size: clamp(28px, 3.2vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0;
+    color: var(--color-accent);
+  }
+
+  /* ── pricing grid ── */
+  .mem-pricing-block {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mem-pricing-grid {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0;
+    max-width: 360px;
+    margin: 0 auto 20px;
+  }
+
+  .mem-pricing-col-head {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+    padding-bottom: 10px;
+  }
+
+  .mem-pricing-row-label {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding: 10px 20px 10px 0;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mem-pricing-amount {
+    font-family: var(--font-heading);
+    font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.02em;
-    margin: 0;
     color: var(--color-text-main);
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mem-pricing-caption {
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 0;
+    max-width: 480px;
+    margin-inline: auto;
   }
 
   .mem-terms-list {
@@ -869,12 +833,12 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
       padding-left: 48px;
     }
 
-    .mem-pricing-section {
-      padding: 72px 24px;
+    .mem-joinnote-section {
+      padding: 56px 24px;
     }
 
-    .mem-terms-section {
-      padding: 56px 24px;
+    .mem-pricing-grid {
+      max-width: 100%;
     }
 
     .mem-cta-section {
