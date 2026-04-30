@@ -62,12 +62,11 @@ const BENEFITS = [
 
 const TERMS = [
   { q: "有效期", a: "缴费当月起至次年 5 月 31 日。每年 6 月 1 日为统一续费日。" },
-  { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€。其余部分进入俱乐部公共账户。" },
-  { q: "报名流程", a: "填写表单 → 上传 PayPal 付款截图 → 管理员审核 → 录入会员名单。通常一到两个工作日。" },
+  { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€（含 BLSV 会员保险费用）。新会员首次办理须另缴华人体协 10€ 开户费。其余部分进入俱乐部公共账户。" },
   { q: "退款政策", a: "会费一经缴纳，概不退款。" },
   { q: "活动参与", a: "骑行有风险，自行承担。官方注册活动包含 BLSV 事故保险。详细参与规则见会员章程。" },
   { q: "行为规范", a: "遵守骑行准则，尊重队友、道路上的行人与车辆。详细规范见会员章程。" },
-  { q: "会费用途", a: "100% 用于会员回报与俱乐部运营，年终结余转入下年度赛事储备金。账目对全体会员透明。" },
+  { q: "会费用途", a: "100% 用于俱乐部运营（含领骑补贴、活动组织费用及以 ACC 俱乐部为单位的骑行赛事补贴等）与赛事储备金。账目对全体会员透明。" },
 ];
 
 const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
@@ -185,29 +184,53 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   </section>
 
   {/* ============================================================
-      Q&A — 会员须知
+      TERMS ACCORDION — default open, collapsible
      ============================================================ */}
   <section class="mem-terms-section" id="charter">
     <div class="mem-terms-inner">
       <div class="mem-terms-header">
         <h2 class="mem-terms-h2">会员须知</h2>
       </div>
-      <dl class="mem-qna-list">
+      <div class="mem-terms-list" id="mem-terms-list">
         {TERMS.map((t, i) => (
-          <div class="mem-qna-item">
-            <dt class="mem-qna-q">
-              <span class="mem-term-num">{String(i + 1).padStart(2, "0")}</span>
-              <span class="mem-qna-question">{t.q}</span>
-            </dt>
-            <dd class="mem-qna-a">{t.a}</dd>
+          <div class="mem-term-item" data-term-index={i}>
+            <button class="mem-term-btn is-open" type="button" aria-expanded="true" data-term-btn>
+              <span class="mem-term-btn-inner">
+                <span class="mem-term-num">{String(i + 1).padStart(2, "0")}</span>
+                <span class="mem-term-q">{t.q}</span>
+              </span>
+              <span class="mem-term-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="mem-term-answer" data-term-answer>
+              {t.a}
+            </div>
           </div>
         ))}
-      </dl>
+      </div>
       <div class="mem-terms-charter-link">
         <a href="#charter" class="mem-link-sm">查看完整会员章程 →</a>
       </div>
     </div>
   </section>
+
+  <script is:inline>
+    (function initTermsAccordion() {
+      const list = document.getElementById('mem-terms-list');
+      if (!list) return;
+      list.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-term-btn]');
+        if (!btn) return;
+        const item = btn.closest('[data-term-index]');
+        if (!item) return;
+        const answer = item.querySelector('[data-term-answer]');
+        if (!answer) return;
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        btn.classList.toggle('is-open', !isOpen);
+        answer.hidden = isOpen;
+      });
+    })();
+  </script>
 
   {/* ============================================================
       CTA
@@ -607,49 +630,68 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     color: var(--color-text-main);
   }
 
-  /* Q&A list */
-  .mem-qna-list {
+  .mem-terms-list {
     border-top: 1px solid var(--color-border);
-    margin: 0;
-    padding: 0;
   }
 
-  .mem-qna-item {
+  .mem-term-item {
     border-bottom: 1px solid var(--color-border);
-    padding: 24px 0;
   }
 
-  .mem-qna-q {
+  .mem-term-btn {
+    width: 100%;
+    text-align: left;
+    padding: 20px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--color-text-main);
+  }
+
+  .mem-term-btn-inner {
     display: flex;
     gap: 18px;
     align-items: baseline;
-    margin-bottom: 10px;
   }
 
   .mem-term-num {
-    font-family: var(--font-heading);
     font-size: 12px;
-    font-weight: 600;
+    color: var(--color-text-muted);
     letter-spacing: 0.1em;
+    font-weight: 600;
+    font-family: var(--font-heading);
+  }
+
+  .mem-term-q {
+    font-family: var(--font-heading);
+  }
+
+  .mem-term-plus {
+    font-size: 18px;
     color: var(--color-accent);
+    transition: transform 200ms ease;
+    line-height: 1;
+    font-weight: 300;
     flex-shrink: 0;
   }
 
-  .mem-qna-question {
-    font-family: var(--font-heading);
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--color-text-main);
-    letter-spacing: -0.01em;
+  .mem-term-btn.is-open .mem-term-plus {
+    transform: rotate(45deg);
   }
 
-  .mem-qna-a {
-    padding-left: 38px;
+  .mem-term-answer {
+    padding: 0 30px 20px 38px;
     font-family: var(--font-body);
     font-size: 14.5px;
-    line-height: 1.75;
+    line-height: 1.7;
     color: var(--color-text-secondary);
-    margin: 0;
   }
 
   .mem-terms-charter-link {
