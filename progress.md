@@ -196,6 +196,9 @@
 - [X] **Membership Insurance Page Update** (2026-04-30)
   - [X] Added a concise Chinese BLSV/ARAG member insurance summary as the first chapter of `/zh/insurance`.
   - [X] Linked relevant BLSV and ARAG source pages and added a legal-reference disclaimer.
+- [X] **Membership Charter Page** (2026-04-30)
+  - [X] Added the public member charter and liability disclaimer page at `/zh/membership-charter`.
+  - [X] Updated membership page charter links to open the full charter page.
 
 
 ## In Progress

@@ -1,0 +1,334 @@
+---
+export const prerender = true;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { type Locale, locales } from '../../lib/i18n';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+---
+
+<BaseLayout title="ACC会员规章与免责声明" lang={lang}>
+  <article class="charter-page">
+    <header class="charter-header">
+      <a href={`/${lang}/membership`} class="charter-back-link">← 返回会员页面</a>
+      <h1>ACC会员规章与免责声明</h1>
+      <p class="charter-subtitle">Member Charter · Code of Conduct · Haftungsausschluss</p>
+    </header>
+
+    <section class="charter-intro">
+      <p>
+        欢迎加入 Across Cycling Club（隶属于慕尼黑华人体育协会 Chinesischer Sportverein München）。
+        为确保每位参与者都能在一个安全、专业、友好的环境中享受骑行，ACC 制定以下会员规章与免责声明。
+        参与 ACC 的任何线上或线下活动，即视为您已阅读、理解并同意受本文件所有条款约束。
+      </p>
+    </section>
+
+    <section class="charter-values" aria-labelledby="charter-values-title">
+      <h2 id="charter-values-title">ACC 倡导的核心价值</h2>
+      <p>
+        我们坚信，纯粹的热爱不应该伴随内耗。ACC 的第一准则是让自己人舒服：让每一位成员都能在这里安心骑车、自由交流、自然成长。
+      </p>
+      <p>
+        我们拒绝无意义的“卷功率”，抵制身材焦虑与装备焦虑，也不把骑行变成彼此比较的压力场。速度、瓦数、车架和装备可以是话题，但不应成为衡量一个骑行者价值的标准。
+      </p>
+      <p>
+        ACC 存在的意义，是为成员提供一个纯粹、没有压力的骑行根据地：一个骑行者之间互相照应、和睦团结、愿意一起出发也愿意一起回家的家。
+      </p>
+    </section>
+
+    <section class="charter-section">
+      <h2>第一部分：会员须知与行为守则</h2>
+      <p class="section-lede">
+        安全与纪律是 ACC 开展一切活动的前提。ACC 对所有官方活动，包括 Social Ride、Training Day
+        及多日长途骑游，实行以下强制性行为准则。
+      </p>
+
+      <h3>1. 骑行安全与装备规范</h3>
+      <ul>
+        <li>
+          <strong>无头盔，不骑行：</strong>
+          任何参与 ACC 线下骑行活动的人员，必须在骑行全程正确佩戴符合安全标准的自行车头盔。
+        </li>
+        <li>
+          <strong>器材自检责任：</strong>
+          会员需对个人或租赁的自行车及装备的机械安全性负全责。每次出行前，请务必检查刹车、轮胎、传动系统等关键部件。
+        </li>
+        <li>
+          <strong>特殊时段装备：</strong>
+          参与夜间骑行或在能见度较低的天气下骑行，必须配备并开启符合规定的前后车灯。
+        </li>
+      </ul>
+
+      <h3>2. 团队纪律与交通法规</h3>
+      <ul>
+        <li>
+          <strong>严格遵守 StVO：</strong>
+          所有活动路线，无论公路或砾石路段，均可能包含公共道路。参与者必须严格遵守德国道路交通法规
+          (Straßenverkehrsordnung, StVO)。
+        </li>
+        <li>
+          <strong>服从领骑指挥：</strong>
+          骑行活动由指定 Ride Leader 负责路线引导与节奏把控。参与者应尊重并服从 Ride Leader
+          的现场指挥。ACC 对危险驾驶、辱骂他人或恶意破坏团队纪律的行为实行零容忍，并保留立刻终止其活动参与资格的权利。
+        </li>
+        <li>
+          <strong>禁止擅自离队：</strong>
+          活动期间如需提前离开、休息或变更路线，必须提前告知 Ride Leader 或尾流保障人员 (Sweeper)。
+        </li>
+        <li>
+          <strong>量力而行：</strong>
+          参与者须根据自身的体能、健康状况及骑行技术，选择合适强度的活动。
+        </li>
+      </ul>
+
+      <h3>3. 环境与社区责任</h3>
+      <ul>
+        <li>
+          <strong>无痕山林：</strong>
+          尊重巴伐利亚及沿途的自然环境，不在骑行途中乱扔能量胶包装、水瓶或其他垃圾。
+        </li>
+        <li>
+          <strong>互相尊重：</strong>
+          ACC 致力于打造包容的国际化社群。我们不推崇无意义的内耗与攀比，拒绝装备或身材焦虑，提倡成员间的互助与友善交流。
+        </li>
+      </ul>
+    </section>
+
+    <section class="charter-section">
+      <h2>第二部分：数据保护与知识产权</h2>
+      <ul>
+        <li>
+          <strong>数据隐私：</strong>
+          ACC 尊重并保护您的个人隐私。您在注册会员或报名活动时提供的个人信息，如姓名、联系方式等，仅用于俱乐部内部运营、活动通知及必要的保险登记。
+        </li>
+        <li>
+          <strong>内容原创与分享：</strong>
+          ACC 官方网站、社群及社交媒体平台上发布的路线、Training 计划、Workshop 资料等，其知识产权归 ACC 及原作者所有。未经授权，禁止将其用于商业用途。
+        </li>
+        <li>
+          <strong>群组信息保密：</strong>
+          会员不得擅自将内部群聊中的他人隐私信息、未经审核的路线或活动计划泄露给非会员第三方。
+        </li>
+      </ul>
+    </section>
+
+    <section class="charter-section">
+      <h2>第三部分：参与条件与免责声明</h2>
+      <p class="legal-note">
+        本部分包含具有法律效力的德文声明，中文释义仅供参考，法律解释以德文原文为准。
+      </p>
+
+      <h3>1. 参与条件与风险自担</h3>
+      <p>
+        ACC 仅负责提供路线建议及活动发起。参与者清楚知晓，户外自行车运动具有潜在危险性，包括跌倒、交通事故、器材损坏等。参与者承诺自身身体健康，适合参与此类运动，并自行承担参与活动的一切风险。
+      </p>
+      <blockquote lang="de">
+        Die Teilnehmerin/der Teilnehmer erklärt, dass sie/er die Voraussetzungen für die Teilnahme
+        (körperliche Gesundheit und entsprechende Kondition) erfüllt und keine medizinischen
+        Ausschließungsgründe bestehen. Die Teilnahme erfolgt auf eigene Gefahr.
+      </blockquote>
+
+      <h3>2. 路线变更与不可预见风险</h3>
+      <p>
+        ACC 会尽量规划安全的路线，但无法对路面状况，如碎石、湿滑路面、道路施工，以及沿途交通状况提供绝对保证。Ride Leader 有权根据天气、路况及团队整体状态，临时更改路线或中止活动。
+      </p>
+      <blockquote lang="de">
+        Der Veranstalter (=Across Cycling Club) plant die Route nur in groben Zügen. Es können sich
+        entlang der Strecke Gefahrenstellen (insbesondere im Zusammenhang mit der Bodenbeschaffenheit,
+        Witterung oder Straßenverkehr) befinden. Der Veranstalter ist berechtigt, die Route kurzfristig
+        zu ändern (z.B. wegen Schlechtwetters).
+      </blockquote>
+
+      <h3>3. 责任豁免</h3>
+      <p>
+        除非因 ACC 工作人员的故意或重大过失造成，ACC 不对参与者在活动中遭受的人身伤害、财产损失，如自行车损坏或遗失，及第三方责任承担任何赔偿。强烈建议所有会员自行购买针对自行车运动的第三方责任险及意外险。
+      </p>
+      <blockquote lang="de">
+        Der Veranstalter haftet nicht für Risiken der Teilnehmer im Zusammenhang mit der Teilnahme an
+        der Tour und auch nicht für durch ihn selbst oder seine Erfüllungsgehilfen verursachte Schäden,
+        sofern diese nicht grob fahrlässig oder vorsätzlich herbeigeführt wurden. Die Haftung des
+        Veranstalters für leichte Fahrlässigkeit ist somit ausgeschlossen. Across Cycling Club übernimmt
+        keine Haftung für Beschädigung oder Verlust privater Fahrräder.
+      </blockquote>
+
+      <h3>4. 肖像与影像使用权</h3>
+      <p>
+        为记录社群生活与宣传骑行文化，ACC 及相关授权人员可能会在活动中拍摄照片、视频或录音。参与活动即表示您无偿授权 ACC 在其官方网站、社交媒体及内部通讯中使用包含您肖像的影像资料。如您不希望出镜，请在活动开始前主动告知拍摄人员。
+      </p>
+      <blockquote lang="de">
+        Across Cycling Club hat das Recht, während des Events Audioaufzeichnungen, Videoaufnahmen und
+        Fotos zu machen und diese für die Homepage, Newsletter und Social Media Auftritte auf unbegrenzte
+        Zeit zu nutzen. Dieses Einverständnis kann jederzeit bezüglich zukünftiger Verwendungen widerrufen
+        werden (per E-Mail an: across.cycling.club@gmail.com).
+      </blockquote>
+    </section>
+
+    <footer class="charter-footer">
+      <p>Across Cycling Club 保留对本规章制度的最终解释权与修订权。</p>
+      <p>最新修订日期：2026年4月</p>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .charter-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+    color: #2f2f2f;
+  }
+
+  .charter-header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 3px solid var(--color-border-rough);
+  }
+
+  .charter-back-link {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .charter-back-link:hover {
+    color: var(--color-primary);
+  }
+
+  .charter-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .charter-subtitle {
+    color: #888;
+    font-size: 0.95rem;
+    font-style: italic;
+    margin: 0;
+  }
+
+  .charter-intro,
+  .charter-values,
+  .legal-note {
+    background: rgba(42, 92, 166, 0.05);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 4px;
+  }
+
+  .charter-intro {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .charter-values {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .charter-values h2 {
+    font-size: 1.35rem;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-md);
+  }
+
+  .charter-intro p,
+  .charter-values p,
+  .section-lede,
+  .charter-section p,
+  .charter-footer p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .charter-intro p {
+    margin: 0;
+  }
+
+  .charter-values p {
+    margin: 0 0 var(--space-sm);
+  }
+
+  .charter-values p:last-child {
+    margin-bottom: 0;
+  }
+
+  .charter-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .charter-section h2 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid var(--color-border-rough);
+  }
+
+  .charter-section h3 {
+    font-size: 1.15rem;
+    color: var(--color-primary);
+    margin: var(--space-lg) 0 var(--space-sm);
+  }
+
+  .charter-section ul {
+    padding-left: 1.4rem;
+    margin: var(--space-sm) 0;
+  }
+
+  .charter-section li {
+    font-size: 1.03rem;
+    line-height: 1.75;
+    margin-bottom: 0.65rem;
+  }
+
+  .charter-section strong {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .legal-note {
+    padding: var(--space-md);
+    margin: var(--space-md) 0 var(--space-lg);
+    color: #555;
+    font-weight: 600;
+  }
+
+  .charter-section blockquote {
+    border-left: 3px solid #ddd;
+    padding: var(--space-sm) 0 var(--space-sm) var(--space-md);
+    margin: var(--space-sm) 0 var(--space-lg);
+    color: #555;
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .charter-footer {
+    border-top: 2px solid var(--color-border-rough);
+    padding-top: var(--space-lg);
+    color: #666;
+  }
+
+  .charter-footer p {
+    margin: 0 0 var(--space-xs);
+  }
+
+  @media (max-width: 768px) {
+    .charter-page {
+      padding: var(--space-md);
+    }
+
+    .charter-header h1 {
+      font-size: 1.9rem;
+    }
+
+    .charter-section h2 {
+      font-size: 1.25rem;
+    }
+  }
+</style>
