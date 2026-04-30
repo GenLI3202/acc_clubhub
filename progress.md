@@ -193,6 +193,9 @@
   - [X] Reconciled `current_participants` from confirmed RSVP rows after admin cancel/restore and public registration changes.
   - [X] Cleared `checked_in_at` when an RSVP is cancelled so cancelled participants no longer count as checked in.
   - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
+- [X] **Membership Insurance Page Update** (2026-04-30)
+  - [X] Added a concise Chinese BLSV/ARAG member insurance summary as the first chapter of `/zh/insurance`.
+  - [X] Linked relevant BLSV and ARAG source pages and added a legal-reference disclaimer.
 
 
 ## In Progress
