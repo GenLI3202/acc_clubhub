@@ -185,30 +185,24 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   </section>
 
   {/* ============================================================
-      TERMS ACCORDION
+      Q&A — 会员须知
      ============================================================ */}
   <section class="mem-terms-section" id="charter">
     <div class="mem-terms-inner">
       <div class="mem-terms-header">
-        <div class="mem-eyebrow">条款</div>
         <h2 class="mem-terms-h2">会员须知</h2>
       </div>
-      <div class="mem-terms-list" id="mem-terms-list">
+      <dl class="mem-qna-list">
         {TERMS.map((t, i) => (
-          <div class="mem-term-item" data-term-index={i}>
-            <button class="mem-term-btn" type="button" aria-expanded="false" data-term-btn>
-              <span class="mem-term-btn-inner">
-                <span class="mem-term-num">{String(i + 1).padStart(2, "0")}</span>
-                <span class="mem-term-q">{t.q}</span>
-              </span>
-              <span class="mem-term-plus" aria-hidden="true">+</span>
-            </button>
-            <div class="mem-term-answer" data-term-answer hidden>
-              {t.a}
-            </div>
+          <div class="mem-qna-item">
+            <dt class="mem-qna-q">
+              <span class="mem-term-num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="mem-qna-question">{t.q}</span>
+            </dt>
+            <dd class="mem-qna-a">{t.a}</dd>
           </div>
         ))}
-      </div>
+      </dl>
       <div class="mem-terms-charter-link">
         <a href="#charter" class="mem-link-sm">查看完整会员章程 →</a>
       </div>
@@ -236,28 +230,6 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     </div>
   </section>
 
-  <script is:inline>
-    (function initTermsAccordion() {
-      const list = document.getElementById('mem-terms-list');
-      if (!list) return;
-      list.addEventListener('click', function (e) {
-        const btn = e.target.closest('[data-term-btn]');
-        if (!btn) return;
-        const item = btn.closest('[data-term-index]');
-        if (!item) return;
-        const answer = item.querySelector('[data-term-answer]');
-        if (!answer) return;
-        const isOpen = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-        btn.classList.toggle('is-open', !isOpen);
-        if (isOpen) {
-          answer.hidden = true;
-        } else {
-          answer.hidden = false;
-        }
-      });
-    })();
-  </script>
 
 </BaseLayout>
 
@@ -635,68 +607,49 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     color: var(--color-text-main);
   }
 
-  .mem-terms-list {
+  /* Q&A list */
+  .mem-qna-list {
     border-top: 1px solid var(--color-border);
+    margin: 0;
+    padding: 0;
   }
 
-  .mem-term-item {
+  .mem-qna-item {
     border-bottom: 1px solid var(--color-border);
+    padding: 24px 0;
   }
 
-  .mem-term-btn {
-    width: 100%;
-    text-align: left;
-    padding: 20px 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    font-family: var(--font-heading);
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--color-text-main);
-  }
-
-  .mem-term-btn-inner {
+  .mem-qna-q {
     display: flex;
     gap: 18px;
     align-items: baseline;
+    margin-bottom: 10px;
   }
 
   .mem-term-num {
+    font-family: var(--font-heading);
     font-size: 12px;
-    color: var(--color-text-muted);
-    letter-spacing: 0.1em;
     font-weight: 600;
-    font-family: var(--font-heading);
-  }
-
-  .mem-term-q {
-    font-family: var(--font-heading);
-  }
-
-  .mem-term-plus {
-    font-size: 18px;
+    letter-spacing: 0.1em;
     color: var(--color-accent);
-    transition: transform 200ms ease;
-    line-height: 1;
-    font-weight: 300;
     flex-shrink: 0;
   }
 
-  .mem-term-btn.is-open .mem-term-plus {
-    transform: rotate(45deg);
+  .mem-qna-question {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-text-main);
+    letter-spacing: -0.01em;
   }
 
-  .mem-term-answer {
-    padding: 0 30px 20px 38px;
+  .mem-qna-a {
+    padding-left: 38px;
     font-family: var(--font-body);
     font-size: 14.5px;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--color-text-secondary);
+    margin: 0;
   }
 
   .mem-terms-charter-link {

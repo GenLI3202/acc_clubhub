@@ -1,11 +1,10 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/ride-leader.astro
-// ACC Ride Leader Charter — Rights & Responsibilities
+// ACC Ride Leader — public overview page
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { type Locale, locales } from '../../lib/i18n';
-import { marked } from 'marked';
 
 export async function getStaticPaths() {
   return locales.map((lang) => ({
@@ -19,469 +18,170 @@ const content = {
   zh: {
     title: '领骑权利与义务',
     subtitle: 'Ride Leader Charter · ACC 2026/27',
-    intro: '领骑（Ride Leader）是 ACC 骑行文化的核心。ACC 的领骑们是自愿付出时间与热情带领队伍的骑友。本章程明确领骑的权益保障与责任边界，确保每一次带队安全、有序、令人愉快。',
+    intro: '领骑（Ride Leader）是 ACC 骑行文化的核心。ACC 的领骑们是自愿付出时间与热情带领队伍的骑友。以下是领骑角色的概要说明；完整章程与补贴政策将在资格认定后单独签署。',
     backLink: { label: '← 返回会员页面', href: `/${lang}/membership` },
-    sections: [
-      {
-        title: '一、领骑权益',
-        content: `
-领骑身份由俱乐部核心成员会议认定，享有以下专属权益：
-
-**1. 官网个人展示（Stamp Bike Wall）**
-
-领骑个人单车将展示于 ACC 官网 About Us 页面，Stamp Bike Wall 风格专区，成为俱乐部对外公开形象的一部分。
-
-**2. 专属领骑队服标识**
-
-领骑版队服设有与普通会员队服区分的专属标识，方案与年度队服设计同步落地。
-
-**3. 每次带队补贴**
-
-每次带队活动结束后，当次活动收取的非会员保险代收费与俱乐部给予的单次活动领骑补贴，由参与该次活动的全部领骑**均分**。
-
-**4. 年度会费全额报销**
-
-领骑在会员年度内完成 **300 km 以上**的领骑里程，即可获得当年度 ACC 会费全额报销。
-
-> **年度里程基准说明：** ACC 全年约 70 次团骑，平均每次 50 km，总里程约 3,500 km。若由 10 位领骑共同分担，人均预期贡献约 320+ km／年。300 km 为最低资格门槛，320 km 为公平份额基准。
-
-**5. 超额里程奖励**
-
-年度领骑里程超出 320 km 基准后，每超出 20 km 额外奖励 **€1**。
-
-> **示例：** 全年领骑 400 km → 超出 80 km → 额外获得 **€4**
-        `,
-      },
-      {
-        title: '二、社媒宣发激励',
-        content: `
-领骑享受 ACC 俱乐部给予的社媒现金奖励，固定面额，直接累加，无积分池折算：
-
-| 行为 | 发帖人获得 |
-|------|----------|
-| 帖子获 1 个赞 | **+€0.03**（3 欧分） |
-| 帖子获 1 个收藏 | **+€0.05**（5 欧分） |
-
-> **示例：** 一篇帖子获 20 赞 + 10 收藏 → 发帖人获 **20×€0.03 + 10×€0.05 = €1.10**
-
-**计入统计的必要条件（须同时满足）：**
-
-- 帖子内容与 ACC 骑行活动相关
-- 个人简介或帖子中须带专属标签 \`ACC - [你的名字]\`
-- 须 @ ACC 官方账号
-- 须带话题标签 \`#ACC\` \`#AcrossCyclingClub\`
-- 鼓励发布平台：**小红书** / **Instagram**
-
-**结算规则：**
-
-数据快照时间点由俱乐部定期核实，防止刷量。奖励每季度结算一次，随带队补贴一并发放至指定 PayPal 账户。
-        `,
-      },
-      {
-        title: '三、领骑守则',
-        content: `
-所有领骑须知悉并严格遵守以下规范：
-
-**1. 安全骑行准则**
-
-- 所有参与者**必须全程佩戴头盔**；违规者领骑有权拒绝其参与或要求其离队
-- 市区及人流密集区域限速 **25 km/h**；郊区公路参考路况与视野，保持安全合理车速
-- 队伍行进以两列骑行为标准（路况允许时），通过狭窄路段主动并为单列
-- 路口、红绿灯、让行标志前，领骑停车等候，确认安全后方可示意通行
-- 日落后至日出前须全程开启前灯（白色）与尾灯（红色）
-
-**2. 带队全流程**
-
-- **集合确认：** 活动开始前核实参与人员名单，确认非会员缴费情况，进行骑前安全提示
-- **骑行中：** 保持前后观察，定期清点人数；遇突发情况（掉队、机械故障）及时减速等候
-- **解散后：** 活动结束后 **24 小时内**完成骑行数据录入（距离、时间、参与人数），提交至俱乐部系统
-
-**3. 文明骑行规范**
-
-- 遵守德国道路交通法（StVO）；每位骑手是独立的交通参与者，禁止盲目跟车闯红灯
-- 经过行人时减速并友好示意，与行人保持充足安全距离
-- 禁止在公共道路上竞速或实施有争议的超车动作
-- 对沿途居民、车辆与自然环境保持尊重
-
-**4. 应急处理预案**
-
-- **成员受伤：** 立即停车，评估伤势，必要时拨打急救电话（德国：**112**），同时通知俱乐部管理员
-- **机械故障：** 优先路边修复；无法修复则安排人员陪同，或协助联系接送
-- **恶劣天气：** 出发前确认极端天气（雷暴、黑冰、能见度极低），领骑有权宣布取消或缩短路线
-        `,
-      },
-      {
-        title: '四、违规行为与处理机制',
-        content: `
-领骑行为须符合俱乐部价值观与安全标准。
-
-**一般违规（警告处理）：**
-
-- 单次活动未完成带队数据录入
-- 未遵守带队全流程（如未进行骑前安全提示）
-- 轻微的文明骑行规范违反
-
-**严重违规（暂停或取消资格）：**
-
-- 带队骑行中违反交规，影响团队安全
-- 活动中发生经正式投诉核实的不当行为
-- 年度领骑里程持续未达最低参与要求且无合理说明
-
-**处理流程：**
-
-1. **口头 / 书面警告**：由俱乐部核心成员通知并记录在案
-2. **暂停领骑资格**（30 天）：视情节严重程度，由核心成员决议执行
-3. **取消领骑资格**：经核心成员正式决议，书面通知当事人
-
-**主动退出：**
-
-若领骑因个人原因（工作、搬迁、健康等）无法继续带队，须提前 **2 周**通知俱乐部管理员，并与接替者完成路线信息与职责交接。补贴按实际完成里程比例结算。
-        `,
-      },
-      {
-        title: '五、权责划分',
-        content: `
-**俱乐部（ACC）的责任范围：**
-
-- 通过 BLSV 为活动参与者提供团体保险（覆盖非会员）
-- 按本章程政策发放带队补贴、里程报销与社媒激励金
-- 为领骑提供路线数据、参与者名单及必要后勤支持
-- 处理正式投诉与争议，保障领骑合法权益
-
-**领骑个人的责任范围：**
-
-- 带队骑行期间的安全组织与实时风险评估
-- 非会员保险费的现场收取与当次记录
-- 活动结束后的骑行数据录入
-- 应急情况的第一响应与初步处置
-
-**免责说明：**
-
-领骑为自愿志愿服务，非商业导游行为。除主观故意或重大过失外，领骑个人对参与者在活动中发生的人身伤害或财产损失不承担连带赔偿责任。具体条款参见 [ACC 保险告知与免责声明](/${lang}/insurance)。
-        `,
-      },
-    ],
+    rights: {
+      heading: '领骑权益',
+      note: '资格认定后，领骑将享有以下专属权益：',
+      items: [
+        { n: '01', title: '官网单车展示', desc: '个人专属单车展示于 About Us 页面 Stamp Bike Wall 专区，成为 ACC 对外形象的一部分。' },
+        { n: '02', title: '专属领骑队服', desc: '领骑版队服设有与标准会员队服区分的专属标识。' },
+        { n: '03', title: '带队补贴', desc: '每次带队活动享有俱乐部补贴，按参与领骑人数均分。' },
+        { n: '04', title: '年度里程奖励', desc: '年度领骑里程达到约定门槛后，享有会费报销及超额里程奖励。具体数值见章程协议。' },
+        { n: '05', title: '社媒激励金', desc: '发布 ACC 相关内容至小红书或 Instagram，依赞数与收藏数获得现金奖励。具体规则见章程协议。' },
+      ],
+    },
+    duties: {
+      heading: '领骑义务',
+      note: '担任领骑须承担以下职责：',
+      items: [
+        { n: '01', title: '出行安全', desc: '执行骑前头盔检查；把握合理车速与队形；路口等候确认安全后方可示意通行；日落后开灯。' },
+        { n: '02', title: '带队全流程', desc: '集合时核实名单与非会员缴费；骑行中定期清点人数、处理掉队；解散后 24 小时内完成数据录入。' },
+        { n: '03', title: '文明骑行', desc: '遵守德国道路交通法（StVO）；礼让行人；禁止公共道路竞速。' },
+        { n: '04', title: '应急响应', desc: '成员受伤时第一响应（必要时拨打 112）；处理机械故障；极端天气下有权取消或缩短路线。' },
+      ],
+    },
+    charter: {
+      heading: '完整章程',
+      body: '领骑章程详细载明补贴政策、社媒激励规则、违规处理流程及权责划分。章程在领骑资格认定后由俱乐部与领骑双方签署确认。',
+    },
   },
   en: {
     title: 'Ride Leader Charter',
     subtitle: 'Rights & Responsibilities · ACC 2026/27',
-    intro: 'Ride Leaders are the backbone of ACC\'s cycling culture. ACC\'s ride leaders are fellow cyclists who voluntarily give their time and expertise to lead the group. This charter defines the rights and responsibilities of ride leaders to ensure every outing is safe, organised, and enjoyable.',
+    intro: 'Ride Leaders are the backbone of ACC\'s cycling culture. ACC\'s ride leaders are fellow cyclists who voluntarily give their time and expertise to lead the group. The following is a public overview of the role; the full charter and compensation policy are signed separately upon confirmation of ride leader status.',
     backLink: { label: '← Back to membership', href: `/${lang}/membership` },
-    sections: [
-      {
-        title: '1. Ride Leader Rights',
-        content: `
-Ride leader status is confirmed by the club core member council, and comes with the following exclusive benefits:
-
-**1. Website Feature (Stamp Bike Wall)**
-
-Your personal bike is displayed on the ACC website About Us page in the Stamp Bike Wall section, making you part of the club's public identity.
-
-**2. Exclusive Ride Leader Kit**
-
-Ride leader kit features a distinguishing mark not found on standard member kit. The design is finalised alongside the annual kit proposal.
-
-**3. Per-Ride Subsidy**
-
-After each led ride, the non-member insurance fee collected and the club's per-ride leader subsidy are split **equally** among all ride leaders who participated in that session.
-
-**4. Annual Membership Fee Reimbursement**
-
-Any ride leader who completes **300+ km** of led rides in a membership year qualifies for full reimbursement of that year's ACC membership fee.
-
-> **Annual mileage baseline:** ACC runs approximately 70 rides per year at an average of 50 km each, totalling ~3,500 km. Split across 10 lead riders, the fair-share benchmark is ~320+ km per person per year. 300 km is the minimum eligibility threshold; 320 km is the fair-share baseline.
-
-**5. Over-Performance Subsidy**
-
-For every 20 km led beyond the 320 km annual baseline, an additional **€1** subsidy is paid.
-
-> **Example:** 400 km led in a year → 80 km over baseline → **€4** additional subsidy
-        `,
-      },
-      {
-        title: '2. Social Media Incentive',
-        content: `
-Ride leaders receive cash rewards for ACC-related social media posts. Fixed amounts, direct accumulation — no points pool conversion:
-
-| Action | Poster receives |
-|--------|----------------|
-| 1 like on a post | **+€0.03** |
-| 1 save/bookmark on a post | **+€0.05** |
-
-> **Example:** A post receives 20 likes + 10 saves → poster earns **20×€0.03 + 10×€0.05 = €1.10**
-
-**Requirements for posts to qualify (all must be met):**
-
-- Post content must relate to an ACC ride or activity
-- Profile bio or post must include personal tag \`ACC - [Your Name]\`
-- Must @ the official ACC account
-- Must use hashtags \`#ACC\` \`#AcrossCyclingClub\`
-- Encouraged platforms: **小红书 (RedNote)** / **Instagram**
-
-**Settlement rules:**
-
-Data snapshots are taken at club-confirmed intervals to prevent manipulation. Rewards are settled quarterly alongside ride subsidies, paid to your registered PayPal account.
-        `,
-      },
-      {
-        title: '3. Ride Leader Code of Conduct',
-        content: `
-All ride leaders must understand and strictly follow these standards:
-
-**1. Safety principles**
-
-- All participants **must wear a helmet at all times**; the ride leader may refuse or exclude anyone not wearing one
-- Speed limit of **25 km/h** in urban and high-pedestrian areas; on rural roads, maintain a safe speed appropriate to visibility and road conditions
-- Default formation is two abreast (where road allows); narrow sections require single file
-- At intersections, traffic lights, and yield signs, the lead rider stops and waits, only signalling to proceed when safe
-- Front light (white) and rear light (red) are required from sunset to sunrise
-
-**2. Ride workflow**
-
-- **Assembly check:** Verify participant list, confirm non-member fees collected, deliver pre-ride safety briefing
-- **During ride:** Maintain awareness front and rear, regularly count heads; slow down or stop for dropped riders, mechanicals, or emergencies
-- **After ride:** Submit ride data (distance, duration, headcount) to the club system within **24 hours** of finishing
-
-**3. Respectful riding**
-
-- Comply with German road traffic law (StVO); every rider is an independent road user — running red lights by blindly following the leader is prohibited
-- Slow down and signal friendly acknowledgement when passing pedestrians; maintain safe clearance
-- No racing or contentious overtaking on public roads
-- Respect local residents, other road users, and the natural environment
-
-**4. Emergency response**
-
-- **Injured rider:** Stop immediately, assess injuries, call emergency services if necessary (Germany: **112**), and notify the club administrator
-- **Mechanical failure:** Attempt roadside repair first; if not possible, arrange for an escort or assist in arranging pickup
-- **Severe weather:** If extreme conditions are confirmed before departure (thunderstorm, black ice, very low visibility), the ride leader may cancel or shorten the route
-        `,
-      },
-      {
-        title: '4. Violations & Disciplinary Process',
-        content: `
-Ride leader conduct must meet the club's values and safety standards.
-
-**Minor violations (verbal/written warning):**
-
-- Failure to submit ride data after a session
-- Not following the ride workflow (e.g. skipping the pre-ride safety briefing)
-- Minor breaches of the code of conduct
-
-**Serious violations (suspension or removal):**
-
-- Traffic violations during a led ride that compromise group safety
-- Substantiated misconduct complaints arising from an event
-- Sustained failure to meet the minimum annual mileage without reasonable explanation
-
-**Disciplinary process:**
-
-1. **Verbal / written warning** — issued and recorded by a core member
-2. **30-day suspension of ride leader status** — decided by core member vote based on severity
-3. **Permanent removal of ride leader status** — formal core member vote, written notification to the individual
-
-**Voluntary exit:**
-
-If a ride leader can no longer continue due to personal circumstances (work, relocation, health), they should notify the club administrator at least **2 weeks** in advance and complete a handover of routes and relevant information to their successor. Subsidies are settled pro-rata based on mileage completed.
-        `,
-      },
-      {
-        title: '5. Allocation of Responsibility',
-        content: `
-**ACC Club responsibilities:**
-
-- Provide group insurance through BLSV (covering non-member participants)
-- Pay out per-ride subsidies, annual mileage reimbursements, and social media rewards as per this charter
-- Provide ride leaders with route data, participant lists, and necessary logistical support
-- Handle formal complaints and disputes, and protect ride leaders' legitimate interests
-
-**Individual ride leader responsibilities:**
-
-- Safety organisation and real-time risk assessment during the led ride
-- On-site collection and recording of non-member insurance fees
-- Post-ride data submission
-- First response and initial management of any emergency
-
-**Disclaimer:**
-
-Ride leaders act as volunteers, not commercial tour guides. Except in cases of wilful intent or gross negligence, individual ride leaders are not jointly liable for personal injury or property damage suffered by participants during a ride. For specific terms, see the [ACC Insurance Notice & Liability Disclaimer](/${lang}/insurance).
-        `,
-      },
-    ],
+    rights: {
+      heading: 'Ride Leader Rights',
+      note: 'Upon confirmation, ride leaders receive the following exclusive benefits:',
+      items: [
+        { n: '01', title: 'Website feature', desc: 'Your personal bike is displayed on the About Us page in the Stamp Bike Wall section, making you part of ACC\'s public identity.' },
+        { n: '02', title: 'Exclusive ride leader kit', desc: 'Ride leader kit features a distinguishing mark not found on standard member kit.' },
+        { n: '03', title: 'Per-ride subsidy', desc: 'A club subsidy is paid after each led ride, split equally among participating ride leaders.' },
+        { n: '04', title: 'Annual mileage reward', desc: 'Ride leaders who meet the annual mileage threshold qualify for membership fee reimbursement and over-performance bonuses. Specific figures in the charter agreement.' },
+        { n: '05', title: 'Social media incentive', desc: 'Cash rewards for ACC-related posts on 小红书 (RedNote) or Instagram, based on likes and saves. Specific rules in the charter agreement.' },
+      ],
+    },
+    duties: {
+      heading: 'Ride Leader Duties',
+      note: 'Taking on the ride leader role means committing to the following responsibilities:',
+      items: [
+        { n: '01', title: 'Ride safety', desc: 'Enforce helmet checks; manage pace and formation; hold at junctions until safe to proceed; lights on after sunset.' },
+        { n: '02', title: 'Ride workflow', desc: 'Verify attendance and non-member fees at the start; count heads during the ride; submit ride data within 24 hours of finishing.' },
+        { n: '03', title: 'Respectful riding', desc: 'Comply with German road traffic law (StVO); give way to pedestrians; no racing on public roads.' },
+        { n: '04', title: 'Emergency response', desc: 'First response for injuries (call 112 if needed); handle mechanicals; authority to cancel or shorten in extreme weather.' },
+      ],
+    },
+    charter: {
+      heading: 'Full Charter',
+      body: 'The full ride leader charter details the subsidy policy, social media incentive rules, disciplinary process, and allocation of responsibilities. The charter is signed between the club and the ride leader upon confirmation of status.',
+    },
   },
   de: {
     title: 'Tourguide-Charta',
     subtitle: 'Rechte & Pflichten · ACC 2026/27',
-    intro: 'Tourguides sind das Herzstück der ACC-Fahrradkultur. ACCs Tourguides sind Mitradfahrer, die freiwillig ihre Zeit und Erfahrung einbringen, um die Gruppe zu führen. Diese Charta legt die Rechte und Pflichten der Tourguides fest, um jede Ausfahrt sicher, organisiert und angenehm zu gestalten.',
+    intro: 'Tourguides sind das Herzstück der ACC-Fahrradkultur. ACCs Tourguides sind Mitradfahrer, die freiwillig ihre Zeit und Erfahrung einbringen, um die Gruppe zu führen. Die folgende Seite bietet eine öffentliche Übersicht der Rolle; die vollständige Charta und Vergütungsregelungen werden nach Bestätigung des Tourguide-Status gesondert unterzeichnet.',
     backLink: { label: '← Zurück zur Mitgliedschaft', href: `/${lang}/membership` },
-    sections: [
-      {
-        title: '1. Rechte der Tourguides',
-        content: `
-Der Tourguide-Status wird vom Kernmitgliederrat des Vereins bestätigt und umfasst folgende exklusive Vorteile:
-
-**1. Darstellung auf der Website (Stamp Bike Wall)**
-
-Ihr persönliches Fahrrad wird auf der ACC-Website im Bereich About Us in der Stamp Bike Wall Section präsentiert.
-
-**2. Exklusives Tourguide-Trikot**
-
-Das Tourguide-Trikot trägt eine besondere Kennzeichnung, die es vom Standard-Mitgliedertrikot unterscheidet. Das Design wird zusammen mit dem jährlichen Trikotvorschlag finalisiert.
-
-**3. Vergütung pro Ausfahrt**
-
-Nach jeder geführten Ausfahrt werden die eingenommenen Versicherungsgebühren für Nichtmitglieder sowie die Tourenführervergütung des Vereins **gleichmäßig** auf alle teilnehmenden Tourguides aufgeteilt.
-
-**4. Erstattung des Jahresbeitrags**
-
-Tourguides, die in einem Mitgliedsjahr **300+ km** als Tourguide zurücklegen, erhalten den vollen ACC-Jahresbeitrag erstattet.
-
-> **Kilometerrichtwert:** ACC führt ca. 70 Ausfahrten pro Jahr mit durchschnittlich 50 km durch (~3.500 km gesamt). Bei 10 Tourguides entspricht dies ~320+ km pro Person und Jahr. 300 km ist die Mindestanforderung; 320 km ist der faire Anteil.
-
-**5. Bonus für Mehrleistung**
-
-Für je 20 km über den Jahresrichtwert von 320 km hinaus wird ein zusätzlicher Bonus von **€1** gewährt.
-        `,
-      },
-      {
-        title: '2. Social-Media-Anreize',
-        content: `
-Tourguides erhalten Barauszahlungen für ACC-bezogene Social-Media-Beiträge. Feste Beträge, direkte Kumulation:
-
-| Aktion | Vergütung für den Verfasser |
-|--------|-----------------------------|
-| 1 Like auf einen Beitrag | **+€0,03** |
-| 1 Speicherung eines Beitrags | **+€0,05** |
-
-**Voraussetzungen (alle müssen erfüllt sein):**
-
-- Inhalt muss sich auf eine ACC-Ausfahrt oder -Aktivität beziehen
-- Muss persönliches Tag \`ACC - [Ihr Name]\` enthalten
-- Muss den offiziellen ACC-Account verlinken
-- Muss Hashtags \`#ACC\` \`#AcrossCyclingClub\` verwenden
-- Empfohlene Plattformen: **小红书 (RedNote)** / **Instagram**
-
-Daten werden in vereinsfestgelegten Abständen erfasst. Auszahlung quartalsweise zusammen mit der Tourvergütung.
-        `,
-      },
-      {
-        title: '3. Verhaltenskodex für Tourguides',
-        content: `
-**1. Sicherheitsgrundsätze**
-
-- Alle Teilnehmer **müssen jederzeit einen Helm tragen**; der Tourguide kann Personen ohne Helm ausschließen
-- Tempolimit von **25 km/h** in urbanen und fußgängerreichen Bereichen
-- Standardformation: zwei nebeneinander (wo möglich); enge Streckenabschnitte erfordern Einreihung
-- An Kreuzungen, Ampeln und Vorfahrtsschildern anhalten und erst nach Sicherheitsprüfung Signal geben
-- Vorderlicht (weiß) und Rücklicht (rot) sind zwischen Sonnenuntergang und Sonnenaufgang Pflicht
-
-**2. Ablauf der Ausfahrt**
-
-- **Treffpunkt:** Teilnehmerliste prüfen, Gebühren der Nichtmitglieder bestätigen, Sicherheitseinweisung durchführen
-- **Während der Fahrt:** Vor und zurück beobachten, Köpfe zählen; bei Zwischenfällen verlangsamen oder stoppen
-- **Nach der Fahrt:** Fahrtdaten (Distanz, Dauer, Teilnehmerzahl) innerhalb von **24 Stunden** im Vereinssystem einpflegen
-
-**3. Respektvolles Fahren**
-
-- StVO einhalten; jeder Fahrer ist ein eigenständiger Verkehrsteilnehmer
-- Tempo reduzieren und Fußgänger freundlich grüßen
-- Kein Rennen oder strittiges Überholen auf öffentlichen Straßen
-
-**4. Notfallmaßnahmen**
-
-- **Verletzter Teilnehmer:** Sofort stoppen, Verletzungen einschätzen, bei Bedarf Notruf **112** wählen
-- **Panne:** Reparatur vor Ort versuchen; andernfalls Begleitung organisieren
-- **Extremwetter:** Bei gefährlichen Bedingungen kann der Tourguide die Ausfahrt absagen oder kürzen
-        `,
-      },
-      {
-        title: '4. Verstöße & Disziplinarverfahren',
-        content: `
-**Geringfügige Verstöße (Verwarnung):**
-
-- Keine Einreichung der Fahrtdaten nach einer Ausfahrt
-- Nichtbefolgen des Ausfahrtablaufs
-- Geringfügige Verstöße gegen den Verhaltenskodex
-
-**Schwerwiegende Verstöße (Sperre oder Ausschluss):**
-
-- Verkehrsverstöße während einer geführten Ausfahrt, die die Gruppensicherheit gefährden
-- Bestätigte Beschwerden über unangemessenes Verhalten
-- Anhaltende Unterschreitung der Mindestkilometerleistung ohne Erklärung
-
-**Verfahren:**
-
-1. **Mündliche / schriftliche Verwarnung** — durch ein Kernmitglied ausgestellt und dokumentiert
-2. **30-tägige Suspendierung** — durch Kernmitgliederbeschluss
-3. **Dauerhafter Entzug des Tourguide-Status** — durch formellen Beschluss, schriftliche Benachrichtigung
-
-**Freiwilliger Austritt:**
-
-Bei persönlichen Umständen (Arbeit, Umzug, Gesundheit) mindestens **2 Wochen** vorher den Vereinsadministrator informieren und eine Übergabe durchführen. Vergütung wird anteilig nach geleisteten Kilometern abgerechnet.
-        `,
-      },
-      {
-        title: '5. Haftungsverteilung',
-        content: `
-**Verantwortlichkeiten des ACC-Vereins:**
-
-- Gruppenversicherung über BLSV bereitstellen
-- Vergütungen, Kilometererstattungen und Social-Media-Prämien gemäß dieser Charta auszahlen
-- Routendaten, Teilnehmerlisten und logistische Unterstützung bereitstellen
-- Beschwerden und Streitigkeiten bearbeiten
-
-**Verantwortlichkeiten des einzelnen Tourguides:**
-
-- Sicherheitsorganisation und Risikobewertung während der Ausfahrt
-- Vor-Ort-Einzug und Erfassung der Versicherungsgebühren für Nichtmitglieder
-- Einreichung der Fahrtdaten nach der Ausfahrt
-- Erste Reaktion auf Notfälle
-
-**Haftungsausschluss:**
-
-Tourguides handeln als Freiwillige, nicht als kommerzielle Reiseleiter. Außer bei Vorsatz oder grober Fahrlässigkeit haften Tourguides nicht für Personen- oder Sachschäden der Teilnehmer. Detaillierte Bedingungen finden Sie im [ACC-Versicherungshinweis & Haftungsausschluss](/${lang}/insurance).
-        `,
-      },
-    ],
+    rights: {
+      heading: 'Rechte der Tourguides',
+      note: 'Nach Bestätigung erhalten Tourguides folgende exklusive Vorteile:',
+      items: [
+        { n: '01', title: 'Darstellung auf der Website', desc: 'Ihr persönliches Fahrrad wird auf der About Us-Seite in der Stamp Bike Wall Section präsentiert.' },
+        { n: '02', title: 'Exklusives Tourguide-Trikot', desc: 'Das Tourguide-Trikot trägt eine besondere Kennzeichnung, die es vom Standard-Mitgliedertrikot unterscheidet.' },
+        { n: '03', title: 'Vergütung pro Ausfahrt', desc: 'Nach jeder geführten Ausfahrt wird eine Vereinsvergütung gleichmäßig auf alle teilnehmenden Tourguides aufgeteilt.' },
+        { n: '04', title: 'Kilometerprämie', desc: 'Tourguides, die den Jahreskm-Richtwert erreichen, erhalten Beitragsrückerstattung und Mehrleistungsbonus. Genaue Werte in der Charta.' },
+        { n: '05', title: 'Social-Media-Prämie', desc: 'Barauszahlungen für ACC-bezogene Beiträge auf 小红书 oder Instagram nach Likes und Saves. Regeln in der Charta.' },
+      ],
+    },
+    duties: {
+      heading: 'Pflichten der Tourguides',
+      note: 'Die Übernahme der Tourguide-Rolle umfasst folgende Verantwortlichkeiten:',
+      items: [
+        { n: '01', title: 'Fahrsicherheit', desc: 'Helmkontrolle durchführen; Tempo und Formation managen; an Kreuzungen warten bis es sicher ist; Lichter nach Sonnenuntergang einschalten.' },
+        { n: '02', title: 'Ablauf der Ausfahrt', desc: 'Teilnehmerliste und Nichtmitgliedgebühren zu Beginn prüfen; während der Fahrt Köpfe zählen; Fahrtdaten innerhalb von 24 Stunden einpflegen.' },
+        { n: '03', title: 'Respektvolles Fahren', desc: 'StVO einhalten; Fußgänger Vorrang geben; kein Rennen auf öffentlichen Straßen.' },
+        { n: '04', title: 'Notfallreaktion', desc: 'Erste Reaktion bei Verletzungen (ggf. 112 anrufen); Pannen beheben; Befugnis zur Absage oder Verkürzung bei Extremwetter.' },
+      ],
+    },
+    charter: {
+      heading: 'Vollständige Charta',
+      body: 'Die vollständige Tourguide-Charta enthält Details zur Vergütungspolitik, Social-Media-Prämienregeln, Disziplinarverfahren und Haftungsverteilung. Die Charta wird nach Bestätigung des Tourguide-Status zwischen Verein und Tourguide unterzeichnet.',
+    },
   },
 };
 
-const pageContent = content[lang];
+const c = content[lang];
 ---
 
-<BaseLayout title={pageContent.title} lang={lang}>
+<BaseLayout title={c.title} lang={lang}>
   <article class="rl-page">
+
     <header class="rl-header">
-      <a href={pageContent.backLink.href} class="rl-back-link">{pageContent.backLink.label}</a>
-      <h1>{pageContent.title}</h1>
-      <p class="rl-subtitle">{pageContent.subtitle}</p>
+      <a href={c.backLink.href} class="rl-back-link">{c.backLink.label}</a>
+      <h1>{c.title}</h1>
+      <p class="rl-subtitle">{c.subtitle}</p>
     </header>
 
     <div class="rl-intro">
-      <p>{pageContent.intro}</p>
+      <p>{c.intro}</p>
     </div>
 
-    <div class="rl-content">
-      {pageContent.sections.map((section) => (
-        <section class="rl-section">
-          <h2>{section.title}</h2>
-          <div class="section-content" set:html={marked.parse(section.content.trim())} />
-        </section>
-      ))}
-    </div>
+    {/* ── RIGHTS ── */}
+    <section class="rl-block">
+      <div class="rl-block-header">
+        <div class="rl-eyebrow">{c.rights.heading}</div>
+        <p class="rl-block-note">{c.rights.note}</p>
+      </div>
+      <div class="rl-list">
+        {c.rights.items.map((item) => (
+          <div class="rl-row">
+            <div class="rl-row-num">{item.n}</div>
+            <div class="rl-row-title">{item.title}</div>
+            <div class="rl-row-desc">{item.desc}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* ── DUTIES ── */}
+    <section class="rl-block rl-block--alt">
+      <div class="rl-block-header">
+        <div class="rl-eyebrow">{c.duties.heading}</div>
+        <p class="rl-block-note">{c.duties.note}</p>
+      </div>
+      <div class="rl-list">
+        {c.duties.items.map((item) => (
+          <div class="rl-row">
+            <div class="rl-row-num">{item.n}</div>
+            <div class="rl-row-title">{item.title}</div>
+            <div class="rl-row-desc">{item.desc}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* ── CHARTER NOTE ── */}
+    <section class="rl-charter-note">
+      <div class="rl-charter-icon" aria-hidden="true">◆</div>
+      <h2 class="rl-charter-heading">{c.charter.heading}</h2>
+      <p class="rl-charter-body">{c.charter.body}</p>
+    </section>
 
     <footer class="rl-footer">
-      <a href={pageContent.backLink.href} class="rl-back-link">{pageContent.backLink.label}</a>
+      <a href={c.backLink.href} class="rl-back-link">{c.backLink.label}</a>
     </footer>
+
   </article>
 </BaseLayout>
 
 <style>
   .rl-page {
-    max-width: 800px;
+    max-width: 860px;
     margin: 0 auto;
     padding: var(--space-lg) var(--space-md);
   }
 
+  /* ── back link ── */
   .rl-back-link {
     display: inline-block;
     font-family: var(--font-heading);
@@ -493,24 +193,19 @@ const pageContent = content[lang];
     margin-bottom: var(--space-md);
     transition: opacity 150ms ease;
   }
+  .rl-back-link:hover { opacity: 0.7; }
 
-  .rl-back-link:hover {
-    opacity: 0.75;
-  }
-
+  /* ── header ── */
   .rl-header {
     margin-bottom: var(--space-xl);
     padding-bottom: var(--space-lg);
     border-bottom: 3px solid var(--color-border-rough);
   }
-
   .rl-header h1 {
     font-size: 2.5rem;
     color: var(--color-primary);
-    margin-bottom: var(--space-xs);
-    margin-top: var(--space-xs);
+    margin: var(--space-xs) 0;
   }
-
   .rl-subtitle {
     color: #888;
     font-size: 0.95rem;
@@ -518,6 +213,7 @@ const pageContent = content[lang];
     margin: 0;
   }
 
+  /* ── intro box ── */
   .rl-intro {
     background: rgba(42, 92, 166, 0.05);
     padding: var(--space-lg);
@@ -525,102 +221,128 @@ const pageContent = content[lang];
     margin-bottom: var(--space-xl);
     border-radius: 4px;
   }
-
   .rl-intro p {
     font-size: 1.05rem;
     line-height: 1.7;
     margin: 0;
   }
 
-  .rl-content {
-    line-height: 1.8;
+  /* ── section blocks ── */
+  .rl-block {
+    padding: 48px 0;
+    border-top: 1px solid var(--color-border-rough);
+  }
+  .rl-block--alt {
+    background: rgba(0,0,0,0.02);
+    padding: 48px 32px;
+    margin: 0 -32px;
+    border-top: none;
+    border-radius: 4px;
   }
 
-  .rl-section {
-    margin-bottom: var(--space-xl);
+  .rl-block-header {
+    margin-bottom: 32px;
   }
-
-  .rl-section h2 {
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    margin-bottom: var(--space-md);
-    padding-bottom: var(--space-xs);
-    border-bottom: 2px solid var(--color-border-rough);
-  }
-
-  .section-content {
-    font-size: 1.05rem;
-    color: #333;
-  }
-
-  .section-content :global(strong) {
-    color: var(--color-primary);
-    font-weight: 600;
-  }
-
-  .section-content :global(a) {
+  .rl-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: var(--color-accent);
-    text-decoration: underline;
+    margin-bottom: 8px;
   }
-
-  .section-content :global(a:hover) {
-    color: var(--color-primary);
-  }
-
-  .section-content :global(blockquote) {
-    border-left: 3px solid #ddd;
-    padding-left: 1rem;
-    margin: 1rem 0;
-    color: #666;
+  .rl-block-note {
+    font-family: var(--font-body);
     font-size: 0.95rem;
+    color: #666;
+    margin: 0;
+    font-style: italic;
   }
 
-  .section-content :global(table) {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
+  /* ── row list ── */
+  .rl-list {
+    display: flex;
+    flex-direction: column;
   }
-
-  .section-content :global(th),
-  .section-content :global(td) {
-    padding: 0.6rem 0.9rem;
-    text-align: left;
-    border: 1px solid var(--color-border-rough);
+  .rl-row {
+    display: grid;
+    grid-template-columns: 52px 180px 1fr;
+    gap: 24px;
+    padding: 20px 0;
+    border-top: 1px solid var(--color-border);
+    align-items: baseline;
   }
-
-  .section-content :global(th) {
-    background: rgba(42, 92, 166, 0.08);
+  .rl-row-num {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-accent);
+    letter-spacing: 0.12em;
+  }
+  .rl-row-title {
+    font-family: var(--font-heading);
+    font-size: 15px;
     font-weight: 600;
+    color: var(--color-text-main);
+    letter-spacing: -0.01em;
+  }
+  .rl-row-desc {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+  }
+
+  /* ── charter note ── */
+  .rl-charter-note {
+    margin-top: 56px;
+    padding: 36px 40px;
+    border: 1px solid var(--color-border-rough);
+    border-radius: 4px;
+    text-align: center;
+  }
+  .rl-charter-icon {
+    font-size: 10px;
+    color: var(--color-accent);
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+  }
+  .rl-charter-heading {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--color-primary);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .rl-charter-body {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #555;
+    margin: 0;
+    max-width: 560px;
+    margin-inline: auto;
   }
 
-  .section-content :global(ul),
-  .section-content :global(ol) {
-    padding-left: 1.5rem;
-    margin: 0.5rem 0;
-  }
-
-  .section-content :global(li) {
-    margin-bottom: 0.4rem;
-  }
-
+  /* ── footer ── */
   .rl-footer {
     padding-top: var(--space-xl);
     border-top: 1px solid var(--color-border-rough);
     margin-top: var(--space-xl);
   }
 
+  /* ── responsive ── */
   @media (max-width: 768px) {
-    .rl-page {
-      padding: var(--space-md);
+    .rl-page { padding: var(--space-md); }
+    .rl-header h1 { font-size: 1.9rem; }
+    .rl-block--alt { padding: 40px 20px; margin: 0 -20px; }
+    .rl-row {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: auto auto;
     }
-
-    .rl-header h1 {
-      font-size: 1.9rem;
-    }
-
-    .rl-section h2 {
-      font-size: 1.25rem;
-    }
+    .rl-row-desc { grid-column: 1 / -1; padding-left: 40px; }
+    .rl-charter-note { padding: 28px 20px; }
   }
 </style>
