@@ -15,64 +15,258 @@ const GROUP_IMG = "/images/membership/weekend-ride.jpg";
 const ALPS_IMG = "/images/membership/multi-day-ride.jpg";
 const CAFE_IMG = "/images/membership/afterwork.jpg";
 
-const BENEFITS = [
-  {
-    n: "01",
-    title: "全年 70+ 次团骑活动",
-    desc: "每周的 After Work、周末长距离骑游、训练日，以及一年一两次的多日远征 —— 一份够你骑一整年的日程。",
-  },
-  {
-    n: "02",
-    title: "BLSV 官方活动保险",
-    desc: "所有官方注册活动覆盖巴伐利亚州体协的事故保险。会员才能享受这份保障。",
-    link: { label: "了解保险权益详情", href: `/${lang}/insurance` },
-  },
-  {
-    n: "03",
-    title: "雏鹰计划 · 进阶培训",
-    desc: "从新手到入门小 Pro 的系统培训：踩踏、选线、下坡、气动姿势、骑行安全 —— 把「正确的废话」换成讲到点子上的方法。",
-  },
-  {
-    n: "04",
-    title: "ACC 队服与周边购买权",
-    desc: "队服、徽章、文化衫等会员限定周边的优先购买与会员价。",
-  },
-  {
-    n: "05",
-    title: "合作单位优惠",
-    desc: "ACC 自有周边的会员折扣，以及与慕尼黑车店、咖啡馆、训练房等合作单位的会员专属优惠。",
-  },
-  {
-    n: "06",
-    title: "赞助物资使用权",
-    desc: "未来 ACC 拉到体育品牌赞助后，会员将享有赞助配件、装备的优先使用与体验权。",
-  },
-  {
-    n: "07",
-    title: "多日骑行与年度庆典",
-    desc: "ACC 年度多日远征、季度庆典、年终聚会的会员专属席位。",
-  },
-  {
-    n: "08",
-    title: "成为领骑候选人",
-    desc: "会员可申请加入领骑考核 —— 通过后享有带队补贴、社媒激励金、赛事报销等更多权益。",
-    link: { label: "了解领骑权利与义务", href: `/${lang}/ride-leader` },
-  },
-];
-
-const TERMS = [
-  { q: "有效期", a: "会籍统一至次年 5 月 31 日，每年 6 月 1 日续费。2026 年 5 月报名者，会籍同样至 2027 年 5 月 31 日。" },
-  { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€（含会员事故保险）。新会员首次办理须另缴华人体协 10€ 开户费。其余部分进入俱乐部公共账户。" },
-  { q: "退款政策", a: "会费一经缴纳，概不退款。" },
-  { q: "活动参与", a: "骑行活动存在固有风险，参与者须自行承担。官方注册活动涵盖 BLSV 事故保险。详细参与规则见会员章程。" },
-  { q: "行为规范", a: "遵守骑行准则，尊重队友、行人及其他道路使用者。详细规范见会员章程。" },
-  { q: "会费用途", a: "100% 用于俱乐部运营（含领骑补贴、活动组织及赛事参与费用等）与年度储备金。账目对全体会员透明。" },
-];
-
 const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
+
+const content = {
+  zh: {
+    title: "加入 ACC",
+    heroTitle: "加入 ACC",
+    heroSubtitle: "Let us ride —",
+    heroAccent: " free and together.",
+    introEyebrow: "关于 ACC",
+    introTitle: "不止是骑行，更是同频的连结",
+    introBody: [
+      "ACC (Across Cycling Club) 扎根慕尼黑，背靠阿尔卑斯。我们始于华人骑行社群，但向所有热爱公路与砾石 (Gravel) 的朋友敞开大门。",
+      "我们相信，纯粹的热爱不应该伴随内耗，因此 ACC 的第一准则是：让自己人舒服。我们拒绝无意义的\"卷功率\"，抵制身材与装备焦虑。我们存在的意义，是为 ACC 成员提供一个纯粹、没有压力的骑行根据地。",
+      "无论你追求的是巴伐利亚乡间的轻松周末 social ride，还是下班后酣畅淋漓的硬核训练 training day；无论是伊萨河畔的微风，还是阿尔卑斯山口的挑战，只要你想和一群人一起感受在路上的自由，这里就有你的位置。跨越语言与背景，我们在轮流破风与沿途的咖啡小憩中，找到共同的节奏。",
+      "在这里，我们不仅组织规律的团骑，也分享专业的器械知识与硬核路线。ACC 致力于成为欧洲骑行文化中的一面旗帜，为每一位热爱户外的骑行者提供最好的体验和最可靠的后勤支持。",
+    ],
+    tagline: "Let us ride, free and together.",
+    photos: ["After Work", "多日远征", "周末团骑"],
+    benefitsTitle: "会员权益",
+    benefitsMore: "更多权益陆续公布 ——",
+    benefitsCharterPrefix: "详情请了解",
+    benefitsCharterLink: "会员章程与责任义务",
+    benefits: [
+      {
+        n: "01",
+        title: "全年 70+ 次团骑活动",
+        desc: "每周的 After Work、周末长距离骑游、训练日，以及一年一两次的多日远征 —— 一份够你骑一整年的日程。",
+      },
+      {
+        n: "02",
+        title: "BLSV 官方活动保险",
+        desc: "所有官方注册活动覆盖巴伐利亚州体协的事故保险。会员才能享受这份保障。",
+        link: { label: "了解保险权益详情", href: `/${lang}/insurance` },
+      },
+      {
+        n: "03",
+        title: "雏鹰计划 · 进阶培训",
+        desc: "从新手到入门小 Pro 的系统培训：踩踏、选线、下坡、气动姿势、骑行安全 —— 把「正确的废话」换成讲到点子上的方法。",
+      },
+      {
+        n: "04",
+        title: "ACC 队服与周边购买权",
+        desc: "队服、徽章、文化衫等会员限定周边的优先购买与会员价。",
+      },
+      {
+        n: "05",
+        title: "合作单位优惠",
+        desc: "ACC 自有周边的会员折扣，以及与慕尼黑车店、咖啡馆、训练房等合作单位的会员专属优惠。",
+      },
+      {
+        n: "06",
+        title: "赞助物资使用权",
+        desc: "未来 ACC 拉到体育品牌赞助后，会员将享有赞助配件、装备的优先使用与体验权。",
+      },
+      {
+        n: "07",
+        title: "多日骑行与年度庆典",
+        desc: "ACC 年度多日远征、季度庆典、年终聚会的会员专属席位。",
+      },
+      {
+        n: "08",
+        title: "成为领骑候选人",
+        desc: "会员可申请加入领骑考核 —— 通过后享有带队补贴、社媒激励金、赛事报销等更多权益。",
+        link: { label: "了解领骑权利与义务", href: `/${lang}/ride-leader` },
+      },
+    ],
+    joinTitle: "入会须知",
+    pricingYear: "2026 / 27 会员年 年费",
+    student: "学生",
+    nonStudent: "非学生",
+    returningMember: "老会员",
+    newMember: "新会员",
+    pricingFootnote: "首次办理须另缴华人体协 10€ 开户费",
+    terms: [
+      { q: "有效期", a: "会籍统一至次年 5 月 31 日，每年 6 月 1 日续费。2026 年 5 月报名者，会籍同样至 2027 年 5 月 31 日。" },
+      { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€（含会员事故保险）。新会员首次办理须另缴华人体协 10€ 开户费。其余部分进入俱乐部公共账户。" },
+      { q: "退款政策", a: "会费一经缴纳，概不退款。" },
+      { q: "活动参与", a: "骑行活动存在固有风险，参与者须自行承担。官方注册活动涵盖 BLSV 事故保险。详细参与规则见会员章程。" },
+      { q: "行为规范", a: "遵守骑行准则，尊重队友、行人及其他道路使用者。详细规范见会员章程。" },
+      { q: "会费用途", a: "100% 用于俱乐部运营（含领骑补贴、活动组织及赛事参与费用等）与年度储备金。账目对全体会员透明。" },
+    ],
+    fullCharterLink: "查看完整会员章程",
+    ctaLabel: "前往报名表",
+  },
+  en: {
+    title: "Join ACC",
+    heroTitle: "Join ACC",
+    heroSubtitle: "Let us ride —",
+    heroAccent: " free and together.",
+    introEyebrow: "About ACC",
+    introTitle: "More than rides. A community that moves together.",
+    introBody: [
+      "ACC (Across Cycling Club) is rooted in Munich, with the Alps as our backyard. We began as a Chinese-speaking cycling community, and we welcome everyone who loves road and gravel riding.",
+      "We believe a pure love of cycling should not come with pressure. ACC's first principle is simple: make our own people feel at ease. We do not worship meaningless power-number competition, body anxiety, or gear anxiety. ACC exists to give members a calm, pressure-free cycling home base.",
+      "Whether you want an easy weekend social ride through Bavarian countryside, a focused after-work training day, a breezy Isar spin, or a mountain-pass challenge in the Alps, there is a place for you here. Across languages and backgrounds, we find a shared rhythm through rotating pulls, regrouping, and coffee stops along the way.",
+      "We organize regular group rides, share practical gear knowledge, and build serious route resources. ACC aims to become a visible part of European cycling culture while giving every outdoor-minded rider a better, safer, and more supported experience.",
+    ],
+    tagline: "Let us ride, free and together.",
+    photos: ["After Work", "Multi-day trips", "Weekend rides"],
+    benefitsTitle: "Member Benefits",
+    benefitsMore: "More benefits will be announced —",
+    benefitsCharterPrefix: "Read the",
+    benefitsCharterLink: "member charter and responsibilities",
+    benefits: [
+      {
+        n: "01",
+        title: "70+ official rides per year",
+        desc: "Weekly after-work rides, weekend endurance routes, training days, and one or two multi-day trips each year: enough riding for a full season.",
+      },
+      {
+        n: "02",
+        title: "BLSV official event insurance",
+        desc: "Registered official club activities are covered by the Bavarian sports association's accident insurance. This protection is a member benefit.",
+        link: { label: "Read insurance details", href: `/${lang}/insurance` },
+      },
+      {
+        n: "03",
+        title: "Eaglet program · skills progression",
+        desc: "Structured training from beginner to confident club rider: pedaling, line choice, descending, aero position, and group-ride safety explained in a way that actually helps.",
+      },
+      {
+        n: "04",
+        title: "ACC kit and merchandise access",
+        desc: "Priority access and member pricing for jerseys, badges, cultural shirts, and other member-only club items.",
+      },
+      {
+        n: "05",
+        title: "Partner discounts",
+        desc: "Member discounts on ACC merchandise and selected benefits from Munich bike shops, cafés, training spaces, and future partners.",
+      },
+      {
+        n: "06",
+        title: "Sponsor gear access",
+        desc: "As ACC secures sports-brand sponsorships, members will receive priority access to sponsored accessories, equipment trials, and test opportunities.",
+      },
+      {
+        n: "07",
+        title: "Multi-day rides and annual gatherings",
+        desc: "Member-priority places for ACC's annual multi-day rides, seasonal gatherings, and year-end events.",
+      },
+      {
+        n: "08",
+        title: "Ride leader candidate path",
+        desc: "Members may apply for ride leader assessment. Confirmed leaders receive ride subsidies, social-media incentives, race reimbursement options, and additional benefits.",
+        link: { label: "Ride leader rights and duties", href: `/${lang}/ride-leader` },
+      },
+    ],
+    joinTitle: "Membership Notes",
+    pricingYear: "2026 / 27 membership year fee",
+    student: "Student",
+    nonStudent: "Non-student",
+    returningMember: "Returning",
+    newMember: "New member",
+    pricingFootnote: "First-time registration includes a 10€ CSV München setup fee",
+    terms: [
+      { q: "Validity", a: "Membership runs until 31 May of the following year and renews annually on 1 June. Members joining in May 2026 are covered until 31 May 2027." },
+      { q: "Fee structure", a: "The fee includes the BLSV annual administration fee of 10€ with member accident insurance. First-time members also pay a 10€ setup fee to Chinesischer Sportverein München. The remaining amount goes into the club account." },
+      { q: "Refund policy", a: "Membership fees are non-refundable once paid." },
+      { q: "Event participation", a: "Cycling involves inherent risk and participants ride at their own responsibility. Official registered activities include BLSV accident insurance. Full participation rules are listed in the member charter." },
+      { q: "Code of conduct", a: "Follow group-riding rules and respect teammates, pedestrians, and all other road users. The full conduct rules are listed in the member charter." },
+      { q: "Use of fees", a: "100% of membership fees support club operations, including ride leader subsidies, event organization, race participation support, and annual reserves. Accounts are transparent to members." },
+    ],
+    fullCharterLink: "View full member charter",
+    ctaLabel: "Open application form",
+  },
+  de: {
+    title: "ACC beitreten",
+    heroTitle: "ACC beitreten",
+    heroSubtitle: "Let us ride —",
+    heroAccent: " free and together.",
+    introEyebrow: "Über ACC",
+    introTitle: "Mehr als Ausfahrten. Eine Gemeinschaft im gleichen Rhythmus.",
+    introBody: [
+      "ACC (Across Cycling Club) ist in München zuhause, mit den Alpen direkt vor der Tür. Wir sind aus einer chinesischsprachigen Radsport-Community entstanden und öffnen uns allen, die Rennrad- und Gravel-Fahren lieben.",
+      "Wir glauben, dass echte Begeisterung für den Radsport keinen unnötigen Druck erzeugen sollte. Unser erster Grundsatz lautet: Unsere Leute sollen sich wohlfühlen. Wir lehnen sinnlosen Watt-Vergleich, Körperdruck und Materialangst ab. ACC soll für Mitglieder ein ruhiger, druckfreier Ort zum Radfahren sein.",
+      "Ob entspannte Wochenendrunde durch Bayern, fokussiertes After-Work-Training, eine lockere Isar-Runde oder ein Alpenpass als Herausforderung: Hier gibt es Platz für dich. Über Sprachen und Hintergründe hinweg finden wir unseren gemeinsamen Takt beim Windschattenfahren, Sammeln und Kaffeestopp.",
+      "Wir organisieren regelmäßige Gruppenausfahrten, teilen praktisches Materialwissen und bauen verlässliche Routenressourcen auf. ACC möchte ein sichtbarer Teil der europäischen Radsportkultur werden und jedem outdoorbegeisterten Fahrer ein besseres, sichereres und besser unterstütztes Erlebnis bieten.",
+    ],
+    tagline: "Let us ride, free and together.",
+    photos: ["After Work", "Mehrtägige Touren", "Wochenendrides"],
+    benefitsTitle: "Mitgliedervorteile",
+    benefitsMore: "Weitere Vorteile werden folgen —",
+    benefitsCharterPrefix: "Details in der",
+    benefitsCharterLink: "Mitgliedercharta und Verantwortungserklärung",
+    benefits: [
+      {
+        n: "01",
+        title: "Über 70 offizielle Ausfahrten pro Jahr",
+        desc: "Wöchentliche After-Work-Rides, längere Wochenendtouren, Trainingstage sowie ein bis zwei mehrtägige Fahrten pro Jahr: ein kompletter Kalender für deine Saison.",
+      },
+      {
+        n: "02",
+        title: "Offizielle BLSV-Veranstaltungsversicherung",
+        desc: "Registrierte offizielle Vereinsaktivitäten fallen unter die Unfallversicherung des Bayerischen Landes-Sportverbandes. Dieser Schutz ist ein Mitgliedervorteil.",
+        link: { label: "Versicherungsdetails lesen", href: `/${lang}/insurance` },
+      },
+      {
+        n: "03",
+        title: "Eaglet-Programm · Fahrtechnik und Aufbau",
+        desc: "Strukturiertes Training vom Einsteiger bis zum sicheren Clubfahrer: Tritttechnik, Linienwahl, Abfahrt, Aeroposition und Gruppensicherheit verständlich erklärt.",
+      },
+      {
+        n: "04",
+        title: "Zugang zu ACC-Kit und Merchandise",
+        desc: "Priorisierter Zugang und Mitgliederpreise für Trikots, Abzeichen, Shirts und weitere clubinterne Artikel.",
+      },
+      {
+        n: "05",
+        title: "Partnervergünstigungen",
+        desc: "Mitgliederrabatte auf ACC-Merchandise sowie ausgewählte Vorteile bei Münchner Radläden, Cafés, Trainingsräumen und zukünftigen Partnern.",
+      },
+      {
+        n: "06",
+        title: "Zugang zu Sponsorenausrüstung",
+        desc: "Wenn ACC Sportmarken als Sponsoren gewinnt, erhalten Mitglieder bevorzugten Zugang zu Zubehör, Ausrüstungstests und Produkterfahrungen.",
+      },
+      {
+        n: "07",
+        title: "Mehrtägige Touren und Jahresfeiern",
+        desc: "Bevorzugte Plätze für ACCs mehrtägige Jahrestouren, saisonale Treffen und Jahresabschlussveranstaltungen.",
+      },
+      {
+        n: "08",
+        title: "Weg zum Tourguide-Kandidaten",
+        desc: "Mitglieder können sich für die Tourguide-Prüfung bewerben. Bestätigte Tourguides erhalten Ausfahrtszuschüsse, Social-Media-Prämien, mögliche Rennkostenerstattungen und weitere Vorteile.",
+        link: { label: "Rechte und Pflichten der Tourguides", href: `/${lang}/ride-leader` },
+      },
+    ],
+    joinTitle: "Hinweise zur Mitgliedschaft",
+    pricingYear: "Mitgliedsjahr 2026 / 27 Jahresbeitrag",
+    student: "Studierende",
+    nonStudent: "Nicht-Studierende",
+    returningMember: "Bestand",
+    newMember: "Neu",
+    pricingFootnote: "Bei Erstaufnahme fällt zusätzlich eine CSV-München-Aufnahmegebühr von 10€ an",
+    terms: [
+      { q: "Gültigkeit", a: "Die Mitgliedschaft läuft einheitlich bis zum 31. Mai des Folgejahres und wird jährlich zum 1. Juni erneuert. Wer im Mai 2026 beitritt, ist ebenfalls bis zum 31. Mai 2027 Mitglied." },
+      { q: "Beitragsstruktur", a: "Der Beitrag enthält die jährliche BLSV-Verwaltungsgebühr von 10€ inklusive Unfallversicherung für Mitglieder. Neue Mitglieder zahlen zusätzlich eine einmalige Aufnahmegebühr von 10€ an den Chinesischen Sportverein München. Der Rest fließt in das Clubkonto." },
+      { q: "Erstattung", a: "Gezahlte Mitgliedsbeiträge werden nicht erstattet." },
+      { q: "Teilnahme an Aktivitäten", a: "Radsport beinhaltet eigene Risiken; Teilnehmende fahren eigenverantwortlich. Offizielle registrierte Aktivitäten umfassen BLSV-Unfallversicherung. Die vollständigen Regeln stehen in der Mitgliedercharta." },
+      { q: "Verhaltenskodex", a: "Mitglieder halten sich an die Fahrregeln und respektieren Teamkollegen, Fußgänger und andere Verkehrsteilnehmer. Die vollständigen Regeln stehen in der Mitgliedercharta." },
+      { q: "Verwendung der Beiträge", a: "100% der Mitgliedsbeiträge dienen dem Clubbetrieb, inklusive Tourguide-Zuschüssen, Veranstaltungsorganisation, Rennteilnahme-Unterstützung und Jahresrücklage. Die Finanzen sind für Mitglieder transparent." },
+    ],
+    fullCharterLink: "Vollständige Mitgliedercharta ansehen",
+    ctaLabel: "Anmeldeformular öffnen",
+  },
+};
+
+const c = content[lang];
 ---
 
-<BaseLayout title="加入 ACC" lang={lang} headerTransparent={true} heroImagePreload={HERO_IMG}>
+<BaseLayout title={c.title} lang={lang} headerTransparent={true} heroImagePreload={HERO_IMG}>
 
   {/* ============================================================
       HERO — full-bleed photo, overlaps transparent header
@@ -80,10 +274,10 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   <section slot="hero" class="mem-hero" style={`background-image: url(${HERO_IMG});`}>
     <div class="mem-hero-overlay" aria-hidden="true"></div>
     <div class="mem-hero-content">
-      <h1 class="mem-hero-h1">加入 ACC</h1>
+      <h1 class="mem-hero-h1">{c.heroTitle}</h1>
       <p class="mem-hero-subtitle">
-        Let us ride —
-        <span class="mem-hero-accent"> free and together.</span>
+        {c.heroSubtitle}
+        <span class="mem-hero-accent">{c.heroAccent}</span>
       </p>
     </div>
   </section>
@@ -92,21 +286,12 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
       PROSE INTRO
      ============================================================ */}
   <section class="mem-intro">
-    <div class="mem-eyebrow mem-eyebrow--accent">关于 ACC</div>
-    <h2 class="mem-intro-h2">不止是骑行，更是同频的连结</h2>
-    <p class="mem-intro-body">
-      ACC (Across Cycling Club) 扎根慕尼黑，背靠阿尔卑斯。我们始于华人骑行社群，但向所有热爱公路与砾石 (Gravel) 的朋友敞开大门。
-    </p>
-    <p class="mem-intro-body">
-      我们相信，纯粹的热爱不应该伴随内耗，因此 ACC 的第一准则是：让自己人舒服。我们拒绝无意义的"卷功率"，抵制身材与装备焦虑。我们存在的意义，是为 ACC 成员提供一个纯粹、没有压力的骑行根据地。
-    </p>
-    <p class="mem-intro-body">
-      无论你追求的是巴伐利亚乡间的轻松周末 <em class="mem-intro-em">social ride</em>，还是下班后酣畅淋漓的硬核训练 <em class="mem-intro-em">training day</em>；无论是伊萨河畔的微风，还是阿尔卑斯山口的挑战，只要你想和一群人一起感受在路上的自由，这里就有你的位置。跨越语言与背景，我们在轮流破风与沿途的咖啡小憩中，找到共同的节奏。
-    </p>
-    <p class="mem-intro-body">
-      在这里，我们不仅组织规律的团骑，也分享专业的器械知识与硬核路线。ACC 致力于成为欧洲骑行文化中的一面旗帜，为每一位热爱户外的骑行者提供最好的体验和最可靠的后勤支持。
-    </p>
-    <p class="mem-intro-tagline">Let us ride, free and together.</p>
+    <div class="mem-eyebrow mem-eyebrow--accent">{c.introEyebrow}</div>
+    <h2 class="mem-intro-h2">{c.introTitle}</h2>
+    {c.introBody.map((paragraph) => (
+      <p class="mem-intro-body">{paragraph}</p>
+    ))}
+    <p class="mem-intro-tagline">{c.tagline}</p>
     <hr class="mem-intro-rule" />
   </section>
 
@@ -116,9 +301,9 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   <section class="mem-photo-strip">
     <div class="mem-photo-grid">
       {[
-        { img: CAFE_IMG, label: "After Work" },
-        { img: ALPS_IMG, label: "多日远征" },
-        { img: GROUP_IMG, label: "周末团骑" },
+        { img: CAFE_IMG, label: c.photos[0] },
+        { img: ALPS_IMG, label: c.photos[1] },
+        { img: GROUP_IMG, label: c.photos[2] },
       ].map((p) => (
         <div class="mem-photo-item">
           <div class="mem-photo-img" style={`background-image: url(${p.img});`}></div>
@@ -136,11 +321,11 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
   <section class="mem-benefits-section">
     <div class="mem-benefits-inner">
       <div class="mem-benefits-header">
-        <h2 class="mem-benefits-h2">会员权益</h2>
+        <h2 class="mem-benefits-h2">{c.benefitsTitle}</h2>
       </div>
 
       <div class="mem-benefits-list">
-        {BENEFITS.map((b) => (
+        {c.benefits.map((b) => (
           <div class="mem-benefit-row">
             <div class="mem-benefit-num">{b.n}</div>
             <div class="mem-benefit-title">{b.title}</div>
@@ -153,8 +338,10 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
           </div>
         ))}
         <div class="mem-benefits-footer-row">
-          <span class="mem-benefits-more">更多权益陆续公布 ——</span>
-          <span class="mem-benefits-charter-link">详情请了解 <a href={`/${lang}/membership-charter`} class="mem-link">会员章程与责任义务 →</a></span>
+          <span class="mem-benefits-more">{c.benefitsMore}</span>
+          <span class="mem-benefits-charter-link">
+            {c.benefitsCharterPrefix} <a href={`/${lang}/membership-charter`} class="mem-link">{c.benefitsCharterLink} →</a>
+          </span>
         </div>
       </div>
     </div>
@@ -167,32 +354,32 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
     <div class="mem-joinnote-inner">
 
       <div class="mem-joinnote-heading-row">
-        <h2 class="mem-joinnote-h2">入会须知</h2>
+        <h2 class="mem-joinnote-h2">{c.joinTitle}</h2>
       </div>
 
       {/* ── pricing block ── */}
       <div class="mem-pricing-block">
-        <p class="mem-pricing-year-label">2026 / 27 会员年 年费</p>
+        <p class="mem-pricing-year-label">{c.pricingYear}</p>
         <div class="mem-pricing-grid">
           <div class="mem-pricing-col-head"></div>
-          <div class="mem-pricing-col-head">学生</div>
-          <div class="mem-pricing-col-head">非学生</div>
+          <div class="mem-pricing-col-head">{c.student}</div>
+          <div class="mem-pricing-col-head">{c.nonStudent}</div>
 
-          <div class="mem-pricing-row-label">老会员</div>
+          <div class="mem-pricing-row-label">{c.returningMember}</div>
           <div class="mem-pricing-amount">10€</div>
           <div class="mem-pricing-amount">15€</div>
 
-          <div class="mem-pricing-row-label">新会员</div>
+          <div class="mem-pricing-row-label">{c.newMember}</div>
           <div class="mem-pricing-amount">29€</div>
           <div class="mem-pricing-amount">49€</div>
 
-          <div class="mem-pricing-footnote">首次办理须另缴华人体协 10€ 开户费</div>
+          <div class="mem-pricing-footnote">{c.pricingFootnote}</div>
         </div>
       </div>
 
       {/* ── terms accordion ── */}
       <div class="mem-terms-list" id="mem-terms-list">
-        {TERMS.map((t, i) => (
+        {c.terms.map((t, i) => (
           <div class="mem-term-item" data-term-index={i}>
             <button class="mem-term-btn is-open" type="button" aria-expanded="true" data-term-btn>
               <span class="mem-term-btn-inner">
@@ -209,7 +396,7 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
       </div>
 
       <div class="mem-terms-charter-link">
-        <a href={`/${lang}/membership-charter`} class="mem-link-sm">查看完整会员章程 →</a>
+        <a href={`/${lang}/membership-charter`} class="mem-link-sm">{c.fullCharterLink} →</a>
       </div>
 
     </div>
@@ -250,7 +437,7 @@ const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
         <span class="mem-cta-italic"> free and together.</span>
       </h2>
       <a href={GOOGLE_FORM_URL} class="mem-cta-btn" target="_blank" rel="noopener">
-        前往报名表 <span>→</span>
+        {c.ctaLabel} <span>→</span>
       </a>
     </div>
   </section>

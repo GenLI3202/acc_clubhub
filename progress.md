@@ -201,6 +201,10 @@
   - [X] Updated membership page charter links to open the full charter page.
 - [X] **Membership Hero Photo Refresh** (2026-05-01)
   - [X] Replaced the membership page hero asset with the ACC group ride photo.
+- [X] **Membership i18n Completion** (2026-05-01)
+  - [X] Added English and German content for the membership page.
+  - [X] Localized the member charter, conduct rules, liability disclaimer, and join notes.
+  - [X] Added English and German member insurance summaries to match the Chinese insurance page.
 - [X] **Dashboard Email Password Admin Auth** (2026-04-29)
   - [X] Added email allowlist login for ride leader dashboard access.
   - [X] Required a shared dashboard password before creating a 24-hour session.
