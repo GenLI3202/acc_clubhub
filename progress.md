@@ -193,6 +193,14 @@
   - [X] Reconciled `current_participants` from confirmed RSVP rows after admin cancel/restore and public registration changes.
   - [X] Cleared `checked_in_at` when an RSVP is cancelled so cancelled participants no longer count as checked in.
   - [X] Public event responses now calculate available spots from confirmed RSVPs to avoid stale or negative counters.
+- [X] **Membership Insurance Page Update** (2026-04-30)
+  - [X] Added a concise Chinese BLSV/ARAG member insurance summary as the first chapter of `/zh/insurance`.
+  - [X] Linked relevant BLSV and ARAG source pages and added a legal-reference disclaimer.
+- [X] **Membership Charter Page** (2026-04-30)
+  - [X] Added the public member charter and liability disclaimer page at `/zh/membership-charter`.
+  - [X] Updated membership page charter links to open the full charter page.
+- [X] **Membership Hero Photo Refresh** (2026-05-01)
+  - [X] Replaced the membership page hero asset with the ACC group ride photo.
 - [X] **Dashboard Email Password Admin Auth** (2026-04-29)
   - [X] Added email allowlist login for ride leader dashboard access.
   - [X] Required a shared dashboard password before creating a 24-hour session.

@@ -19,10 +19,42 @@ const content = {
   zh: {
     title: 'ACC保险告知与免责声明',
     subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
-    intro: '本页面说明ACC通过BLSV为非会员参与者提供的团体保险范围，以及参与者在报名时应知悉的相关费用与免责条款。',
+    intro: '本页面说明ACC会员在BLSV体系下可获得的基础运动保险权益，以及非会员参与ACC活动时的保险范围、费用与免责条款。',
     sections: [
       {
-        title: '一、非会员保险说明（Nichtmitgliederversicherung）',
+        title: '一、会员保险说明（BLSV / ARAG Sportversicherung）',
+        content: `
+ACC通过慕尼黑华人体育协会进入BLSV（Bayerischer Landes-Sportverband，巴伐利亚州体育联合会）体系。登记在册的ACC会员，在参加由ACC或所属协会体系正式组织的骑行训练、团骑、培训、会议和部分协会赛事时，通常属于BLSV与ARAG统一运动保险的基础保障范围。
+
+**主要保障：**
+
+1. **意外保障（Unfallversicherung）**：俱乐部官方活动中发生运动意外时，可按BLSV–ARAG运动保险条款申请基础意外保障。该保障是个人医保和私人保险之外的补充，不等同于完整医疗保险或私人意外险。
+
+2. **责任保障（Haftpflichtversicherung）**：在俱乐部活动中，如因过失造成其他骑友、路人或第三方财物损失，BLSV–ARAG责任险为俱乐部和会员提供基础责任保护。
+
+3. **刑事法律援助（Erweiterter Straf-Rechtsschutz）**：如骑行事故引发过失伤害等刑事调查或指控，保险可按条款为被保险人提供辩护费用支持。
+
+4. **活动往返路途（Wegeversicherung）**：前往或离开俱乐部正式活动的直接路途，也属于BLSV运动保险说明中提到的保障场景之一。
+
+5. **志愿者与组织者保护**：领骑、教练、活动组织者和其他志愿者在为俱乐部履职时，除ARAG运动保险外，还可能涉及BLSV说明中的VBG事故保险和志愿者相关保障。
+
+6. **俱乐部运营类保护**：BLSV–ARAG体系还包含D&O、信托损失、环境责任等面向协会运营的保障，用于降低俱乐部管理和财务风险。
+
+**不应理解为自动覆盖的情况：** 纯私人骑行、未由ACC或所属协会正式组织的活动、商业活动、明显偏离活动路线或不符合保险条款的行为，通常不能简单视为会员保险覆盖。跨州、海外、比赛报名主体和具体赛事规则等情形，也需要以官方条款和活动组织方式为准。
+
+**相关出处：**
+
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/arag-sportversicherung/" target="_blank" rel="noopener">BLSV：ARAG Sportversicherung</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/versicherungen/" target="_blank" rel="noopener">BLSV：Versicherungen im BLSV</a>
+- <a href="https://www.arag.de/vereinsversicherung/sportversicherung/bayern/" target="_blank" rel="noopener">ARAG：Sportversicherung Bayern / BLSV</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/vbg-unfallversicherung/" target="_blank" rel="noopener">BLSV：VBG Unfallversicherung</a>
+- <a href="https://www.blsv.de/startseite/service/mitgliedervorteile/" target="_blank" rel="noopener">BLSV：Mitgliedervorteile</a>
+
+> **免责说明：** 本告知为摘要，旨在方便ACC会员理解BLSV体系下的基础保险权益。所有具体险种细节、保障范围、理赔条件及除外责任，均以BLSV官方保险网页、ARAG出具的保险文件及德国相关法律为最终依据。ACC仅协助会员了解相关信息，不承担最终的理赔审核、保险解释或连带赔付责任。
+        `,
+      },
+      {
+        title: '二、非会员保险说明（Nichtmitgliederversicherung）',
         content: `
 为保障每一位参与ACC活动的骑友安全，我们通过 **BLSV**（Bayerischer Landes-Sportverband，巴伐利亚州体育联合会）为所有非ACC正式会员的活动参与者购买了专项团体保险，由 **ARAG** 承保。
 
@@ -46,7 +78,7 @@ const content = {
         `,
       },
       {
-        title: '二、活动参加费用（Teilnahmegebühr）',
+        title: '三、活动参加费用（Teilnahmegebühr）',
         content: `
 因ACC为每位非会员提供了上述专业的体育保险覆盖，我们将对参加活动的非ACC会员收取小额保险管理费：
 
@@ -62,7 +94,7 @@ const content = {
         `,
       },
       {
-        title: '三、领骑免责与参与者责任声明（Haftungsausschluss）',
+        title: '四、领骑免责与参与者责任声明（Haftungsausschluss）',
         content: `
 ACC骑行活动为非营利性的结伴骑行，领骑（Tourguides）均为无偿付出的志愿者。报名参与即视为知悉并同意以下条款：
 

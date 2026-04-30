@@ -1,0 +1,874 @@
+---
+export const prerender = true;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { locales, type Locale } from '../../lib/i18n';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+const HERO_IMG = "/images/membership/membership-hero.jpg";
+const GROUP_IMG = "/images/membership/weekend-ride.jpg";
+const ALPS_IMG = "/images/membership/multi-day-ride.jpg";
+const CAFE_IMG = "/images/membership/afterwork.jpg";
+
+const BENEFITS = [
+  {
+    n: "01",
+    title: "全年 70+ 次团骑活动",
+    desc: "每周的 After Work、周末长距离骑游、训练日，以及一年一两次的多日远征 —— 一份够你骑一整年的日程。",
+  },
+  {
+    n: "02",
+    title: "BLSV 官方活动保险",
+    desc: "所有官方注册活动覆盖巴伐利亚州体协的事故保险。会员才能享受这份保障。",
+    link: { label: "了解保险权益详情", href: `/${lang}/insurance` },
+  },
+  {
+    n: "03",
+    title: "雏鹰计划 · 进阶培训",
+    desc: "从新手到入门小 Pro 的系统培训：踩踏、选线、下坡、气动姿势、骑行安全 —— 把「正确的废话」换成讲到点子上的方法。",
+  },
+  {
+    n: "04",
+    title: "ACC 队服与周边购买权",
+    desc: "队服、徽章、文化衫等会员限定周边的优先购买与会员价。",
+  },
+  {
+    n: "05",
+    title: "合作单位优惠",
+    desc: "ACC 自有周边的会员折扣，以及与慕尼黑车店、咖啡馆、训练房等合作单位的会员专属优惠。",
+  },
+  {
+    n: "06",
+    title: "赞助物资使用权",
+    desc: "未来 ACC 拉到体育品牌赞助后，会员将享有赞助配件、装备的优先使用与体验权。",
+  },
+  {
+    n: "07",
+    title: "多日骑行与年度庆典",
+    desc: "ACC 年度多日远征、季度庆典、年终聚会的会员专属席位。",
+  },
+  {
+    n: "08",
+    title: "成为领骑候选人",
+    desc: "会员可申请加入领骑考核 —— 通过后享有带队补贴、社媒激励金、赛事报销等更多权益。",
+    link: { label: "了解领骑权利与义务", href: `/${lang}/ride-leader` },
+  },
+];
+
+const TERMS = [
+  { q: "有效期", a: "缴费当月起至次年 5 月 31 日。每年 6 月 1 日为统一续费日。会员年自每年 6 月 1 日起，至次年 5 月 31 日止。2026 年 5 月 1 日至 5 月 31 日期间报名者，会籍同样至 2027 年 5 月 31 日。" },
+  { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€（含会员事故保险）。新会员首次办理须另缴华人体协 10€ 开户费。其余部分进入俱乐部公共账户。" },
+  { q: "退款政策", a: "会费一经缴纳，概不退款。" },
+  { q: "活动参与", a: "骑行活动存在固有风险，参与者须自行承担。官方注册活动涵盖 BLSV 事故保险。详细参与规则见会员章程。" },
+  { q: "行为规范", a: "遵守骑行准则，尊重队友、行人及其他道路使用者。详细规范见会员章程。" },
+  { q: "会费用途", a: "100% 用于俱乐部运营（含领骑补贴、活动组织及赛事参与费用等）与年度储备金。账目对全体会员透明。" },
+];
+
+const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
+---
+
+<BaseLayout title="加入 ACC" lang={lang} headerTransparent={true} heroImagePreload={HERO_IMG}>
+
+  {/* ============================================================
+      HERO — full-bleed photo, overlaps transparent header
+     ============================================================ */}
+  <section slot="hero" class="mem-hero" style={`background-image: url(${HERO_IMG});`}>
+    <div class="mem-hero-overlay" aria-hidden="true"></div>
+    <div class="mem-hero-content">
+      <h1 class="mem-hero-h1">加入 ACC</h1>
+      <p class="mem-hero-subtitle">
+        Let us ride —
+        <span class="mem-hero-accent"> free and together.</span>
+      </p>
+    </div>
+  </section>
+
+  {/* ============================================================
+      PROSE INTRO
+     ============================================================ */}
+  <section class="mem-intro">
+    <div class="mem-eyebrow mem-eyebrow--accent">关于 ACC</div>
+    <h2 class="mem-intro-h2">不止是骑行，更是同频的连结</h2>
+    <p class="mem-intro-body">
+      ACC (Across Cycling Club) 扎根慕尼黑，背靠阿尔卑斯。我们始于华人骑行社群，但向所有热爱公路与砾石 (Gravel) 的朋友敞开大门。
+    </p>
+    <p class="mem-intro-body">
+      我们相信，纯粹的热爱不应该伴随内耗，因此 ACC 的第一准则是：让自己人舒服。我们拒绝无意义的"卷功率"，抵制身材与装备焦虑。我们存在的意义，是为 ACC 成员提供一个纯粹、没有压力的骑行根据地。
+    </p>
+    <p class="mem-intro-body">
+      无论你追求的是巴伐利亚乡间的轻松周末 <em class="mem-intro-em">social ride</em>，还是下班后酣畅淋漓的硬核训练 <em class="mem-intro-em">training day</em>；无论是伊萨河畔的微风，还是阿尔卑斯山口的挑战，只要你想和一群人一起感受在路上的自由，这里就有你的位置。跨越语言与背景，我们在轮流破风与沿途的咖啡小憩中，找到共同的节奏。
+    </p>
+    <p class="mem-intro-body">
+      在这里，我们不仅组织规律的团骑，也分享专业的器械知识与硬核路线。ACC 致力于成为欧洲骑行文化中的一面旗帜，为每一位热爱户外的骑行者提供最好的体验和最可靠的后勤支持。
+    </p>
+    <p class="mem-intro-tagline">Let us ride, free and together.</p>
+    <hr class="mem-intro-rule" />
+  </section>
+
+  {/* ============================================================
+      THREE-IMAGE EDITORIAL STRIP
+     ============================================================ */}
+  <section class="mem-photo-strip">
+    <div class="mem-photo-grid">
+      {[
+        { img: CAFE_IMG, label: "After Work", meta: "Tierpark 出发 · 每周二 18:15" },
+        { img: ALPS_IMG, label: "多日远征", meta: "Tegernsee · 1,800 m · 一年 1–2 次" },
+        { img: GROUP_IMG, label: "周末团骑", meta: "Weekend Long Ride · Starnberg loop" },
+      ].map((p) => (
+        <div class="mem-photo-item">
+          <div class="mem-photo-img" style={`background-image: url(${p.img});`}></div>
+          <div class="mem-photo-caption">
+            <div class="mem-photo-label">{p.label}</div>
+            <div class="mem-photo-meta">{p.meta}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* ============================================================
+      BENEFITS
+     ============================================================ */}
+  <section class="mem-benefits-section">
+    <div class="mem-benefits-inner">
+      <div class="mem-benefits-header">
+        <h2 class="mem-benefits-h2">会员权益</h2>
+      </div>
+
+      <div class="mem-benefits-list">
+        {BENEFITS.map((b) => (
+          <div class="mem-benefit-row">
+            <div class="mem-benefit-num">{b.n}</div>
+            <div class="mem-benefit-title">{b.title}</div>
+            <div class="mem-benefit-desc-col">
+              <div class="mem-benefit-desc">{b.desc}</div>
+              {b.link && (
+                <a href={b.link.href} class="mem-benefit-link">{b.link.label} →</a>
+              )}
+            </div>
+          </div>
+        ))}
+        <div class="mem-benefits-footer-row">
+          <span class="mem-benefits-more">更多权益陆续公布 ——</span>
+          <span class="mem-benefits-charter-link">详情请了解 <a href={`/${lang}/membership-charter`} class="mem-link">会员章程与责任义务 →</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ============================================================
+      入会须知 — pricing + terms combined
+     ============================================================ */}
+  <section class="mem-joinnote-section" id="charter">
+    <div class="mem-joinnote-inner">
+
+      <div class="mem-joinnote-heading-row">
+        <h2 class="mem-joinnote-h2">入会须知</h2>
+      </div>
+
+      {/* ── pricing block ── */}
+      <div class="mem-pricing-block">
+        <p class="mem-pricing-year-label">2026 / 27 会员年 年费</p>
+        <div class="mem-pricing-grid">
+          <div class="mem-pricing-col-head"></div>
+          <div class="mem-pricing-col-head">学生</div>
+          <div class="mem-pricing-col-head">非学生</div>
+
+          <div class="mem-pricing-row-label">老会员</div>
+          <div class="mem-pricing-amount">10€</div>
+          <div class="mem-pricing-amount">15€</div>
+
+          <div class="mem-pricing-row-label">新会员</div>
+          <div class="mem-pricing-amount">29€</div>
+          <div class="mem-pricing-amount">49€</div>
+
+          <div class="mem-pricing-footnote">首次办理须另缴华人体协 10€ 开户费</div>
+        </div>
+      </div>
+
+      {/* ── terms accordion ── */}
+      <div class="mem-terms-list" id="mem-terms-list">
+        {TERMS.map((t, i) => (
+          <div class="mem-term-item" data-term-index={i}>
+            <button class="mem-term-btn is-open" type="button" aria-expanded="true" data-term-btn>
+              <span class="mem-term-btn-inner">
+                <span class="mem-term-num">{String(i + 1).padStart(2, "0")}</span>
+                <span class="mem-term-q">{t.q}</span>
+              </span>
+              <span class="mem-term-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="mem-term-answer" data-term-answer>
+              {t.a}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mem-terms-charter-link">
+        <a href={`/${lang}/membership-charter`} class="mem-link-sm">查看完整会员章程 →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <script is:inline>
+    (function initTermsAccordion() {
+      const list = document.getElementById('mem-terms-list');
+      if (!list) return;
+      list.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-term-btn]');
+        if (!btn) return;
+        const item = btn.closest('[data-term-index]');
+        if (!item) return;
+        const answer = item.querySelector('[data-term-answer]');
+        if (!answer) return;
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        btn.classList.toggle('is-open', !isOpen);
+        answer.hidden = isOpen;
+      });
+    })();
+  </script>
+
+  {/* ============================================================
+      CTA
+     ============================================================ */}
+  <section class="mem-cta-section">
+    <img
+      src="/images/about/logo-stamp-red-transparent.png"
+      alt=""
+      aria-hidden="true"
+      class="mem-cta-watermark"
+    />
+    <div class="mem-cta-content">
+      <h2 class="mem-cta-h2">
+        Let us ride,
+        <span class="mem-cta-italic"> free and together.</span>
+      </h2>
+      <a href={GOOGLE_FORM_URL} class="mem-cta-btn" target="_blank" rel="noopener">
+        前往报名表 <span>→</span>
+      </a>
+    </div>
+  </section>
+
+
+</BaseLayout>
+
+<style>
+  /* Override main constraints for full-bleed layout */
+  :global(main) {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .mem-hero {
+    position: relative;
+    height: 640px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .mem-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.72) 100%);
+  }
+
+  .mem-hero-content {
+    position: relative;
+    padding: 56px 56px 76px;
+    max-width: 1100px;
+    color: #fff;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .mem-hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .mem-hero-rule {
+    width: 36px;
+    height: 1px;
+    background: var(--color-accent);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .mem-hero-eyebrow-text {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .mem-hero-h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(60px, 7.5vw, 108px);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.96;
+    margin: 0 0 24px;
+    color: #fff;
+  }
+
+  .mem-hero-subtitle {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: clamp(22px, 2.4vw, 30px);
+    line-height: 1.25;
+    color: #fff;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+
+  .mem-hero-accent {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  /* ============================================================
+     EYEBROW (shared)
+     ============================================================ */
+  .mem-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .mem-eyebrow--accent {
+    color: var(--color-accent);
+  }
+
+  /* ============================================================
+     PROSE INTRO
+     ============================================================ */
+  .mem-intro {
+    padding: 100px 40px 70px;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .mem-intro .mem-eyebrow {
+    font-size: 23px;
+    letter-spacing: 0.08em;
+  }
+
+  .mem-intro-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0 0 28px;
+    color: var(--color-text-main);
+  }
+
+  .mem-intro-body {
+    font-family: var(--font-body);
+    font-size: 18.5px;
+    line-height: 1.75;
+    color: var(--color-text-main);
+    margin: 0 0 22px;
+    font-weight: 300;
+  }
+
+  .mem-intro-em {
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  .mem-intro-tagline {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: 0.01em;
+    color: var(--color-accent);
+    margin: 36px 0 0;
+    text-align: center;
+  }
+
+  .mem-intro-rule {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 48px auto 0;
+    width: 80px;
+  }
+
+  /* ============================================================
+     THREE-IMAGE STRIP
+     ============================================================ */
+  .mem-photo-strip {
+    padding: 0 40px 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .mem-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .mem-photo-img {
+    aspect-ratio: 4 / 5;
+    background-size: cover;
+    background-position: center;
+    border-radius: 2px;
+  }
+
+  .mem-photo-caption {
+    padding-top: 14px;
+  }
+
+  .mem-photo-label {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text-main);
+  }
+
+  .mem-photo-meta {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+  }
+
+  /* ============================================================
+     BENEFITS
+     ============================================================ */
+  .mem-benefits-section {
+    background: var(--color-bg-secondary);
+    padding: 80px 40px 56px;
+  }
+
+  .mem-benefits-inner {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .mem-benefits-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .mem-benefits-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3.2vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0;
+    color: var(--color-accent);
+  }
+
+  .mem-benefits-footer-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 4px;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mem-benefits-charter-link {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .mem-link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .mem-benefits-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mem-benefit-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1.5fr;
+    gap: 32px;
+    padding: 28px 4px;
+    border-top: 1px solid var(--color-border);
+    align-items: baseline;
+  }
+
+  .mem-benefit-num {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-accent);
+    letter-spacing: 0.14em;
+  }
+
+  .mem-benefit-title {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--color-text-main);
+  }
+
+  .mem-benefit-desc {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+  }
+
+  .mem-benefit-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .mem-benefits-more {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+
+  /* ============================================================
+     入会须知 (pricing + terms combined)
+     ============================================================ */
+  .mem-joinnote-section {
+    background: var(--color-bg-secondary);
+    padding: 56px 40px 64px;
+  }
+
+  .mem-joinnote-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .mem-joinnote-heading-row {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .mem-joinnote-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3.2vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0;
+    color: var(--color-accent);
+  }
+
+  /* ── pricing grid ── */
+  .mem-pricing-block {
+    margin-bottom: 28px;
+  }
+
+  .mem-pricing-year-label {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 0 0 16px;
+  }
+
+  .mem-pricing-grid {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0;
+    max-width: 340px;
+    margin: 0 auto 16px;
+  }
+
+  .mem-pricing-col-head {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-align: center;
+    padding-bottom: 10px;
+  }
+
+  .mem-pricing-row-label {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding: 10px 20px 10px 0;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mem-pricing-amount {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-main);
+    text-align: center;
+    padding: 10px 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mem-pricing-caption {
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 0;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  .mem-pricing-footnote {
+    grid-column: 1 / -1;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    padding: 6px 0 10px;
+    font-style: italic;
+  }
+
+  .mem-terms-list {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mem-term-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mem-term-btn {
+    width: 100%;
+    text-align: left;
+    padding: 20px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--color-text-main);
+  }
+
+  .mem-term-btn-inner {
+    display: flex;
+    gap: 18px;
+    align-items: baseline;
+  }
+
+  .mem-term-num {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    font-family: var(--font-heading);
+  }
+
+  .mem-term-q {
+    font-family: var(--font-heading);
+  }
+
+  .mem-term-plus {
+    font-size: 18px;
+    color: var(--color-accent);
+    transition: transform 200ms ease;
+    line-height: 1;
+    font-weight: 300;
+    flex-shrink: 0;
+  }
+
+  .mem-term-btn.is-open .mem-term-plus {
+    transform: rotate(45deg);
+  }
+
+  .mem-term-answer {
+    padding: 0 30px 20px 38px;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+  }
+
+  .mem-terms-charter-link {
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  .mem-link-sm {
+    font-family: var(--font-heading);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ============================================================
+     CTA
+     ============================================================ */
+  .mem-cta-section {
+    position: relative;
+    padding: 120px 40px 140px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .mem-cta-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px;
+    height: 560px;
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+    max-width: 90vw;
+  }
+
+  .mem-cta-content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .mem-cta-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0 0 36px;
+    line-height: 1.15;
+    color: var(--color-text-main);
+  }
+
+  .mem-cta-italic {
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  .mem-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-accent);
+    color: #fff;
+    padding: 18px 32px;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .mem-cta-btn:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+    color: #fff;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px) {
+    .mem-hero-content {
+      padding: 40px 24px 56px;
+    }
+
+    .mem-intro {
+      padding: 72px 24px 48px;
+    }
+
+    .mem-photo-strip {
+      padding: 0 24px 56px;
+    }
+
+    .mem-photo-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .mem-benefits-section {
+      padding: 72px 24px;
+    }
+
+    .mem-benefit-row {
+      grid-template-columns: 48px 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .mem-benefit-title {
+      font-size: 18px;
+    }
+
+    .mem-benefit-desc-col {
+      grid-column: 1 / -1;
+      padding-left: 48px;
+    }
+
+    .mem-joinnote-section {
+      padding: 56px 24px;
+    }
+
+    .mem-pricing-grid {
+      max-width: 100%;
+    }
+
+    .mem-cta-section {
+      padding: 80px 24px 100px;
+    }
+  }
+</style>

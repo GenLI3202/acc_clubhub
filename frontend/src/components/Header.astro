@@ -93,6 +93,12 @@ function getLangSwitchUrl(targetLang: Locale): string {
           ))}
         </div>
       </div>
+
+      <a
+        href={`/${lang}/membership`}
+        class:list={['join-cta', { 'join-cta--active': currentPath.includes('/membership') }]}
+        aria-label="Join ACC"
+      >JOIN</a>
     </div>
   </nav>
 </header>
@@ -245,6 +251,69 @@ function getLangSwitchUrl(targetLang: Locale): string {
     align-items: center;
     gap: 0.5rem;
     margin-left: 1rem;
+  }
+
+  /* JOIN pill — default (opaque header, non-transparent pages) */
+  .join-cta {
+    background: var(--color-accent);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+    transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    margin-left: 0.25rem;
+  }
+
+  .join-cta:hover,
+  .join-cta--active {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  /* Transparent header, not yet scrolled: ghost frosted-glass pill */
+  header.header-transparent .join-cta {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  header.header-transparent .join-cta:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: none;
+    color: #ffffff;
+  }
+
+  /* After scrolling: revert to solid red pill */
+  header.header-transparent.header-scrolled .join-cta {
+    background: var(--color-accent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+
+  header.header-transparent.header-scrolled .join-cta:hover,
+  header.header-transparent.header-scrolled .join-cta--active {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: #fff;
   }
 
   ul {
