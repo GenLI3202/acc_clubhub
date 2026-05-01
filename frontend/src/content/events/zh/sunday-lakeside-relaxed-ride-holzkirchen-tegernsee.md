@@ -34,7 +34,9 @@ status: published
 
 ## 路线预览
 
-<iframe src="https://www.komoot.com/tour/2923470954/embed?profile=1&amp;share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5)
+
+<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/tour/2923470954/embed?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
 
 ---
 
