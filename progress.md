@@ -215,6 +215,10 @@
 - [X] **Ride Leader Distance Metadata Fix** (2026-04-30)
   - [X] Added explicit `distanceKm` frontmatter to current single-distance event content so dashboard occurrence sync has a reliable metadata source.
   - [X] Preserved existing backend `distance_km` values when sync payloads omit distance, avoiding accidental null overwrites.
+- [X] **Recurring After Work History Preservation** (2026-05-01)
+  - [X] Dashboard past/all views now include DB-only historical recurring occurrences with RSVP stats.
+  - [X] Sync keeps generated after-work history as admin-only records instead of treating it as current Markdown content.
+  - [X] Added a dry-run recovery report for the 2026-04-28 Süd and 2026-04-30 Nord RSVP history.
 
 
 ## In Progress

@@ -43,6 +43,22 @@ export type AdminEventRow = {
   distance_km?: number | null;
 };
 
+export type AdminEventDbRow = {
+  id: number;
+  title: string;
+  slug: string;
+  event_date: string | null;
+  location: string | null;
+  event_type: AdminEventType;
+  max_participants: number | null;
+  registration_deadline: string | null;
+  confirmed_count: number;
+  waitlist_count: number;
+  cancelled_count: number;
+  spots_remaining: number | null;
+  distance_km?: number | null;
+};
+
 const EVENT_TYPE_LABELS: Record<AdminEventType, string> = {
   'after-work': 'After Work',
   'social-ride': 'Social Ride',
@@ -156,6 +172,42 @@ export function filterAdminEvents(
   });
 
   return sortAdminEvents(viewFiltered, view);
+}
+
+export function dbRowToAdminEvent(row: AdminEventDbRow): AdminEventRow | null {
+  if (!row.event_date) {
+    return null;
+  }
+
+  return {
+    slug: row.slug,
+    title: row.title,
+    date: row.event_date,
+    location: row.location,
+    eventType: row.event_type,
+    maxParticipants: row.max_participants,
+    registrationDeadline: row.registration_deadline,
+    confirmed_count: row.confirmed_count,
+    waitlist_count: row.waitlist_count,
+    cancelled_count: row.cancelled_count,
+    spots_remaining: row.spots_remaining,
+    db_id: row.id,
+    in_db: true,
+    distance_km: row.distance_km ?? null,
+  };
+}
+
+export function mergeAdminEventRows(
+  currentRows: AdminEventRow[],
+  dbRows: AdminEventRow[],
+  now: Date,
+): AdminEventRow[] {
+  const currentSlugs = new Set(currentRows.map((event) => event.slug));
+  const historicalRows = dbRows.filter((event) => (
+    !currentSlugs.has(event.slug) && isPastEvent(event, now)
+  ));
+
+  return [...currentRows, ...historicalRows];
 }
 
 export function formatRegistrationSummary(event: AdminEventRow): string {

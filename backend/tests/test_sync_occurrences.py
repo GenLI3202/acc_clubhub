@@ -9,7 +9,7 @@ import pytest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from models import Event
+from models import Event, RSVP
 
 
 FUTURE_DATE = "2026-05-07T15:30:00Z"
@@ -161,6 +161,59 @@ class TestSyncOccurrencesUpsert:
 
         db.refresh(sample_event)
         assert float(sample_event.distance_km) == 42.4
+
+    def test_next_occurrence_sync_preserves_historical_event_and_rsvps(
+        self, client, db
+    ):
+        historical = Event(
+            slug="afterwork-ride-sud-2026-04-28",
+            title="ACC After Work Ride · München Süd",
+            event_date=datetime(2026, 4, 28, 16, 0, tzinfo=timezone.utc),
+            location="Tierpark Hellabrunn, Isar Eingang Tor 4",
+            event_type="after-work",
+            max_participants=15,
+            distance_km=42.4,
+            is_public=False,
+        )
+        db.add(historical)
+        db.flush()
+        db.add(
+            RSVP(
+                event_id=historical.id,
+                email="rider@example.com",
+                name="Rider",
+                status="confirmed",
+                privacy_accepted=True,
+                view_token="tok-rider",
+            )
+        )
+        db.commit()
+
+        next_payload = {
+            **SUD_PAYLOAD,
+            "slug": "afterwork-ride-sud-2026-05-05",
+            "event_date": "2026-05-05T16:00:00Z",
+            "registration_deadline": "2026-05-05T14:00:00Z",
+            "distance_km": 42.4,
+        }
+        res = client.post("/api/admin/sync-occurrences", json=[next_payload])
+
+        assert res.status_code == 200
+        assert res.json()["created"] == 1
+        db.expire_all()
+        old_event = db.query(Event).filter_by(
+            slug="afterwork-ride-sud-2026-04-28"
+        ).one()
+        new_event = db.query(Event).filter_by(
+            slug="afterwork-ride-sud-2026-05-05"
+        ).one()
+        old_rsvps = db.query(RSVP).filter_by(event_id=old_event.id).all()
+        new_rsvps = db.query(RSVP).filter_by(event_id=new_event.id).all()
+        assert old_event.event_date.replace(tzinfo=timezone.utc) == datetime(
+            2026, 4, 28, 16, 0, tzinfo=timezone.utc
+        )
+        assert [rsvp.email for rsvp in old_rsvps] == ["rider@example.com"]
+        assert new_rsvps == []
 
 
 class TestSyncOccurrencesPerformance:

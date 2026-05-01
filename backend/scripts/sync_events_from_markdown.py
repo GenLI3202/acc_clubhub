@@ -31,6 +31,7 @@ EVENTS_DIR = (
 )
 
 _FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---", re.DOTALL)
+_DATED_SLUG_RE = re.compile(r"^(afterwork-ride|afterwork-ride-sud)-\d{4}-\d{2}-\d{2}$")
 
 
 def _parse_frontmatter(path: Path) -> dict | None:
@@ -40,6 +41,11 @@ def _parse_frontmatter(path: Path) -> dict | None:
     if not m:
         return None
     return yaml.safe_load(m.group(1))
+
+
+def _is_recurring_history_slug(slug: str) -> bool:
+    """Return whether a DB-only slug is a generated weekly ride occurrence."""
+    return _DATED_SLUG_RE.match(slug) is not None
 
 
 def sync() -> None:
@@ -120,11 +126,18 @@ def sync() -> None:
 
         upserted += 1
 
-    # Mark DB-only events (not in Markdown) as not public
+    # Mark DB-only events (not in Markdown) as not public. Generated recurring
+    # history remains in the DB for the admin dashboard, but not public APIs.
     archived = 0
+    history_kept = 0
     db_events = db.query(Event).filter(Event.is_public == True).all()
     for event in db_events:
         if event.slug not in md_slugs:
+            if _is_recurring_history_slug(event.slug):
+                event.is_public = False
+                history_kept += 1
+                print(f"  HISTORY: {event.slug} (admin-only)")
+                continue
             event.is_public = False
             archived += 1
             print(f"  ARCHIVE: {event.slug} (not in Markdown)")
@@ -133,7 +146,7 @@ def sync() -> None:
 
     print(
         f"\nSync complete: {upserted} upserted, "
-        f"{archived} archived, {skipped} skipped"
+        f"{archived} archived, {history_kept} history kept, {skipped} skipped"
     )
 
 

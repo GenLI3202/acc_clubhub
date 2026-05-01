@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  dbRowToAdminEvent,
   filterAdminEvents,
   getAdminEventStatus,
   getEventTypeLabel,
+  mergeAdminEventRows,
   sortAdminEvents,
   type AdminEventRow,
 } from '../events';
@@ -84,5 +86,74 @@ describe('admin event helpers', () => {
       .toBe('full');
     expect(getAdminEventStatus(event({ date: '2026-04-18T08:00:00.000Z' }), NOW).key)
       .toBe('past');
+  });
+
+  it('adds DB-only past occurrences without duplicating current rows', () => {
+    const current = event({
+      slug: 'afterwork-ride-sud-2026-05-05',
+      date: '2026-05-05T16:00:00.000Z',
+    });
+    const historical = event({
+      slug: 'afterwork-ride-sud-2026-04-28',
+      date: '2026-04-28T16:00:00.000Z',
+      confirmed_count: 6,
+    });
+    const duplicateCurrent = event({
+      slug: current.slug,
+      date: current.date,
+      confirmed_count: 2,
+    });
+
+    expect(
+      mergeAdminEventRows(
+        [current],
+        [historical, duplicateCurrent],
+        new Date('2026-05-01T10:00:00+02:00'),
+      ).map((row) => row.slug),
+    ).toEqual([
+      'afterwork-ride-sud-2026-05-05',
+      'afterwork-ride-sud-2026-04-28',
+    ]);
+  });
+
+  it('does not add DB-only future rows to the dashboard source list', () => {
+    const current = event({ slug: 'current' });
+    const dbOnlyFuture = event({
+      slug: 'future-from-db',
+      date: '2026-05-08T16:00:00.000Z',
+    });
+
+    expect(
+      mergeAdminEventRows(
+        [current],
+        [dbOnlyFuture],
+        new Date('2026-05-01T10:00:00+02:00'),
+      ).map((row) => row.slug),
+    ).toEqual(['current']);
+  });
+
+  it('converts API event rows into admin dashboard rows', () => {
+    expect(dbRowToAdminEvent({
+      id: 42,
+      slug: 'afterwork-ride-2026-04-30',
+      title: 'ACC After Work Ride · München Nord',
+      event_date: '2026-04-30T15:30:00.000Z',
+      location: 'OEZ',
+      event_type: 'after-work',
+      max_participants: 15,
+      registration_deadline: null,
+      confirmed_count: 5,
+      waitlist_count: 0,
+      cancelled_count: 1,
+      spots_remaining: 10,
+      distance_km: 48.5,
+    })).toMatchObject({
+      db_id: 42,
+      slug: 'afterwork-ride-2026-04-30',
+      eventType: 'after-work',
+      confirmed_count: 5,
+      distance_km: 48.5,
+      in_db: true,
+    });
   });
 });

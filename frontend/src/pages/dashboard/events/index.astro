@@ -8,10 +8,13 @@ import { getCollection } from 'astro:content';
 import {
   ADMIN_EVENT_CATEGORIES,
   ADMIN_EVENT_VIEWS,
+  dbRowToAdminEvent,
   filterAdminEvents,
   formatRegistrationSummary,
   getAdminEventStatus,
   getEventTypeLabel,
+  mergeAdminEventRows,
+  type AdminEventDbRow,
   type AdminEventCategory,
   type AdminEventRow,
   type AdminEventView,
@@ -84,6 +87,7 @@ const zhEvents = resolveRecurringEvents(
 
 // 2. Sync resolved occurrences to DB before fetching RSVP stats
 const dbStatsMap = new Map<string, any>();
+const dbRows: AdminEventRow[] = [];
 let statsWarning: string | null = null;
 let schemaWarning: string | null = null;
 
@@ -148,9 +152,13 @@ if (!isLocalPreview) {
       headers: { "Cookie": cookie },
     });
     if (res.ok) {
-      const dbEvents = await res.json();
+      const dbEvents = await res.json() as AdminEventDbRow[];
       for (const e of dbEvents) {
         dbStatsMap.set(e.slug, e);
+        const row = dbRowToAdminEvent(e);
+        if (row) {
+          dbRows.push(row);
+        }
       }
     } else if (res.status === 401) {
       return Astro.redirect("/dashboard/login", 302);
@@ -163,7 +171,7 @@ if (!isLocalPreview) {
 }
 
 // 4. Merge: Markdown events + DB RSVP stats
-const allMerged: AdminEventRow[] = zhEvents.map((e) => {
+const currentRows: AdminEventRow[] = zhEvents.map((e) => {
   const slug = e.data.slug ?? e.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? '';
   const stats = dbStatsMap.get(slug);
   return {
@@ -183,6 +191,7 @@ const allMerged: AdminEventRow[] = zhEvents.map((e) => {
     distance_km: stats?.distance_km ?? (e.data.distanceKm ?? null),
   };
 });
+const allMerged = mergeAdminEventRows(currentRows, dbRows, now);
 
 const events = filterAdminEvents(allMerged, activeView, activeCategory, now);
 
