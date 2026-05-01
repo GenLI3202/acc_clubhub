@@ -13,6 +13,7 @@ displaySections:
   - upcoming
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
+ACCOfficialRide: true
 ---
 
 Kommt mit auf eine entspannte Sonntagsausfahrt.
@@ -34,7 +35,9 @@ Wenn ihr näher an **Holzkirchen** wohnt, könnt ihr auch direkt dort am **Bahnh
 
 ## Routenvorschau
 
-<iframe src="https://www.komoot.com/tour/2923470954/embed?profile=1&amp;share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5)
+
+<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/tour/2923470954/embed?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
 
 ---
 
@@ -51,6 +54,12 @@ Wenn ihr näher an **Holzkirchen** wohnt, könnt ihr auch direkt dort am **Bahnh
 
 **Bitte meldet euch unbedingt mit eurem echten Namen über die RSVP-E-Mail auf der Eventseite an.**  
 Das ist wichtig, damit euer **Versicherungsschutz** gewährleistet ist.
+
+### Versicherung und Beitrag
+
+ACC bietet **Nichtmitgliedern**, die sich mit echtem Namen über die offizielle Eventseite anmelden, eine Veranstaltungsversicherung.
+
+Teilnahmegebühr für Nichtmitglieder: **2 € für Nicht-Studierende / 1 € für Studierende (inkl. Promovierende)**; **für offizielle ACC-Mitglieder kostenlos**. Studierende bringen bitte einen gültigen Studierendenausweis mit; die Gebühr wird vor Ort am Treffpunkt eingesammelt.
 
 Über den QR-Code kommt ihr in die WeChat-Gruppe für Abstimmung zu Treffpunkt, Route und dem Ablauf am Tag selbst.
 

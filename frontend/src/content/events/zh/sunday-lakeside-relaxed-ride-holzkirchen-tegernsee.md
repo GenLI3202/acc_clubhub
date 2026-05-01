@@ -13,6 +13,7 @@ displaySections:
   - upcoming
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
+ACCOfficialRide: true
 ---
 
 周日一起出去透透气。
@@ -53,6 +54,12 @@ status: published
 
 **请务必通过活动页面的 RSVP 邮箱实名报名。**  
 实名报名是为了保障大家的**保险权益**，这一点请不要省略。
+
+### 保险与费用 / Insurance and Fee
+
+ACC 会为通过官网活动页完成**实名报名**的**非会员**提供活动保险。
+
+非会员参加费用：**非学生 2 欧 / 学生（含博士）1 欧**；**ACC 正式会员免费**。学生请出示学生证，费用于集合时现场支付。
 
 扫码加入微信群，方便沟通集合、路况和当天安排。
 

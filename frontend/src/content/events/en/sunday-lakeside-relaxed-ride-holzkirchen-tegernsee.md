@@ -13,6 +13,7 @@ displaySections:
   - upcoming
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
+ACCOfficialRide: true
 ---
 
 Join us for a relaxed Sunday escape.
@@ -34,7 +35,9 @@ If you live closer to **Holzkirchen**, you are welcome to meet the group directl
 
 ## Route Preview
 
-<iframe src="https://www.komoot.com/tour/2923470954/embed?profile=1&amp;share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+- **Komoot route:** [View route](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5)
+
+<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/tour/2923470954/embed?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
 
 ---
 
@@ -51,6 +54,12 @@ If you live closer to **Holzkirchen**, you are welcome to meet the group directl
 
 **Please make sure to register with your real name via the RSVP email on the event page.**  
 This is necessary to protect your **insurance coverage**.
+
+### Insurance and Fee
+
+ACC provides activity insurance for **non-members** who complete real-name registration via the official event page.
+
+Participation fee for non-members: **€2 for non-students / €1 for students (including PhD students)**; **free for official ACC members**. Students should show a valid student ID, and the fee is collected on site at the meeting point.
 
 Scan the QR code below to join the WeChat group for meeting-point updates, route communication, and ride-day coordination.
 
