@@ -15,6 +15,11 @@
   - [X] Added Chart.js dependency for the admin ride leader trend chart
   - [X] Replaced the raw single-leader SVG with a multi-leader cumulative trend canvas
   - [X] Kept selected leader summary, annual board, and event history on the same page
+- [X] **Dashboard Shared Admin Login Proxy** (2026-05-02)
+  - [X] Added same-origin Astro proxies for `/auth/email-login` and `/auth/logout`
+  - [X] Documented the shared ride leader admin account setup without committing secrets
+  - [X] Kept the shared password out of committed env examples and docs
+
 ## Current Architecture
 
 | Layer                              | Responsibility                                            | Key Files                                          |
