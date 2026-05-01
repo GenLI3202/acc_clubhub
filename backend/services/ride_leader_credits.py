@@ -24,6 +24,12 @@ ANNUAL_TARGET_KM = Decimal("320")
 SUBSIDY_STEP_KM = Decimal("20")
 SUBSIDY_EURO_PER_STEP = Decimal("1")
 CALCULATION_VERSION = "v1"
+RIDE_LEADER_NAME_ALIASES = {
+    "gen": "Gen Li",
+    "genl": "Gen Li",
+    "konfuzius": "Sheng Yuan",
+    "shane shen": "Zhikuan Shen",
+}
 
 
 def _utcnow() -> datetime:
@@ -34,6 +40,16 @@ def _decimal(value: Decimal | float | int | None) -> Decimal | None:
     if value is None:
         return None
     return Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def _normalize_leader_name(name: str) -> str:
+    return " ".join(name.strip().lower().split())
+
+
+def canonicalize_ride_leader_name(name: str) -> str:
+    """Return the reporting name used to merge historical ride leader aliases."""
+    normalized = _normalize_leader_name(name)
+    return RIDE_LEADER_NAME_ALIASES.get(normalized, name.strip())
 
 
 @dataclass
@@ -395,10 +411,11 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
 
     grouped: dict[str, dict] = {}
     for credit in rows:
+        leader_name = canonicalize_ride_leader_name(credit.leader_name)
         info = grouped.setdefault(
-            credit.leader_name,
+            leader_name,
             {
-                "leader_name": credit.leader_name,
+                "leader_name": leader_name,
                 "lead_events_count": 0,
                 "total_credited_km": Decimal("0.00"),
             },
@@ -431,25 +448,38 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
     return result
 
 
-def get_ride_leader_event_history(db: Session, year: int, leader_name: str) -> list[dict]:
+def get_ride_leader_event_history(
+    db: Session,
+    year: int,
+    leader_name: str,
+) -> list[dict]:
     start = datetime(year, 1, 1, tzinfo=timezone.utc)
     end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    canonical_leader_name = canonicalize_ride_leader_name(leader_name)
     rows = db.query(EventRideLeaderCredit, Event).join(Event).filter(
         EventRideLeaderCredit.is_active.is_(True),
-        EventRideLeaderCredit.leader_name == leader_name,
         Event.event_date >= start,
         Event.event_date < end,
     ).order_by(Event.event_date.asc(), EventRideLeaderCredit.id.asc()).all()
 
     history: list[dict] = []
     for credit, event in rows:
+        if (
+            canonicalize_ride_leader_name(credit.leader_name)
+            != canonical_leader_name
+        ):
+            continue
         history.append(
             {
                 "event_id": event.id,
                 "event_slug": event.slug,
                 "event_title": event.title,
                 "event_date": event.event_date.isoformat() if event.event_date else None,
-                "distance_km": float(credit.distance_km) if credit.distance_km is not None else None,
+                "distance_km": (
+                    float(credit.distance_km)
+                    if credit.distance_km is not None
+                    else None
+                ),
                 "checked_in_count": credit.checked_in_count,
                 "effective_group_count": credit.effective_group_count,
                 "credited_leader_count": credit.credited_leader_count,
@@ -459,7 +489,11 @@ def get_ride_leader_event_history(db: Session, year: int, leader_name: str) -> l
     return history
 
 
-def get_annual_ride_leader_progress(db: Session, year: int, leader_name: str) -> list[dict]:
+def get_annual_ride_leader_progress(
+    db: Session,
+    year: int,
+    leader_name: str,
+) -> list[dict]:
     history = get_ride_leader_event_history(db, year, leader_name)
     cumulative = Decimal("0.00")
     points: list[dict] = []
@@ -477,6 +511,7 @@ def get_annual_ride_leader_progress(db: Session, year: int, leader_name: str) ->
 
 
 def get_ride_leader_detail(db: Session, year: int, leader_name: str) -> dict:
+    canonical_leader_name = canonicalize_ride_leader_name(leader_name)
     history = get_ride_leader_event_history(db, year, leader_name)
     progress = get_annual_ride_leader_progress(db, year, leader_name)
     total = sum((Decimal(str(row["credit_km"])) for row in history), Decimal("0.00"))
@@ -488,7 +523,7 @@ def get_ride_leader_detail(db: Session, year: int, leader_name: str) -> dict:
         else Decimal("0.00")
     )
     return {
-        "leader_name": leader_name,
+        "leader_name": canonical_leader_name,
         "lead_events_count": len(history),
         "total_credited_km": float(total.quantize(Decimal("0.01"))),
         "reimbursement_eligible": total >= REIMBURSEMENT_THRESHOLD_KM,

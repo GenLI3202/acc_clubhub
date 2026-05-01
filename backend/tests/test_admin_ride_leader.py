@@ -402,6 +402,71 @@ class TestRideLeaderReporting:
         assert leader_2025["lead_events_count"] == 1
         assert leader_2025["total_credited_km"] == 80.0
 
+    def test_historical_aliases_merge_into_canonical_leader_names(
+        self,
+        client,
+        db,
+    ):
+        aliases = [
+            ("Gen", "Gen Li", Decimal("20.00")),
+            ("GenL", "Gen Li", Decimal("30.00")),
+            ("Konfuzius", "Sheng Yuan", Decimal("40.00")),
+            ("Shane Shen", "Zhikuan Shen", Decimal("50.00")),
+        ]
+        for index, (alias, _canonical_name, distance) in enumerate(
+            aliases,
+            start=1,
+        ):
+            event = Event(
+                slug=f"alias-ride-{index}",
+                title=f"Alias Ride {index}",
+                event_date=datetime(2026, 5, index, 9, 0, tzinfo=timezone.utc),
+                location="Munich",
+                event_type="social-ride",
+                max_participants=12,
+                current_participants=0,
+                distance_km=distance,
+            )
+            db.add(event)
+            db.commit()
+            db.refresh(event)
+            rsvp = _make_checked_in_rsvp(
+                db,
+                event.id,
+                f"alias-{index}@example.com",
+                alias,
+            )
+            _mark_leader(client, event.id, rsvp.id)
+
+        summary_resp = _leader_summary(client, 2026)
+        gen_detail_resp = _leader_detail(client, "Gen Li", 2026)
+        gen_alias_detail_resp = _leader_detail(client, "Gen", 2026)
+        konfuzius_detail_resp = _leader_detail(client, "Konfuzius", 2026)
+        shane_detail_resp = _leader_detail(client, "Shane Shen", 2026)
+
+        assert summary_resp.status_code == 200
+        leaders = {
+            leader["leader_name"]: leader
+            for leader in summary_resp.json()["leaders"]
+        }
+        assert "Gen" not in leaders
+        assert "GenL" not in leaders
+        assert leaders["Gen Li"]["lead_events_count"] == 2
+        assert leaders["Gen Li"]["total_credited_km"] == 50.0
+        assert leaders["Sheng Yuan"]["total_credited_km"] == 40.0
+        assert leaders["Zhikuan Shen"]["total_credited_km"] == 50.0
+
+        assert gen_detail_resp.status_code == 200
+        assert gen_alias_detail_resp.status_code == 200
+        assert konfuzius_detail_resp.status_code == 200
+        assert shane_detail_resp.status_code == 200
+        assert gen_detail_resp.json()["leader_name"] == "Gen Li"
+        assert gen_detail_resp.json()["lead_events_count"] == 2
+        assert gen_alias_detail_resp.json()["leader_name"] == "Gen Li"
+        assert gen_alias_detail_resp.json()["lead_events_count"] == 2
+        assert konfuzius_detail_resp.json()["leader_name"] == "Sheng Yuan"
+        assert shane_detail_resp.json()["leader_name"] == "Zhikuan Shen"
+
     def test_reimbursement_and_subsidy_thresholds_are_reported(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("320.00")
         sample_event.event_date = datetime(2026, 5, 1, 9, 0, tzinfo=timezone.utc)

@@ -19,6 +19,11 @@
   - [X] Added same-origin Astro proxies for `/auth/email-login` and `/auth/logout`
   - [X] Documented the shared ride leader admin account setup without committing secrets
   - [X] Kept the shared password out of committed env examples and docs
+- [X] **Ride Leader Historical Name Merge** (2026-05-02)
+  - [X] Added canonical reporting names for historical ride leader aliases
+  - [X] Merged `Gen` / `GenL` into `Gen Li` in annual reports
+  - [X] Mapped `Konfuzius` to `Sheng Yuan` and `Shane Shen` to `Zhikuan Shen`
+  - [X] Preserved raw RSVP and credit records while merging dashboard statistics
 
 ## Current Architecture
 
