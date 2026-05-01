@@ -15,7 +15,7 @@ const GROUP_IMG = "/images/membership/weekend-ride.jpg";
 const ALPS_IMG = "/images/membership/multi-day-ride.jpg";
 const CAFE_IMG = "/images/membership/afterwork.jpg";
 
-const GOOGLE_FORM_URL = "https://forms.gle/accmunich";
+const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScPF0Pep4V7LrfuAQVE8Ww1wE3wP_w9LQbXhpm5xyDA8Goiaw/viewform?usp=pp_url";
 
 const content = {
   zh: {
@@ -90,7 +90,7 @@ const content = {
     pricingFootnote: "首次办理须另缴华人体协 10€ 开户费",
     terms: [
       { q: "有效期", a: "会籍统一至次年 5 月 31 日，每年 6 月 1 日续费。2026 年 5 月报名者，会籍同样至 2027 年 5 月 31 日。" },
-      { q: "费用构成", a: "包含巴伐利亚州体协（BLSV）年度管理费 10€（含会员事故保险）。新会员首次办理须另缴华人体协 10€ 开户费。其余部分进入俱乐部公共账户。" },
+      { q: "费用构成", a: "会费包含巴伐利亚州体协（BLSV）年度管理费 10€（含会员事故保险）。新会员首次办理须另缴华人体协 10€ 开户费，因此实际转账金额为学生 39€ / 非学生 59€。其余部分进入俱乐部公共账户。" },
       { q: "退款政策", a: "会费一经缴纳，概不退款。" },
       { q: "活动参与", a: "骑行活动存在固有风险，参与者须自行承担。官方注册活动涵盖 BLSV 事故保险。详细参与规则见会员章程。" },
       { q: "行为规范", a: "遵守骑行准则，尊重队友、行人及其他道路使用者。详细规范见会员章程。" },
@@ -171,7 +171,7 @@ const content = {
     pricingFootnote: "First-time registration includes a 10€ CSV München setup fee",
     terms: [
       { q: "Validity", a: "Membership runs until 31 May of the following year and renews annually on 1 June. Members joining in May 2026 are covered until 31 May 2027." },
-      { q: "Fee structure", a: "The fee includes the BLSV annual administration fee of 10€ with member accident insurance. First-time members also pay a 10€ setup fee to Chinesischer Sportverein München. The remaining amount goes into the club account." },
+      { q: "Fee structure", a: "The membership fee includes the BLSV annual administration fee of 10€ with member accident insurance. First-time members also pay an additional 10€ CSV München setup fee, so the actual transfer amount is 39€ for students and 59€ for non-students. The remaining amount goes into the club account." },
       { q: "Refund policy", a: "Membership fees are non-refundable once paid." },
       { q: "Event participation", a: "Cycling involves inherent risk and participants ride at their own responsibility. Official registered activities include BLSV accident insurance. Full participation rules are listed in the member charter." },
       { q: "Code of conduct", a: "Follow group-riding rules and respect teammates, pedestrians, and all other road users. The full conduct rules are listed in the member charter." },
@@ -252,7 +252,7 @@ const content = {
     pricingFootnote: "Bei Erstaufnahme fällt zusätzlich eine CSV-München-Aufnahmegebühr von 10€ an",
     terms: [
       { q: "Gültigkeit", a: "Die Mitgliedschaft läuft einheitlich bis zum 31. Mai des Folgejahres und wird jährlich zum 1. Juni erneuert. Wer im Mai 2026 beitritt, ist ebenfalls bis zum 31. Mai 2027 Mitglied." },
-      { q: "Beitragsstruktur", a: "Der Beitrag enthält die jährliche BLSV-Verwaltungsgebühr von 10€ inklusive Unfallversicherung für Mitglieder. Neue Mitglieder zahlen zusätzlich eine einmalige Aufnahmegebühr von 10€ an den Chinesischen Sportverein München. Der Rest fließt in das Clubkonto." },
+      { q: "Beitragsstruktur", a: "Der Mitgliedsbeitrag enthält die jährliche BLSV-Verwaltungsgebühr von 10€ inklusive Unfallversicherung. Neue Mitglieder zahlen zusätzlich eine einmalige CSV-München-Aufnahmegebühr von 10€, daher beträgt der tatsächliche Überweisungsbetrag 39€ für Studierende und 59€ für Nicht-Studierende. Der Rest fließt in das Clubkonto." },
       { q: "Erstattung", a: "Gezahlte Mitgliedsbeiträge werden nicht erstattet." },
       { q: "Teilnahme an Aktivitäten", a: "Radsport beinhaltet eigene Risiken; Teilnehmende fahren eigenverantwortlich. Offizielle registrierte Aktivitäten umfassen BLSV-Unfallversicherung. Die vollständigen Regeln stehen in der Mitgliedercharta." },
       { q: "Verhaltenskodex", a: "Mitglieder halten sich an die Fahrregeln und respektieren Teamkollegen, Fußgänger und andere Verkehrsteilnehmer. Die vollständigen Regeln stehen in der Mitgliedercharta." },
@@ -846,7 +846,8 @@ const c = content[lang];
     grid-column: 1 / -1;
     font-family: var(--font-body);
     font-size: 12px;
-    color: var(--color-text-muted);
+    color: var(--color-accent);
+    text-align: center;
     padding: 6px 0 10px;
     font-style: italic;
   }
