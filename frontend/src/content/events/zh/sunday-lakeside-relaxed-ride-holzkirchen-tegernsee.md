@@ -7,7 +7,9 @@ author: ACC Club
 date: 2026-05-03
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
+coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 displaySections:
+  - hero
   - upcoming
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
