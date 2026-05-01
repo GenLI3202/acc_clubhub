@@ -10,7 +10,7 @@ cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.j
 displaySections:
   - upcoming
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
-status: draft
+status: published
 ---
 
 周日一起出去透透气。
