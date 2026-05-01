@@ -1,0 +1,463 @@
+---
+export const prerender = true;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { type Locale, locales } from '../../lib/i18n';
+import { marked } from 'marked';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+
+const content = {
+  zh: {
+    title: 'ACC会员规章与免责声明',
+    subtitle: 'Member Charter · Code of Conduct · Haftungsausschluss',
+    backLabel: '← 返回会员页面',
+    intro: `
+欢迎加入 Across Cycling Club（隶属于慕尼黑华人体育协会 Chinesischer Sportverein München）。
+为确保每位参与者都能在一个安全、专业、友好的环境中享受骑行，ACC 制定以下会员规章与免责声明。
+参与 ACC 的任何线上或线下活动，即视为您已阅读、理解并同意受本文件所有条款约束。
+    `,
+    valuesTitle: 'ACC 倡导的核心价值',
+    values: [
+      '我们坚信，纯粹的热爱不应该伴随内耗。ACC 的第一准则是让自己人舒服：让每一位成员都能在这里安心骑车、自由交流、自然成长。',
+      '我们拒绝无意义的“卷功率”，抵制身材焦虑与装备焦虑，也不把骑行变成彼此比较的压力场。速度、瓦数、车架和装备可以是话题，但不应成为衡量一个骑行者价值的标准。',
+      'ACC 存在的意义，是为成员提供一个纯粹、没有压力的骑行根据地：一个骑行者之间互相照应、和睦团结、愿意一起出发也愿意一起回家的家。',
+    ],
+    sections: [
+      {
+        title: '第一部分：会员须知与行为守则',
+        lede: '安全与纪律是 ACC 开展一切活动的前提。ACC 对所有官方活动，包括 Social Ride、Training Day 及多日长途骑游，实行以下强制性行为准则。',
+        body: `
+### 1. 骑行安全与装备规范
+
+- **无头盔，不骑行：** 任何参与 ACC 线下骑行活动的人员，必须在骑行全程正确佩戴符合安全标准的自行车头盔。
+- **器材自检责任：** 会员需对个人或租赁的自行车及装备的机械安全性负全责。每次出行前，请务必检查刹车、轮胎、传动系统等关键部件。
+- **特殊时段装备：** 参与夜间骑行或在能见度较低的天气下骑行，必须配备并开启符合规定的前后车灯。
+
+### 2. 团队纪律与交通法规
+
+- **严格遵守 StVO：** 所有活动路线，无论公路或砾石路段，均可能包含公共道路。参与者必须严格遵守德国道路交通法规 (Straßenverkehrsordnung, StVO)。
+- **服从领骑指挥：** 骑行活动由指定 Ride Leader 负责路线引导与节奏把控。参与者应尊重并服从 Ride Leader 的现场指挥。ACC 对危险驾驶、辱骂他人或恶意破坏团队纪律的行为实行零容忍，并保留立刻终止其活动参与资格的权利。
+- **禁止擅自离队：** 活动期间如需提前离开、休息或变更路线，必须提前告知 Ride Leader 或尾流保障人员 (Sweeper)。
+- **量力而行：** 参与者须根据自身的体能、健康状况及骑行技术，选择合适强度的活动。
+
+### 3. 环境与社区责任
+
+- **无痕山林：** 尊重巴伐利亚及沿途的自然环境，不在骑行途中乱扔能量胶包装、水瓶或其他垃圾。
+- **互相尊重：** ACC 致力于打造包容的国际化社群。我们不推崇无意义的内耗与攀比，拒绝装备或身材焦虑，提倡成员间的互助与友善交流。
+        `,
+      },
+      {
+        title: '第二部分：数据保护与知识产权',
+        body: `
+- **数据隐私：** ACC 尊重并保护您的个人隐私。您在注册会员或报名活动时提供的个人信息，如姓名、联系方式等，仅用于俱乐部内部运营、活动通知及必要的保险登记。
+- **内容原创与分享：** ACC 官方网站、社群及社交媒体平台上发布的路线、Training 计划、Workshop 资料等，其知识产权归 ACC 及原作者所有。未经授权，禁止将其用于商业用途。
+- **群组信息保密：** 会员不得擅自将内部群聊中的他人隐私信息、未经审核的路线或活动计划泄露给非会员第三方。
+        `,
+      },
+      {
+        title: '第三部分：参与条件与免责声明',
+        note: '本部分包含具有法律效力的德文声明，中文释义仅供参考，法律解释以德文原文为准。',
+        body: `
+### 1. 参与条件与风险自担
+
+ACC 仅负责提供路线建议及活动发起。参与者清楚知晓，户外自行车运动具有潜在危险性，包括跌倒、交通事故、器材损坏等。参与者承诺自身身体健康，适合参与此类运动，并自行承担参与活动的一切风险。
+
+> Die Teilnehmerin/der Teilnehmer erklärt, dass sie/er die Voraussetzungen für die Teilnahme (körperliche Gesundheit und entsprechende Kondition) erfüllt und keine medizinischen Ausschließungsgründe bestehen. Die Teilnahme erfolgt auf eigene Gefahr.
+
+### 2. 路线变更与不可预见风险
+
+ACC 会尽量规划安全的路线，但无法对路面状况，如碎石、湿滑路面、道路施工，以及沿途交通状况提供绝对保证。Ride Leader 有权根据天气、路况及团队整体状态，临时更改路线或中止活动。
+
+> Der Veranstalter (=Across Cycling Club) plant die Route nur in groben Zügen. Es können sich entlang der Strecke Gefahrenstellen (insbesondere im Zusammenhang mit der Bodenbeschaffenheit, Witterung oder Straßenverkehr) befinden. Der Veranstalter ist berechtigt, die Route kurzfristig zu ändern (z.B. wegen Schlechtwetters).
+
+### 3. 责任豁免
+
+除非因 ACC 工作人员的故意或重大过失造成，ACC 不对参与者在活动中遭受的人身伤害、财产损失，如自行车损坏或遗失，及第三方责任承担任何赔偿。强烈建议所有会员自行购买针对自行车运动的第三方责任险及意外险。
+
+> Der Veranstalter haftet nicht für Risiken der Teilnehmer im Zusammenhang mit der Teilnahme an der Tour und auch nicht für durch ihn selbst oder seine Erfüllungsgehilfen verursachte Schäden, sofern diese nicht grob fahrlässig oder vorsätzlich herbeigeführt wurden. Die Haftung des Veranstalters für leichte Fahrlässigkeit ist somit ausgeschlossen. Across Cycling Club übernimmt keine Haftung für Beschädigung oder Verlust privater Fahrräder.
+
+### 4. 肖像与影像使用权
+
+为记录社群生活与宣传骑行文化，ACC 及相关授权人员可能会在活动中拍摄照片、视频或录音。参与活动即表示您无偿授权 ACC 在其官方网站、社交媒体及内部通讯中使用包含您肖像的影像资料。如您不希望出镜，请在活动开始前主动告知拍摄人员。
+
+> Across Cycling Club hat das Recht, während des Events Audioaufzeichnungen, Videoaufnahmen und Fotos zu machen und diese für die Homepage, Newsletter und Social Media Auftritte auf unbegrenzte Zeit zu nutzen. Dieses Einverständnis kann jederzeit bezüglich zukünftiger Verwendungen widerrufen werden (per E-Mail an: across.cycling.club@gmail.com).
+        `,
+      },
+    ],
+    footer: [
+      'Across Cycling Club 保留对本规章制度的最终解释权与修订权。',
+      '最新修订日期：2026年4月',
+    ],
+  },
+  en: {
+    title: 'ACC Member Charter & Liability Disclaimer',
+    subtitle: 'Member Charter · Code of Conduct · Haftungsausschluss',
+    backLabel: '← Back to membership',
+    intro: `
+Welcome to Across Cycling Club, a section of Chinesischer Sportverein München.
+To help every participant enjoy cycling in a safe, professional, and friendly environment, ACC sets out the following member charter and liability disclaimer.
+By joining any ACC online or offline activity, you confirm that you have read, understood, and agreed to this document.
+    `,
+    valuesTitle: 'ACC Core Values',
+    values: [
+      'We believe that a pure love of cycling should not come with internal pressure. ACC exists to make our own people feel at ease: members should be able to ride safely, speak freely, and grow naturally.',
+      'We reject meaningless power-number comparison, body anxiety, and gear anxiety. Speed, watts, frames, and equipment can be topics of conversation, but they should never define a rider’s worth.',
+      'ACC is a pressure-free cycling home base: a place where riders look after one another, stay united, start together, and come home together.',
+    ],
+    sections: [
+      {
+        title: 'Part 1: Member Notes and Code of Conduct',
+        lede: 'Safety and discipline are the foundation of every ACC activity. The following rules apply to all official ACC activities, including social rides, training days, and multi-day tours.',
+        body: `
+### 1. Ride safety and equipment requirements
+
+- **No helmet, no ride:** Everyone joining an ACC offline ride must correctly wear a bicycle helmet that meets safety standards for the entire ride.
+- **Equipment self-check:** Members are fully responsible for the mechanical safety of their own or rented bicycle and equipment. Before every ride, check brakes, tires, drivetrain, and other key components.
+- **Low-light equipment:** Night rides or rides in low visibility require working front and rear lights.
+
+### 2. Group discipline and traffic law
+
+- **Strict StVO compliance:** ACC routes may include public roads, whether paved or gravel. Participants must comply with German road traffic law (Straßenverkehrsordnung, StVO).
+- **Follow ride leader instructions:** Official rides are guided by designated ride leaders who manage route guidance and group pace. Participants should respect and follow their on-site instructions. ACC has zero tolerance for dangerous riding, verbal abuse, or deliberate disruption of group discipline, and may immediately remove a participant from the activity.
+- **Do not leave without notice:** If you need to leave early, rest separately, or change route during an activity, inform the ride leader or sweeper first.
+- **Ride within your ability:** Choose activities that match your physical condition, health status, and cycling skills.
+
+### 3. Environmental and community responsibility
+
+- **Leave no trace:** Respect the natural environment in Bavaria and along all routes. Do not leave gel wrappers, bottles, or other waste behind.
+- **Respect one another:** ACC is an inclusive international community. We do not encourage unnecessary pressure or comparison; we reject gear and body anxiety and promote mutual support and friendly exchange.
+        `,
+      },
+      {
+        title: 'Part 2: Data Protection and Intellectual Property',
+        body: `
+- **Data privacy:** ACC respects and protects your privacy. Personal information provided during membership registration or event sign-up, such as name and contact details, is used only for club operations, event communication, and necessary insurance registration.
+- **Original content and sharing:** Routes, training plans, workshop materials, and other content published on ACC’s website, communities, or social media belong to ACC and the original authors. Commercial use without authorization is prohibited.
+- **Group confidentiality:** Members must not disclose private information from internal chats, unreviewed routes, or internal event plans to non-member third parties.
+        `,
+      },
+      {
+        title: 'Part 3: Participation Conditions and Liability Disclaimer',
+        note: 'This section includes legally relevant German wording. The English explanation is provided for convenience; the German text governs legal interpretation.',
+        body: `
+### 1. Participation conditions and self-assumed risk
+
+ACC provides route suggestions and initiates activities. Participants understand that outdoor cycling involves inherent risks, including falls, traffic accidents, and equipment damage. Participants confirm that they are healthy enough to take part and accept all risks associated with participation.
+
+> Die Teilnehmerin/der Teilnehmer erklärt, dass sie/er die Voraussetzungen für die Teilnahme (körperliche Gesundheit und entsprechende Kondition) erfüllt und keine medizinischen Ausschließungsgründe bestehen. Die Teilnahme erfolgt auf eigene Gefahr.
+
+### 2. Route changes and unforeseeable risks
+
+ACC aims to plan safe routes, but cannot guarantee road surface conditions, gravel, wet roads, construction areas, or traffic conditions. Ride leaders may change the route or stop the activity at short notice based on weather, road conditions, or the group’s overall situation.
+
+> Der Veranstalter (=Across Cycling Club) plant die Route nur in groben Zügen. Es können sich entlang der Strecke Gefahrenstellen (insbesondere im Zusammenhang mit der Bodenbeschaffenheit, Witterung oder Straßenverkehr) befinden. Der Veranstalter ist berechtigt, die Route kurzfristig zu ändern (z.B. wegen Schlechtwetters).
+
+### 3. Limitation of liability
+
+Except in cases of intent or gross negligence by ACC staff or assistants, ACC is not liable for personal injury, property damage, bicycle damage or loss, or third-party liability arising during activities. We strongly recommend that all members maintain appropriate private liability and accident insurance for cycling.
+
+> Der Veranstalter haftet nicht für Risiken der Teilnehmer im Zusammenhang mit der Teilnahme an der Tour und auch nicht für durch ihn selbst oder seine Erfüllungsgehilfen verursachte Schäden, sofern diese nicht grob fahrlässig oder vorsätzlich herbeigeführt wurden. Die Haftung des Veranstalters für leichte Fahrlässigkeit ist somit ausgeschlossen. Across Cycling Club übernimmt keine Haftung für Beschädigung oder Verlust privater Fahrräder.
+
+### 4. Image and media usage rights
+
+To document community life and promote cycling culture, ACC and authorized people may take photos, videos, or audio recordings during activities. By participating, you grant ACC permission to use media containing your likeness on its website, social media, and internal communications free of charge. If you do not wish to appear in photos or videos, inform the photographer before the activity starts.
+
+> Across Cycling Club hat das Recht, während des Events Audioaufzeichnungen, Videoaufnahmen und Fotos zu machen und diese für die Homepage, Newsletter und Social Media Auftritte auf unbegrenzte Zeit zu nutzen. Dieses Einverständnis kann jederzeit bezüglich zukünftiger Verwendungen widerrufen werden (per E-Mail an: across.cycling.club@gmail.com).
+        `,
+      },
+    ],
+    footer: [
+      'Across Cycling Club reserves the right to interpret and update this charter.',
+      'Last updated: April 2026',
+    ],
+  },
+  de: {
+    title: 'ACC-Mitgliedercharta & Haftungsausschluss',
+    subtitle: 'Member Charter · Code of Conduct · Haftungsausschluss',
+    backLabel: '← Zurück zur Mitgliedschaft',
+    intro: `
+Willkommen beim Across Cycling Club, einer Sektion des Chinesischen Sportvereins München.
+Damit alle Teilnehmenden in einem sicheren, professionellen und freundlichen Umfeld Rad fahren können, legt ACC die folgende Mitgliedercharta und den folgenden Haftungsausschluss fest.
+Mit der Teilnahme an Online- oder Offline-Aktivitäten von ACC bestätigen Sie, dass Sie dieses Dokument gelesen, verstanden und akzeptiert haben.
+    `,
+    valuesTitle: 'Grundwerte von ACC',
+    values: [
+      'Wir glauben, dass echte Freude am Radsport keinen unnötigen Druck erzeugen sollte. ACC soll den eigenen Leuten ein gutes Gefühl geben: Mitglieder sollen sicher fahren, frei kommunizieren und sich natürlich weiterentwickeln können.',
+      'Wir lehnen sinnlosen Watt-Vergleich, Körperdruck und Materialangst ab. Geschwindigkeit, Leistung, Rahmen und Ausrüstung können Gesprächsthemen sein, dürfen aber niemals den Wert eines Fahrers bestimmen.',
+      'ACC ist ein druckfreier Ort für Radfahrer: eine Gemeinschaft, in der man aufeinander achtet, zusammenhält, gemeinsam losfährt und gemeinsam zurückkommt.',
+    ],
+    sections: [
+      {
+        title: 'Teil 1: Hinweise für Mitglieder und Verhaltenskodex',
+        lede: 'Sicherheit und Disziplin sind die Grundlage aller ACC-Aktivitäten. Die folgenden verbindlichen Regeln gelten für offizielle ACC-Aktivitäten, einschließlich Social Rides, Training Days und mehrtägiger Touren.',
+        body: `
+### 1. Fahrsicherheit und Ausrüstung
+
+- **Ohne Helm keine Teilnahme:** Alle Personen, die an einer ACC-Ausfahrt teilnehmen, müssen während der gesamten Fahrt einen korrekt sitzenden Fahrradhelm tragen, der den Sicherheitsstandards entspricht.
+- **Eigenverantwortlicher Materialcheck:** Mitglieder sind für die mechanische Sicherheit ihres eigenen oder gemieteten Fahrrads und ihrer Ausrüstung verantwortlich. Vor jeder Fahrt sind Bremsen, Reifen, Antrieb und weitere sicherheitsrelevante Komponenten zu prüfen.
+- **Ausrüstung bei Dunkelheit:** Bei Nachtfahrten oder schlechter Sicht müssen funktionierende Front- und Rücklichter mitgeführt und eingeschaltet werden.
+
+### 2. Gruppendisziplin und Verkehrsregeln
+
+- **Strikte Einhaltung der StVO:** ACC-Routen können öffentliche Straßen enthalten, sowohl auf Asphalt als auch auf Schotter. Teilnehmende müssen die Straßenverkehrsordnung (StVO) einhalten.
+- **Anweisungen der Tourguides:** Offizielle Ausfahrten werden von benannten Tourguides geführt, die Routenführung und Gruppentempo koordinieren. Teilnehmende sollen deren Anweisungen vor Ort respektieren und befolgen. ACC toleriert gefährliches Fahren, Beleidigungen oder bewusste Störungen der Gruppendisziplin nicht und kann Teilnehmende sofort von der Aktivität ausschließen.
+- **Kein Verlassen ohne Hinweis:** Wer während einer Aktivität früher aussteigen, separat pausieren oder die Route ändern möchte, muss vorher den Tourguide oder Sweeper informieren.
+- **Der eigenen Leistung entsprechend fahren:** Teilnehmende wählen Aktivitäten entsprechend ihrer Kondition, Gesundheit und Fahrtechnik.
+
+### 3. Umwelt- und Gemeinschaftsverantwortung
+
+- **Leave no trace:** Die Natur in Bayern und entlang der Routen ist zu respektieren. Verpackungen, Flaschen oder anderer Müll dürfen nicht zurückgelassen werden.
+- **Gegenseitiger Respekt:** ACC ist eine inklusive internationale Gemeinschaft. Wir fördern keinen unnötigen Druck und keinen Vergleich; wir lehnen Material- und Körperangst ab und setzen auf gegenseitige Hilfe und freundlichen Austausch.
+        `,
+      },
+      {
+        title: 'Teil 2: Datenschutz und geistiges Eigentum',
+        body: `
+- **Datenschutz:** ACC respektiert und schützt personenbezogene Daten. Informationen, die bei Mitgliedsanmeldung oder Event-Registrierung angegeben werden, etwa Name und Kontaktdaten, werden nur für Clubbetrieb, Eventkommunikation und notwendige Versicherungsregistrierung verwendet.
+- **Eigene Inhalte und Weitergabe:** Routen, Trainingspläne, Workshop-Materialien und weitere Inhalte, die auf ACC-Website, in Communities oder Social Media veröffentlicht werden, gehören ACC und den jeweiligen Urhebern. Eine kommerzielle Nutzung ohne Zustimmung ist untersagt.
+- **Vertraulichkeit interner Gruppen:** Mitglieder dürfen private Informationen aus internen Chats, ungeprüfte Routen oder interne Eventpläne nicht an nicht-mitgliedschaftliche Dritte weitergeben.
+        `,
+      },
+      {
+        title: 'Teil 3: Teilnahmebedingungen und Haftungsausschluss',
+        note: 'Dieser Abschnitt enthält rechtlich relevante deutsche Formulierungen. Die deutsche Fassung ist maßgeblich.',
+        body: `
+### 1. Teilnahmebedingungen und Teilnahme auf eigene Gefahr
+
+ACC stellt Routenvorschläge bereit und initiiert Aktivitäten. Teilnehmende wissen, dass Outdoor-Radsport mit Risiken verbunden ist, darunter Stürze, Verkehrsunfälle und Materialschäden. Teilnehmende bestätigen, dass sie gesundheitlich geeignet sind und die Risiken der Teilnahme selbst tragen.
+
+> Die Teilnehmerin/der Teilnehmer erklärt, dass sie/er die Voraussetzungen für die Teilnahme (körperliche Gesundheit und entsprechende Kondition) erfüllt und keine medizinischen Ausschließungsgründe bestehen. Die Teilnahme erfolgt auf eigene Gefahr.
+
+### 2. Routenänderungen und unvorhersehbare Risiken
+
+ACC bemüht sich um sichere Routenplanung, kann aber keine Garantie für Untergrund, Schotter, Nässe, Baustellen oder Verkehrslage geben. Tourguides dürfen die Route bei Wetter, Straßenbedingungen oder aufgrund der Gruppensituation kurzfristig ändern oder die Aktivität beenden.
+
+> Der Veranstalter (=Across Cycling Club) plant die Route nur in groben Zügen. Es können sich entlang der Strecke Gefahrenstellen (insbesondere im Zusammenhang mit der Bodenbeschaffenheit, Witterung oder Straßenverkehr) befinden. Der Veranstalter ist berechtigt, die Route kurzfristig zu ändern (z.B. wegen Schlechtwetters).
+
+### 3. Haftungsbeschränkung
+
+Sofern Schäden nicht vorsätzlich oder grob fahrlässig durch ACC-Verantwortliche oder Erfüllungsgehilfen verursacht wurden, haftet ACC nicht für Personenschäden, Sachschäden, Beschädigung oder Verlust von Fahrrädern oder Ansprüche Dritter im Zusammenhang mit Aktivitäten. Wir empfehlen allen Mitgliedern dringend eine geeignete private Haftpflicht- und Unfallversicherung für den Radsport.
+
+> Der Veranstalter haftet nicht für Risiken der Teilnehmer im Zusammenhang mit der Teilnahme an der Tour und auch nicht für durch ihn selbst oder seine Erfüllungsgehilfen verursachte Schäden, sofern diese nicht grob fahrlässig oder vorsätzlich herbeigeführt wurden. Die Haftung des Veranstalters für leichte Fahrlässigkeit ist somit ausgeschlossen. Across Cycling Club übernimmt keine Haftung für Beschädigung oder Verlust privater Fahrräder.
+
+### 4. Bild- und Mediennutzungsrechte
+
+Zur Dokumentation des Clublebens und zur Förderung der Radsportkultur können ACC und autorisierte Personen während Aktivitäten Fotos, Videos oder Audioaufnahmen erstellen. Mit der Teilnahme erlauben Sie ACC unentgeltlich, Medien mit Ihrem Bildnis auf Website, Social Media und in interner Kommunikation zu nutzen. Wenn Sie nicht abgebildet werden möchten, informieren Sie die fotografierende Person vor Beginn der Aktivität.
+
+> Across Cycling Club hat das Recht, während des Events Audioaufzeichnungen, Videoaufnahmen und Fotos zu machen und diese für die Homepage, Newsletter und Social Media Auftritte auf unbegrenzte Zeit zu nutzen. Dieses Einverständnis kann jederzeit bezüglich zukünftiger Verwendungen widerrufen werden (per E-Mail an: across.cycling.club@gmail.com).
+        `,
+      },
+    ],
+    footer: [
+      'Across Cycling Club behält sich das Recht vor, diese Charta auszulegen und zu aktualisieren.',
+      'Stand: April 2026',
+    ],
+  },
+};
+
+const c = content[lang];
+---
+
+<BaseLayout title={c.title} lang={lang}>
+  <article class="charter-page">
+    <header class="charter-header">
+      <a href={`/${lang}/membership`} class="charter-back-link">{c.backLabel}</a>
+      <h1>{c.title}</h1>
+      <p class="charter-subtitle">{c.subtitle}</p>
+    </header>
+
+    <section class="charter-intro">
+      <div set:html={marked.parse(c.intro.trim())} />
+    </section>
+
+    <section class="charter-values" aria-labelledby="charter-values-title">
+      <h2 id="charter-values-title">{c.valuesTitle}</h2>
+      {c.values.map((value) => (
+        <p>{value}</p>
+      ))}
+    </section>
+
+    {c.sections.map((section) => (
+      <section class="charter-section">
+        <h2>{section.title}</h2>
+        {'lede' in section && section.lede && (
+          <p class="section-lede">{section.lede}</p>
+        )}
+        {'note' in section && section.note && (
+          <p class="legal-note">{section.note}</p>
+        )}
+        <div set:html={marked.parse(section.body.trim())} />
+      </section>
+    ))}
+
+    <footer class="charter-footer">
+      {c.footer.map((line) => (
+        <p>{line}</p>
+      ))}
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .charter-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+    color: #2f2f2f;
+  }
+
+  .charter-header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 3px solid var(--color-border-rough);
+  }
+
+  .charter-back-link {
+    display: inline-block;
+    margin-bottom: var(--space-md);
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .charter-back-link:hover {
+    color: var(--color-primary);
+  }
+
+  .charter-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-xs);
+  }
+
+  .charter-subtitle {
+    color: #888;
+    font-size: 0.95rem;
+    font-style: italic;
+    margin: 0;
+  }
+
+  .charter-intro,
+  .charter-values,
+  .legal-note {
+    background: rgba(42, 92, 166, 0.05);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 4px;
+  }
+
+  .charter-intro {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .charter-values {
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .charter-values h2 {
+    font-size: 1.35rem;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-md);
+  }
+
+  .charter-intro p,
+  .charter-values p,
+  .section-lede,
+  .charter-section p,
+  .charter-footer p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .charter-intro p {
+    margin: 0;
+  }
+
+  .charter-values p {
+    margin: 0 0 var(--space-sm);
+  }
+
+  .charter-values p:last-child {
+    margin-bottom: 0;
+  }
+
+  .charter-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .charter-section h2 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid var(--color-border-rough);
+  }
+
+  .charter-section h3 {
+    font-size: 1.15rem;
+    color: var(--color-primary);
+    margin: var(--space-lg) 0 var(--space-sm);
+  }
+
+  .charter-section ul {
+    padding-left: 1.4rem;
+    margin: var(--space-sm) 0;
+  }
+
+  .charter-section li {
+    font-size: 1.03rem;
+    line-height: 1.75;
+    margin-bottom: 0.65rem;
+  }
+
+  .charter-section strong {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .legal-note {
+    padding: var(--space-md);
+    margin: var(--space-md) 0 var(--space-lg);
+    color: #555;
+    font-weight: 600;
+  }
+
+  .charter-section blockquote {
+    border-left: 3px solid #ddd;
+    padding: var(--space-sm) 0 var(--space-sm) var(--space-md);
+    margin: var(--space-sm) 0 var(--space-lg);
+    color: #555;
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .charter-footer {
+    border-top: 2px solid var(--color-border-rough);
+    padding-top: var(--space-lg);
+    color: #666;
+  }
+
+  .charter-footer p {
+    margin: 0 0 var(--space-xs);
+  }
+
+  @media (max-width: 768px) {
+    .charter-page {
+      padding: var(--space-md);
+    }
+
+    .charter-header h1 {
+      font-size: 1.9rem;
+    }
+
+    .charter-section h2 {
+      font-size: 1.25rem;
+    }
+  }
+</style>

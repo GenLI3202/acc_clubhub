@@ -19,10 +19,42 @@ const content = {
   zh: {
     title: 'ACC保险告知与免责声明',
     subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
-    intro: '本页面说明ACC通过BLSV为非会员参与者提供的团体保险范围，以及参与者在报名时应知悉的相关费用与免责条款。',
+    intro: '本页面说明ACC会员在BLSV体系下可获得的基础运动保险权益，以及非会员参与ACC活动时的保险范围、费用与免责条款。',
     sections: [
       {
-        title: '一、非会员保险说明（Nichtmitgliederversicherung）',
+        title: '一、会员保险说明（BLSV / ARAG Sportversicherung）',
+        content: `
+ACC通过慕尼黑华人体育协会进入BLSV（Bayerischer Landes-Sportverband，巴伐利亚州体育联合会）体系。登记在册的ACC会员，在参加由ACC或所属协会体系正式组织的骑行训练、团骑、培训、会议和部分协会赛事时，通常属于BLSV与ARAG统一运动保险的基础保障范围。
+
+**主要保障：**
+
+1. **意外保障（Unfallversicherung）**：俱乐部官方活动中发生运动意外时，可按BLSV–ARAG运动保险条款申请基础意外保障。该保障是个人医保和私人保险之外的补充，不等同于完整医疗保险或私人意外险。
+
+2. **责任保障（Haftpflichtversicherung）**：在俱乐部活动中，如因过失造成其他骑友、路人或第三方财物损失，BLSV–ARAG责任险为俱乐部和会员提供基础责任保护。
+
+3. **刑事法律援助（Erweiterter Straf-Rechtsschutz）**：如骑行事故引发过失伤害等刑事调查或指控，保险可按条款为被保险人提供辩护费用支持。
+
+4. **活动往返路途（Wegeversicherung）**：前往或离开俱乐部正式活动的直接路途，也属于BLSV运动保险说明中提到的保障场景之一。
+
+5. **志愿者与组织者保护**：领骑、教练、活动组织者和其他志愿者在为俱乐部履职时，除ARAG运动保险外，还可能涉及BLSV说明中的VBG事故保险和志愿者相关保障。
+
+6. **俱乐部运营类保护**：BLSV–ARAG体系还包含D&O、信托损失、环境责任等面向协会运营的保障，用于降低俱乐部管理和财务风险。
+
+**不应理解为自动覆盖的情况：** 纯私人骑行、未由ACC或所属协会正式组织的活动、商业活动、明显偏离活动路线或不符合保险条款的行为，通常不能简单视为会员保险覆盖。跨州、海外、比赛报名主体和具体赛事规则等情形，也需要以官方条款和活动组织方式为准。
+
+**相关出处：**
+
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/arag-sportversicherung/" target="_blank" rel="noopener">BLSV：ARAG Sportversicherung</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/versicherungen/" target="_blank" rel="noopener">BLSV：Versicherungen im BLSV</a>
+- <a href="https://www.arag.de/vereinsversicherung/sportversicherung/bayern/" target="_blank" rel="noopener">ARAG：Sportversicherung Bayern / BLSV</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/vbg-unfallversicherung/" target="_blank" rel="noopener">BLSV：VBG Unfallversicherung</a>
+- <a href="https://www.blsv.de/startseite/service/mitgliedervorteile/" target="_blank" rel="noopener">BLSV：Mitgliedervorteile</a>
+
+> **免责说明：** 本告知为摘要，旨在方便ACC会员理解BLSV体系下的基础保险权益。所有具体险种细节、保障范围、理赔条件及除外责任，均以BLSV官方保险网页、ARAG出具的保险文件及德国相关法律为最终依据。ACC仅协助会员了解相关信息，不承担最终的理赔审核、保险解释或连带赔付责任。
+        `,
+      },
+      {
+        title: '二、非会员保险说明（Nichtmitgliederversicherung）',
         content: `
 为保障每一位参与ACC活动的骑友安全，我们通过 **BLSV**（Bayerischer Landes-Sportverband，巴伐利亚州体育联合会）为所有非ACC正式会员的活动参与者购买了专项团体保险，由 **ARAG** 承保。
 
@@ -46,7 +78,7 @@ const content = {
         `,
       },
       {
-        title: '二、活动参加费用（Teilnahmegebühr）',
+        title: '三、活动参加费用（Teilnahmegebühr）',
         content: `
 因ACC为每位非会员提供了上述专业的体育保险覆盖，我们将对参加活动的非ACC会员收取小额保险管理费：
 
@@ -62,7 +94,7 @@ const content = {
         `,
       },
       {
-        title: '三、领骑免责与参与者责任声明（Haftungsausschluss）',
+        title: '四、领骑免责与参与者责任声明（Haftungsausschluss）',
         content: `
 ACC骑行活动为非营利性的结伴骑行，领骑（Tourguides）均为无偿付出的志愿者。报名参与即视为知悉并同意以下条款：
 
@@ -88,10 +120,42 @@ ACC骑行活动为非营利性的结伴骑行，领骑（Tourguides）均为无�
   en: {
     title: 'ACC Insurance Notice & Liability Disclaimer',
     subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
-    intro: 'This page explains the group insurance ACC provides for non-member participants through BLSV, along with the associated fees and liability disclaimers that participants should be aware of when registering.',
+    intro: 'This page explains the basic sports insurance benefits ACC members may receive through the BLSV system, as well as the insurance coverage, fees, and liability disclaimer for non-member participants in ACC activities.',
     sections: [
       {
-        title: '1. Non-Member Insurance (Nichtmitgliederversicherung)',
+        title: '1. Member Insurance Notice (BLSV / ARAG Sportversicherung)',
+        content: `
+ACC is connected to the BLSV (Bayerischer Landes-Sportverband, Bavarian State Sports Association) through Chinesischer Sportverein München. Registered ACC members are usually within the basic BLSV and ARAG sports insurance framework when taking part in officially organized ACC or association activities, including cycling training, group rides, workshops, meetings, and some association events.
+
+**Main areas of protection:**
+
+1. **Accident insurance (Unfallversicherung):** If a sports accident happens during an official club activity, members may apply for basic accident coverage under the BLSV–ARAG sports insurance terms. This is supplementary protection alongside personal health insurance and private insurance; it is not a full replacement for medical or private accident insurance.
+
+2. **Liability insurance (Haftpflichtversicherung):** If a member negligently causes injury to another rider, pedestrian, or third party, or damages third-party property during a club activity, the BLSV–ARAG liability insurance provides basic liability protection for the club and its members.
+
+3. **Extended criminal legal protection (Erweiterter Straf-Rechtsschutz):** If a cycling accident leads to a criminal investigation or allegation, such as negligent bodily harm, the insurance may support defense costs according to the policy terms.
+
+4. **Travel to and from activities (Wegeversicherung):** The direct journey to or from an official club activity is one of the scenarios mentioned in the BLSV sports insurance information.
+
+5. **Volunteer and organizer protection:** Ride leaders, coaches, event organizers, and other volunteers acting for the club may also fall under VBG accident insurance and volunteer-related protections described by BLSV, in addition to ARAG sports insurance.
+
+6. **Club operations protection:** The BLSV–ARAG framework also includes D&O, fidelity, environmental liability, and other protections aimed at reducing management and financial risk for clubs.
+
+**Cases that should not be assumed to be automatically covered:** Private rides, activities not officially organized by ACC or its association structure, commercial activities, significant deviation from the activity route, or behavior outside the policy terms should not simply be treated as covered by member insurance. Cross-state or international trips, races entered under a different organizer, and event-specific rules must be assessed according to official terms and the actual organizing structure.
+
+**References:**
+
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/arag-sportversicherung/" target="_blank" rel="noopener">BLSV: ARAG Sportversicherung</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/versicherungen/" target="_blank" rel="noopener">BLSV: Versicherungen im BLSV</a>
+- <a href="https://www.arag.de/vereinsversicherung/sportversicherung/bayern/" target="_blank" rel="noopener">ARAG: Sportversicherung Bayern / BLSV</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/vbg-unfallversicherung/" target="_blank" rel="noopener">BLSV: VBG Unfallversicherung</a>
+- <a href="https://www.blsv.de/startseite/service/mitgliedervorteile/" target="_blank" rel="noopener">BLSV: Mitgliedervorteile</a>
+
+> **Disclaimer:** This notice is a summary intended to help ACC members understand basic insurance benefits within the BLSV framework. All policy details, coverage scope, claim conditions, and exclusions are governed by the official BLSV insurance pages, ARAG insurance documents, and applicable German law. ACC helps members understand the information but does not make claim decisions, provide binding insurance interpretation, or assume joint indemnification liability.
+        `,
+      },
+      {
+        title: '2. Non-Member Insurance (Nichtmitgliederversicherung)',
         content: `
 To protect every participant in ACC events, we purchase a group insurance policy through **BLSV** (Bayerischer Landes-Sportverband, Bavarian State Sports Association) for all non-ACC-member participants, underwritten by **ARAG**.
 
@@ -115,7 +179,7 @@ To protect every participant in ACC events, we purchase a group insurance policy
         `,
       },
       {
-        title: '2. Participation Fee (Teilnahmegebühr)',
+        title: '3. Participation Fee (Teilnahmegebühr)',
         content: `
 Because ACC provides the above professional sports insurance coverage for every non-member, a small insurance administration fee is charged for non-ACC members:
 
@@ -131,7 +195,7 @@ Because ACC provides the above professional sports insurance coverage for every 
         `,
       },
       {
-        title: '3. Leader Liability & Participant Responsibility (Haftungsausschluss)',
+        title: '4. Leader Liability & Participant Responsibility (Haftungsausschluss)',
         content: `
 ACC rides are non-commercial group rides and all ride leaders (Tourguides) are unpaid volunteers. By registering you acknowledge and agree to the following:
 
@@ -157,10 +221,42 @@ All participants must wear a helmet. The ride leader has the right to require an
   de: {
     title: 'ACC-Versicherungshinweis & Haftungsausschluss',
     subtitle: 'Nichtmitgliederversicherung & Haftungsausschluss',
-    intro: 'Diese Seite erklärt die Gruppenversicherung, die ACC über den BLSV für Nichtmitglieder bereitstellt, sowie die damit verbundenen Gebühren und Haftungsausschlüsse, die Teilnehmer bei der Anmeldung kennen sollten.',
+    intro: 'Diese Seite erklärt die grundlegenden Sportversicherungsleistungen, die ACC-Mitglieder im BLSV-System erhalten können, sowie Versicherungsschutz, Gebühren und Haftungsausschluss für Nichtmitglieder bei ACC-Aktivitäten.',
     sections: [
       {
-        title: '1. Nichtmitgliederversicherung',
+        title: '1. Versicherungshinweis für Mitglieder (BLSV / ARAG Sportversicherung)',
+        content: `
+ACC ist über den Chinesischen Sportverein München in das System des BLSV (Bayerischer Landes-Sportverband) eingebunden. Registrierte ACC-Mitglieder fallen bei offiziell organisierten Aktivitäten von ACC oder dem zugehörigen Vereinsverbund in der Regel unter den grundlegenden BLSV- und ARAG-Sportversicherungsschutz, etwa bei Radsporttraining, Gruppenausfahrten, Workshops, Sitzungen und bestimmten Vereinsveranstaltungen.
+
+**Wesentliche Schutzbereiche:**
+
+1. **Unfallversicherung:** Bei einem Sportunfall während einer offiziellen Vereinsaktivität kann nach den Bedingungen der BLSV–ARAG-Sportversicherung grundlegender Unfallschutz beantragt werden. Dieser Schutz ergänzt Krankenversicherung und private Versicherungen; er ersetzt keine vollständige Kranken- oder private Unfallversicherung.
+
+2. **Haftpflichtversicherung:** Wenn ein Mitglied während einer Vereinsaktivität fahrlässig andere Fahrer, Fußgänger oder Dritte verletzt oder fremdes Eigentum beschädigt, bietet die BLSV–ARAG-Haftpflichtversicherung grundlegenden Haftpflichtschutz für Verein und Mitglieder.
+
+3. **Erweiterter Straf-Rechtsschutz:** Wenn ein Fahrradunfall zu strafrechtlichen Ermittlungen oder Vorwürfen führt, etwa wegen fahrlässiger Körperverletzung, kann die Versicherung gemäß Bedingungen Verteidigungskosten unterstützen.
+
+4. **Wegeversicherung:** Der direkte Weg zu oder von einer offiziellen Vereinsaktivität gehört zu den in den BLSV-Informationen genannten Schutzsituationen.
+
+5. **Schutz für Ehrenamtliche und Organisatoren:** Tourguides, Trainer, Veranstaltungsorganisatoren und weitere Freiwillige können bei Tätigkeiten für den Verein neben der ARAG-Sportversicherung auch unter die vom BLSV beschriebenen VBG-Unfallversicherungen und ehrenamtsbezogenen Schutzmechanismen fallen.
+
+6. **Schutz des Vereinsbetriebs:** Das BLSV–ARAG-System umfasst außerdem D&O-, Vertrauensschaden-, Umwelthaftpflicht- und weitere vereinsbezogene Schutzbereiche, die Management- und Finanzrisiken reduzieren.
+
+**Nicht automatisch als versichert anzusehen:** Private Fahrten, nicht offiziell von ACC oder dem Vereinsverbund organisierte Aktivitäten, kommerzielle Aktivitäten, deutliche Abweichungen von der Veranstaltungsroute oder Verhalten außerhalb der Versicherungsbedingungen sollten nicht ohne Weiteres als vom Mitgliederschutz umfasst betrachtet werden. Länderübergreifende oder internationale Fahrten, Rennen mit anderem Veranstalter und konkrete Eventregeln sind anhand der offiziellen Bedingungen und der tatsächlichen Organisationsform zu prüfen.
+
+**Quellen:**
+
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/arag-sportversicherung/" target="_blank" rel="noopener">BLSV: ARAG Sportversicherung</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/versicherungen/" target="_blank" rel="noopener">BLSV: Versicherungen im BLSV</a>
+- <a href="https://www.arag.de/vereinsversicherung/sportversicherung/bayern/" target="_blank" rel="noopener">ARAG: Sportversicherung Bayern / BLSV</a>
+- <a href="https://www.blsv.de/startseite/produkte/beratungsservice/vbg-unfallversicherung/" target="_blank" rel="noopener">BLSV: VBG Unfallversicherung</a>
+- <a href="https://www.blsv.de/startseite/service/mitgliedervorteile/" target="_blank" rel="noopener">BLSV: Mitgliedervorteile</a>
+
+> **Haftungshinweis:** Dieser Hinweis ist eine Zusammenfassung, damit ACC-Mitglieder die grundlegenden Versicherungsleistungen im BLSV-System besser verstehen. Alle Details zu Versicherungsarten, Deckungsumfang, Anspruchsvoraussetzungen und Ausschlüssen richten sich nach den offiziellen BLSV-Versicherungsseiten, ARAG-Unterlagen und dem deutschen Recht. ACC unterstützt Mitglieder beim Verständnis der Informationen, übernimmt aber keine verbindliche Versicherungsprüfung, keine abschließende Auslegung und keine gesamtschuldnerische Ersatzpflicht.
+        `,
+      },
+      {
+        title: '2. Nichtmitgliederversicherung',
         content: `
 Zum Schutz jedes Teilnehmers an ACC-Veranstaltungen schließen wir über den **BLSV** (Bayerischer Landes-Sportverband) eine Gruppen-Sportversicherung für alle Nicht-ACC-Mitglieder ab, versichert bei **ARAG**.
 
@@ -184,7 +280,7 @@ Zum Schutz jedes Teilnehmers an ACC-Veranstaltungen schließen wir über den **B
         `,
       },
       {
-        title: '2. Teilnahmegebühr',
+        title: '3. Teilnahmegebühr',
         content: `
 Da ACC den oben genannten professionellen Sportversicherungsschutz für jeden Nichtmitglieder bereitstellt, wird von Nicht-ACC-Mitgliedern eine kleine Versicherungsverwaltungsgebühr erhoben:
 
@@ -200,7 +296,7 @@ Da ACC den oben genannten professionellen Sportversicherungsschutz für jeden Ni
         `,
       },
       {
-        title: '3. Haftungsausschluss für Tourguides & Eigenverantwortung',
+        title: '4. Haftungsausschluss für Tourguides & Eigenverantwortung',
         content: `
 ACC-Ausfahrten sind nicht-kommerzielle Gruppenfahrten, alle Tourguides sind ehrenamtliche Freiwillige. Mit der Anmeldung erkennen Sie folgende Bedingungen an:
 

@@ -6,6 +6,7 @@ import { getCollection } from "astro:content";
 import { locales, defaultLocale, t, type Locale } from "../../lib/i18n";
 import { splitEvents } from "../../lib/events/eventHelpers";
 import NextRideBanner from "../../components/home/NextRideBanner.astro";
+import MembershipTeaser from "../../components/home/MembershipTeaser.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
 import SplashScreen from "../../components/home/SplashScreen.astro";
 import StravaWidget from "../../components/home/StravaWidget.astro";
@@ -91,6 +92,9 @@ const routeItems = allRoutes
 
     <!-- Next Ride Banner -->
     <NextRideBanner event={heroEvent} lang={lang} />
+
+    <!-- Membership Teaser -->
+    <MembershipTeaser lang={lang} />
 
     <!-- Strava Floating Widget -->
     <StravaWidget lang={lang} />

@@ -1,0 +1,172 @@
+---
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+    lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+    zh: {
+        eyebrow: "加入 ACC 2026/27",
+        headline: "天高地阔  结伴驰骋",
+        body: "70+ 次保险覆盖的团骑、骑行进阶培训、ACC 周边与赛事优惠，以及更多。",
+        cta: "了解会员",
+    },
+    en: {
+        eyebrow: "Join ACC 2026/27",
+        headline: "Vast skies, open roads. Ride together.",
+        body: "70+ insured group rides, cycling coaching, ACC gear & race discounts, and more.",
+        cta: "Learn more",
+    },
+    de: {
+        eyebrow: "ACC beitreten 2026/27",
+        headline: "Weiter Himmel, offene Straßen. Gemeinsam fahren.",
+        body: "70+ versicherte Gruppenfahrten, Radtraining, ACC-Ausrüstungs- & Rennrabatte und mehr.",
+        cta: "Mehr erfahren",
+    },
+} as const;
+
+const c = copy[lang] ?? copy.zh;
+---
+
+<section class="mem-teaser">
+    <div class="mem-teaser-inner">
+        <img
+            src="/images/about/logo-stamp-red-transparent.png"
+            alt=""
+            aria-hidden="true"
+            class="mem-teaser-watermark"
+        />
+
+        <div class="mem-teaser-body">
+            <p class="mem-teaser-eyebrow">{c.eyebrow}</p>
+            <h2 class="mem-teaser-headline">{c.headline}</h2>
+            <p class="mem-teaser-text">{c.body}</p>
+        </div>
+
+        <div class="mem-teaser-action">
+            <a href={`/${lang}/membership`} class="mem-teaser-cta">
+                {c.cta} →
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .mem-teaser {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        background: var(--color-bg-canvas);
+        border-top: 1px solid var(--color-border);
+    }
+
+    .mem-teaser-inner {
+        position: relative;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: var(--space-lg) var(--space-md);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-lg);
+        overflow: hidden;
+    }
+
+    .mem-teaser-watermark {
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-30deg);
+        width: 286px;
+        height: 286px;
+        opacity: 0.2;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .mem-teaser-eyebrow {
+        font-family: var(--font-heading);
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--color-accent);
+        margin: 0 0 0.3rem;
+    }
+
+    .mem-teaser-headline {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        color: var(--color-text-main);
+        margin: 0 0 0.3rem;
+    }
+
+    .mem-teaser-text {
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        line-height: 1.55;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    .mem-teaser-action {
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mem-teaser-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--font-heading);
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.7rem 1.8rem;
+        border-radius: var(--radius-btn);
+        border: 1.5px solid var(--color-border-strong);
+        color: var(--color-text-main);
+        background: transparent;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            background var(--transition-fast),
+            color var(--transition-fast),
+            border-color var(--transition-fast),
+            transform var(--transition-fast),
+            box-shadow var(--transition-fast);
+    }
+
+    .mem-teaser-cta:hover {
+        background: var(--color-text-main);
+        color: var(--color-bg-canvas);
+        border-color: var(--color-text-main);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .mem-teaser-inner {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .mem-teaser-watermark {
+            right: -60px;
+            top: auto;
+            bottom: -20px;
+            transform: none;
+            width: 160px;
+            height: 160px;
+        }
+    }
+</style>
