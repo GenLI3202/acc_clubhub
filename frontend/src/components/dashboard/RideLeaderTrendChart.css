@@ -1,0 +1,22 @@
+.leader-trend-chart {
+    height: 360px;
+    min-height: 320px;
+    width: 100%;
+}
+
+.leader-trend-chart canvas {
+    display: block;
+    width: 100%;
+}
+
+.leader-trend-empty {
+    color: #57606a;
+    padding: 2rem 0;
+}
+
+@media (max-width: 900px) {
+    .leader-trend-chart {
+        height: 300px;
+        min-height: 280px;
+    }
+}

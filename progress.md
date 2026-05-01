@@ -9,6 +9,12 @@
 - **Live Site**: [www.accross-cc.de](https://www.accross-cc.de) · **API**: [acc-clubhub-events-ms.vercel.app](https://acc-clubhub-events-ms.vercel.app/docs)
 - **Status**: 🟢 Registration + email delivery live — subscription system complete — custom domain active
 
+## Recent Updates
+
+- [X] **Ride Leader Dashboard Chart.js Refresh** (2026-05-02)
+  - [X] Added Chart.js dependency for the admin ride leader trend chart
+  - [X] Replaced the raw single-leader SVG with a multi-leader cumulative trend canvas
+  - [X] Kept selected leader summary, annual board, and event history on the same page
 ## Current Architecture
 
 | Layer                              | Responsibility                                            | Key Files                                          |

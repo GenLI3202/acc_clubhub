@@ -21,6 +21,7 @@
     "@astrojs/vercel": "^9.0.4",
     "@waline/client": "^3.8.0",
     "astro": "^5.16.15",
+    "chart.js": "^4.5.1",
     "fuse.js": "^7.1.0",
     "marked": "^17.0.5",
     "preact": "^10.28.2",

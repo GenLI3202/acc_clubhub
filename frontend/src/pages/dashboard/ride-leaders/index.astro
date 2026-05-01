@@ -1,7 +1,12 @@
 ---
 export const prerender = false;
 
-const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+import {
+  RideLeaderTrendChart,
+} from "../../../components/dashboard/RideLeaderTrendChart";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL
+  || "https://acc-clubhub-events-ms.vercel.app";
 const isLocalPreview = import.meta.env.DEV
   && ["127.0.0.1", "localhost"].includes(Astro.url.hostname)
   && Astro.url.searchParams.get("preview") === "1";
@@ -21,12 +26,15 @@ if (!isLocalPreview) {
 }
 
 const now = new Date();
-const requestedYear = Number(Astro.url.searchParams.get("year") || now.getUTCFullYear());
+const requestedYear = Number(
+  Astro.url.searchParams.get("year") || now.getUTCFullYear(),
+);
 const year = Number.isFinite(requestedYear) ? requestedYear : now.getUTCFullYear();
 const selectedLeader = Astro.url.searchParams.get("leader") || "";
 
 let summaryData = { year, leaders: [] as any[] };
 let detailData: any = null;
+let allLeaderDetails: any[] = [];
 let fetchError: string | null = null;
 
 if (isLocalPreview) {
@@ -63,11 +71,36 @@ if (isLocalPreview) {
     excess_km: 12,
     estimated_subsidy_eur: 1,
     progress: [
-      { event_id: 1, event_date: `${year}-03-15T09:00:00Z`, cumulative_km: 45, credit_km: 45 },
-      { event_id: 2, event_date: `${year}-04-05T09:00:00Z`, cumulative_km: 102, credit_km: 57 },
-      { event_id: 3, event_date: `${year}-05-11T09:00:00Z`, cumulative_km: 175, credit_km: 73 },
-      { event_id: 4, event_date: `${year}-06-09T09:00:00Z`, cumulative_km: 245, credit_km: 70 },
-      { event_id: 5, event_date: `${year}-07-19T09:00:00Z`, cumulative_km: 332, credit_km: 87 },
+      {
+        event_id: 1,
+        event_date: `${year}-03-15T09:00:00Z`,
+        cumulative_km: 45,
+        credit_km: 45,
+      },
+      {
+        event_id: 2,
+        event_date: `${year}-04-05T09:00:00Z`,
+        cumulative_km: 102,
+        credit_km: 57,
+      },
+      {
+        event_id: 3,
+        event_date: `${year}-05-11T09:00:00Z`,
+        cumulative_km: 175,
+        credit_km: 73,
+      },
+      {
+        event_id: 4,
+        event_date: `${year}-06-09T09:00:00Z`,
+        cumulative_km: 245,
+        credit_km: 70,
+      },
+      {
+        event_id: 5,
+        event_date: `${year}-07-19T09:00:00Z`,
+        cumulative_km: 332,
+        credit_km: 87,
+      },
     ],
     history: [
       {
@@ -83,6 +116,40 @@ if (isLocalPreview) {
       },
     ],
   };
+  allLeaderDetails = [
+    {
+      leader_name: "Alice Zhang",
+      annual_target_km: 320,
+      total_credited_km: 186.5,
+      progress: [
+        {
+          event_id: 11,
+          event_date: `${year}-02-10T09:00:00Z`,
+          cumulative_km: 32,
+          credit_km: 32,
+        },
+        {
+          event_id: 12,
+          event_date: `${year}-03-22T09:00:00Z`,
+          cumulative_km: 78,
+          credit_km: 46,
+        },
+        {
+          event_id: 13,
+          event_date: `${year}-05-18T09:00:00Z`,
+          cumulative_km: 141.5,
+          credit_km: 63.5,
+        },
+        {
+          event_id: 14,
+          event_date: `${year}-07-03T09:00:00Z`,
+          cumulative_km: 186.5,
+          credit_km: 45,
+        },
+      ],
+    },
+    detailData,
+  ];
 } else {
   try {
     const summaryRes = await fetch(`${apiUrl}/api/admin/ride-leaders?year=${year}`, {
@@ -98,16 +165,36 @@ if (isLocalPreview) {
 
     const leaderForDetail = selectedLeader || summaryData.leaders[0]?.leader_name;
     if (leaderForDetail && !fetchError) {
-      const detailRes = await fetch(
-        `${apiUrl}/api/admin/ride-leaders/${encodeURIComponent(leaderForDetail)}?year=${year}`,
-        { headers: { "Cookie": cookie } }
+      const detailRequests = await Promise.all(
+        summaryData.leaders.map(async (leader: any) => {
+          const res = await fetch(
+            `${apiUrl}/api/admin/ride-leaders/${
+              encodeURIComponent(leader.leader_name)
+            }?year=${year}`,
+            { headers: { "Cookie": cookie } }
+          );
+          if (res.status === 401) {
+            return { unauthorized: true };
+          }
+          if (!res.ok) {
+            return { error: res.status, leader_name: leader.leader_name };
+          }
+          return await res.json();
+        })
       );
-      if (detailRes.ok) {
-        detailData = await detailRes.json();
-      } else if (detailRes.status === 401) {
+
+      if (detailRequests.some((item: any) => item.unauthorized)) {
         return Astro.redirect("/dashboard/login", 302);
+      }
+
+      const failedDetail = detailRequests.find((item: any) => item.error);
+      if (failedDetail) {
+        fetchError = `Failed to fetch ride leader detail: ${failedDetail.error}`;
       } else {
-        fetchError = `Failed to fetch ride leader detail: ${detailRes.status}`;
+        allLeaderDetails = detailRequests;
+        detailData = allLeaderDetails.find(
+          (leader: any) => leader.leader_name === leaderForDetail,
+        ) ?? allLeaderDetails[0] ?? null;
       }
     }
   } catch (e) {
@@ -144,19 +231,21 @@ function buildYearUrl(nextYear: number): string {
   return `/dashboard/ride-leaders?${params.toString()}`;
 }
 
-const chartPoints = detailData?.progress ?? [];
-const chartMax = Math.max(
-  320,
-  300,
-  ...chartPoints.map((point: any) => point.cumulative_km ?? 0),
-  1,
-);
-const chartWidth = Math.max(chartPoints.length - 1, 1);
-const polylinePoints = chartPoints.map((point: any, index: number) => {
-  const x = (index / chartWidth) * 100;
-  const y = 100 - ((point.cumulative_km ?? 0) / chartMax) * 100;
-  return `${x},${y}`;
-}).join(" ");
+const trendLeaders = allLeaderDetails.length > 0
+  ? allLeaderDetails
+  : detailData
+    ? [detailData]
+    : [];
+const selectedProgressPercent = detailData
+  ? Math.min(
+      100,
+      Math.max(
+        0,
+        (Number(detailData.total_credited_km ?? 0)
+          / Number(detailData.annual_target_km ?? 320)) * 100,
+      ),
+    )
+  : 0;
 ---
 
 <!doctype html>
@@ -227,7 +316,14 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
         font-weight: 700;
         color: #24292f;
       }
-      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .error {
+        background: #ffebe9;
+        border: 1px solid #ff818266;
+        padding: 1rem;
+        border-radius: 6px;
+        color: #cf222e;
+        margin-bottom: 1rem;
+      }
       .panel {
         background: white;
         border: 1px solid #d0d7de;
@@ -239,6 +335,22 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
         margin: 0 0 1rem;
         font-size: 1.05rem;
         color: #24292f;
+      }
+      .panel-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .panel-header h2 { margin-bottom: 0.25rem; }
+      .panel-kicker {
+        margin: 0;
+        color: #57606a;
+        font-size: 0.88rem;
+      }
+      .table-scroll {
+        overflow-x: auto;
       }
       table {
         width: 100%;
@@ -267,7 +379,13 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
         border: 1px solid #d0d7de;
         border-radius: 8px;
         padding: 1rem;
-        background: linear-gradient(to top, #fafbfc 0%, white 100%);
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(37, 99, 235, 0.08),
+            transparent 28rem
+          ),
+          linear-gradient(to top, #f8fafc 0%, white 78%);
       }
       .chart-meta {
         display: flex;
@@ -278,10 +396,10 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
         color: #57606a;
         font-size: 0.85rem;
       }
-      .chart-svg {
-        width: 100%;
-        height: 280px;
-        overflow: visible;
+      .trend-shell {
+        position: relative;
+        overflow: hidden;
+        padding: 1.1rem 1.1rem 0.85rem;
       }
       .chart-empty {
         color: #57606a;
@@ -289,8 +407,44 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
       }
       .history-layout {
         display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
+        grid-template-columns: minmax(280px, 0.85fr) minmax(420px, 1.15fr);
         gap: 1.5rem;
+      }
+      .selected-progress {
+        display: grid;
+        gap: 0.9rem;
+      }
+      .metric-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #eaeef2;
+      }
+      .metric-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .metric-row span:first-child {
+        color: #57606a;
+        font-size: 0.88rem;
+      }
+      .metric-row strong {
+        color: #24292f;
+        font-size: 1rem;
+      }
+      .progress-track {
+        height: 0.65rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #eaeef2;
+      }
+      .progress-fill {
+        width: var(--progress-width);
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #2563eb, #0891b2);
       }
       .pill {
         display: inline-flex;
@@ -308,6 +462,7 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
       }
       @media (max-width: 900px) {
         body { padding: 1rem; }
+        .panel-header { display: block; }
         .history-layout { grid-template-columns: 1fr; }
       }
     </style>
@@ -321,9 +476,21 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
       <div class="header">
         <h1>Ride Leader Board</h1>
         <div class="year-switcher">
-          <a class="year-link" href={buildYearUrl(year - 1)} aria-label="Previous year">←</a>
+          <a
+            class="year-link"
+            href={buildYearUrl(year - 1)}
+            aria-label="Previous year"
+          >
+            ←
+          </a>
           <strong>{year}</strong>
-          <a class="year-link" href={buildYearUrl(year + 1)} aria-label="Next year">→</a>
+          <a
+            class="year-link"
+            href={buildYearUrl(year + 1)}
+            aria-label="Next year"
+          >
+            →
+          </a>
         </div>
       </div>
 
@@ -355,72 +522,103 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
       )}
 
       <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>All Leaders · Cumulative Trend</h2>
+            <p class="panel-kicker">
+              Date-based annual credit progress across ride leaders.
+            </p>
+          </div>
+          <span class="pill">{trendLeaders.length} leaders</span>
+        </div>
+        <div class="chart-shell trend-shell">
+          <RideLeaderTrendChart
+            leaders={trendLeaders}
+            selectedLeader={detailData?.leader_name}
+            year={year}
+            client:load
+          />
+        </div>
+      </section>
+
+      <section class="panel">
         <h2>Annual Board</h2>
         {summaryData.leaders.length === 0 ? (
           <div class="chart-empty">No ride leader credits recorded for {year} yet.</div>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Ride Leader</th>
-                <th>Lead Events</th>
-                <th>Total Credited</th>
-                <th>300 km Threshold</th>
-                <th>Annual Target</th>
-                <th>Excess</th>
-                <th>Estimated Subsidy</th>
-              </tr>
-            </thead>
-            <tbody>
-              {summaryData.leaders.map((leader: any) => (
+          <div class="table-scroll">
+            <table>
+              <thead>
                 <tr>
-                  <td>
-                    <a class="leader-link" href={buildLeaderUrl(leader.leader_name)}>
-                      {leader.leader_name}
-                    </a>
-                  </td>
-                  <td>{leader.lead_events_count}</td>
-                  <td>{formatKm(leader.total_credited_km)}</td>
-                  <td>
-                    <span class={`pill ${leader.reimbursement_eligible ? 'good' : ''}`}>
-                      {leader.reimbursement_eligible ? 'Reached' : 'Not yet'}
-                    </span>
-                  </td>
-                  <td>{formatKm(leader.annual_target_km)}</td>
-                  <td>{formatKm(leader.excess_km)}</td>
-                  <td>€{Number(leader.estimated_subsidy_eur ?? 0).toFixed(0)}</td>
+                  <th>Ride Leader</th>
+                  <th>Lead Events</th>
+                  <th>Total Credited</th>
+                  <th>300 km Threshold</th>
+                  <th>Annual Target</th>
+                  <th>Excess</th>
+                  <th>Estimated Subsidy</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {summaryData.leaders.map((leader: any) => (
+                  <tr>
+                    <td>
+                      <a
+                        class="leader-link"
+                        href={buildLeaderUrl(leader.leader_name)}
+                      >
+                        {leader.leader_name}
+                      </a>
+                    </td>
+                    <td>{leader.lead_events_count}</td>
+                    <td>{formatKm(leader.total_credited_km)}</td>
+                    <td>
+                      <span
+                        class={`pill ${leader.reimbursement_eligible ? 'good' : ''}`}
+                      >
+                        {leader.reimbursement_eligible ? 'Reached' : 'Not yet'}
+                      </span>
+                    </td>
+                    <td>{formatKm(leader.annual_target_km)}</td>
+                    <td>{formatKm(leader.excess_km)}</td>
+                    <td>€{Number(leader.estimated_subsidy_eur ?? 0).toFixed(0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 
       {detailData && (
         <div class="history-layout">
           <section class="panel">
-            <h2>{detailData.leader_name} · Cumulative Progress</h2>
-            <div class="chart-shell">
-              <div class="chart-meta">
-                <span>Threshold: 300 km</span>
-                <span>Target: {formatKm(detailData.annual_target_km)}</span>
-                <span>Total: {formatKm(detailData.total_credited_km)}</span>
+            <h2>{detailData.leader_name} · Progress Snapshot</h2>
+            <div class="selected-progress">
+              <div class="progress-track" aria-label="Annual target progress">
+                <div
+                  class="progress-fill"
+                  style={`--progress-width: ${selectedProgressPercent}%`}
+                ></div>
               </div>
-              {chartPoints.length === 0 ? (
-                <div class="chart-empty">No credited events for this ride leader in {year}.</div>
-              ) : (
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="chart-svg" aria-label="Ride leader cumulative credit chart">
-                  <line x1="0" y1="100" x2="100" y2="100" stroke="#d0d7de" stroke-width="1" />
-                  <line x1="0" y1={100 - (300 / chartMax) * 100} x2="100" y2={100 - (300 / chartMax) * 100} stroke="#cf222e" stroke-width="1" stroke-dasharray="2 2" />
-                  <line x1="0" y1={100 - ((detailData.annual_target_km ?? 320) / chartMax) * 100} x2="100" y2={100 - ((detailData.annual_target_km ?? 320) / chartMax) * 100} stroke="#9a6700" stroke-width="1" stroke-dasharray="3 2" />
-                  <polyline fill="none" stroke="#0969da" stroke-width="2.5" points={polylinePoints} />
-                  {chartPoints.map((point: any, index: number) => {
-                    const x = (index / chartWidth) * 100;
-                    const y = 100 - ((point.cumulative_km ?? 0) / chartMax) * 100;
-                    return <circle cx={x} cy={y} r="1.6" fill="#0969da" />;
-                  })}
-                </svg>
-              )}
+              <div class="metric-row">
+                <span>Total credited</span>
+                <strong>{formatKm(detailData.total_credited_km)}</strong>
+              </div>
+              <div class="metric-row">
+                <span>Annual target</span>
+                <strong>{formatKm(detailData.annual_target_km)}</strong>
+              </div>
+              <div class="metric-row">
+                <span>300 km threshold</span>
+                <strong>
+                  {detailData.reimbursement_eligible ? "Reached" : "Not yet"}
+                </strong>
+              </div>
+              <div class="metric-row">
+                <span>Lead events</span>
+                <strong>{detailData.lead_events_count}</strong>
+              </div>
             </div>
           </section>
 
@@ -429,32 +627,34 @@ const polylinePoints = chartPoints.map((point: any, index: number) => {
             {detailData.history.length === 0 ? (
               <div class="chart-empty">No event history available.</div>
             ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Event</th>
-                    <th>Distance</th>
-                    <th>Checked-in</th>
-                    <th>Groups</th>
-                    <th>Leaders</th>
-                    <th>Credited</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {detailData.history.map((row: any) => (
+              <div class="table-scroll">
+                <table>
+                  <thead>
                     <tr>
-                      <td>{formatDate(row.event_date)}</td>
-                      <td>{row.event_title}</td>
-                      <td>{formatKm(row.distance_km)}</td>
-                      <td>{row.checked_in_count}</td>
-                      <td>{row.effective_group_count}</td>
-                      <td>{row.credited_leader_count}</td>
-                      <td>{formatKm(row.credit_km)}</td>
+                      <th>Date</th>
+                      <th>Event</th>
+                      <th>Distance</th>
+                      <th>Checked-in</th>
+                      <th>Groups</th>
+                      <th>Leaders</th>
+                      <th>Credited</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {detailData.history.map((row: any) => (
+                      <tr>
+                        <td>{formatDate(row.event_date)}</td>
+                        <td>{row.event_title}</td>
+                        <td>{formatKm(row.distance_km)}</td>
+                        <td>{row.checked_in_count}</td>
+                        <td>{row.effective_group_count}</td>
+                        <td>{row.credited_leader_count}</td>
+                        <td>{formatKm(row.credit_km)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </section>
         </div>
