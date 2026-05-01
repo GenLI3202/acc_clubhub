@@ -11,6 +11,8 @@ coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/co
 displaySections:
   - hero
   - upcoming
+maxParticipants: 15
+registrationLink: ''
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
 ACCOfficialRide: true
