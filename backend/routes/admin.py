@@ -135,7 +135,8 @@ def sync_occurrences(
                 event.event_type = occurrence.event_type
                 event.max_participants = occurrence.max_participants
                 event.registration_deadline = occurrence.registration_deadline
-                event.distance_km = occurrence.distance_km
+                if occurrence.distance_km is not None:
+                    event.distance_km = occurrence.distance_km
                 event.is_public = True
                 updated += 1
                 continue

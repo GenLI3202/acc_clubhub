@@ -10,6 +10,7 @@ cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySections:
   - hero
 maxParticipants: 35
+distanceKm: 41.6
 wechatQrCode: /images/events/2026-acc-season-opening/wechat-qr.jpg
 ---
 Winter is finally over. The weather is settling, the sun is out after a week of grey skies — and there's really no better excuse to get on the bike.

@@ -10,6 +10,7 @@ cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySections:
   - hero
 maxParticipants: 35
+distanceKm: 41.6
 wechatQrCode: /images/events/2026-acc-season-opening/wechat-qr.jpg
 ---
 Der Winter ist endlich vorbei. Das Wetter wird stabiler, die Sonne zeigt sich nach einer grauen Woche — und es gibt wirklich keinen besseren Grund, aufs Rad zu steigen.

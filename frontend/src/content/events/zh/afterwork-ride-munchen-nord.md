@@ -12,6 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
+distanceKm: 48.5
 registrationDeadline: 2026-04-29T22:58:00
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png

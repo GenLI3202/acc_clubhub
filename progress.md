@@ -200,6 +200,9 @@
   - [X] Reused the existing admin session cookie for both login methods.
 - [X] **Dashboard ACC Red Theme Refresh** (2026-04-29)
   - [X] Replaced dashboard blue accent states with ACC red across admin pages.
+- [X] **Ride Leader Distance Metadata Fix** (2026-04-30)
+  - [X] Added explicit `distanceKm` frontmatter to current single-distance event content so dashboard occurrence sync has a reliable metadata source.
+  - [X] Preserved existing backend `distance_km` values when sync payloads omit distance, avoiding accidental null overwrites.
 
 
 ## In Progress

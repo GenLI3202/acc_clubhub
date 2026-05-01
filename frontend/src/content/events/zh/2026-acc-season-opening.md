@@ -10,6 +10,7 @@ cover: /images/events/2026-acc-season-opening/cover.jpg
 displaySections:
   - hero
 maxParticipants: 35
+distanceKm: 41.6
 wechatQrCode: /images/events/2026-acc-season-opening/wechat-qr.jpg
 ---
 冬天终于要过去了。滑雪的朋友们或许还有些依依不舍，但热爱骑行的伙伴们早已跃跃欲试。天气慢慢转暖，这个周六阳光难得，告别了一周的阴雨——正是出门骑行的好时机。

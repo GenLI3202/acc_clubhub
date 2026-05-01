@@ -293,7 +293,8 @@ def create_rsvp_v2(
         event.event_type = data.event_type
         event.max_participants = data.max_participants
         event.registration_deadline = reg_deadline
-        event.distance_km = data.distance_km
+        if data.distance_km is not None:
+            event.distance_km = data.distance_km
 
     # 2. Check registration deadline (guard against naive vs aware mismatch)
     if event.registration_deadline is not None:

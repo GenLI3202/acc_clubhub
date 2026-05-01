@@ -64,3 +64,39 @@ def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
         
     expected_date = datetime(2026, 5, 20, 14, 45, tzinfo=timezone.utc)
     assert db_date == expected_date
+
+
+def test_create_rsvp_v2_does_not_clear_existing_distance(client_no_auth, db):
+    slug = "test-distance-preserve"
+    event = Event(
+        slug=slug,
+        title="Original Title",
+        location="Original Location",
+        event_date=datetime(2026, 1, 1, 0, 0, tzinfo=timezone.utc),
+        event_type="social-ride",
+        max_participants=10,
+        distance_km=42.4,
+    )
+    db.add(event)
+    db.commit()
+
+    payload = {
+        "email": "new_registrant@example.com",
+        "name": "New Rider",
+        "privacy_accepted": True,
+        "event_slug": slug,
+        "event_title": "Updated Event Title",
+        "event_location": "New Meeting Point",
+        "event_date": "2026-05-20T14:45:00.000Z",
+        "event_type": "training-camp",
+        "max_participants": 25,
+        "distance_km": None,
+        "lang": "en",
+    }
+
+    response = client_no_auth.post("/api/rsvp", json=payload)
+
+    assert response.status_code == 200, f"RSVP failed: {response.json()}"
+    db.expire_all()
+    updated_event = db.query(Event).filter(Event.slug == slug).first()
+    assert float(updated_event.distance_km) == 42.4

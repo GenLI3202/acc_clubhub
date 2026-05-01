@@ -12,6 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
+distanceKm: 42.4
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
 status: published

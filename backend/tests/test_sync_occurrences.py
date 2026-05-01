@@ -148,6 +148,20 @@ class TestSyncOccurrencesUpsert:
         db.refresh(sample_event)
         assert sample_event.is_public is True
 
+    def test_null_distance_does_not_clear_existing_distance(self, client, db, sample_event):
+        sample_event.distance_km = 42.4
+        db.commit()
+
+        payload = {
+            **NORD_PAYLOAD,
+            "slug": sample_event.slug,
+            "distance_km": None,
+        }
+        client.post("/api/admin/sync-occurrences", json=[payload])
+
+        db.refresh(sample_event)
+        assert float(sample_event.distance_km) == 42.4
+
 
 class TestSyncOccurrencesPerformance:
     def test_update_path_does_not_trigger_ride_leader_recalculation(self, client, db):
