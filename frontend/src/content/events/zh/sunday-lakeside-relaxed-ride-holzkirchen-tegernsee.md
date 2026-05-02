@@ -4,14 +4,14 @@ title: 周日湖畔轻松骑｜Holzkirchen → Tegernsee
 description: 周日从 Holzkirchen 骑到 Tegernsee，轻松节奏，湖景收尾，终点一起吃午餐。
 location: München Hbf / Holzkirchen Bahnhof
 author: ACC Club
-date: 2026-05-03
+date: 2026-05-10
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 displaySections:
   - hero
   - upcoming
-maxParticipants: 15
+maxParticipants: 25
 registrationLink: ''
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
@@ -27,7 +27,7 @@ ACCOfficialRide: true
 
 |                |  |
 | -------------- | -------------------- |
-| **时间**       | 5 月 3 日（周日）8:45 在慕尼黑主火集合；9:02 搭乘 RB55；9:40 从 Holzkirchen 火车站准时出发 |
+| **时间**       | 5 月 10 日（周日）8:45 在慕尼黑主火集合；9:02 搭乘 RB55；9:40 从 Holzkirchen 火车站准时出发 |
 | **集合地点**   | 慕尼黑主火车站 / Holzkirchen 火车站 |
 | **路线**       | Holzkirchen → Tegernsee · [Komoot 查看路线](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5) |
 | **强度**       | 休闲轻松骑，整体新手友好。预计完成均速 20+ km/h |

@@ -4,14 +4,14 @@ title: Sunday Lakeside Relaxed Ride | Holzkirchen → Tegernsee
 description: A relaxed Sunday ride from Holzkirchen to Tegernsee, with lakeside views and lunch at the finish.
 location: München Hbf / Holzkirchen Bahnhof
 author: ACC Club
-date: 2026-05-03
+date: 2026-05-10
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 displaySections:
   - hero
   - upcoming
-maxParticipants: 15
+maxParticipants: 25
 registrationLink: ''
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
@@ -27,7 +27,7 @@ If you live closer to **Holzkirchen**, you are welcome to meet the group directl
 
 |                |  |
 | -------------- | -------------------- |
-| **Time**       | Sunday, May 3 · Meet at München Hbf at 8:45 · Take RB55 at 9:02 · Roll out from Holzkirchen station at 9:40 sharp |
+| **Time**       | Sunday, May 10 · Meet at München Hbf at 8:45 · Take RB55 at 9:02 · Roll out from Holzkirchen station at 9:40 sharp |
 | **Meeting point**   | München Hbf / Holzkirchen station |
 | **Route**       | Holzkirchen → Tegernsee · [View route on Komoot](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5) |
 | **Pace**       | Relaxed ride, beginner-friendly. Expected finish average speed: 20+ km/h |

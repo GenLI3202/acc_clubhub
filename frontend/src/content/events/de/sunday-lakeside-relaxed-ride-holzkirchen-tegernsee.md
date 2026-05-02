@@ -4,14 +4,14 @@ title: Entspannte Sonntagsfahrt am See | Holzkirchen → Tegernsee
 description: Eine lockere Sonntagsausfahrt von Holzkirchen nach Tegernsee mit Seeblick und Mittagessen am Ziel.
 location: München Hbf / Holzkirchen Bahnhof
 author: ACC Club
-date: 2026-05-03
+date: 2026-05-10
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 displaySections:
   - hero
   - upcoming
-maxParticipants: 15
+maxParticipants: 25
 registrationLink: ''
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
@@ -27,7 +27,7 @@ Wenn ihr näher an **Holzkirchen** wohnt, könnt ihr auch direkt dort am **Bahnh
 
 |                |  |
 | -------------- | -------------------- |
-| **Zeit**       | Sonntag, 3. Mai · Treffen um 8:45 am München Hbf · RB55 um 9:02 · Gemeinsamer Start um 9:40 am Bahnhof Holzkirchen |
+| **Zeit**       | Sonntag, 10. Mai · Treffen um 8:45 am München Hbf · RB55 um 9:02 · Gemeinsamer Start um 9:40 am Bahnhof Holzkirchen |
 | **Treffpunkt**   | München Hbf / Bahnhof Holzkirchen |
 | **Route**       | Holzkirchen → Tegernsee · [Route auf Komoot ansehen](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5) |
 | **Tempo**       | Entspannte Ausfahrt, anfängerfreundlich. Erwarteter Schnitt am Ende: 20+ km/h |
