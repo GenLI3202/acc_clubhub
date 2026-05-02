@@ -12,7 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 25
-distanceKm: 48.5
+distanceKm: 34.3
 registrationLink: ''
 wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
 status: published
