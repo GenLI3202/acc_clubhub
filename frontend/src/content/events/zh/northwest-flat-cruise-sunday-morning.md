@@ -12,6 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 25
+registrationDeadline: 2026-05-03T08:00:00
 distanceKm: 61.8
 registrationLink: ''
 wechatQrCode: /images/events/northwest-flat-cruise-sunday-morning/wechat-qr.png
