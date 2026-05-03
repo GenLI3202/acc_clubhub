@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: 每周二下班后 18:00 集合、18:15 从 Tierpark Hellabrunn 出发的慕尼黑南区轻松社交骑行。
-date: 2026-04-28 18:00
+description: 每周二下班后 17:30 集合、17:40 从 Tierpark Hellabrunn 出发的慕尼黑南区轻松社交骑行。
+date: 2026-04-28 17:30
 eventType: after-work
 location: Tierpark Hellabrunn, Isar Eingang Tor 4
 author: ACC Club
@@ -30,13 +30,13 @@ recurring:
 
 这是一场以 **after-work 社交休闲骑** 为主的路线，适合想在工作日傍晚出来透透气、活动一下，也和 ACC 车友一起骑车的人。整体节奏友好，但默认参加者具备基础公路骑行能力。
 
-我们将于 **18:00** 在 **Tierpark Hellabrunn · Isar Eingang Tor 4** 集合，**18:15 准时出发**。路线全程约 **42.4 km**，累计爬升约 **320 m**。预计完成均速约 **24 km/h**，平路巡航大致在 **28–30 km/h**，预计 **20:30 左右回到起点**。
+我们将于 **17:30** 在 **Tierpark Hellabrunn · Isar Eingang Tor 4** 集合，**17:40 准时出发**。路线全程约 **42.4 km**，累计爬升约 **320 m**。预计完成均速约 **24 km/h**，平路巡航大致在 **28–30 km/h**，预计 **20:30 左右回到起点**。
 
 ***
 
 |  | 信息 |
 | --- | --- |
-| **时间** | 2026 年 4 月 28 日（周二）18:00 集合，18:15 准时发车，预计 20:30 回到起点 |
+| **时间** | 2026 年 4 月 28 日（周二）17:30 集合，17:40 准时发车，预计 20:30 回到起点 |
 | **集合地点** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
 | **路线** | 全程约 42.4 km，累计爬升约 320 m，预计 moving time 1h 48m |
 | **强度** | 完成均速约 24 km/h，平路巡航约 28–30 km/h；偏轻松社交骑，但需具备基础骑行能力 |

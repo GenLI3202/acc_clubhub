@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Weekly relaxed social after-work ride every Tuesday with meet-up at 18:00 and rollout at 18:15, starting from Tierpark Hellabrunn in München Süd.
-date: 2026-04-28 18:00
+description: Weekly relaxed social after-work ride every Tuesday with meet-up at 17:30 and rollout at 17:40, starting from Tierpark Hellabrunn in München Süd.
+date: 2026-04-28 17:30
 eventType: after-work
 location: Tierpark Hellabrunn, Isar Eingang Tor 4
 author: ACC Club
@@ -30,13 +30,13 @@ Join us for a relaxed ride through München Süd after work next Tuesday.
 
 This is an **after-work social ride** for riders who want to get some fresh air, spin their legs after work, and enjoy an easy evening ride with ACC. The pace is friendly, but participants should be comfortable with basic road riding.
 
-We will meet at **18:00** at **Tierpark Hellabrunn · Isar Eingang Tor 4**, with a **prompt rollout at 18:15**. The route is about **42.4 km** with around **320 m** of elevation gain. Expected average speed is around **24 km/h**, with flat cruising speed around **28–30 km/h**. We expect to return to the starting point at around **20:30**.
+We will meet at **17:30** at **Tierpark Hellabrunn · Isar Eingang Tor 4**, with a **prompt rollout at 17:40**. The route is about **42.4 km** with around **320 m** of elevation gain. Expected average speed is around **24 km/h**, with flat cruising speed around **28–30 km/h**. We expect to return to the starting point at around **20:30**.
 
 ***
 
 |  | Details |
 | --- | --- |
-| **Time** | Tuesday, April 28 · Meet-up at 18:00 · Rollout at 18:15 sharp · Expected return around 20:30 |
+| **Time** | Tuesday, April 28 · Meet-up at 17:30 · Rollout at 17:40 sharp · Expected return around 20:30 |
 | **Meeting point** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
 | **Route** | Approx. 42.4 km · Approx. 320 m elevation gain · Estimated moving time 1h 48m |
 | **Pace** | Approx. 24 km/h average moving speed · 28–30 km/h cruising speed on the flat |
