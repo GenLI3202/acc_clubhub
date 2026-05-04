@@ -31,13 +31,13 @@ Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Norden.
 
 Diese After Work Ride ist als lockere Social Ride geplant und eignet sich für alle, die sich am Abend noch ein wenig bewegen, abschalten und gemeinsam in ruhigem Tempo fahren möchten. Das Tempo ist entspannt, grundlegende Erfahrung auf dem Rennrad wird jedoch vorausgesetzt.
 
-Wir treffen uns am **Donnerstag um 17:30 Uhr** bei **OEZ Decathlon**, die **pünktliche Abfahrt ist um 17:45 Uhr**, und fahren dann gemeinsam eine After-Work-Route durch den Münchner Norden. Die Strecke ist etwa **48,5 km** lang und hat rund **110 hm**. Die Rückkehr zum Startpunkt ist gegen **20:00 Uhr** geplant.
+Wir treffen uns am **Donnerstag, 7. Mai um 17:30 Uhr** bei **OEZ Decathlon**, die **pünktliche Abfahrt ist um 17:45 Uhr**, und fahren dann gemeinsam eine After-Work-Route durch den Münchner Norden. Die Strecke ist etwa **48,5 km** lang und hat rund **110 hm**. Die Rückkehr zum Startpunkt ist gegen **20:00 Uhr** geplant.
 
 ---
 
 |                | Infos |
 | -------------- | ----- |
-| **Zeit**       | Donnerstag · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:45 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
+| **Zeit**       | Donnerstag, 7. Mai · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:45 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
 | **Treffpunkt** | OEZ Decathlon, Pelkovenstraße 143, 80992 München |
 | **Strecke**    | Ca. 48,5 km · Ca. 110 hm |
 | **Tempo**      | Entspannte Social Ride, grundlegende Rennrad-Erfahrung wird vorausgesetzt |

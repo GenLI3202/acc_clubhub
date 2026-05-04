@@ -36,7 +36,7 @@ Treffpunkt ist um **17:30 Uhr** bei **Tierpark Hellabrunn · Isar Eingang Tor 4*
 
 |                | Infos |
 | -------------- | ----- |
-| **Zeit**       | Dienstag · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:40 Uhr · Rückkehr voraussichtlich gegen 20:30 Uhr |
+| **Zeit**       | Dienstag, 5. Mai · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:40 Uhr · Rückkehr voraussichtlich gegen 20:30 Uhr |
 | **Treffpunkt** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
 | **Strecke**    | Ca. 42,4 km · Ca. 320 hm · Geschätzte Fahrzeit 1 Std. 48 Min. |
 | **Tempo**      | Ca. 24 km/h Durchschnitt · 28–30 km/h Reisegeschwindigkeit auf flachen Abschnitten |
