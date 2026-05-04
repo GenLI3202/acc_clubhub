@@ -2,7 +2,7 @@
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
 description: Weekly relaxed social after-work ride every Tuesday with meet-up at 17:30 and rollout at 17:40, starting from Tierpark Hellabrunn in München Süd.
-date: 2026-04-28 17:30
+date: 2026-05-05 17:30
 eventType: after-work
 location: Tierpark Hellabrunn, Isar Eingang Tor 4
 author: ACC Club
@@ -26,7 +26,7 @@ recurring:
   registrationDeadlineHoursBefore: 2
 ---
 
-Join us for a relaxed ride through München Süd after work next Tuesday.
+Join us for a relaxed ride through München Süd after work.
 
 This is an **after-work social ride** for riders who want to get some fresh air, spin their legs after work, and enjoy an easy evening ride with ACC. The pace is friendly, but participants should be comfortable with basic road riding.
 
@@ -36,7 +36,7 @@ We will meet at **17:30** at **Tierpark Hellabrunn · Isar Eingang Tor 4**, with
 
 |  | Details |
 | --- | --- |
-| **Time** | Tuesday, April 28 · Meet-up at 17:30 · Rollout at 17:40 sharp · Expected return around 20:30 |
+| **Time** | Tuesday · Meet-up at 17:30 · Rollout at 17:40 sharp · Expected return around 20:30 |
 | **Meeting point** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
 | **Route** | Approx. 42.4 km · Approx. 320 m elevation gain · Estimated moving time 1h 48m |
 | **Pace** | Approx. 24 km/h average moving speed · 28–30 km/h cruising speed on the flat |

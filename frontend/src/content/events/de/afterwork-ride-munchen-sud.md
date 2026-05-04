@@ -2,7 +2,7 @@
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
 description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:30 Uhr und Abfahrt um 17:40 Uhr am Tierpark Hellabrunn.
-date: 2026-04-28 17:30
+date: 2026-05-05 17:30
 eventType: after-work
 location: Tierpark Hellabrunn, Isar Eingang Tor 4
 author: ACC Club
@@ -26,7 +26,7 @@ recurring:
   registrationDeadlineHoursBefore: 2
 ---
 
-Komm nächsten Dienstag nach Feierabend mit auf eine entspannte Runde durch den Münchner Süden.
+Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Süden.
 
 Diese **After-Work Social Ride** richtet sich an alle, die nach der Arbeit noch locker fahren, frische Luft schnappen und gemeinsam mit ACC eine angenehme Abendrunde drehen möchten. Das Tempo ist freundlich, aber grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt.
 
@@ -36,7 +36,7 @@ Treffpunkt ist um **17:30 Uhr** bei **Tierpark Hellabrunn · Isar Eingang Tor 4*
 
 |                | Infos |
 | -------------- | ----- |
-| **Zeit**       | Dienstag, 28. April · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:40 Uhr · Rückkehr voraussichtlich gegen 20:30 Uhr |
+| **Zeit**       | Dienstag · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:40 Uhr · Rückkehr voraussichtlich gegen 20:30 Uhr |
 | **Treffpunkt** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
 | **Strecke**    | Ca. 42,4 km · Ca. 320 hm · Geschätzte Fahrzeit 1 Std. 48 Min. |
 | **Tempo**      | Ca. 24 km/h Durchschnitt · 28–30 km/h Reisegeschwindigkeit auf flachen Abschnitten |

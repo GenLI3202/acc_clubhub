@@ -2,7 +2,7 @@
 slug: afterwork-ride-Munich-North
 title: ACC After Work Ride · München Nord
 description: Wöchentliche entspannte Social After-Work-Runde im Münchner Norden, jeden Donnerstag mit Treffen um 17:30 Uhr und Abfahrt um 17:45 Uhr am OEZ Decathlon.
-date: 2026-04-30 17:30
+date: 2026-05-07 17:30
 eventType: after-work
 location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
@@ -31,13 +31,13 @@ Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Norden.
 
 Diese After Work Ride ist als lockere Social Ride geplant und eignet sich für alle, die sich am Abend noch ein wenig bewegen, abschalten und gemeinsam in ruhigem Tempo fahren möchten. Das Tempo ist entspannt, grundlegende Erfahrung auf dem Rennrad wird jedoch vorausgesetzt.
 
-Wir treffen uns am **Donnerstag, 30. April um 17:30 Uhr** bei **OEZ Decathlon**, die **pünktliche Abfahrt ist um 17:45 Uhr**, und fahren dann gemeinsam eine After-Work-Route durch den Münchner Norden. Die Strecke ist etwa **48,5 km** lang und hat rund **110 hm**. Die Rückkehr zum Startpunkt ist gegen **20:00 Uhr** geplant.
+Wir treffen uns am **Donnerstag um 17:30 Uhr** bei **OEZ Decathlon**, die **pünktliche Abfahrt ist um 17:45 Uhr**, und fahren dann gemeinsam eine After-Work-Route durch den Münchner Norden. Die Strecke ist etwa **48,5 km** lang und hat rund **110 hm**. Die Rückkehr zum Startpunkt ist gegen **20:00 Uhr** geplant.
 
 ---
 
 |                | Infos |
 | -------------- | ----- |
-| **Zeit**       | Donnerstag, 30. April · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:45 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
+| **Zeit**       | Donnerstag · Treffen um 17:30 Uhr · Pünktliche Abfahrt um 17:45 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
 | **Treffpunkt** | OEZ Decathlon, Pelkovenstraße 143, 80992 München |
 | **Strecke**    | Ca. 48,5 km · Ca. 110 hm |
 | **Tempo**      | Entspannte Social Ride, grundlegende Rennrad-Erfahrung wird vorausgesetzt |

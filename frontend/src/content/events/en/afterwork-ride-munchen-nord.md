@@ -2,7 +2,7 @@
 slug: afterwork-ride-Munich-North
 title: ACC After Work Ride · München Nord
 description: Weekly relaxed social after-work ride every Thursday with meet-up at 17:30 and rollout at 17:45 from OEZ Decathlon in München Nord.
-date: 2026-04-30 17:30
+date: 2026-05-07 17:30
 eventType: after-work
 location: OEZ Decathlon, Pelkovenstraße 143, 80992 München
 author: ACC Club
@@ -31,13 +31,13 @@ Join us for a relaxed ride through München Nord after work.
 
 This After Work Ride is designed as a relaxed social ride for anyone who wants to get some movement after work, unwind a bit, and enjoy an easy evening ride together. The pace is social and friendly, but participants should be comfortable with basic road riding.
 
-We will meet on **Thursday, April 30 at 17:30** at **OEZ Decathlon**, with a **prompt rollout at 17:45**, and head out for an after-work route through the north of Munich. The route is about **48.5 km** with around **110 m** of elevation gain, and we expect to return to the starting point at around **20:00**.
+We will meet on **Thursday at 17:30** at **OEZ Decathlon**, with a **prompt rollout at 17:45**, and head out for an after-work route through the north of Munich. The route is about **48.5 km** with around **110 m** of elevation gain, and we expect to return to the starting point at around **20:00**.
 
 ***
 
 |  | Details |
 | --- | --- |
-| **Time** | Thursday, April 30 · Meet-up at 17:30 · Rollout at 17:45 sharp · Expected return around 20:00 |
+| **Time** | Thursday · Meet-up at 17:30 · Rollout at 17:45 sharp · Expected return around 20:00 |
 | **Meeting point** | OEZ Decathlon, Pelkovenstraße 143, 80992 München |
 | **Route** | Approx. 48.5 km · Approx. 110 m elevation gain |
 | **Pace** | Relaxed social ride, but basic road riding ability is required |
