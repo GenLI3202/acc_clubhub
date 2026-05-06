@@ -7,7 +7,6 @@ author: ACC Club
 date: 2026-05-10
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
-coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 displaySections:
   - hero
   - upcoming
@@ -20,9 +19,7 @@ ACCOfficialRide: true
 ---
 
 Kommt mit auf eine entspannte Sonntagsausfahrt.
-Wir starten in **Holzkirchen** und fahren bis **Tegernsee** – mit ländlichen Straßen und Seeblick unterwegs. Zum Abschluss gehen wir ins **Bräustüberl Tegernsee** zum Mittagessen. Danach könnt ihr von **Tegernsee Bahnhof** bequem mit dem Zug zurück nach München fahren.
-
-Wenn ihr näher an **Holzkirchen** wohnt, könnt ihr auch direkt dort am **Bahnhof Holzkirchen** dazukommen.
+Wir starten in **Holzkirchen** und fahren auf einer aktualisierten Seerunde mit ländlichen Straßen und schönen Ausblicken unterwegs. Mittags machen wir Halt im **Biergarten Steg 1**. Danach fahren wir noch etwa **16 km** weiter bis zum **Bahnhof Gmund am Tegernsee**, von wo aus ihr mit dem Zug zurück nach München fahren könnt.
 
 ---
 
@@ -30,26 +27,27 @@ Wenn ihr näher an **Holzkirchen** wohnt, könnt ihr auch direkt dort am **Bahnh
 | -------------- | -------------------- |
 | **Zeit**       | Sonntag, 10. Mai · Treffen um 8:45 am München Hbf · RB55 um 9:02 · Gemeinsamer Start um 9:40 am Bahnhof Holzkirchen |
 | **Treffpunkt**   | München Hbf / Bahnhof Holzkirchen |
-| **Route**       | Holzkirchen → Tegernsee · [Route auf Komoot ansehen](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5) |
+| **Route**       | Holzkirchen → rund um den Tegernsee → Gmund am Tegernsee · [Route auf Komoot ansehen](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **Tempo**       | Entspannte Ausfahrt, anfängerfreundlich. Erwarteter Schnitt am Ende: 20+ km/h |
-| **Hinweise**   | Bitte seid pünktlich, damit ihr die RB55 um 9:02 nicht verpasst. Rennrad oder Gravelbike empfohlen, aber mit genügend Selbstvertrauen geht auch ein Citybike |
+| **Hinweise**   | Bitte seid pünktlich, damit ihr die RB55 um 9:02 nicht verpasst. Gleis 33 am München Hbf wird aktuell umgebaut und ist etwas schwieriger zu erreichen, außerdem sind die Fahrradplätze im Zug recht knapp. Kommt daher am besten mindestens 15 Minuten früher. Rennrad oder Gravelbike empfohlen, aber mit genügend Selbstvertrauen geht auch ein Citybike |
 
 ---
 
 ## Routenvorschau
 
-- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5)
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727)
 
-<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/tour/2923470954/embed?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
+<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/de-de/tour/2936310051/embed?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
 
 ---
 
 ### Logistics
 
-- Mittagspause im **Bräustüberl Tegernsee**  
-  https://maps.app.goo.gl/veEPyE49XvXXDrdTA?g_st=ic
-- Nach dem Mittagessen könnt ihr vom **Bahnhof Tegernsee** mit dem Zug zurück nach München fahren
-- Wenn ihr näher an **Holzkirchen** wohnt, könnt ihr die Gruppe auch direkt dort am Bahnhof treffen
+- Mittagspause im **Biergarten Steg 1**  
+  Seestraße 5, 83684 Tegernsee
+- Nach dem Mittagessen fahren wir noch etwa **16 km** weiter
+- Ziel ist der **Bahnhof Gmund am Tegernsee**
+- Von dort könnt ihr mit dem Zug zurück nach München fahren
 
 ---
 

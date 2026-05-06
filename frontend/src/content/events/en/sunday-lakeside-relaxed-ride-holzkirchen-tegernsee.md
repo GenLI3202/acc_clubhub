@@ -7,7 +7,6 @@ author: ACC Club
 date: 2026-05-10
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
-coverImage: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
 displaySections:
   - hero
   - upcoming
@@ -20,9 +19,7 @@ ACCOfficialRide: true
 ---
 
 Join us for a relaxed Sunday escape.
-This ride starts from **Holzkirchen** and heads to **Tegernsee**, with countryside roads and lakeside views along the way. We will finish at **Bräustüberl Tegernsee** for lunch, and afterwards you can take the train back to Munich from **Tegernsee station**.
-
-If you live closer to **Holzkirchen**, you are welcome to meet the group directly at **Holzkirchen station**.
+This ride starts from **Holzkirchen** and follows an updated lakeside route, with countryside roads and lake views along the way. We will stop for lunch at **Biergarten Steg 1**. After lunch, we will continue riding for about **16 km** and finish at **Gmund am Tegernsee station**, where you can take the train back to Munich.
 
 ---
 
@@ -30,26 +27,27 @@ If you live closer to **Holzkirchen**, you are welcome to meet the group directl
 | -------------- | -------------------- |
 | **Time**       | Sunday, May 10 · Meet at München Hbf at 8:45 · Take RB55 at 9:02 · Roll out from Holzkirchen station at 9:40 sharp |
 | **Meeting point**   | München Hbf / Holzkirchen station |
-| **Route**       | Holzkirchen → Tegernsee · [View route on Komoot](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5) |
+| **Route**       | Holzkirchen → around Tegernsee → Gmund am Tegernsee · [View route on Komoot](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **Pace**       | Relaxed ride, beginner-friendly. Expected finish average speed: 20+ km/h |
-| **Notes**   | Please be on time so you do not miss the 9:02 RB55. A road bike or gravel bike is recommended, but if you trust your legs, a city bike is also welcome |
+| **Notes**   | Please be on time so you do not miss the 9:02 RB55. Platform Gl. 33 at München Hbf is currently under construction, so it is a bit harder to reach, and bike spaces on the train are quite limited. It is best to arrive at least 15 minutes early. A road bike or gravel bike is recommended, but if you trust your legs, a city bike is also welcome |
 
 ---
 
 ## Route Preview
 
-- **Komoot route:** [View route](https://www.komoot.com/tour/2923470954?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5)
+- **Komoot route:** [View route](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727)
 
-<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/tour/2923470954/embed?share_token=a2a6hzry9jtotxDim8luEmdyFA8uIDdda9QTmZ5h0qiBcagEc5&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
+<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/de-de/tour/2936310051/embed?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
 
 ---
 
 ### Logistics
 
-- Lunch stop: **Bräustüberl Tegernsee**  
-  https://maps.app.goo.gl/veEPyE49XvXXDrdTA?g_st=ic
-- After lunch, you can take the train back to Munich from **Tegernsee station**
-- If you live closer to **Holzkirchen**, you can also meet the group directly at **Holzkirchen station**
+- Lunch stop: **Biergarten Steg 1**  
+  Seestraße 5, 83684 Tegernsee
+- After lunch, we will continue riding for about **16 km**
+- The ride ends at **Gmund am Tegernsee station**
+- From there, you can take the train back to Munich
 
 ---
 
