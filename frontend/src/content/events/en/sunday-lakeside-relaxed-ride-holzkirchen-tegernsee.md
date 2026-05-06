@@ -37,7 +37,7 @@ This ride starts from **Holzkirchen** and follows an updated lakeside route, wit
 
 - **Komoot route:** [View route](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727)
 
-<div style="overflow:hidden;height:240px;position:relative;"><iframe src="https://www.komoot.com/de-de/tour/2936310051/embed?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;bottom:0;left:0;"></iframe></div>
+<div style="overflow:hidden;height:420px;position:relative;"><iframe src="https://www.komoot.com/de-de/tour/2936310051/embed?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&amp;profile=1" width="100%" height="700" frameborder="0" scrolling="no" style="position:absolute;top:0;left:0;"></iframe></div>
 
 ---
 
