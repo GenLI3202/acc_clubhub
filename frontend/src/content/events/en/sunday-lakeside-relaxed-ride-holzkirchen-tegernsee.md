@@ -25,11 +25,11 @@ This ride starts from **Holzkirchen** and follows an updated lakeside route, wit
 
 |                |  |
 | -------------- | -------------------- |
-| **Time**       | Sunday, May 10 · Meet at München Hbf at 8:45 · Take RB55 at 9:02 · Roll out from Holzkirchen station at 9:40 sharp |
+| **Time**       | Sunday, May 10 · Meet at München Hbf at 9:45 · Take RB55 at 10:02 · Roll out from Holzkirchen station at 10:40 sharp |
 | **Meeting point**   | München Hbf / Holzkirchen station |
 | **Route**       | Holzkirchen → around Tegernsee → Gmund am Tegernsee · [View route on Komoot](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **Pace**       | Relaxed ride, beginner-friendly. Expected finish average speed: 20+ km/h |
-| **Notes**   | Please be on time so you do not miss the 9:02 RB55. Platform Gl. 33 at München Hbf is currently under construction, so it is a bit harder to reach, and bike spaces on the train are quite limited. It is best to arrive at least 15 minutes early. A road bike or gravel bike is recommended, but if you trust your legs, a city bike is also welcome |
+| **Notes**   | Please be on time so you do not miss the 10:02 RB55. Platform Gl. 33 at München Hbf is currently under construction, so it is a bit harder to reach, and bike spaces on the train are quite limited. It is best to arrive at least 15 minutes early. A road bike or gravel bike is recommended, but if you trust your legs, a city bike is also welcome |
 
 ---
 

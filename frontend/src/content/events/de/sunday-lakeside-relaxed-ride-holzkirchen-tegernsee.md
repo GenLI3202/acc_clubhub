@@ -25,11 +25,11 @@ Wir starten in **Holzkirchen** und fahren auf einer aktualisierten Seerunde mit 
 
 |                |  |
 | -------------- | -------------------- |
-| **Zeit**       | Sonntag, 10. Mai · Treffen um 8:45 am München Hbf · RB55 um 9:02 · Gemeinsamer Start um 9:40 am Bahnhof Holzkirchen |
+| **Zeit**       | Sonntag, 10. Mai · Treffen um 9:45 am München Hbf · RB55 um 10:02 · Gemeinsamer Start um 10:40 am Bahnhof Holzkirchen |
 | **Treffpunkt**   | München Hbf / Bahnhof Holzkirchen |
 | **Route**       | Holzkirchen → rund um den Tegernsee → Gmund am Tegernsee · [Route auf Komoot ansehen](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **Tempo**       | Entspannte Ausfahrt, anfängerfreundlich. Erwarteter Schnitt am Ende: 20+ km/h |
-| **Hinweise**   | Bitte seid pünktlich, damit ihr die RB55 um 9:02 nicht verpasst. Gleis 33 am München Hbf wird aktuell umgebaut und ist etwas schwieriger zu erreichen, außerdem sind die Fahrradplätze im Zug recht knapp. Kommt daher am besten mindestens 15 Minuten früher. Rennrad oder Gravelbike empfohlen, aber mit genügend Selbstvertrauen geht auch ein Citybike |
+| **Hinweise**   | Bitte seid pünktlich, damit ihr die RB55 um 10:02 nicht verpasst. Gleis 33 am München Hbf wird aktuell umgebaut und ist etwas schwieriger zu erreichen, außerdem sind die Fahrradplätze im Zug recht knapp. Kommt daher am besten mindestens 15 Minuten früher. Rennrad oder Gravelbike empfohlen, aber mit genügend Selbstvertrauen geht auch ein Citybike |
 
 ---
 

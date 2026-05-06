@@ -25,11 +25,11 @@ ACCOfficialRide: true
 
 |                |  |
 | -------------- | -------------------- |
-| **时间**       | 5 月 10 日（周日）8:45 在慕尼黑主火集合；9:02 搭乘 RB55；9:40 从 Holzkirchen 火车站准时出发 |
+| **时间**       | 5 月 10 日（周日）9:45 在慕尼黑主火集合；10:02 搭乘 RB55；10:40 从 Holzkirchen 火车站准时出发 |
 | **集合地点**   | 慕尼黑主火车站 / Holzkirchen 火车站 |
 | **路线**       | Holzkirchen → Tegernsee 周边 → Gmund am Tegernsee · [Komoot 查看路线](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **强度**       | 休闲轻松骑，整体新手友好。预计完成均速 20+ km/h |
-| **注意事项**   | 请准时集合，避免误了 9:02 的 RB55。慕尼黑主火车站的 Gl. 33 目前在施工，站台相对不太好到达，且车厢自行车位置也比较紧张，建议至少提前 15 分钟到站。优先公路车或瓜车；对自己有信心的话，city bike / 买菜车也欢迎加入 |
+| **注意事项**   | 请准时集合，避免误了 10:02 的 RB55。慕尼黑主火车站的 Gl. 33 目前在施工，站台相对不太好到达，且车厢自行车位置也比较紧张，建议至少提前 15 分钟到站。优先公路车或瓜车；对自己有信心的话，city bike / 买菜车也欢迎加入 |
 
 ---
 
