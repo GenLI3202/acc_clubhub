@@ -1,0 +1,428 @@
+---
+// dashboard/season-planner/index.astro — 活动策划 weekly board (SSR, Chinese UI)
+export const prerender = false;
+
+import type { GroupedSlotsResponse, WeekGroup, PlanSlot } from "../../../lib/admin/seasonPlanner";
+import {
+  EVENT_TYPE_LABEL,
+  STATUS_LABEL,
+  READINESS_LABEL,
+} from "../../../lib/admin/seasonPlanner";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+// Verify authentication — forward browser cookies to backend
+const cookie = Astro.request.headers.get("cookie") || "";
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, {
+    headers: { "Cookie": cookie },
+  });
+  if (!meRes.ok) {
+    return Astro.redirect("/dashboard/login", 302);
+  }
+} catch {
+  return Astro.redirect("/dashboard/login", 302);
+}
+
+const season = Astro.url.searchParams.get("season") || "2026";
+
+let weeks: WeekGroup[] = [];
+let fetchError: string | null = null;
+
+try {
+  const res = await fetch(
+    `${apiUrl}/api/admin/season/slots/grouped?season=${encodeURIComponent(season)}`,
+    { headers: { "Cookie": cookie } },
+  );
+  if (res.ok) {
+    const data: GroupedSlotsResponse = await res.json();
+    weeks = data.weeks || [];
+  } else if (res.status === 401) {
+    return Astro.redirect("/dashboard/login", 302);
+  } else {
+    fetchError = `加载槽位失败 (${res.status})`;
+  }
+} catch (e: unknown) {
+  fetchError = `加载槽位出错: ${e instanceof Error ? e.message : String(e)}`;
+}
+
+function slotCardTitle(slot: PlanSlot): string {
+  return EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type;
+}
+
+function formatDate(d: string): string {
+  try {
+    const dt = new Date(d + "T00:00:00");
+    return `${dt.getMonth() + 1}月${dt.getDate()}日`;
+  } catch {
+    return d;
+  }
+}
+---
+
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>活动策划 | ACC ClubHub Admin</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 1200px; margin: 0 auto; }
+      .breadcrumb { margin-bottom: 1.5rem; }
+      .breadcrumb a { color: #C62828; text-decoration: none; font-size: 0.9rem; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #d0d7de;
+      }
+      h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+      .action-btn {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: #C62828;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+      .action-btn:hover { background: #a81f1f; }
+
+      .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
+      .empty { text-align: center; padding: 3rem; color: #57606a; }
+
+      /* Weekly board */
+      .week-section { margin-bottom: 2rem; }
+      .week-header {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #24292f;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid #d0d7de;
+      }
+      .week-header .date-range { font-weight: 400; color: #57606a; font-size: 0.85rem; margin-left: 0.5rem; }
+      .slot-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
+      .slot-card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .slot-card-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #24292f;
+      }
+      .slot-card-date { color: #57606a; font-size: 0.82rem; }
+      .slot-card-meta { font-size: 0.8rem; color: #57606a; }
+      .slot-card-owner { font-size: 0.8rem; color: #24292f; }
+
+      /* Status badges — reused from events/index.astro */
+      .badge {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .status {
+        display: inline-block;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .status-unclaimed { background: #eef1f5; color: #57606a; }
+      .status-claimed { background: #ddf4ff; color: #0969da; }
+      .status-in_planning { background: #fff8c5; color: #9a6700; }
+      .status-ready { background: #dafbe1; color: #1a7f37; }
+      .status-published { background: #ddf4ff; color: #0969da; }
+      .status-cancelled { background: #ffebe9; color: #cf222e; }
+      .type-badge {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.74rem;
+        font-weight: 600;
+        background: #eef1f5;
+        color: #57606a;
+      }
+      .type-after_work_south { background: #fff8c5; color: #9a6700; }
+      .type-after_work_north { background: #fff0f0; color: #C62828; }
+      .type-weekend_casual  { background: #dafbe1; color: #1a7f37; }
+      .type-weekend_challenge { background: #ddf4ff; color: #0550ae; }
+      .type-special_event   { background: #ffeff7; color: #8250df; }
+      .type-eyas_program    { background: #f0fff4; color: #116329; }
+
+      /* Generate modal */
+      dialog {
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        padding: 0;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      dialog::backdrop { background: rgba(0, 0, 0, 0.4); }
+      .dialog-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #d0d7de;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #24292f;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .dialog-body { padding: 1.25rem; }
+      .form-group { margin-bottom: 1rem; }
+      .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #24292f;
+        margin-bottom: 0.3rem;
+      }
+      .form-group input[type="text"],
+      .form-group input[type="date"] {
+        width: 100%;
+        padding: 0.45rem 0.7rem;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        font-size: 0.875rem;
+      }
+      .form-group input:focus { outline: 2px solid #C62828; outline-offset: 1px; }
+      .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
+      .checkbox-row input[type="checkbox"] { width: 1rem; height: 1rem; }
+      .dialog-footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid #d0d7de;
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+      }
+      .btn-secondary {
+        padding: 0.4rem 0.9rem;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+      .btn-secondary:hover { background: #f6f8fa; }
+      .preview-box {
+        background: #f6f8fa;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        color: #24292f;
+        margin-top: 0.75rem;
+        display: none;
+      }
+      .preview-box.visible { display: block; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">&larr; 管理后台</a>
+      </div>
+
+      <div class="header">
+        <h1>活动策划 Dashboard</h1>
+        <button class="action-btn" id="open-generate-modal">生成槽位</button>
+      </div>
+
+      {fetchError && <div class="error">{fetchError}</div>}
+
+      {weeks.length === 0 && !fetchError && (
+        <div class="empty">
+          暂无策划槽位。点击「生成槽位」按钮生成 2026 年骑行季计划。
+        </div>
+      )}
+
+      {weeks.map((week) => (
+        <div class="week-section">
+          <div class="week-header">
+            {week.label}
+            <span class="date-range">· {week.date_range}</span>
+          </div>
+          <div class="slot-row">
+            {week.slots.map((slot) => (
+              <div class="slot-card">
+                <div>
+                  <span class={`type-badge type-${slot.event_type}`}>
+                    {slotCardTitle(slot)}
+                  </span>
+                </div>
+                <div class="slot-card-date">{formatDate(slot.planned_date)}</div>
+                <div>
+                  <span class={`status status-${slot.status}`}>
+                    {STATUS_LABEL[slot.status] ?? slot.status}
+                  </span>
+                </div>
+                <div class="slot-card-meta">
+                  准备：{READINESS_LABEL[slot.readiness] ?? slot.readiness}
+                </div>
+                <div class="slot-card-owner">
+                  负责：{slot.claimed_by || "—"}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- 生成槽位 modal -->
+    <dialog id="generate-dialog">
+      <div class="dialog-header">
+        <span>生成策划槽位</span>
+        <button class="btn-secondary" id="close-dialog" style="border:none;font-size:1.1rem;padding:0 0.3rem;">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="form-group">
+          <label for="gen-season">赛季</label>
+          <input type="text" id="gen-season" value="2026" />
+        </div>
+        <div class="form-group">
+          <label for="gen-start">开始日期</label>
+          <input type="date" id="gen-start" value="2026-05-01" />
+        </div>
+        <div class="form-group">
+          <label for="gen-end">结束日期</label>
+          <input type="date" id="gen-end" value="2026-11-30" />
+        </div>
+        <div class="form-group">
+          <div class="checkbox-row">
+            <input type="checkbox" id="gen-overwrite" />
+            <label for="gen-overwrite" style="margin:0;">覆盖已有未认领槽位</label>
+          </div>
+        </div>
+        <div class="preview-box" id="preview-box"></div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn-secondary" id="cancel-dialog">取消</button>
+        <button class="action-btn" id="dry-run-btn">预览</button>
+        <button class="action-btn" id="confirm-btn" style="display:none;">确认生成</button>
+      </div>
+    </dialog>
+
+    <script>
+      const dialog = document.getElementById("generate-dialog") as HTMLDialogElement;
+      const openBtn = document.getElementById("open-generate-modal");
+      const closeBtn = document.getElementById("close-dialog");
+      const cancelBtn = document.getElementById("cancel-dialog");
+      const dryRunBtn = document.getElementById("dry-run-btn") as HTMLButtonElement;
+      const confirmBtn = document.getElementById("confirm-btn") as HTMLButtonElement;
+      const previewBox = document.getElementById("preview-box") as HTMLDivElement;
+
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+
+      function openDialog() {
+        previewBox.classList.remove("visible");
+        previewBox.textContent = "";
+        confirmBtn.style.display = "none";
+        dryRunBtn.style.display = "";
+        dialog.showModal();
+      }
+
+      function closeDialog() {
+        dialog.close();
+      }
+
+      openBtn?.addEventListener("click", openDialog);
+      closeBtn?.addEventListener("click", closeDialog);
+      cancelBtn?.addEventListener("click", closeDialog);
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog) closeDialog();
+      });
+
+      async function callGenerate(dryRun: boolean) {
+        const season = (document.getElementById("gen-season") as HTMLInputElement).value.trim();
+        const startDate = (document.getElementById("gen-start") as HTMLInputElement).value;
+        const endDate = (document.getElementById("gen-end") as HTMLInputElement).value;
+        const overwrite = (document.getElementById("gen-overwrite") as HTMLInputElement).checked;
+
+        const res = await fetch(`${apiUrl}/api/admin/season/slots/generate`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            season,
+            start_date: startDate,
+            end_date: endDate,
+            dry_run: dryRun,
+            overwrite_unclaimed: overwrite,
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(`API 错误 (${res.status}): ${err}`);
+        }
+        return res.json();
+      }
+
+      dryRunBtn?.addEventListener("click", async () => {
+        dryRunBtn.disabled = true;
+        dryRunBtn.textContent = "计算中…";
+        previewBox.classList.remove("visible");
+        try {
+          const data = await callGenerate(true);
+          previewBox.textContent = `预览：将创建 ${data.would_create} 个槽位，跳过 ${data.skipped} 个已存在槽位。`;
+          previewBox.classList.add("visible");
+          confirmBtn.style.display = "";
+        } catch (e: unknown) {
+          previewBox.textContent = `错误：${e instanceof Error ? e.message : String(e)}`;
+          previewBox.classList.add("visible");
+        } finally {
+          dryRunBtn.disabled = false;
+          dryRunBtn.textContent = "预览";
+        }
+      });
+
+      confirmBtn?.addEventListener("click", async () => {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "生成中…";
+        try {
+          const data = await callGenerate(false);
+          previewBox.textContent = `完成：创建 ${data.created} 个槽位，跳过 ${data.skipped} 个。`;
+          previewBox.classList.add("visible");
+          setTimeout(() => {
+            closeDialog();
+            window.location.reload();
+          }, 1200);
+        } catch (e: unknown) {
+          previewBox.textContent = `错误：${e instanceof Error ? e.message : String(e)}`;
+          previewBox.classList.add("visible");
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "确认生成";
+        }
+      });
+    </script>
+  </body>
+</html>
