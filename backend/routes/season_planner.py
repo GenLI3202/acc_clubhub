@@ -1,0 +1,158 @@
+"""
+ACC ClubHub Backend - Season Planner API Routes
+Phase A: slot generation + read-only listing (admin-only)
+"""
+from __future__ import annotations
+
+from collections import defaultdict
+from datetime import date, datetime
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Query
+from pydantic import BaseModel, ConfigDict
+from sqlalchemy.orm import Session
+
+from database import get_db
+from models import PlanSlot
+from routes.auth import get_current_admin
+from services.season_planner import generate_slots
+
+router = APIRouter()
+
+
+# ============================================================
+# Pydantic schemas
+# ============================================================
+
+class SlotOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    season: str
+    iso_year: int
+    iso_week: int
+    planned_date: date
+    weekday: int
+    event_type: str
+    title: Optional[str]
+    location: Optional[str]
+    distance_km: Optional[float]
+    notes: Optional[str]
+    claimed_by: Optional[str]
+    status: str
+    readiness: str
+    auto_generated: bool
+    locked: bool
+    published_event_id: Optional[int]
+    published_at: Optional[datetime]
+    created_at: datetime
+    updated_at: datetime
+
+
+class GenerateRequest(BaseModel):
+    season: str = "2026"
+    start_date: date
+    end_date: date
+    dry_run: bool = False
+    overwrite_unclaimed: bool = False
+
+
+class GenerateResponse(BaseModel):
+    created: int
+    skipped: int
+    would_create: Optional[int]
+
+
+# ============================================================
+# Helpers
+# ============================================================
+
+def _query_slots(
+    db: Session,
+    season: str,
+    from_date: Optional[date],
+    to_date: Optional[date],
+    status: Optional[str],
+    event_type: Optional[str],
+    claimed_by: Optional[str],
+) -> list[PlanSlot]:
+    q = db.query(PlanSlot).filter(PlanSlot.season == season)
+    if from_date:
+        q = q.filter(PlanSlot.planned_date >= from_date)
+    if to_date:
+        q = q.filter(PlanSlot.planned_date <= to_date)
+    if status:
+        q = q.filter(PlanSlot.status == status)
+    if event_type:
+        q = q.filter(PlanSlot.event_type == event_type)
+    if claimed_by:
+        q = q.filter(PlanSlot.claimed_by == claimed_by)
+    return q.order_by(PlanSlot.planned_date, PlanSlot.event_type).all()
+
+
+# ============================================================
+# Endpoints
+# ============================================================
+
+@router.post("/api/admin/season/slots/generate", response_model=GenerateResponse)
+def generate_season_slots(
+    body: GenerateRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> GenerateResponse:
+    result = generate_slots(
+        session=db,
+        season=body.season,
+        start_date=body.start_date,
+        end_date=body.end_date,
+        dry_run=body.dry_run,
+        overwrite_unclaimed=body.overwrite_unclaimed,
+    )
+    return GenerateResponse(**result)
+
+
+@router.get("/api/admin/season/slots", response_model=list[SlotOut])
+def list_season_slots(
+    season: str = "2026",
+    from_date: Optional[date] = Query(None, alias="from"),
+    to_date: Optional[date] = Query(None, alias="to"),
+    status: Optional[str] = None,
+    event_type: Optional[str] = None,
+    claimed_by: Optional[str] = None,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> list[PlanSlot]:
+    return _query_slots(db, season, from_date, to_date, status, event_type, claimed_by)
+
+
+@router.get("/api/admin/season/slots/grouped")
+def grouped_season_slots(
+    season: str = "2026",
+    from_date: Optional[date] = Query(None, alias="from"),
+    to_date: Optional[date] = Query(None, alias="to"),
+    status: Optional[str] = None,
+    event_type: Optional[str] = None,
+    claimed_by: Optional[str] = None,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    slots = _query_slots(db, season, from_date, to_date, status, event_type, claimed_by)
+
+    by_week: dict[tuple[int, int], list[PlanSlot]] = defaultdict(list)
+    for slot in slots:
+        by_week[(slot.iso_year, slot.iso_week)].append(slot)
+
+    weeks = []
+    for (iso_year, iso_week) in sorted(by_week.keys()):
+        week_slots = sorted(by_week[(iso_year, iso_week)], key=lambda s: s.planned_date)
+        monday = date.fromisocalendar(iso_year, iso_week, 1)
+        sunday = date.fromisocalendar(iso_year, iso_week, 7)
+        weeks.append({
+            "iso_year": iso_year,
+            "iso_week": iso_week,
+            "label": f"第 {iso_week} 周",
+            "date_range": f"{monday.strftime('%Y-%m-%d')} ~ {sunday.strftime('%m-%d')}",
+            "slots": [SlotOut.model_validate(s).model_dump(mode="json") for s in week_slots],
+        })
+
+    return {"weeks": weeks}
