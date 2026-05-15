@@ -62,6 +62,17 @@ function slotColor(eventType: string): string {
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+// Today in YYYY-MM-DD (server time, UTC)
+const todayStr = new Date().toISOString().split("T")[0];
+
+function isPastWeek(sunday: string): boolean {
+  return sunday < todayStr;
+}
+
+function isCurrentWeek(monday: string, sunday: string): boolean {
+  return monday <= todayStr && todayStr <= sunday;
+}
+
 const lastWeek = weeks.length > 0 ? weeks[weeks.length - 1] : null;
 const nextWeekMonday = lastWeek ? addDays(lastWeek.monday, 7) : null;
 const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
@@ -148,8 +159,31 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
         font-weight: 700;
         color: #24292f;
         margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
-      .week-label .date-range { font-weight: 400; color: #57606a; font-size: 0.8rem; margin-left: 0.5rem; }
+      .week-label .date-range { font-weight: 400; color: #57606a; font-size: 0.8rem; }
+
+      /* Past weeks — dimmed */
+      .week-section.is-past { opacity: 0.45; }
+      .week-section.is-past .day-cell { filter: grayscale(0.6); }
+      .week-section.is-past .cell-empty { cursor: default; pointer-events: none; }
+
+      /* Current week — highlighted header */
+      .week-section.is-current .week-label { color: #C62828; }
+      .week-section.is-current .day-grid { border-left: 3px solid #C62828; padding-left: 6px; }
+
+      .tag {
+        display: inline-block;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.1rem 0.4rem;
+        border-radius: 999px;
+        vertical-align: middle;
+      }
+      .tag-past    { background: #eef1f5; color: #8c959f; }
+      .tag-current { background: #C62828; color: white; }
 
       .day-grid {
         display: grid;
@@ -360,12 +394,17 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       )}
 
       {weeks.map((week) => {
-        const byDay = slotsByWeekday(week.slots);
+        const byDay   = slotsByWeekday(week.slots);
+        const past    = isPastWeek(week.sunday);
+        const current = !past && isCurrentWeek(week.monday, week.sunday);
+        const sectionClass = past ? "week-section is-past" : current ? "week-section is-current" : "week-section";
         return (
-          <div class="week-section">
+          <div class={sectionClass}>
             <div class="week-label">
               Week {week.iso_week}
-              <span class="date-range">· {week.date_range}</span>
+              <span class="date-range">{week.date_range}</span>
+              {past    && <span class="tag tag-past">Past</span>}
+              {current && <span class="tag tag-current">This week</span>}
             </div>
             <div class="day-grid">
               {DAYS.map((d) => <div class="day-header">{d}</div>)}
