@@ -1,0 +1,360 @@
+---
+// dashboard/season-planner/[id].astro — Slot detail & edit page (SSR)
+export const prerender = false;
+
+import type { PlanSlot } from "../../../lib/admin/seasonPlanner";
+import { EVENT_TYPE_LABEL, STATUS_LABEL, READINESS_LABEL } from "../../../lib/admin/seasonPlanner";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+const cookie = Astro.request.headers.get("cookie") || "";
+
+// Auth check
+try {
+  const meRes = await fetch(`${apiUrl}/auth/me`, { headers: { Cookie: cookie } });
+  if (!meRes.ok) return Astro.redirect("/dashboard/login", 302);
+} catch {
+  return Astro.redirect("/dashboard/login", 302);
+}
+
+const { id } = Astro.params;
+
+let slot: PlanSlot | null = null;
+let loadError: string | null = null;
+
+try {
+  const res = await fetch(`${apiUrl}/api/admin/season/slots/${id}`, {
+    headers: { Cookie: cookie },
+  });
+  if (res.status === 404) return Astro.redirect("/dashboard/season-planner", 302);
+  if (res.status === 401) return Astro.redirect("/dashboard/login", 302);
+  if (res.ok) slot = await res.json();
+  else loadError = `Failed to load slot (${res.status})`;
+} catch (e: unknown) {
+  loadError = `Error: ${e instanceof Error ? e.message : String(e)}`;
+}
+
+const canDelete =
+  slot !== null &&
+  (slot.status === "unclaimed" || slot.status === "cancelled") &&
+  slot.published_event_id === null;
+
+function formatDate(d: string): string {
+  try {
+    return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
+      weekday: "short", year: "numeric", month: "short", day: "numeric",
+    });
+  } catch { return d; }
+}
+
+const STATUS_OPTIONS = [
+  { value: "unclaimed",   label: "Unclaimed" },
+  { value: "claimed",     label: "Claimed" },
+  { value: "in_planning", label: "Planning" },
+  { value: "ready",       label: "Ready" },
+  { value: "cancelled",   label: "Cancelled" },
+];
+
+const READINESS_OPTIONS = [
+  { value: "idea",              label: "Idea" },
+  { value: "route_drafted",     label: "Route Drafted" },
+  { value: "leader_confirmed",  label: "Leader Confirmed" },
+  { value: "logistics_done",    label: "Logistics Done" },
+  { value: "ready_to_publish",  label: "Ready to Publish" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slot #{id} | Season Planning | ACC ClubHub Admin</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f6f8fa;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container { max-width: 760px; margin: 0 auto; }
+      .breadcrumb { margin-bottom: 1.5rem; font-size: 0.9rem; }
+      .breadcrumb a { color: #C62828; text-decoration: none; }
+      .breadcrumb a:hover { text-decoration: underline; }
+      .breadcrumb span { color: #57606a; margin: 0 0.4rem; }
+
+      .slot-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #d0d7de; }
+      .slot-header h1 { font-size: 1.3rem; margin: 0 0 0.3rem; color: #24292f; }
+      .slot-meta { font-size: 0.85rem; color: #57606a; display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.4rem; }
+      .slot-meta .badge {
+        display: inline-block; padding: 0.15rem 0.5rem;
+        border-radius: 4px; font-size: 0.74rem; font-weight: 600;
+        background: #eef1f5; color: #57606a;
+      }
+
+      .card {
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .card h2 { font-size: 0.95rem; font-weight: 700; color: #24292f; margin: 0 0 1rem; }
+
+      .form-group { margin-bottom: 0.9rem; }
+      .form-group label {
+        display: block; font-size: 0.82rem; font-weight: 600;
+        color: #57606a; text-transform: uppercase; letter-spacing: 0.04em;
+        margin-bottom: 0.3rem;
+      }
+      .form-group input[type="text"],
+      .form-group input[type="number"],
+      .form-group textarea,
+      .form-group select {
+        width: 100%; padding: 0.45rem 0.7rem;
+        border: 1px solid #d0d7de; border-radius: 6px;
+        font-size: 0.875rem; font-family: inherit;
+        background: white;
+      }
+      .form-group textarea { resize: vertical; min-height: 80px; }
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus { outline: 2px solid #C62828; outline-offset: 1px; border-color: #C62828; }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+      .action-btn {
+        padding: 0.45rem 1.1rem;
+        background: #C62828; color: white;
+        border: none; border-radius: 6px;
+        font-size: 0.875rem; font-weight: 600;
+        cursor: pointer; transition: background 0.2s;
+      }
+      .action-btn:hover { background: #a81f1f; }
+      .action-btn:disabled { background: #8b949e; cursor: not-allowed; }
+      .btn-secondary {
+        padding: 0.45rem 1rem;
+        background: white; border: 1px solid #d0d7de;
+        border-radius: 6px; font-size: 0.875rem;
+        cursor: pointer; color: #24292f;
+      }
+      .btn-secondary:hover { background: #f6f8fa; }
+      .btn-danger {
+        padding: 0.45rem 1rem;
+        background: white; border: 1px solid #cf222e;
+        color: #cf222e; border-radius: 6px;
+        font-size: 0.875rem; cursor: pointer;
+      }
+      .btn-danger:hover { background: #ffebe9; }
+      .btn-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+
+      .ownership-row { display: flex; gap: 0.6rem; align-items: center; }
+      .ownership-row input[type="text"] {
+        flex: 1; padding: 0.45rem 0.7rem;
+        border: 1px solid #d0d7de; border-radius: 6px;
+        font-size: 0.875rem;
+      }
+      .owner-name { font-weight: 600; color: #24292f; }
+
+      .msg { padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.85rem; margin-top: 0.6rem; }
+      .msg-ok  { background: #dafbe1; color: #1a7f37; }
+      .msg-err { background: #ffebe9; color: #cf222e; }
+      .msg { display: none; }
+      .msg.visible { display: block; }
+
+      .error-banner { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/dashboard">Admin Dashboard</a>
+        <span>›</span>
+        <a href="/dashboard/season-planner">Season Planning</a>
+        <span>›</span>
+        Slot #{id}
+      </div>
+
+      {loadError && <div class="error-banner">{loadError}</div>}
+
+      {slot && (
+        <>
+          <div class="slot-header">
+            <h1>{EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type}</h1>
+            <div class="slot-meta">
+              <span>{formatDate(slot.planned_date)}</span>
+              <span>Week {slot.iso_week}</span>
+              <span class="badge">Season {slot.season}</span>
+              {slot.auto_generated && <span class="badge">Auto-generated</span>}
+              {slot.locked && <span class="badge" style="background:#fff8c5;color:#9a6700;">Locked</span>}
+            </div>
+          </div>
+
+          <!-- Details form -->
+          <div class="card">
+            <h2>Details</h2>
+            <div class="form-group">
+              <label for="f-title">Title</label>
+              <input type="text" id="f-title" value={slot.title ?? ""} placeholder="Leave blank to use default" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="f-location">Location</label>
+                <input type="text" id="f-location" value={slot.location ?? ""} />
+              </div>
+              <div class="form-group">
+                <label for="f-distance">Distance (km)</label>
+                <input type="number" id="f-distance" step="0.1" min="0"
+                  value={slot.distance_km != null ? String(slot.distance_km) : ""} />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="f-notes">Notes / Backup info</label>
+              <textarea id="f-notes">{slot.notes ?? ""}</textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="f-status">Status</label>
+                <select id="f-status">
+                  {STATUS_OPTIONS.map((o) => (
+                    <option value={o.value} selected={slot!.status === o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="f-readiness">Readiness</label>
+                <select id="f-readiness">
+                  {READINESS_OPTIONS.map((o) => (
+                    <option value={o.value} selected={slot!.readiness === o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="action-btn" id="save-btn">Save Changes</button>
+            </div>
+            <div class="msg" id="save-msg"></div>
+          </div>
+
+          <!-- Ownership -->
+          <div class="card">
+            <h2>Ownership</h2>
+            {slot.claimed_by ? (
+              <div class="btn-row">
+                <span class="owner-name">{slot.claimed_by}</span>
+                <button class="btn-secondary" id="release-btn">Release</button>
+              </div>
+            ) : (
+              <div class="ownership-row">
+                <input type="text" id="claim-name" placeholder="Enter owner name" />
+                <button class="action-btn" id="claim-btn">Claim</button>
+              </div>
+            )}
+            <div class="msg" id="ownership-msg"></div>
+          </div>
+
+          <!-- Convert (Phase C placeholder) -->
+          <div class="card">
+            <h2>Convert to Event</h2>
+            <p style="font-size:0.85rem;color:#57606a;margin:0 0 0.75rem;">
+              Creates a draft event from this slot. Available in Phase C (coming soon).
+            </p>
+            <button class="action-btn" disabled title="Coming in Phase C">Convert to Draft Event</button>
+          </div>
+
+          <!-- Danger zone -->
+          {canDelete && (
+            <div class="card" style="border-color:#ff818266;">
+              <h2 style="color:#cf222e;">Danger Zone</h2>
+              <p style="font-size:0.85rem;color:#57606a;margin:0 0 0.75rem;">
+                This slot is unclaimed and has not been converted to an event.
+              </p>
+              <button class="btn-danger" id="delete-btn">Delete Slot</button>
+              <div class="msg" id="delete-msg"></div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+
+    <script define:vars={{ slotId: id, hasClaimed: slot?.claimed_by ?? null }}>
+      function showMsg(elId, text, isOk) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.textContent = text;
+        el.className = "msg visible " + (isOk ? "msg-ok" : "msg-err");
+      }
+
+      async function apiCall(path, method, body) {
+        const res = await fetch(path, {
+          method,
+          headers: body ? { "Content-Type": "application/json" } : {},
+          body: body ? JSON.stringify(body) : undefined,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        return data;
+      }
+
+      // Save details
+      document.getElementById("save-btn")?.addEventListener("click", async () => {
+        const btn = document.getElementById("save-btn");
+        btn.disabled = true;
+        btn.textContent = "Saving…";
+        try {
+          const payload = {
+            title: document.getElementById("f-title").value.trim() || null,
+            location: document.getElementById("f-location").value.trim() || null,
+            distance_km: document.getElementById("f-distance").value
+              ? parseFloat(document.getElementById("f-distance").value) : null,
+            notes: document.getElementById("f-notes").value.trim() || null,
+            status: document.getElementById("f-status").value,
+            readiness: document.getElementById("f-readiness").value,
+          };
+          await apiCall(`/api/admin/season/${slotId}`, "PATCH", payload);
+          showMsg("save-msg", "Saved.", true);
+        } catch (e) {
+          showMsg("save-msg", "Error: " + e.message, false);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Save Changes";
+        }
+      });
+
+      // Claim
+      document.getElementById("claim-btn")?.addEventListener("click", async () => {
+        const name = document.getElementById("claim-name")?.value.trim();
+        if (!name) { showMsg("ownership-msg", "Enter a name first.", false); return; }
+        try {
+          await apiCall(`/api/admin/season/${slotId}/claim`, "POST", { claimed_by: name });
+          showMsg("ownership-msg", `Claimed by ${name}. Reloading…`, true);
+          setTimeout(() => location.reload(), 900);
+        } catch (e) {
+          showMsg("ownership-msg", "Error: " + e.message, false);
+        }
+      });
+
+      // Release
+      document.getElementById("release-btn")?.addEventListener("click", async () => {
+        if (!confirm("Release this slot? The owner will be cleared.")) return;
+        try {
+          await apiCall(`/api/admin/season/${slotId}/release`, "POST");
+          showMsg("ownership-msg", "Released. Reloading…", true);
+          setTimeout(() => location.reload(), 900);
+        } catch (e) {
+          showMsg("ownership-msg", "Error: " + e.message, false);
+        }
+      });
+
+      // Delete
+      document.getElementById("delete-btn")?.addEventListener("click", async () => {
+        if (!confirm("Delete this slot permanently? This cannot be undone.")) return;
+        try {
+          await apiCall(`/api/admin/season/${slotId}`, "DELETE");
+          window.location.href = "/dashboard/season-planner";
+        } catch (e) {
+          showMsg("delete-msg", "Error: " + e.message, false);
+        }
+      });
+    </script>
+  </body>
+</html>

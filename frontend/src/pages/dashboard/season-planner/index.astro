@@ -161,6 +161,11 @@ function formatDate(d: string): string {
       .type-weekend_challenge { background: #ddf4ff; color: #0550ae; }
       .type-special_event     { background: #ffeff7; color: #8250df; }
       .type-eyas_program      { background: #f0fff4; color: #116329; }
+      .edit-link {
+        font-size: 0.78rem; font-weight: 600;
+        color: #C62828; text-decoration: none;
+      }
+      .edit-link:hover { text-decoration: underline; }
 
       /* Generate modal */
       dialog {
@@ -275,6 +280,9 @@ function formatDate(d: string): string {
                 </div>
                 <div class="slot-card-owner">
                   Owner: {slot.claimed_by || "—"}
+                </div>
+                <div style="margin-top:0.4rem;">
+                  <a href={`/dashboard/season-planner/${slot.id}`} class="edit-link">Edit →</a>
                 </div>
               </div>
             ))}
