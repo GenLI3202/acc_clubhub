@@ -25,29 +25,29 @@ export type SlotReadiness =
   | "ready_to_publish";
 
 export const EVENT_TYPE_LABEL: Record<EventType, string> = {
-  after_work_south: "周三晚骑·南线",
-  after_work_north: "周四晚骑·北线",
-  weekend_casual: "周末休闲骑",
-  weekend_challenge: "周末挑战赛",
-  special_event: "特别活动",
-  eyas_program: "雏鹰计划",
+  after_work_south: "Wed Evening · South",
+  after_work_north: "Thu Evening · North",
+  weekend_casual: "Weekend Casual",
+  weekend_challenge: "Weekend Challenge",
+  special_event: "Special Event",
+  eyas_program: "EYAS Program",
 };
 
 export const STATUS_LABEL: Record<SlotStatus, string> = {
-  unclaimed: "待认领",
-  claimed: "已认领",
-  in_planning: "策划中",
-  ready: "已就绪",
-  published: "已发布",
-  cancelled: "已取消",
+  unclaimed: "Unclaimed",
+  claimed: "Claimed",
+  in_planning: "Planning",
+  ready: "Ready",
+  published: "Published",
+  cancelled: "Cancelled",
 };
 
 export const READINESS_LABEL: Record<SlotReadiness, string> = {
-  idea: "想法",
-  route_drafted: "路线初稿",
-  leader_confirmed: "队长确认",
-  logistics_done: "后勤完成",
-  ready_to_publish: "可发布",
+  idea: "Idea",
+  route_drafted: "Route Drafted",
+  leader_confirmed: "Leader Confirmed",
+  logistics_done: "Logistics Done",
+  ready_to_publish: "Ready to Publish",
 };
 
 export interface PlanSlot {

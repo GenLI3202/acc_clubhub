@@ -1,5 +1,5 @@
 ---
-// dashboard/season-planner/index.astro — 活动策划 weekly board (SSR, Chinese UI)
+// dashboard/season-planner/index.astro — Season Planning weekly board (SSR)
 export const prerender = false;
 
 import type { GroupedSlotsResponse, WeekGroup, PlanSlot } from "../../../lib/admin/seasonPlanner";
@@ -40,20 +40,16 @@ try {
   } else if (res.status === 401) {
     return Astro.redirect("/dashboard/login", 302);
   } else {
-    fetchError = `加载槽位失败 (${res.status})`;
+    fetchError = `Failed to load slots (${res.status})`;
   }
 } catch (e: unknown) {
-  fetchError = `加载槽位出错: ${e instanceof Error ? e.message : String(e)}`;
-}
-
-function slotCardTitle(slot: PlanSlot): string {
-  return EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type;
+  fetchError = `Error loading slots: ${e instanceof Error ? e.message : String(e)}`;
 }
 
 function formatDate(d: string): string {
   try {
     const dt = new Date(d + "T00:00:00");
-    return `${dt.getMonth() + 1}月${dt.getDate()}日`;
+    return dt.toLocaleDateString("en-GB", { month: "short", day: "numeric" });
   } catch {
     return d;
   }
@@ -61,15 +57,15 @@ function formatDate(d: string): string {
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>活动策划 | ACC ClubHub Admin</title>
+    <title>Season Planning | ACC ClubHub Admin</title>
     <style>
       * { box-sizing: border-box; }
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: #f6f8fa;
         margin: 0;
         padding: 2rem;
@@ -101,6 +97,7 @@ function formatDate(d: string): string {
         transition: background 0.2s;
       }
       .action-btn:hover { background: #a81f1f; }
+      .action-btn:disabled { background: #8b949e; cursor: not-allowed; }
 
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
@@ -130,23 +127,11 @@ function formatDate(d: string): string {
         flex-direction: column;
         gap: 0.4rem;
       }
-      .slot-card-title {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #24292f;
-      }
       .slot-card-date { color: #57606a; font-size: 0.82rem; }
       .slot-card-meta { font-size: 0.8rem; color: #57606a; }
       .slot-card-owner { font-size: 0.8rem; color: #24292f; }
 
-      /* Status badges — reused from events/index.astro */
-      .badge {
-        display: inline-block;
-        padding: 0.15rem 0.5rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-      }
+      /* Status & type badges — reused from events/index.astro */
       .status {
         display: inline-block;
         padding: 0.2rem 0.55rem;
@@ -154,12 +139,13 @@ function formatDate(d: string): string {
         font-size: 0.72rem;
         font-weight: 700;
       }
-      .status-unclaimed { background: #eef1f5; color: #57606a; }
-      .status-claimed { background: #ddf4ff; color: #0969da; }
+      .status-unclaimed  { background: #eef1f5; color: #57606a; }
+      .status-claimed    { background: #ddf4ff; color: #0969da; }
       .status-in_planning { background: #fff8c5; color: #9a6700; }
-      .status-ready { background: #dafbe1; color: #1a7f37; }
-      .status-published { background: #ddf4ff; color: #0969da; }
-      .status-cancelled { background: #ffebe9; color: #cf222e; }
+      .status-ready      { background: #dafbe1; color: #1a7f37; }
+      .status-published  { background: #ddf4ff; color: #0969da; }
+      .status-cancelled  { background: #ffebe9; color: #cf222e; }
+
       .type-badge {
         display: inline-block;
         padding: 0.15rem 0.5rem;
@@ -169,12 +155,12 @@ function formatDate(d: string): string {
         background: #eef1f5;
         color: #57606a;
       }
-      .type-after_work_south { background: #fff8c5; color: #9a6700; }
-      .type-after_work_north { background: #fff0f0; color: #C62828; }
-      .type-weekend_casual  { background: #dafbe1; color: #1a7f37; }
+      .type-after_work_south  { background: #fff8c5; color: #9a6700; }
+      .type-after_work_north  { background: #fff0f0; color: #C62828; }
+      .type-weekend_casual    { background: #dafbe1; color: #1a7f37; }
       .type-weekend_challenge { background: #ddf4ff; color: #0550ae; }
-      .type-special_event   { background: #ffeff7; color: #8250df; }
-      .type-eyas_program    { background: #f0fff4; color: #116329; }
+      .type-special_event     { background: #ffeff7; color: #8250df; }
+      .type-eyas_program      { background: #f0fff4; color: #116329; }
 
       /* Generate modal */
       dialog {
@@ -215,7 +201,7 @@ function formatDate(d: string): string {
       }
       .form-group input:focus { outline: 2px solid #C62828; outline-offset: 1px; }
       .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
-      .checkbox-row input[type="checkbox"] { width: 1rem; height: 1rem; }
+      .checkbox-row label { margin: 0; font-weight: 400; }
       .dialog-footer {
         padding: 1rem 1.25rem;
         border-top: 1px solid #d0d7de;
@@ -248,34 +234,34 @@ function formatDate(d: string): string {
   <body>
     <div class="container">
       <div class="breadcrumb">
-        <a href="/dashboard">&larr; 管理后台</a>
+        <a href="/dashboard">&larr; Admin Dashboard</a>
       </div>
 
       <div class="header">
-        <h1>活动策划 Dashboard</h1>
-        <button class="action-btn" id="open-generate-modal">生成槽位</button>
+        <h1>Season Planning Dashboard</h1>
+        <button class="action-btn" id="open-generate-modal">Generate Slots</button>
       </div>
 
       {fetchError && <div class="error">{fetchError}</div>}
 
       {weeks.length === 0 && !fetchError && (
         <div class="empty">
-          暂无策划槽位。点击「生成槽位」按钮生成 2026 年骑行季计划。
+          No planning slots yet. Click &quot;Generate Slots&quot; to create the {season} season plan.
         </div>
       )}
 
       {weeks.map((week) => (
         <div class="week-section">
           <div class="week-header">
-            {week.label}
+            Week {week.iso_week}
             <span class="date-range">· {week.date_range}</span>
           </div>
           <div class="slot-row">
-            {week.slots.map((slot) => (
+            {week.slots.map((slot: PlanSlot) => (
               <div class="slot-card">
                 <div>
                   <span class={`type-badge type-${slot.event_type}`}>
-                    {slotCardTitle(slot)}
+                    {EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type}
                   </span>
                 </div>
                 <div class="slot-card-date">{formatDate(slot.planned_date)}</div>
@@ -285,10 +271,10 @@ function formatDate(d: string): string {
                   </span>
                 </div>
                 <div class="slot-card-meta">
-                  准备：{READINESS_LABEL[slot.readiness] ?? slot.readiness}
+                  Readiness: {READINESS_LABEL[slot.readiness] ?? slot.readiness}
                 </div>
                 <div class="slot-card-owner">
-                  负责：{slot.claimed_by || "—"}
+                  Owner: {slot.claimed_by || "—"}
                 </div>
               </div>
             ))}
@@ -297,37 +283,37 @@ function formatDate(d: string): string {
       ))}
     </div>
 
-    <!-- 生成槽位 modal -->
+    <!-- Generate Slots modal -->
     <dialog id="generate-dialog">
       <div class="dialog-header">
-        <span>生成策划槽位</span>
+        <span>Generate Planning Slots</span>
         <button class="btn-secondary" id="close-dialog" style="border:none;font-size:1.1rem;padding:0 0.3rem;">✕</button>
       </div>
       <div class="dialog-body">
         <div class="form-group">
-          <label for="gen-season">赛季</label>
+          <label for="gen-season">Season</label>
           <input type="text" id="gen-season" value="2026" />
         </div>
         <div class="form-group">
-          <label for="gen-start">开始日期</label>
+          <label for="gen-start">Start Date</label>
           <input type="date" id="gen-start" value="2026-05-01" />
         </div>
         <div class="form-group">
-          <label for="gen-end">结束日期</label>
+          <label for="gen-end">End Date</label>
           <input type="date" id="gen-end" value="2026-11-30" />
         </div>
         <div class="form-group">
           <div class="checkbox-row">
             <input type="checkbox" id="gen-overwrite" />
-            <label for="gen-overwrite" style="margin:0;">覆盖已有未认领槽位</label>
+            <label for="gen-overwrite">Overwrite existing unclaimed slots</label>
           </div>
         </div>
         <div class="preview-box" id="preview-box"></div>
       </div>
       <div class="dialog-footer">
-        <button class="btn-secondary" id="cancel-dialog">取消</button>
-        <button class="action-btn" id="dry-run-btn">预览</button>
-        <button class="action-btn" id="confirm-btn" style="display:none;">确认生成</button>
+        <button class="btn-secondary" id="cancel-dialog">Cancel</button>
+        <button class="action-btn" id="dry-run-btn">Preview</button>
+        <button class="action-btn" id="confirm-btn" style="display:none;">Confirm</button>
       </div>
     </dialog>
 
@@ -340,8 +326,6 @@ function formatDate(d: string): string {
       const confirmBtn = document.getElementById("confirm-btn") as HTMLButtonElement;
       const previewBox = document.getElementById("preview-box") as HTMLDivElement;
 
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
-
       function openDialog() {
         previewBox.classList.remove("visible");
         previewBox.textContent = "";
@@ -350,16 +334,12 @@ function formatDate(d: string): string {
         dialog.showModal();
       }
 
-      function closeDialog() {
-        dialog.close();
-      }
+      function closeDialog() { dialog.close(); }
 
       openBtn?.addEventListener("click", openDialog);
       closeBtn?.addEventListener("click", closeDialog);
       cancelBtn?.addEventListener("click", closeDialog);
-      dialog.addEventListener("click", (e) => {
-        if (e.target === dialog) closeDialog();
-      });
+      dialog.addEventListener("click", (e) => { if (e.target === dialog) closeDialog(); });
 
       async function callGenerate(dryRun: boolean) {
         const season = (document.getElementById("gen-season") as HTMLInputElement).value.trim();
@@ -367,9 +347,9 @@ function formatDate(d: string): string {
         const endDate = (document.getElementById("gen-end") as HTMLInputElement).value;
         const overwrite = (document.getElementById("gen-overwrite") as HTMLInputElement).checked;
 
-        const res = await fetch(`${apiUrl}/api/admin/season/slots/generate`, {
+        // POST to same-origin Astro proxy — avoids cross-origin CORS cookie issues
+        const res = await fetch("/api/admin/season/generate", {
           method: "POST",
-          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             season,
@@ -382,45 +362,42 @@ function formatDate(d: string): string {
 
         if (!res.ok) {
           const err = await res.text();
-          throw new Error(`API 错误 (${res.status}): ${err}`);
+          throw new Error(`API error (${res.status}): ${err}`);
         }
         return res.json();
       }
 
       dryRunBtn?.addEventListener("click", async () => {
         dryRunBtn.disabled = true;
-        dryRunBtn.textContent = "计算中…";
+        dryRunBtn.textContent = "Calculating…";
         previewBox.classList.remove("visible");
         try {
           const data = await callGenerate(true);
-          previewBox.textContent = `预览：将创建 ${data.would_create} 个槽位，跳过 ${data.skipped} 个已存在槽位。`;
+          previewBox.textContent = `Preview: will create ${data.would_create} slot(s), skipping ${data.skipped} existing.`;
           previewBox.classList.add("visible");
           confirmBtn.style.display = "";
         } catch (e: unknown) {
-          previewBox.textContent = `错误：${e instanceof Error ? e.message : String(e)}`;
+          previewBox.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
           previewBox.classList.add("visible");
         } finally {
           dryRunBtn.disabled = false;
-          dryRunBtn.textContent = "预览";
+          dryRunBtn.textContent = "Preview";
         }
       });
 
       confirmBtn?.addEventListener("click", async () => {
         confirmBtn.disabled = true;
-        confirmBtn.textContent = "生成中…";
+        confirmBtn.textContent = "Generating…";
         try {
           const data = await callGenerate(false);
-          previewBox.textContent = `完成：创建 ${data.created} 个槽位，跳过 ${data.skipped} 个。`;
+          previewBox.textContent = `Done: created ${data.created} slot(s), skipped ${data.skipped}.`;
           previewBox.classList.add("visible");
-          setTimeout(() => {
-            closeDialog();
-            window.location.reload();
-          }, 1200);
+          setTimeout(() => { closeDialog(); window.location.reload(); }, 1200);
         } catch (e: unknown) {
-          previewBox.textContent = `错误：${e instanceof Error ? e.message : String(e)}`;
+          previewBox.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
           previewBox.classList.add("visible");
           confirmBtn.disabled = false;
-          confirmBtn.textContent = "确认生成";
+          confirmBtn.textContent = "Confirm";
         }
       });
     </script>
