@@ -11,6 +11,12 @@
 
 ## Recent Updates
 
+- [X] **GitHub CI Noise Reduction** (2026-05-14)
+  - [X] Replaced the always-red default Astro check gate with frontend unit tests plus build
+  - [X] Added backend pytest coverage to the default GitHub Actions CI
+  - [X] Limited automatic CI triggers to `master`/PR changes that touch app or workflow files
+  - [X] Added concurrency cancellation so superseded CI runs stop burning minutes
+  - [X] Removed the obsolete event-sync workflow that called the deleted populate script
 - [X] **Ride Leader Dashboard Chart.js Refresh** (2026-05-02)
   - [X] Added Chart.js dependency for the admin ride leader trend chart
   - [X] Replaced the raw single-leader SVG with a multi-leader cumulative trend canvas
