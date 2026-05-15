@@ -65,6 +65,63 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 // Today in YYYY-MM-DD (server time, UTC)
 const todayStr = new Date().toISOString().split("T")[0];
 
+// ── Bayern public holidays + ACC summer solstice ───────────────────────
+function easterSunday(year: number): Date {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4;
+  const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const mo = Math.floor((h + l - 7 * m + 114) / 31) - 1; // 0-based
+  const dy = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(Date.UTC(year, mo, dy));
+}
+
+function dateShift(d: Date, days: number): string {
+  return new Date(d.getTime() + days * 86400000).toISOString().split("T")[0];
+}
+
+function getBayernHolidays(year: number): Set<string> {
+  const h = new Set<string>();
+  // Fixed national + Bavaria
+  for (const [m, d] of [
+    [1, 1], [1, 6], [5, 1], [8, 15], [10, 3], [11, 1], [12, 25], [12, 26],
+  ] as [number, number][]) {
+    h.add(`${year}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`);
+  }
+  // Easter-relative
+  const e = easterSunday(year);
+  for (const offset of [-2, 1, 39, 49, 60]) h.add(dateShift(e, offset));
+  return h;
+}
+
+function summerSolstice(year: number): string {
+  // June 20 in years divisible by 4 (approximate), June 21 otherwise
+  const day = year % 4 === 0 ? 20 : 21;
+  return `${year}-06-${String(day).padStart(2, "0")}`;
+}
+
+// Compute for the current season year (and also next year to cover Dec weeks)
+const seasonYear = parseInt(season, 10) || 2026;
+const holidays = getBayernHolidays(seasonYear);
+// Also include next year in case the season spans into January
+for (const d of getBayernHolidays(seasonYear + 1)) holidays.add(d);
+const solsticeDate = summerSolstice(seasonYear);
+
+// Bayern holiday names (for tooltip)
+const HOLIDAY_NAMES: Record<string, string> = {
+  "01-01": "Neujahr", "01-06": "Heilige Drei Könige",
+  "05-01": "Tag der Arbeit", "08-15": "Mariä Himmelfahrt",
+  "10-03": "Tag der Deutschen Einheit", "11-01": "Allerheiligen",
+  "12-25": "1. Weihnachtstag", "12-26": "2. Weihnachtstag",
+};
+function holidayName(dateStr: string): string {
+  const mmdd = dateStr.slice(5);
+  return HOLIDAY_NAMES[mmdd] ?? "Feiertag (Bayern)";
+}
+
 function isPastWeek(sunday: string): boolean {
   return sunday < todayStr;
 }
@@ -229,6 +286,54 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       }
       .day-cell.cell-empty:hover .add-icon { color: #8c959f; }
 
+      /* Bayern public holiday empty cells */
+      .day-cell.cell-holiday {
+        background: #fffbeb;
+        border: 1.5px dashed #f59e0b;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .day-cell.cell-holiday:hover { background: #fef3c7; border-color: #d97706; }
+      .day-cell.cell-holiday .add-icon { color: #f59e0b; font-size: 1.1rem; }
+      .holiday-label {
+        font-size: 0.58rem;
+        font-weight: 700;
+        color: #92400e;
+        text-align: center;
+        padding: 0 4px;
+        line-height: 1.2;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Solstice star overlay (on any cell) */
+      .solstice-star {
+        position: absolute;
+        top: 3px;
+        right: 4px;
+        font-size: 0.8rem;
+        line-height: 1;
+        pointer-events: none;
+      }
+      /* Holiday dot on a filled slot */
+      .holiday-dot {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #f59e0b;
+        border: 1px solid #92400e;
+      }
+
       /* Filled slot cells */
       .cell-afterwork  { background: #fff8c5; border-color: #d4a017; }
       .cell-casual     { background: #dafbe1; border-color: #57ab5a; }
@@ -381,6 +486,8 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
         <span class="legend-item"><span class="legend-dot" style="background:#ffeff7;border-color:#8250df;"></span>Special Ride</span>
         <span class="legend-item"><span class="legend-dot" style="background:#fff3e0;border-color:#e65c00;"></span>Workshop</span>
         <span class="legend-item"><span class="legend-dot" style="background:#f0fff4;border-color:#116329;"></span>EYAS · 雏鹰计划</span>
+        <span class="legend-item"><span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:#fffbeb;border:1.5px dashed #f59e0b;"></span>Bayern Feiertag</span>
+        <span class="legend-item">⭐ ACC 周年庆 (Sommersonnenwende)</span>
         <span class="legend-item" style="margin-left:auto;font-size:0.75rem;color:#8c959f;">Click grey cell to add · Click "+" for next week</span>
       </div>
 
@@ -409,23 +516,35 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
             <div class="day-grid">
               {DAYS.map((d) => <div class="day-header">{d}</div>)}
               {DAYS.map((_, idx) => {
-                const slot = byDay.get(idx);
-                const cellDate = addDays(week.monday, idx);
+                const slot      = byDay.get(idx);
+                const cellDate  = addDays(week.monday, idx);
+                const isHoliday = holidays.has(cellDate);
+                const isSolstice = cellDate === solsticeDate;
                 if (!slot) {
+                  const cellClass = isHoliday ? "day-cell cell-holiday" : "day-cell cell-empty";
+                  const titleText = isHoliday
+                    ? `${holidayName(cellDate)} · Add slot for ${cellDate}`
+                    : isSolstice
+                    ? `Sommersonnenwende · ACC Anniversary · Add slot for ${cellDate}`
+                    : `Add slot for ${cellDate}`;
                   return (
                     <div
-                      class="day-cell cell-empty"
+                      class={cellClass}
                       data-date={cellDate}
                       data-weekday={String(idx)}
                       data-season={season}
-                      title={`Add slot for ${cellDate}`}
+                      title={titleText}
                     >
+                      {isSolstice && <span class="solstice-star" title="Sommersonnenwende · ACC Anniversary">⭐</span>}
+                      {isHoliday && <span class="holiday-label">{holidayName(cellDate)}</span>}
                       <span class="add-icon">+</span>
                     </div>
                   );
                 }
                 return (
-                  <div class={`day-cell ${slotColor(slot.event_type)}`}>
+                  <div class={`day-cell ${slotColor(slot.event_type)}`} style="position:relative;">
+                    {isHoliday && <span class="holiday-dot" title={holidayName(cellDate)}></span>}
+                    {isSolstice && <span class="solstice-star" title="Sommersonnenwende · ACC Anniversary">⭐</span>}
                     <a href={`/dashboard/season-planner/${slot.id}`}>
                       <span class="cell-type">{EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type}</span>
                       <span class="cell-date">{slot.planned_date}</span>
