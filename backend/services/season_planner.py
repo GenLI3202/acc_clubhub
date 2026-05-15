@@ -40,7 +40,8 @@ DEFAULT_EVENT_TIME: dict[str, str] = {
     "after_work_north": "18:30",
     "weekend_casual":   "09:00",
     "weekend_challenge": "08:30",
-    "special_event":    "09:00",
+    "special_ride":     "09:00",
+    "workshop":         "09:00",
     "eyas_program":     "09:00",
 }
 

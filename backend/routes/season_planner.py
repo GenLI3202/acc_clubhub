@@ -5,7 +5,7 @@ Phase A+B: slot generation, listing, editing, claiming, and deletion (admin-only
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -13,9 +13,9 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import PlanSlot
+from models import Event, PlanSlot
+from services.season_planner import DEFAULT_EVENT_TIME, generate_slots, EVENT_TYPE_LABELS
 from routes.auth import get_current_admin
-from services.season_planner import generate_slots, EVENT_TYPE_LABELS
 from services.email import send_slot_claim_confirmation, send_slot_reminder
 
 router = APIRouter()
@@ -84,6 +84,34 @@ class GenerateResponse(BaseModel):
     created: int
     skipped: int
     would_create: Optional[int]
+
+
+class ConvertRequest(BaseModel):
+    slug: str
+    max_participants: Optional[int] = None
+    registration_deadline: Optional[date] = None
+
+
+class EventOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    slug: str
+    title: str
+    event_date: datetime
+    event_type: str
+    is_public: bool
+
+
+EVENT_TYPE_TO_EVENT: dict[str, str] = {
+    "after_work_south":  "after-work",
+    "after_work_north":  "after-work",
+    "weekend_casual":    "social-ride",
+    "weekend_challenge": "social-ride",
+    "special_ride":      "social-ride",
+    "workshop":          "workshop",
+    "eyas_program":      "workshop",
+}
 
 
 # ============================================================
@@ -353,3 +381,83 @@ def send_slot_reminders(
         sent += 1
 
     return {"sent": sent, "target_date": str(target_date)}
+
+
+@router.post("/api/admin/season/slots/{slot_id}/convert")
+def convert_slot(
+    slot_id: int,
+    body: ConvertRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Convert a plan slot to a draft Event (is_public=False). Idempotent: re-converts update in place."""
+    slot = _get_slot_or_404(slot_id, db)
+    if slot.status == "cancelled":
+        raise HTTPException(status_code=409, detail="Cannot convert a cancelled slot")
+
+    time_str = DEFAULT_EVENT_TIME.get(slot.event_type, "09:00")
+    h, m = map(int, time_str.split(":"))
+    event_date = datetime(
+        slot.planned_date.year, slot.planned_date.month, slot.planned_date.day,
+        h, m, tzinfo=timezone.utc,
+    )
+    mapped_type = EVENT_TYPE_TO_EVENT.get(slot.event_type, "social-ride")
+    title = slot.title or EVENT_TYPE_LABELS.get(slot.event_type, slot.event_type)
+    reg_deadline: Optional[datetime] = None
+    if body.registration_deadline:
+        reg_deadline = datetime(
+            body.registration_deadline.year,
+            body.registration_deadline.month,
+            body.registration_deadline.day,
+            tzinfo=timezone.utc,
+        )
+
+    if slot.published_event_id is not None:
+        event = db.query(Event).filter_by(id=slot.published_event_id).one_or_none()
+        if event is None:
+            event = Event(current_participants=0)
+            db.add(event)
+        event.slug = body.slug
+        event.title = title
+        event.description = slot.notes
+        event.event_date = event_date
+        event.location = slot.location
+        event.event_type = mapped_type
+        event.max_participants = body.max_participants
+        event.registration_deadline = reg_deadline
+        event.distance_km = slot.distance_km
+        event.is_public = False
+    else:
+        if db.query(Event).filter_by(slug=body.slug).one_or_none() is not None:
+            raise HTTPException(status_code=409, detail=f"Slug '{body.slug}' is already in use")
+        event = Event(
+            slug=body.slug,
+            title=title,
+            description=slot.notes,
+            event_date=event_date,
+            location=slot.location,
+            event_type=mapped_type,
+            max_participants=body.max_participants,
+            current_participants=0,
+            registration_deadline=reg_deadline,
+            distance_km=slot.distance_km,
+            is_public=False,
+        )
+        db.add(event)
+
+    db.flush()
+    slot.published_event_id = event.id
+    slot.published_at = datetime.now(timezone.utc)
+    slot.status = "published"
+    db.commit()
+    db.refresh(slot)
+    db.refresh(event)
+
+    return {
+        "slot": SlotOut.model_validate(slot).model_dump(mode="json"),
+        "event": EventOut.model_validate(event).model_dump(mode="json"),
+        "message": (
+            f"Draft event created. Add Markdown content at "
+            f"frontend/src/content/events/zh/{body.slug}.md before setting is_public=True."
+        ),
+    }

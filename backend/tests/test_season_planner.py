@@ -1,4 +1,4 @@
-"""Tests for season planner slot generation (Phase A, tests 1–5) and editing (Phase B, test 6)."""
+"""Tests for season planner slot generation (Phase A, tests 1–5), editing (Phase B, test 6), and convert (Phase C, tests 7–9)."""
 from __future__ import annotations
 
 from datetime import date
@@ -142,3 +142,70 @@ def test_patch_marks_auto_generated_false(client, db):
     assert data["title"] == "Custom Title"
     assert data["location"] == "Marienplatz"
     assert data["status"] == "unclaimed"  # status unchanged
+
+
+# ── Phase C: Convert ──────────────────────────────────────────
+
+
+def test_convert_creates_draft_event(client, db):
+    """Convert creates an Event with is_public=False and links it to the slot."""
+    from models import Event
+
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+
+    res = client.post(
+        f"/api/admin/season/slots/{slot.id}/convert",
+        json={"slug": "tue-south-2026-05-05"},
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["event"]["is_public"] is False
+    assert body["event"]["slug"] == "tue-south-2026-05-05"
+
+    db.expire_all()
+    slot = db.query(PlanSlot).filter_by(id=slot.id).one()
+    assert slot.published_event_id is not None
+    assert slot.status == "published"
+
+    event = db.query(Event).filter_by(id=slot.published_event_id).one()
+    assert event.is_public is False
+    assert db.query(Event).count() == 1
+
+
+def test_convert_idempotent(client, db):
+    """Converting the same slot twice updates the existing Event; no duplicate row created."""
+    from models import Event
+
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+
+    client.post(
+        f"/api/admin/season/slots/{slot.id}/convert",
+        json={"slug": "tue-south-2026-05-05"},
+    )
+    # Re-convert with same slug
+    res = client.post(
+        f"/api/admin/season/slots/{slot.id}/convert",
+        json={"slug": "tue-south-2026-05-05", "max_participants": 20},
+    )
+    assert res.status_code == 200, res.text
+
+    db.expire_all()
+    assert db.query(Event).count() == 1
+    event = db.query(Event).filter_by(slug="tue-south-2026-05-05").one()
+    assert event.max_participants == 20
+
+
+def test_delete_blocked_after_convert(client, db):
+    """DELETE returns 409 once a slot has been converted to an event."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+
+    client.post(
+        f"/api/admin/season/slots/{slot.id}/convert",
+        json={"slug": "tue-south-2026-05-05"},
+    )
+
+    res = client.delete(f"/api/admin/season/slots/{slot.id}")
+    assert res.status_code == 409
