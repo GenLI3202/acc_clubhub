@@ -11,6 +11,19 @@
 
 ## Recent Updates
 
+- [X] **Season Planner Dashboard — Phase A** (2026-05-15)
+  - [X] Drafted implementation plan for issue #143 (活动策划 Dashboard)
+  - [X] Saved to `docs/rebuild_plan/future_add_on/season_planner_dashboard_plan.md`
+  - [X] Migration 005: `plan_slots` table with indexes and natural unique constraint
+  - [X] `PlanSlot` SQLAlchemy model appended to `backend/models.py`
+  - [X] `services/season_planner.py` — `generate_slots()` with idempotent regen, special-event overrides
+  - [X] `routes/season_planner.py` — POST /generate, GET /slots, GET /slots/grouped (admin-only)
+  - [X] 5 pytest tests covering generation, alternation, override, idempotency, claim preservation — all passing (116/116 suite green)
+  - [X] `frontend/src/lib/admin/seasonPlanner.ts` — TypeScript types + Chinese label maps
+  - [X] `frontend/src/pages/dashboard/season-planner/index.astro` — SSR weekly board + 生成槽位 modal
+  - [X] 活动策划 tile added to `/dashboard/index.astro`
+  - [ ] Phase B (edit/claim/status) — pending fresh session
+  - [ ] Phase C (convert-to-event) — pending fresh session
 - [X] **GitHub CI Noise Reduction** (2026-05-14)
   - [X] Replaced the always-red default Astro check gate with frontend unit tests plus build
   - [X] Added backend pytest coverage to the default GitHub Actions CI
