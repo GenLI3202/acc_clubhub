@@ -1,6 +1,6 @@
 """
 ACC ClubHub Backend - Season Planner API Routes
-Phase A: slot generation + read-only listing (admin-only)
+Phase A+B: slot generation, listing, editing, claiming, and deletion (admin-only)
 """
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from collections import defaultdict
 from datetime import date, datetime
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 
@@ -47,6 +47,20 @@ class SlotOut(BaseModel):
     published_at: Optional[datetime]
     created_at: datetime
     updated_at: datetime
+
+
+class PatchRequest(BaseModel):
+    title: Optional[str] = None
+    location: Optional[str] = None
+    distance_km: Optional[float] = None
+    notes: Optional[str] = None
+    status: Optional[str] = None
+    readiness: Optional[str] = None
+    locked: Optional[bool] = None
+
+
+class ClaimRequest(BaseModel):
+    claimed_by: str
 
 
 class GenerateRequest(BaseModel):
@@ -150,9 +164,102 @@ def grouped_season_slots(
         weeks.append({
             "iso_year": iso_year,
             "iso_week": iso_week,
-            "label": f"第 {iso_week} 周",
+            "label": f"Week {iso_week}",
             "date_range": f"{monday.strftime('%Y-%m-%d')} ~ {sunday.strftime('%m-%d')}",
             "slots": [SlotOut.model_validate(s).model_dump(mode="json") for s in week_slots],
         })
 
     return {"weeks": weeks}
+
+
+# ============================================================
+# Phase B — single-slot CRUD
+# ============================================================
+
+def _get_slot_or_404(slot_id: int, db: Session) -> PlanSlot:
+    slot = db.query(PlanSlot).filter_by(id=slot_id).one_or_none()
+    if slot is None:
+        raise HTTPException(status_code=404, detail="Slot not found")
+    return slot
+
+
+@router.get("/api/admin/season/slots/{slot_id}", response_model=SlotOut)
+def get_slot(
+    slot_id: int,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> PlanSlot:
+    return _get_slot_or_404(slot_id, db)
+
+
+_CONTENT_FIELDS = {"title", "location", "distance_km", "notes"}
+
+
+@router.patch("/api/admin/season/slots/{slot_id}", response_model=SlotOut)
+def patch_slot(
+    slot_id: int,
+    body: PatchRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> PlanSlot:
+    slot = _get_slot_or_404(slot_id, db)
+    update_data = body.model_dump(exclude_unset=True)
+    human_edit = bool(_CONTENT_FIELDS & update_data.keys())
+    for field, value in update_data.items():
+        setattr(slot, field, value)
+    if human_edit:
+        slot.auto_generated = False
+    db.commit()
+    db.refresh(slot)
+    return slot
+
+
+@router.post("/api/admin/season/slots/{slot_id}/claim", response_model=SlotOut)
+def claim_slot(
+    slot_id: int,
+    body: ClaimRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> PlanSlot:
+    slot = _get_slot_or_404(slot_id, db)
+    if slot.status != "unclaimed":
+        raise HTTPException(
+            status_code=409,
+            detail=f"Cannot claim a slot with status '{slot.status}'",
+        )
+    slot.claimed_by = body.claimed_by
+    slot.status = "claimed"
+    db.commit()
+    db.refresh(slot)
+    return slot
+
+
+@router.post("/api/admin/season/slots/{slot_id}/release", response_model=SlotOut)
+def release_slot(
+    slot_id: int,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> PlanSlot:
+    slot = _get_slot_or_404(slot_id, db)
+    slot.claimed_by = None
+    slot.status = "unclaimed"
+    db.commit()
+    db.refresh(slot)
+    return slot
+
+
+@router.delete("/api/admin/season/slots/{slot_id}")
+def delete_slot(
+    slot_id: int,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    slot = _get_slot_or_404(slot_id, db)
+    if slot.status not in ("unclaimed", "cancelled") or slot.published_event_id is not None:
+        raise HTTPException(
+            status_code=409,
+            detail="Cannot delete a claimed, in-planning, ready, or converted slot",
+        )
+    db.delete(slot)
+    db.commit()
+    return {"deleted": slot_id}

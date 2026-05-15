@@ -1,4 +1,4 @@
-"""Tests for season planner slot generation service (Phase A, tests 1–5)."""
+"""Tests for season planner slot generation (Phase A, tests 1–5) and editing (Phase B, test 6)."""
 from __future__ import annotations
 
 from datetime import date
@@ -124,3 +124,21 @@ def test_regen_preserves_claimed(db):
     assert slot.claimed_by == "张三", "claimed_by must survive regen"
     assert slot.notes == "Special notes", "notes must survive regen"
     assert result["skipped"] >= 1, "claimed slot must be counted as skipped"
+
+
+def test_patch_marks_auto_generated_false(client, db):
+    """PATCH any content field flips auto_generated to False."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+    assert slot.auto_generated is True
+
+    res = client.patch(
+        f"/api/admin/season/slots/{slot.id}",
+        json={"title": "Custom Title", "location": "Marienplatz"},
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["auto_generated"] is False
+    assert data["title"] == "Custom Title"
+    assert data["location"] == "Marienplatz"
+    assert data["status"] == "unclaimed"  # status unchanged
