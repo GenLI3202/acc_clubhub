@@ -2,7 +2,7 @@
 // dashboard/season-planner/index.astro — Season Planning weekly board (SSR)
 export const prerender = false;
 
-import type { GroupedSlotsResponse, WeekGroup, PlanSlot } from "../../../lib/admin/seasonPlanner";
+import type { GroupedSlotsResponse, WeekGroup, PlanSlot, EventType } from "../../../lib/admin/seasonPlanner";
 import { EVENT_TYPE_LABEL, STATUS_LABEL } from "../../../lib/admin/seasonPlanner";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -400,6 +400,13 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       .cell-date { font-size: 0.63rem; color: #57606a; margin-top: auto; }
       .cell-status { font-size: 0.61rem; font-weight: 600; color: #57606a; margin-top: 2px; }
 
+      /* Drag and drop */
+      .day-cell[draggable="true"] { cursor: grab; }
+      .day-cell[draggable="true"]:active { cursor: grabbing; }
+      .day-cell.dragging { opacity: 0.4; outline: 2px dashed #8c959f; }
+      .day-cell.drag-over { outline: 2px solid #C62828 !important; background: #fff5f5 !important; }
+      .day-cell.drag-over-conflict { outline: 2px solid #e65c00 !important; background: #fff8f0 !important; }
+
       /* Add-next-week button */
       .add-week-row {
         display: flex;
@@ -601,11 +608,18 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
                   );
                 }
                 return (
-                  <div class={`day-cell ${slotColor(slot.event_type)}`} style="position:relative;">
+                  <div
+                    class={`day-cell ${slotColor(slot.event_type)}`}
+                    style="position:relative;"
+                    data-slot-id={String(slot.id)}
+                    data-date={cellDate}
+                    data-slot-label={slot.title || (EVENT_TYPE_LABEL[slot.event_type as EventType] ?? slot.event_type)}
+                    draggable={past ? undefined : "true"}
+                  >
                     {isHoliday && <span class="holiday-dot" title={holidayName(cellDate)}></span>}
                     {isSolstice && <span class="solstice-badge" title="Sommersonnenwende · ACC 周年庆">★</span>}
                     <a href={`/dashboard/season-planner/${slot.id}`}>
-                      <span class="cell-type">{EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type}</span>
+                      <span class="cell-type">{EVENT_TYPE_LABEL[slot.event_type as EventType] ?? slot.event_type}</span>
                       <span class="cell-date">{slot.planned_date}</span>
                       <span class="cell-status">{STATUS_LABEL[slot.status] ?? slot.status}</span>
                     </a>
@@ -630,6 +644,18 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
           <span class="add-week-label">Add week of <strong>{nextWeekMonday}</strong> (Tue · Thu · Sat defaults)</span>
         </div>
       )}
+    </div>
+
+    <!-- Drag conflict confirmation modal -->
+    <div id="drag-conflict-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:center;justify-content:center;">
+      <div style="background:white;border-radius:8px;padding:1.5rem 1.75rem;max-width:420px;width:92%;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+        <h3 style="margin:0 0 0.75rem;font-size:1rem;color:#24292f;">Overwrite existing slot?</h3>
+        <p id="drag-conflict-msg" style="font-size:0.875rem;color:#57606a;margin:0 0 1.1rem;line-height:1.5;"></p>
+        <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+          <button id="drag-conflict-cancel" class="btn-secondary">Cancel</button>
+          <button id="drag-conflict-confirm" class="action-btn" style="background:#e65c00;">Overwrite &amp; Move</button>
+        </div>
+      </div>
     </div>
 
     <!-- Create-slot dialog (empty cell click) -->
@@ -849,6 +875,126 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
           genConfirm.disabled    = false;
           genConfirm.textContent = "Confirm";
         }
+      });
+
+      // ── Drag and Drop ──────────────────────────────────────
+      let dragState = null; // { sourceSlotId, sourceDate, sourceLabel }
+      let pendingMove = null; // { sourceSlotId, sourceLabel, targetDate, existingSlotId, existingLabel }
+      let lastDragEndTime = 0;
+
+      // Suppress link navigation if the mouse released after a drag (not a click)
+      document.addEventListener("dragend", () => { lastDragEndTime = Date.now(); }, true);
+      document.addEventListener("click", (e) => {
+        if (Date.now() - lastDragEndTime < 300 && e.target.closest(".day-cell[data-slot-id] a")) {
+          e.preventDefault();
+        }
+      }, true);
+
+      // Attach drag source behaviour to non-past filled cells
+      document.querySelectorAll('.day-cell[draggable="true"][data-slot-id]').forEach((cell) => {
+        cell.addEventListener("dragstart", (e) => {
+          dragState = {
+            sourceSlotId: cell.dataset.slotId,
+            sourceDate:   cell.dataset.date,
+            sourceLabel:  cell.dataset.slotLabel || "Slot",
+          };
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", cell.dataset.slotId);
+          // Defer opacity change so the drag ghost renders at full opacity
+          setTimeout(() => cell.classList.add("dragging"), 0);
+        });
+
+        cell.addEventListener("dragend", () => {
+          lastDragEndTime = Date.now();
+          dragState = null;
+          cell.classList.remove("dragging");
+          document.querySelectorAll(".drag-over, .drag-over-conflict").forEach((el) => {
+            el.classList.remove("drag-over", "drag-over-conflict");
+          });
+        });
+      });
+
+      // Attach drop target behaviour to all day cells with a date
+      document.querySelectorAll(".day-cell[data-date]").forEach((cell) => {
+        cell.addEventListener("dragover", (e) => {
+          if (!dragState) return;
+          if (cell.closest(".week-section.is-past")) return;
+          if (cell.dataset.date === dragState.sourceDate) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        });
+
+        cell.addEventListener("dragenter", (e) => {
+          if (!dragState) return;
+          if (cell.closest(".week-section.is-past")) return;
+          if (cell.dataset.date === dragState.sourceDate) return;
+          e.preventDefault();
+          cell.classList.add(cell.dataset.slotId ? "drag-over-conflict" : "drag-over");
+        });
+
+        cell.addEventListener("dragleave", (e) => {
+          // Only remove highlight when truly leaving the cell (not entering a child)
+          if (!cell.contains(e.relatedTarget)) {
+            cell.classList.remove("drag-over", "drag-over-conflict");
+          }
+        });
+
+        cell.addEventListener("drop", async (e) => {
+          e.preventDefault();
+          cell.classList.remove("drag-over", "drag-over-conflict");
+          if (!dragState) return;
+          if (cell.closest(".week-section.is-past")) return;
+
+          const targetDate = cell.dataset.date;
+          if (!targetDate || targetDate === dragState.sourceDate) return;
+
+          const existingSlotId = cell.dataset.slotId || null;
+          const existingLabel  = cell.dataset.slotLabel || "existing slot";
+
+          if (existingSlotId) {
+            pendingMove = {
+              sourceSlotId: dragState.sourceSlotId,
+              sourceLabel:  dragState.sourceLabel,
+              targetDate,
+              existingSlotId,
+              existingLabel,
+            };
+            document.getElementById("drag-conflict-msg").innerHTML =
+              `Moving <strong>${pendingMove.sourceLabel}</strong> to <strong>${targetDate}</strong> will permanently delete <strong>${pendingMove.existingLabel}</strong> on the same date.`;
+            document.getElementById("drag-conflict-modal").style.display = "flex";
+          } else {
+            await doMove(dragState.sourceSlotId, targetDate, null);
+          }
+        });
+      });
+
+      async function doMove(sourceSlotId, targetDate, replaceExistingId) {
+        try {
+          const res = await fetch(`/api/admin/season/${sourceSlotId}/move`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ target_date: targetDate, replace_existing_id: replaceExistingId }),
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            alert("Move failed: " + (err.detail || "Unknown error"));
+            return;
+          }
+          window.location.reload();
+        } catch (err) {
+          alert("Move failed: " + String(err));
+        }
+      }
+
+      document.getElementById("drag-conflict-cancel")?.addEventListener("click", () => {
+        document.getElementById("drag-conflict-modal").style.display = "none";
+        pendingMove = null;
+      });
+      document.getElementById("drag-conflict-confirm")?.addEventListener("click", async () => {
+        document.getElementById("drag-conflict-modal").style.display = "none";
+        if (!pendingMove) return;
+        await doMove(pendingMove.sourceSlotId, pendingMove.targetDate, pendingMove.existingSlotId);
+        pendingMove = null;
       });
     </script>
   </body>

@@ -86,6 +86,11 @@ class GenerateResponse(BaseModel):
     would_create: Optional[int]
 
 
+class MoveRequest(BaseModel):
+    target_date: date
+    replace_existing_id: Optional[int] = None
+
+
 class ConvertRequest(BaseModel):
     slug: str
     max_participants: Optional[int] = None
@@ -380,6 +385,50 @@ def send_slot_reminders(
         sent += 1
 
     return {"sent": sent, "target_date": str(target_date)}
+
+
+@router.post("/api/admin/season/slots/{slot_id}/move", response_model=SlotOut)
+def move_slot(
+    slot_id: int,
+    body: MoveRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> PlanSlot:
+    """Move a slot to a different date. Optionally replaces (deletes) an existing slot at the target."""
+    slot = _get_slot_or_404(slot_id, db)
+    if slot.locked:
+        raise HTTPException(status_code=409, detail="Cannot move a locked slot")
+    if body.target_date == slot.planned_date:
+        return slot
+
+    if body.replace_existing_id is not None:
+        target = db.query(PlanSlot).filter_by(id=body.replace_existing_id).one_or_none()
+        if target is not None and target.id != slot_id:
+            if target.locked:
+                raise HTTPException(status_code=409, detail="Cannot overwrite a locked slot")
+            db.delete(target)
+            db.flush()
+
+    conflict = db.query(PlanSlot).filter(
+        PlanSlot.season == slot.season,
+        PlanSlot.planned_date == body.target_date,
+        PlanSlot.event_type == slot.event_type,
+        PlanSlot.id != slot_id,
+    ).one_or_none()
+    if conflict is not None:
+        raise HTTPException(
+            status_code=409,
+            detail=f"A '{slot.event_type}' slot already exists on {body.target_date}",
+        )
+
+    iso_year, iso_week, _ = body.target_date.isocalendar()
+    slot.planned_date = body.target_date
+    slot.iso_year = iso_year
+    slot.iso_week = iso_week
+    slot.weekday = body.target_date.weekday()
+    db.commit()
+    db.refresh(slot)
+    return slot
 
 
 @router.post("/api/admin/season/slots/{slot_id}/convert")
