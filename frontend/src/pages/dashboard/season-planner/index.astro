@@ -51,7 +51,7 @@ function slotsByWeekday(slots: PlanSlot[]): Map<number, PlanSlot> {
 }
 
 function slotColor(eventType: string): string {
-  if (eventType === "after_work_south" || eventType === "after_work_north") return "cell-afterwork";
+  if (eventType === "afterwork") return "cell-afterwork";
   if (eventType === "weekend_casual") return "cell-casual";
   if (eventType === "weekend_challenge") return "cell-challenge";
   if (eventType === "special_ride") return "cell-special";
@@ -646,8 +646,7 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
         <div class="form-group">
           <label for="cs-type">Event Type</label>
           <select id="cs-type">
-            <option value="after_work_south">Tue Evening · South</option>
-            <option value="after_work_north">Thu Evening · North</option>
+            <option value="afterwork">Afterwork</option>
             <option value="weekend_casual">Weekend Casual</option>
             <option value="weekend_challenge">Weekend Challenge</option>
             <option value="special_ride">Special Ride</option>
@@ -705,7 +704,7 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       const csMsg        = document.getElementById("cs-msg");
       const csCreate     = document.getElementById("cs-create");
 
-      const DEFAULT_TYPE = { 1: "after_work_south", 3: "after_work_north", 5: "weekend_casual" };
+      const DEFAULT_TYPE = { 1: "afterwork", 3: "afterwork", 5: "weekend_casual" };
       let csSeasonOverride = currentSeason;
 
       function showMsg(el, text, ok) {
@@ -719,7 +718,7 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
           const wday = parseInt(cell.dataset.weekday);
           csSeasonOverride      = cell.dataset.season || currentSeason;
           csDateInput.value     = d;
-          csType.value          = DEFAULT_TYPE[wday] || "after_work_south";
+          csType.value          = DEFAULT_TYPE[wday] || "afterwork";
           csMsg.className       = "msg";
           csMsg.textContent     = "";
           csCreate.disabled     = false;

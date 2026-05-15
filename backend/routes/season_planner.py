@@ -104,8 +104,7 @@ class EventOut(BaseModel):
 
 
 EVENT_TYPE_TO_EVENT: dict[str, str] = {
-    "after_work_south":  "after-work",
-    "after_work_north":  "after-work",
+    "afterwork":         "after-work",
     "weekend_casual":    "social-ride",
     "weekend_challenge": "social-ride",
     "special_ride":      "social-ride",

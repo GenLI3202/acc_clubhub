@@ -27,12 +27,12 @@ def test_generate_creates_3_slots_per_week(db):
     slots = db.query(PlanSlot).order_by(PlanSlot.planned_date).all()
     assert len(slots) == 12
 
+    afterwork_slots = [s for s in slots if s.event_type == "afterwork"]
+    assert len(afterwork_slots) == 8, "2 afterwork slots per week × 4 weeks"
+    for slot in afterwork_slots:
+        assert slot.weekday in (1, 3), "afterwork must fall on Tuesday or Thursday"
     for slot in slots:
-        if slot.event_type == "after_work_south":
-            assert slot.weekday == 1, "after_work_south must fall on Tuesday"
-        elif slot.event_type == "after_work_north":
-            assert slot.weekday == 3, "after_work_north must fall on Thursday"
-        elif slot.event_type in ("weekend_casual", "weekend_challenge"):
+        if slot.event_type in ("weekend_casual", "weekend_challenge"):
             assert slot.weekday == 5, "weekend slots must fall on Saturday"
 
 
@@ -108,7 +108,7 @@ def test_regen_preserves_claimed(db):
 
     slot = (
         db.query(PlanSlot)
-        .filter_by(event_type="after_work_south")
+        .filter_by(event_type="afterwork", weekday=1)
         .one()
     )
     slot.claimed_by = "张三"
@@ -129,7 +129,7 @@ def test_regen_preserves_claimed(db):
 def test_patch_marks_auto_generated_false(client, db):
     """PATCH any content field flips auto_generated to False."""
     generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
-    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
     assert slot.auto_generated is True
 
     res = client.patch(
@@ -152,7 +152,7 @@ def test_convert_creates_draft_event(client, db):
     from models import Event
 
     generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
-    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
 
     res = client.post(
         f"/api/admin/season/slots/{slot.id}/convert",
@@ -178,7 +178,7 @@ def test_convert_idempotent(client, db):
     from models import Event
 
     generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
-    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
 
     client.post(
         f"/api/admin/season/slots/{slot.id}/convert",
@@ -200,7 +200,7 @@ def test_convert_idempotent(client, db):
 def test_delete_blocked_after_convert(client, db):
     """DELETE returns 409 once a slot has been converted to an event."""
     generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
-    slot = db.query(PlanSlot).filter_by(event_type="after_work_south").one()
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
 
     client.post(
         f"/api/admin/season/slots/{slot.id}/convert",

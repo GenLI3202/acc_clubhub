@@ -1,8 +1,7 @@
 // Shared types and label maps for the season planner dashboard (English-only UI).
 
 export type EventType =
-  | "after_work_south"
-  | "after_work_north"
+  | "afterwork"
   | "weekend_casual"
   | "weekend_challenge"
   | "special_ride"
@@ -25,8 +24,7 @@ export type SlotReadiness =
   | "ready_to_publish";
 
 export const EVENT_TYPE_LABEL: Record<EventType, string> = {
-  after_work_south: "Tue Evening · South",
-  after_work_north: "Thu Evening · North",
+  afterwork: "Afterwork",
   weekend_casual: "Weekend Casual",
   weekend_challenge: "Weekend Challenge",
   special_ride: "Special Ride",

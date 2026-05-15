@@ -10,9 +10,9 @@ from sqlalchemy.orm import Session
 from models import PlanSlot
 
 # Weekday defaults (Mon=0 ... Sun=6) — tweakable here
-WEEKDAY_AFTER_WORK_SOUTH = 1  # Tue
-WEEKDAY_AFTER_WORK_NORTH = 3  # Thu
-WEEKDAY_WEEKEND = 5           # Sat
+WEEKDAY_AFTERWORK_TUE = 1  # Tue
+WEEKDAY_AFTERWORK_THU = 3  # Thu
+WEEKDAY_WEEKEND = 5        # Sat
 
 # ISO-week parity → weekend type
 WEEKEND_TYPE_ODD_WEEK = "weekend_casual"
@@ -26,8 +26,7 @@ SPECIAL_EVENT_OVERRIDES: dict[str, str] = {
 }
 
 EVENT_TYPE_LABELS: dict[str, str] = {
-    "after_work_south": "Tue Evening · South",
-    "after_work_north": "Thu Evening · North",
+    "afterwork": "Afterwork",
     "weekend_casual": "Weekend Casual",
     "weekend_challenge": "Weekend Challenge",
     "special_ride": "Special Ride",
@@ -36,8 +35,7 @@ EVENT_TYPE_LABELS: dict[str, str] = {
 }
 
 DEFAULT_EVENT_TIME: dict[str, str] = {
-    "after_work_south": "18:30",
-    "after_work_north": "18:30",
+    "afterwork":        "18:30",
     "weekend_casual":   "09:00",
     "weekend_challenge": "08:30",
     "special_ride":     "09:00",
@@ -93,15 +91,15 @@ def generate_slots(
     for iso_year, iso_week in sorted(seen_weeks):
         monday = date.fromisocalendar(iso_year, iso_week, 1)
         desired.append(SlotSpec(
-            planned_date=monday + timedelta(days=WEEKDAY_AFTER_WORK_SOUTH),
-            event_type="after_work_south",
+            planned_date=monday + timedelta(days=WEEKDAY_AFTERWORK_TUE),
+            event_type="afterwork",
             iso_year=iso_year,
             iso_week=iso_week,
             season=season,
         ))
         desired.append(SlotSpec(
-            planned_date=monday + timedelta(days=WEEKDAY_AFTER_WORK_NORTH),
-            event_type="after_work_north",
+            planned_date=monday + timedelta(days=WEEKDAY_AFTERWORK_THU),
+            event_type="afterwork",
             iso_year=iso_year,
             iso_week=iso_week,
             season=season,
