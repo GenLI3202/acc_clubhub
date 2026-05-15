@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from sqlalchemy import (
     Column,
+    Date,
     Integer,
     String,
     DateTime,
@@ -249,6 +250,41 @@ class EventRideLeaderCredit(Base):
     event = relationship("Event", back_populates="ride_leader_credits")
     rsvp = relationship("RSVP", back_populates="ride_leader_credits")
     snapshot = relationship("EventRideLeaderSnapshot", back_populates="credits")
+
+
+class PlanSlot(Base):
+    """活动策划槽位 — upstream plan, separate from Event."""
+
+    __tablename__ = "plan_slots"
+    __table_args__ = (
+        UniqueConstraint("season", "planned_date", "event_type",
+                         name="uq_plan_slot_natural"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    season = Column(String(16), nullable=False, default="2026")
+    iso_year = Column(Integer, nullable=False)
+    iso_week = Column(Integer, nullable=False)
+    planned_date = Column(Date, nullable=False, index=True)
+    weekday = Column(Integer, nullable=False)
+    event_type = Column(String(32), nullable=False)
+    title = Column(String(200), nullable=True)
+    location = Column(String(200), nullable=True)
+    distance_km = Column(Numeric(8, 2), nullable=True)
+    notes = Column(Text, nullable=True)
+    claimed_by = Column(String(100), nullable=True)
+    status = Column(String(24), nullable=False, default="unclaimed")
+    readiness = Column(String(24), nullable=False, default="idea")
+    auto_generated = Column(Boolean, nullable=False, default=True)
+    locked = Column(Boolean, nullable=False, default=False)
+    published_event_id = Column(
+        Integer, ForeignKey("events.id", ondelete="SET NULL"),
+        nullable=True, index=True,
+    )
+    published_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow,
+                        onupdate=_utcnow, nullable=False)
 
 
 class Subscriber(Base):
