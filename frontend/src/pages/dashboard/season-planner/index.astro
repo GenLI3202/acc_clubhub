@@ -6,7 +6,6 @@ import type { GroupedSlotsResponse, WeekGroup, PlanSlot } from "../../../lib/adm
 import {
   EVENT_TYPE_LABEL,
   STATUS_LABEL,
-  READINESS_LABEL,
 } from "../../../lib/admin/seasonPlanner";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -46,13 +45,24 @@ try {
   fetchError = `Error loading slots: ${e instanceof Error ? e.message : String(e)}`;
 }
 
-function formatDate(d: string): string {
-  try {
-    const dt = new Date(d + "T00:00:00");
-    return dt.toLocaleDateString("en-GB", { month: "short", day: "numeric" });
-  } catch {
-    return d;
+// Map weekday index (Mon=0) → slot for a given week's slots
+function slotsByWeekday(slots: PlanSlot[]): Map<number, PlanSlot> {
+  const m = new Map<number, PlanSlot>();
+  for (const s of slots) {
+    m.set(s.weekday, s);
   }
+  return m;
+}
+
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function slotColor(eventType: string): string {
+  if (eventType === "after_work_south" || eventType === "after_work_north") return "cell-afterwork";
+  if (eventType === "weekend_casual") return "cell-casual";
+  if (eventType === "weekend_challenge") return "cell-challenge";
+  if (eventType === "special_event") return "cell-special";
+  if (eventType === "eyas_program") return "cell-eyas";
+  return "cell-other";
 }
 ---
 
@@ -70,7 +80,7 @@ function formatDate(d: string): string {
         margin: 0;
         padding: 2rem;
       }
-      .container { max-width: 1200px; margin: 0 auto; }
+      .container { max-width: 1100px; margin: 0 auto; }
       .breadcrumb { margin-bottom: 1.5rem; }
       .breadcrumb a { color: #C62828; text-decoration: none; font-size: 0.9rem; }
       .breadcrumb a:hover { text-decoration: underline; }
@@ -102,70 +112,90 @@ function formatDate(d: string): string {
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
 
-      /* Weekly board */
+      /* Weekly grid */
       .week-section { margin-bottom: 2rem; }
-      .week-header {
-        font-size: 1rem;
+      .week-label {
+        font-size: 0.9rem;
         font-weight: 700;
         color: #24292f;
-        margin-bottom: 0.75rem;
-        padding: 0.5rem 0;
-        border-bottom: 2px solid #d0d7de;
+        margin-bottom: 0.5rem;
       }
-      .week-header .date-range { font-weight: 400; color: #57606a; font-size: 0.85rem; margin-left: 0.5rem; }
-      .slot-row {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.75rem;
-      }
-      .slot-card {
-        background: white;
-        border: 1px solid #d0d7de;
-        border-radius: 6px;
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-      }
-      .slot-card-date { color: #57606a; font-size: 0.82rem; }
-      .slot-card-meta { font-size: 0.8rem; color: #57606a; }
-      .slot-card-owner { font-size: 0.8rem; color: #24292f; }
+      .week-label .date-range { font-weight: 400; color: #57606a; font-size: 0.82rem; margin-left: 0.5rem; }
 
-      /* Status & type badges — reused from events/index.astro */
-      .status {
-        display: inline-block;
-        padding: 0.2rem 0.55rem;
-        border-radius: 999px;
+      .day-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+      .day-header {
+        text-align: center;
         font-size: 0.72rem;
         font-weight: 700;
+        color: #57606a;
+        padding: 0.25rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
       }
-      .status-unclaimed  { background: #eef1f5; color: #57606a; }
-      .status-claimed    { background: #ddf4ff; color: #0969da; }
-      .status-in_planning { background: #fff8c5; color: #9a6700; }
-      .status-ready      { background: #dafbe1; color: #1a7f37; }
-      .status-published  { background: #ddf4ff; color: #0969da; }
-      .status-cancelled  { background: #ffebe9; color: #cf222e; }
+      .day-cell {
+        min-height: 72px;
+        border-radius: 6px;
+        border: 1px solid #d0d7de;
+        background: #f6f8fa;
+        position: relative;
+        overflow: hidden;
+      }
+      .day-cell.cell-empty { background: #f6f8fa; }
 
-      .type-badge {
-        display: inline-block;
-        padding: 0.15rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.74rem;
+      /* Slot colors */
+      .cell-afterwork  { background: #fff8c5; border-color: #d4a017; }
+      .cell-casual     { background: #dafbe1; border-color: #57ab5a; }
+      .cell-challenge  { background: #ddf4ff; border-color: #54aeff; }
+      .cell-special    { background: #ffeff7; border-color: #bf8700; }
+      .cell-eyas       { background: #f0fff4; border-color: #116329; }
+      .cell-other      { background: #eef1f5; border-color: #8c959f; }
+
+      .day-cell a {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0.4rem 0.5rem;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+      }
+      .day-cell a:hover { opacity: 0.85; }
+      .cell-type {
+        font-size: 0.7rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #24292f;
+      }
+      .cell-date {
+        font-size: 0.65rem;
+        color: #57606a;
+        margin-top: auto;
+      }
+      .cell-status {
+        font-size: 0.62rem;
         font-weight: 600;
-        background: #eef1f5;
+        color: #57606a;
+        margin-top: 2px;
+      }
+
+      /* Legend */
+      .legend {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.25rem;
+        font-size: 0.8rem;
         color: #57606a;
       }
-      .type-after_work_south  { background: #fff8c5; color: #9a6700; }
-      .type-after_work_north  { background: #fff0f0; color: #C62828; }
-      .type-weekend_casual    { background: #dafbe1; color: #1a7f37; }
-      .type-weekend_challenge { background: #ddf4ff; color: #0550ae; }
-      .type-special_event     { background: #ffeff7; color: #8250df; }
-      .type-eyas_program      { background: #f0fff4; color: #116329; }
-      .edit-link {
-        font-size: 0.78rem; font-weight: 600;
-        color: #C62828; text-decoration: none;
+      .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+      .legend-dot {
+        width: 12px; height: 12px; border-radius: 3px;
+        border: 1px solid rgba(0,0,0,0.12);
       }
-      .edit-link:hover { text-decoration: underline; }
 
       /* Generate modal */
       dialog {
@@ -247,6 +277,16 @@ function formatDate(d: string): string {
         <button class="action-btn" id="open-generate-modal">Generate Slots</button>
       </div>
 
+      <!-- Legend -->
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#fff8c5;border-color:#d4a017;"></span>Afterwork</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#dafbe1;border-color:#57ab5a;"></span>Weekend Casual</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ddf4ff;border-color:#54aeff;"></span>Weekend Challenge</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ffeff7;border-color:#bf8700;"></span>Special Event</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f0fff4;border-color:#116329;"></span>EYAS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f6f8fa;border-color:#d0d7de;"></span>Empty</span>
+      </div>
+
       {fetchError && <div class="error">{fetchError}</div>}
 
       {weeks.length === 0 && !fetchError && (
@@ -255,40 +295,35 @@ function formatDate(d: string): string {
         </div>
       )}
 
-      {weeks.map((week) => (
-        <div class="week-section">
-          <div class="week-header">
-            Week {week.iso_week}
-            <span class="date-range">· {week.date_range}</span>
+      {weeks.map((week) => {
+        const byDay = slotsByWeekday(week.slots);
+        return (
+          <div class="week-section">
+            <div class="week-label">
+              Week {week.iso_week}
+              <span class="date-range">· {week.date_range}</span>
+            </div>
+            <div class="day-grid">
+              {DAYS.map((d) => <div class="day-header">{d}</div>)}
+              {DAYS.map((_, idx) => {
+                const slot = byDay.get(idx);
+                if (!slot) {
+                  return <div class="day-cell cell-empty"></div>;
+                }
+                return (
+                  <div class={`day-cell ${slotColor(slot.event_type)}`}>
+                    <a href={`/dashboard/season-planner/${slot.id}`}>
+                      <span class="cell-type">{EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type}</span>
+                      <span class="cell-date">{slot.planned_date}</span>
+                      <span class="cell-status">{STATUS_LABEL[slot.status] ?? slot.status}</span>
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <div class="slot-row">
-            {week.slots.map((slot: PlanSlot) => (
-              <div class="slot-card">
-                <div>
-                  <span class={`type-badge type-${slot.event_type}`}>
-                    {EVENT_TYPE_LABEL[slot.event_type] ?? slot.event_type}
-                  </span>
-                </div>
-                <div class="slot-card-date">{formatDate(slot.planned_date)}</div>
-                <div>
-                  <span class={`status status-${slot.status}`}>
-                    {STATUS_LABEL[slot.status] ?? slot.status}
-                  </span>
-                </div>
-                <div class="slot-card-meta">
-                  Readiness: {READINESS_LABEL[slot.readiness] ?? slot.readiness}
-                </div>
-                <div class="slot-card-owner">
-                  Owner: {slot.claimed_by || "—"}
-                </div>
-                <div style="margin-top:0.4rem;">
-                  <a href={`/dashboard/season-planner/${slot.id}`} class="edit-link">Edit →</a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
 
     <!-- Generate Slots modal -->
@@ -355,7 +390,6 @@ function formatDate(d: string): string {
         const endDate = (document.getElementById("gen-end") as HTMLInputElement).value;
         const overwrite = (document.getElementById("gen-overwrite") as HTMLInputElement).checked;
 
-        // POST to same-origin Astro proxy — avoids cross-origin CORS cookie issues
         const res = await fetch("/api/admin/season/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -29,7 +29,7 @@ def test_generate_creates_3_slots_per_week(db):
 
     for slot in slots:
         if slot.event_type == "after_work_south":
-            assert slot.weekday == 2, "after_work_south must fall on Wednesday"
+            assert slot.weekday == 1, "after_work_south must fall on Tuesday"
         elif slot.event_type == "after_work_north":
             assert slot.weekday == 3, "after_work_north must fall on Thursday"
         elif slot.event_type in ("weekend_casual", "weekend_challenge"):

@@ -241,12 +241,17 @@ const READINESS_OPTIONS = [
             {slot.claimed_by ? (
               <div class="btn-row">
                 <span class="owner-name">{slot.claimed_by}</span>
+                {slot.claimed_email && <span style="font-size:0.82rem;color:#57606a;">({slot.claimed_email})</span>}
                 <button class="btn-secondary" id="release-btn">Release</button>
               </div>
             ) : (
-              <div class="ownership-row">
-                <input type="text" id="claim-name" placeholder="Enter owner name" />
-                <button class="action-btn" id="claim-btn">Claim</button>
+              <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                <div class="ownership-row">
+                  <input type="text" id="claim-name" placeholder="Owner name" />
+                  <input type="email" id="claim-email" placeholder="Owner email (for reminders)" style="flex:1.5;" />
+                  <button class="action-btn" id="claim-btn">Claim</button>
+                </div>
+                <p style="margin:0;font-size:0.78rem;color:#57606a;">A confirmation email will be sent immediately, and a reminder 7 days before the event.</p>
               </div>
             )}
             <div class="msg" id="ownership-msg"></div>
@@ -323,10 +328,15 @@ const READINESS_OPTIONS = [
       // Claim
       document.getElementById("claim-btn")?.addEventListener("click", async () => {
         const name = document.getElementById("claim-name")?.value.trim();
+        const email = document.getElementById("claim-email")?.value.trim();
         if (!name) { showMsg("ownership-msg", "Enter a name first.", false); return; }
         try {
-          await apiCall(`/api/admin/season/${slotId}/claim`, "POST", { claimed_by: name });
-          showMsg("ownership-msg", `Claimed by ${name}. Reloading…`, true);
+          await apiCall(`/api/admin/season/${slotId}/claim`, "POST", {
+            claimed_by: name,
+            claimed_email: email || null,
+          });
+          const emailNote = email ? ` Confirmation sent to ${email}.` : "";
+          showMsg("ownership-msg", `Claimed by ${name}.${emailNote} Reloading…`, true);
           setTimeout(() => location.reload(), 900);
         } catch (e) {
           showMsg("ownership-msg", "Error: " + e.message, false);

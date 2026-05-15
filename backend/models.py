@@ -273,6 +273,7 @@ class PlanSlot(Base):
     distance_km = Column(Numeric(8, 2), nullable=True)
     notes = Column(Text, nullable=True)
     claimed_by = Column(String(100), nullable=True)
+    claimed_email = Column(String(255), nullable=True)
     status = Column(String(24), nullable=False, default="unclaimed")
     readiness = Column(String(24), nullable=False, default="idea")
     auto_generated = Column(Boolean, nullable=False, default=True)

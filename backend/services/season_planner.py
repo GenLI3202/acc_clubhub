@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from models import PlanSlot
 
 # Weekday defaults (Mon=0 ... Sun=6) — tweakable here
-WEEKDAY_AFTER_WORK_SOUTH = 2  # Wed
+WEEKDAY_AFTER_WORK_SOUTH = 1  # Tue
 WEEKDAY_AFTER_WORK_NORTH = 3  # Thu
 WEEKDAY_WEEKEND = 5           # Sat
 
@@ -23,6 +23,15 @@ WEEKEND_TYPE_EVEN_WEEK = "weekend_challenge"
 SPECIAL_EVENT_OVERRIDES: dict[str, str] = {
     # "2026-06-20": "special_event",   # 夏至周年庆
     # "2026-08-15": "eyas_program",    # 雏鹰计划
+}
+
+EVENT_TYPE_LABELS: dict[str, str] = {
+    "after_work_south": "Tue Evening · South",
+    "after_work_north": "Thu Evening · North",
+    "weekend_casual": "Weekend Casual",
+    "weekend_challenge": "Weekend Challenge",
+    "special_event": "Special Event",
+    "eyas_program": "EYAS Program",
 }
 
 DEFAULT_EVENT_TIME: dict[str, str] = {
@@ -70,43 +79,46 @@ def generate_slots(
 
     Idempotent: never overwrites locked, claimed, or human-edited slots.
     """
-    desired: list[SlotSpec] = []
+    # Collect all ISO weeks touched by the date range (works for any range length)
+    seen_weeks: set[tuple[int, int]] = set()
     cur = start_date
     while cur <= end_date:
-        if cur.weekday() == 0:  # Monday → start of ISO week
-            iso_year, iso_week, _ = cur.isocalendar()
-
-            desired.append(SlotSpec(
-                planned_date=cur + timedelta(days=WEEKDAY_AFTER_WORK_SOUTH),
-                event_type="after_work_south",
-                iso_year=iso_year,
-                iso_week=iso_week,
-                season=season,
-            ))
-            desired.append(SlotSpec(
-                planned_date=cur + timedelta(days=WEEKDAY_AFTER_WORK_NORTH),
-                event_type="after_work_north",
-                iso_year=iso_year,
-                iso_week=iso_week,
-                season=season,
-            ))
-
-            weekend_date = cur + timedelta(days=WEEKDAY_WEEKEND)
-            weekend_type = (
-                WEEKEND_TYPE_ODD_WEEK if iso_week % 2 == 1
-                else WEEKEND_TYPE_EVEN_WEEK
-            )
-            override = SPECIAL_EVENT_OVERRIDES.get(weekend_date.isoformat())
-            if override:
-                weekend_type = override
-            desired.append(SlotSpec(
-                planned_date=weekend_date,
-                event_type=weekend_type,
-                iso_year=iso_year,
-                iso_week=iso_week,
-                season=season,
-            ))
+        iso_year, iso_week, _ = cur.isocalendar()
+        seen_weeks.add((iso_year, iso_week))
         cur += timedelta(days=1)
+
+    desired: list[SlotSpec] = []
+    for iso_year, iso_week in sorted(seen_weeks):
+        monday = date.fromisocalendar(iso_year, iso_week, 1)
+        desired.append(SlotSpec(
+            planned_date=monday + timedelta(days=WEEKDAY_AFTER_WORK_SOUTH),
+            event_type="after_work_south",
+            iso_year=iso_year,
+            iso_week=iso_week,
+            season=season,
+        ))
+        desired.append(SlotSpec(
+            planned_date=monday + timedelta(days=WEEKDAY_AFTER_WORK_NORTH),
+            event_type="after_work_north",
+            iso_year=iso_year,
+            iso_week=iso_week,
+            season=season,
+        ))
+        weekend_date = monday + timedelta(days=WEEKDAY_WEEKEND)
+        weekend_type = (
+            WEEKEND_TYPE_ODD_WEEK if iso_week % 2 == 1
+            else WEEKEND_TYPE_EVEN_WEEK
+        )
+        override = SPECIAL_EVENT_OVERRIDES.get(weekend_date.isoformat())
+        if override:
+            weekend_type = override
+        desired.append(SlotSpec(
+            planned_date=weekend_date,
+            event_type=weekend_type,
+            iso_year=iso_year,
+            iso_week=iso_week,
+            season=season,
+        ))
 
     created = skipped = 0
     for s in desired:

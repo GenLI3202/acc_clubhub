@@ -1,5 +1,4 @@
-// Shared types and Chinese label maps for the season planner dashboard.
-// Chinese UI is hardcoded — do NOT import from i18n.ts.
+// Shared types and label maps for the season planner dashboard (English-only UI).
 
 export type EventType =
   | "after_work_south"
@@ -25,7 +24,7 @@ export type SlotReadiness =
   | "ready_to_publish";
 
 export const EVENT_TYPE_LABEL: Record<EventType, string> = {
-  after_work_south: "Wed Evening · South",
+  after_work_south: "Tue Evening · South",
   after_work_north: "Thu Evening · North",
   weekend_casual: "Weekend Casual",
   weekend_challenge: "Weekend Challenge",
@@ -63,6 +62,7 @@ export interface PlanSlot {
   distance_km: number | null;
   notes: string | null;
   claimed_by: string | null;
+  claimed_email: string | null;
   status: SlotStatus;
   readiness: SlotReadiness;
   auto_generated: boolean;

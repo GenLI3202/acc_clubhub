@@ -15,7 +15,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import PlanSlot
 from routes.auth import get_current_admin
-from services.season_planner import generate_slots
+from services.season_planner import generate_slots, EVENT_TYPE_LABELS
+from services.email import send_slot_claim_confirmation, send_slot_reminder
 
 router = APIRouter()
 
@@ -39,6 +40,7 @@ class SlotOut(BaseModel):
     distance_km: Optional[float]
     notes: Optional[str]
     claimed_by: Optional[str]
+    claimed_email: Optional[str]
     status: str
     readiness: str
     auto_generated: bool
@@ -61,6 +63,7 @@ class PatchRequest(BaseModel):
 
 class ClaimRequest(BaseModel):
     claimed_by: str
+    claimed_email: Optional[str] = None
 
 
 class GenerateRequest(BaseModel):
@@ -228,9 +231,21 @@ def claim_slot(
             detail=f"Cannot claim a slot with status '{slot.status}'",
         )
     slot.claimed_by = body.claimed_by
+    slot.claimed_email = body.claimed_email
     slot.status = "claimed"
     db.commit()
     db.refresh(slot)
+
+    if body.claimed_email:
+        label = EVENT_TYPE_LABELS.get(slot.event_type, slot.event_type)
+        send_slot_claim_confirmation(
+            owner_email=body.claimed_email,
+            owner_name=body.claimed_by,
+            event_type_label=label,
+            planned_date=str(slot.planned_date),
+            slot_id=slot.id,
+        )
+
     return slot
 
 
@@ -242,6 +257,7 @@ def release_slot(
 ) -> PlanSlot:
     slot = _get_slot_or_404(slot_id, db)
     slot.claimed_by = None
+    slot.claimed_email = None
     slot.status = "unclaimed"
     db.commit()
     db.refresh(slot)
@@ -263,3 +279,37 @@ def delete_slot(
     db.delete(slot)
     db.commit()
     return {"deleted": slot_id}
+
+
+@router.post("/api/admin/season/slots/remind")
+def send_slot_reminders(
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Send 7-day reminder emails for all claimed slots whose planned_date is exactly 7 days away."""
+    from datetime import timedelta
+
+    target_date = date.today() + timedelta(days=7)
+    slots = (
+        db.query(PlanSlot)
+        .filter(
+            PlanSlot.planned_date == target_date,
+            PlanSlot.claimed_email.isnot(None),
+            PlanSlot.status != "cancelled",
+        )
+        .all()
+    )
+
+    sent = 0
+    for slot in slots:
+        label = EVENT_TYPE_LABELS.get(slot.event_type, slot.event_type)
+        send_slot_reminder(
+            owner_email=slot.claimed_email,
+            owner_name=slot.claimed_by or "Owner",
+            event_type_label=label,
+            planned_date=str(slot.planned_date),
+            slot_id=slot.id,
+        )
+        sent += 1
+
+    return {"sent": sent, "target_date": str(target_date)}

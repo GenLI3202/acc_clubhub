@@ -462,6 +462,84 @@ def send_waitlist_email(
         return {"status": "error", "message": str(e)}
 
 
+def send_slot_claim_confirmation(
+    owner_email: str,
+    owner_name: str,
+    event_type_label: str,
+    planned_date: str,
+    slot_id: int,
+) -> dict:
+    """Notify the slot owner that they have claimed a planning slot."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping slot claim email (no RESEND_API_KEY): %s", owner_email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    subject = f"You've claimed a planning slot: {event_type_label} on {planned_date}"
+    html_body = f"""<div style="font-family:Arial,sans-serif;max-width:600px;">
+<h2 style="color:#C62828;">🚴 Planning Slot Claimed</h2>
+<p>Hi {owner_name},</p>
+<p>You are now the owner of the following planning slot:</p>
+<ul>
+  <li><strong>Event type:</strong> {event_type_label}</li>
+  <li><strong>Planned date:</strong> {planned_date}</li>
+</ul>
+<p>You'll receive a reminder email 7 days before the event date. Please keep your plans on track!</p>
+<p>— ACC ClubHub Admin</p>
+{_CONTACT["en"]}
+</div>"""
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
+        "to": [owner_email],
+        "subject": subject,
+        "html": html_body,
+    }
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send slot claim email to %s: %s", owner_email, e, exc_info=True)
+        return {"status": "error", "message": str(e)}
+
+
+def send_slot_reminder(
+    owner_email: str,
+    owner_name: str,
+    event_type_label: str,
+    planned_date: str,
+    slot_id: int,
+) -> dict:
+    """Send a 7-day-before reminder to the slot owner."""
+    if not settings.RESEND_API_KEY:
+        logger.debug("Skipping slot reminder email (no RESEND_API_KEY): %s", owner_email)
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    subject = f"Reminder: your planned event is in 7 days — {event_type_label} on {planned_date}"
+    html_body = f"""<div style="font-family:Arial,sans-serif;max-width:600px;">
+<h2 style="color:#C62828;">⏰ Event Reminder — 7 Days Away</h2>
+<p>Hi {owner_name},</p>
+<p>This is a friendly reminder that your planned event is coming up in <strong>7 days</strong>:</p>
+<ul>
+  <li><strong>Event type:</strong> {event_type_label}</li>
+  <li><strong>Planned date:</strong> {planned_date}</li>
+</ul>
+<p>Please make sure everything is ready: route, participants, logistics.</p>
+<p>— ACC ClubHub Admin</p>
+{_CONTACT["en"]}
+</div>"""
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
+        "to": [owner_email],
+        "subject": subject,
+        "html": html_body,
+    }
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error("Failed to send slot reminder to %s: %s", owner_email, e, exc_info=True)
+        return {"status": "error", "message": str(e)}
+
+
 def send_subscription_confirmation_email(
     email: str,
     name: str,
