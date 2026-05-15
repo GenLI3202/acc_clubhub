@@ -3,22 +3,14 @@
 export const prerender = false;
 
 import type { GroupedSlotsResponse, WeekGroup, PlanSlot } from "../../../lib/admin/seasonPlanner";
-import {
-  EVENT_TYPE_LABEL,
-  STATUS_LABEL,
-} from "../../../lib/admin/seasonPlanner";
+import { EVENT_TYPE_LABEL, STATUS_LABEL } from "../../../lib/admin/seasonPlanner";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
-// Verify authentication — forward browser cookies to backend
 const cookie = Astro.request.headers.get("cookie") || "";
 try {
-  const meRes = await fetch(`${apiUrl}/auth/me`, {
-    headers: { "Cookie": cookie },
-  });
-  if (!meRes.ok) {
-    return Astro.redirect("/dashboard/login", 302);
-  }
+  const meRes = await fetch(`${apiUrl}/auth/me`, { headers: { "Cookie": cookie } });
+  if (!meRes.ok) return Astro.redirect("/dashboard/login", 302);
 } catch {
   return Astro.redirect("/dashboard/login", 302);
 }
@@ -45,16 +37,18 @@ try {
   fetchError = `Error loading slots: ${e instanceof Error ? e.message : String(e)}`;
 }
 
-// Map weekday index (Mon=0) → slot for a given week's slots
-function slotsByWeekday(slots: PlanSlot[]): Map<number, PlanSlot> {
-  const m = new Map<number, PlanSlot>();
-  for (const s of slots) {
-    m.set(s.weekday, s);
-  }
-  return m;
+function addDays(dateStr: string, days: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  dt.setUTCDate(dt.getUTCDate() + days);
+  return dt.toISOString().split("T")[0];
 }
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function slotsByWeekday(slots: PlanSlot[]): Map<number, PlanSlot> {
+  const m = new Map<number, PlanSlot>();
+  for (const s of slots) m.set(s.weekday, s);
+  return m;
+}
 
 function slotColor(eventType: string): string {
   if (eventType === "after_work_south" || eventType === "after_work_north") return "cell-afterwork";
@@ -64,6 +58,12 @@ function slotColor(eventType: string): string {
   if (eventType === "eyas_program") return "cell-eyas";
   return "cell-other";
 }
+
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const lastWeek = weeks.length > 0 ? weeks[weeks.length - 1] : null;
+const nextWeekMonday = lastWeek ? addDays(lastWeek.monday, 7) : null;
+const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
 ---
 
 <!doctype html>
@@ -93,6 +93,18 @@ function slotColor(eventType: string): string {
         border-bottom: 1px solid #d0d7de;
       }
       h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+
+      .btn-ghost {
+        padding: 0.35rem 0.8rem;
+        background: transparent;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        color: #57606a;
+        cursor: pointer;
+      }
+      .btn-ghost:hover { background: #f6f8fa; border-color: #8c959f; }
+
       .action-btn {
         display: inline-block;
         padding: 0.4rem 1rem;
@@ -112,15 +124,31 @@ function slotColor(eventType: string): string {
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
 
+      /* Legend */
+      .legend {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.25rem;
+        font-size: 0.79rem;
+        color: #57606a;
+        align-items: center;
+      }
+      .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+      .legend-dot {
+        width: 11px; height: 11px; border-radius: 3px;
+        border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0;
+      }
+
       /* Weekly grid */
-      .week-section { margin-bottom: 2rem; }
+      .week-section { margin-bottom: 1.5rem; }
       .week-label {
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         font-weight: 700;
         color: #24292f;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
       }
-      .week-label .date-range { font-weight: 400; color: #57606a; font-size: 0.82rem; margin-left: 0.5rem; }
+      .week-label .date-range { font-weight: 400; color: #57606a; font-size: 0.8rem; margin-left: 0.5rem; }
 
       .day-grid {
         display: grid;
@@ -129,24 +157,44 @@ function slotColor(eventType: string): string {
       }
       .day-header {
         text-align: center;
-        font-size: 0.72rem;
+        font-size: 0.69rem;
         font-weight: 700;
-        color: #57606a;
-        padding: 0.25rem 0;
+        color: #8c959f;
+        padding: 0.2rem 0;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.04em;
       }
       .day-cell {
-        min-height: 72px;
+        min-height: 76px;
         border-radius: 6px;
         border: 1px solid #d0d7de;
-        background: #f6f8fa;
         position: relative;
         overflow: hidden;
       }
-      .day-cell.cell-empty { background: #f6f8fa; }
 
-      /* Slot colors */
+      /* Empty cells — clickable */
+      .day-cell.cell-empty {
+        background: #f6f8fa;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .day-cell.cell-empty:hover {
+        background: #eef1f5;
+        border-color: #8c959f;
+      }
+      .add-icon {
+        font-size: 1.4rem;
+        color: #d0d7de;
+        line-height: 1;
+        transition: color 0.15s;
+        user-select: none;
+      }
+      .day-cell.cell-empty:hover .add-icon { color: #8c959f; }
+
+      /* Filled slot cells */
       .cell-afterwork  { background: #fff8c5; border-color: #d4a017; }
       .cell-casual     { background: #dafbe1; border-color: #57ab5a; }
       .cell-challenge  { background: #ddf4ff; border-color: #54aeff; }
@@ -158,87 +206,90 @@ function slotColor(eventType: string): string {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 0.4rem 0.5rem;
+        padding: 0.45rem 0.5rem;
         height: 100%;
         text-decoration: none;
         color: inherit;
       }
-      .day-cell a:hover { opacity: 0.85; }
-      .cell-type {
-        font-size: 0.7rem;
-        font-weight: 700;
-        line-height: 1.2;
-        color: #24292f;
-      }
-      .cell-date {
-        font-size: 0.65rem;
-        color: #57606a;
-        margin-top: auto;
-      }
-      .cell-status {
-        font-size: 0.62rem;
-        font-weight: 600;
-        color: #57606a;
-        margin-top: 2px;
-      }
+      .day-cell a:hover { opacity: 0.82; }
+      .cell-type { font-size: 0.69rem; font-weight: 700; line-height: 1.25; color: #24292f; }
+      .cell-date { font-size: 0.63rem; color: #57606a; margin-top: auto; }
+      .cell-status { font-size: 0.61rem; font-weight: 600; color: #57606a; margin-top: 2px; }
 
-      /* Legend */
-      .legend {
+      /* Add-next-week button */
+      .add-week-row {
         display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-bottom: 1.25rem;
-        font-size: 0.8rem;
-        color: #57606a;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        padding-top: 1.25rem;
+        border-top: 2px dashed #d0d7de;
       }
-      .legend-item { display: flex; align-items: center; gap: 0.35rem; }
-      .legend-dot {
-        width: 12px; height: 12px; border-radius: 3px;
-        border: 1px solid rgba(0,0,0,0.12);
+      .add-week-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #C62828;
+        color: white;
+        border: none;
+        font-size: 1.8rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, transform 0.1s;
+        flex-shrink: 0;
       }
+      .add-week-btn:hover { background: #a81f1f; transform: scale(1.08); }
+      .add-week-btn:disabled { background: #8b949e; cursor: not-allowed; transform: none; }
+      .add-week-label { font-size: 0.85rem; color: #57606a; }
 
-      /* Generate modal */
+      /* Dialogs */
       dialog {
         border: 1px solid #d0d7de;
         border-radius: 8px;
         padding: 0;
-        max-width: 420px;
+        max-width: 400px;
         width: 100%;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       }
-      dialog::backdrop { background: rgba(0, 0, 0, 0.4); }
+      dialog::backdrop { background: rgba(0,0,0,0.4); }
       .dialog-header {
         padding: 1rem 1.25rem;
         border-bottom: 1px solid #d0d7de;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: #24292f;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
       .dialog-body { padding: 1.25rem; }
-      .form-group { margin-bottom: 1rem; }
+      .form-group { margin-bottom: 0.9rem; }
       .form-group label {
         display: block;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         font-weight: 600;
-        color: #24292f;
-        margin-bottom: 0.3rem;
+        color: #57606a;
+        margin-bottom: 0.25rem;
       }
       .form-group input[type="text"],
-      .form-group input[type="date"] {
+      .form-group input[type="date"],
+      .form-group select {
         width: 100%;
         padding: 0.45rem 0.7rem;
         border: 1px solid #d0d7de;
         border-radius: 6px;
         font-size: 0.875rem;
+        font-family: inherit;
+        background: white;
       }
-      .form-group input:focus { outline: 2px solid #C62828; outline-offset: 1px; }
-      .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
-      .checkbox-row label { margin: 0; font-weight: 400; }
+      .form-group input:focus,
+      .form-group select:focus { outline: 2px solid #C62828; outline-offset: 1px; border-color: #C62828; }
+      .form-group input[readonly] { background: #f6f8fa; color: #57606a; }
       .dialog-footer {
-        padding: 1rem 1.25rem;
+        padding: 0.9rem 1.25rem;
         border-top: 1px solid #d0d7de;
         display: flex;
         gap: 0.5rem;
@@ -253,7 +304,14 @@ function slotColor(eventType: string): string {
         cursor: pointer;
       }
       .btn-secondary:hover { background: #f6f8fa; }
-      .preview-box {
+
+      .msg { padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.82rem; display: none; margin-top: 0.5rem; }
+      .msg.visible { display: block; }
+      .msg-ok  { background: #dafbe1; color: #1a7f37; }
+      .msg-err { background: #ffebe9; color: #cf222e; }
+
+      /* Generate modal */
+      .gen-preview-box {
         background: #f6f8fa;
         border: 1px solid #d0d7de;
         border-radius: 6px;
@@ -263,7 +321,9 @@ function slotColor(eventType: string): string {
         margin-top: 0.75rem;
         display: none;
       }
-      .preview-box.visible { display: block; }
+      .gen-preview-box.visible { display: block; }
+      .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
+      .checkbox-row label { margin: 0; font-weight: 400; font-size: 0.875rem; }
     </style>
   </head>
   <body>
@@ -273,8 +333,8 @@ function slotColor(eventType: string): string {
       </div>
 
       <div class="header">
-        <h1>Season Planning Dashboard</h1>
-        <button class="action-btn" id="open-generate-modal">Generate Slots</button>
+        <h1>Season Planning</h1>
+        <button class="btn-ghost" id="open-generate-modal">Bulk Generate…</button>
       </div>
 
       <!-- Legend -->
@@ -284,14 +344,15 @@ function slotColor(eventType: string): string {
         <span class="legend-item"><span class="legend-dot" style="background:#ddf4ff;border-color:#54aeff;"></span>Weekend Challenge</span>
         <span class="legend-item"><span class="legend-dot" style="background:#ffeff7;border-color:#bf8700;"></span>Special Event</span>
         <span class="legend-item"><span class="legend-dot" style="background:#f0fff4;border-color:#116329;"></span>EYAS</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#f6f8fa;border-color:#d0d7de;"></span>Empty</span>
+        <span class="legend-item" style="margin-left:auto;font-size:0.75rem;color:#8c959f;">Click grey cell to add · Click "+" for next week</span>
       </div>
 
       {fetchError && <div class="error">{fetchError}</div>}
 
       {weeks.length === 0 && !fetchError && (
         <div class="empty">
-          No planning slots yet. Click &quot;Generate Slots&quot; to create the {season} season plan.
+          No planning slots yet. Click &ldquo;Bulk Generate&rdquo; above or use the&nbsp;
+          <strong>+</strong>&nbsp;button that appears after each week.
         </div>
       )}
 
@@ -307,8 +368,19 @@ function slotColor(eventType: string): string {
               {DAYS.map((d) => <div class="day-header">{d}</div>)}
               {DAYS.map((_, idx) => {
                 const slot = byDay.get(idx);
+                const cellDate = addDays(week.monday, idx);
                 if (!slot) {
-                  return <div class="day-cell cell-empty"></div>;
+                  return (
+                    <div
+                      class="day-cell cell-empty"
+                      data-date={cellDate}
+                      data-weekday={String(idx)}
+                      data-season={season}
+                      title={`Add slot for ${cellDate}`}
+                    >
+                      <span class="add-icon">+</span>
+                    </div>
+                  );
                 }
                 return (
                   <div class={`day-cell ${slotColor(slot.event_type)}`}>
@@ -324,13 +396,57 @@ function slotColor(eventType: string): string {
           </div>
         );
       })}
+
+      {nextWeekMonday && (
+        <div class="add-week-row">
+          <button
+            class="add-week-btn"
+            id="add-week-btn"
+            data-next-monday={nextWeekMonday}
+            data-next-sunday={nextWeekSunday}
+            data-season={season}
+            title={`Add week of ${nextWeekMonday}`}
+          >+</button>
+          <span class="add-week-label">Add week of <strong>{nextWeekMonday}</strong> (Tue · Thu · Sat defaults)</span>
+        </div>
+      )}
     </div>
 
-    <!-- Generate Slots modal -->
+    <!-- Create-slot dialog (empty cell click) -->
+    <dialog id="create-slot-dialog">
+      <div class="dialog-header">
+        <span>New Planning Slot</span>
+        <button class="btn-secondary" id="cs-close" style="border:none;font-size:1.1rem;padding:0 0.3rem;">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="text" id="cs-date" readonly />
+        </div>
+        <div class="form-group">
+          <label for="cs-type">Event Type</label>
+          <select id="cs-type">
+            <option value="after_work_south">Tue Evening · South</option>
+            <option value="after_work_north">Thu Evening · North</option>
+            <option value="weekend_casual">Weekend Casual</option>
+            <option value="weekend_challenge">Weekend Challenge</option>
+            <option value="special_event">Special Event</option>
+            <option value="eyas_program">EYAS Program</option>
+          </select>
+        </div>
+        <div class="msg" id="cs-msg"></div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn-secondary" id="cs-cancel">Cancel</button>
+        <button class="action-btn" id="cs-create">Create Slot</button>
+      </div>
+    </dialog>
+
+    <!-- Bulk-generate dialog (secondary) -->
     <dialog id="generate-dialog">
       <div class="dialog-header">
-        <span>Generate Planning Slots</span>
-        <button class="btn-secondary" id="close-dialog" style="border:none;font-size:1.1rem;padding:0 0.3rem;">✕</button>
+        <span>Bulk Generate Slots</span>
+        <button class="btn-secondary" id="gen-close" style="border:none;font-size:1.1rem;padding:0 0.3rem;">✕</button>
       </div>
       <div class="dialog-body">
         <div class="form-group">
@@ -351,95 +467,167 @@ function slotColor(eventType: string): string {
             <label for="gen-overwrite">Overwrite existing unclaimed slots</label>
           </div>
         </div>
-        <div class="preview-box" id="preview-box"></div>
+        <div class="gen-preview-box" id="gen-preview"></div>
       </div>
       <div class="dialog-footer">
-        <button class="btn-secondary" id="cancel-dialog">Cancel</button>
-        <button class="action-btn" id="dry-run-btn">Preview</button>
-        <button class="action-btn" id="confirm-btn" style="display:none;">Confirm</button>
+        <button class="btn-secondary" id="gen-cancel">Cancel</button>
+        <button class="action-btn" id="gen-dry-run">Preview</button>
+        <button class="action-btn" id="gen-confirm" style="display:none;">Confirm</button>
       </div>
     </dialog>
 
-    <script>
-      const dialog = document.getElementById("generate-dialog") as HTMLDialogElement;
-      const openBtn = document.getElementById("open-generate-modal");
-      const closeBtn = document.getElementById("close-dialog");
-      const cancelBtn = document.getElementById("cancel-dialog");
-      const dryRunBtn = document.getElementById("dry-run-btn") as HTMLButtonElement;
-      const confirmBtn = document.getElementById("confirm-btn") as HTMLButtonElement;
-      const previewBox = document.getElementById("preview-box") as HTMLDivElement;
+    <script define:vars={{ currentSeason: season }}>
+      // ── Create slot dialog ──────────────────────────────────
+      const createDialog = document.getElementById("create-slot-dialog");
+      const csDateInput  = document.getElementById("cs-date");
+      const csType       = document.getElementById("cs-type");
+      const csMsg        = document.getElementById("cs-msg");
+      const csCreate     = document.getElementById("cs-create");
 
-      function openDialog() {
-        previewBox.classList.remove("visible");
-        previewBox.textContent = "";
-        confirmBtn.style.display = "none";
-        dryRunBtn.style.display = "";
-        dialog.showModal();
+      const DEFAULT_TYPE = { 1: "after_work_south", 3: "after_work_north", 5: "weekend_casual" };
+      let csSeasonOverride = currentSeason;
+
+      function showMsg(el, text, ok) {
+        el.textContent = text;
+        el.className = "msg visible " + (ok ? "msg-ok" : "msg-err");
       }
 
-      function closeDialog() { dialog.close(); }
-
-      openBtn?.addEventListener("click", openDialog);
-      closeBtn?.addEventListener("click", closeDialog);
-      cancelBtn?.addEventListener("click", closeDialog);
-      dialog.addEventListener("click", (e) => { if (e.target === dialog) closeDialog(); });
-
-      async function callGenerate(dryRun: boolean) {
-        const season = (document.getElementById("gen-season") as HTMLInputElement).value.trim();
-        const startDate = (document.getElementById("gen-start") as HTMLInputElement).value;
-        const endDate = (document.getElementById("gen-end") as HTMLInputElement).value;
-        const overwrite = (document.getElementById("gen-overwrite") as HTMLInputElement).checked;
-
-        const res = await fetch("/api/admin/season/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            season,
-            start_date: startDate,
-            end_date: endDate,
-            dry_run: dryRun,
-            overwrite_unclaimed: overwrite,
-          }),
+      document.querySelectorAll(".day-cell.cell-empty[data-date]").forEach((cell) => {
+        cell.addEventListener("click", () => {
+          const d    = cell.dataset.date;
+          const wday = parseInt(cell.dataset.weekday);
+          csSeasonOverride      = cell.dataset.season || currentSeason;
+          csDateInput.value     = d;
+          csType.value          = DEFAULT_TYPE[wday] || "after_work_south";
+          csMsg.className       = "msg";
+          csMsg.textContent     = "";
+          csCreate.disabled     = false;
+          csCreate.textContent  = "Create Slot";
+          createDialog.showModal();
         });
+      });
 
-        if (!res.ok) {
-          const err = await res.text();
-          throw new Error(`API error (${res.status}): ${err}`);
-        }
-        return res.json();
-      }
+      document.getElementById("cs-close")?.addEventListener("click",  () => createDialog.close());
+      document.getElementById("cs-cancel")?.addEventListener("click", () => createDialog.close());
+      createDialog.addEventListener("click", (e) => { if (e.target === createDialog) createDialog.close(); });
 
-      dryRunBtn?.addEventListener("click", async () => {
-        dryRunBtn.disabled = true;
-        dryRunBtn.textContent = "Calculating…";
-        previewBox.classList.remove("visible");
+      csCreate?.addEventListener("click", async () => {
+        csCreate.disabled    = true;
+        csCreate.textContent = "Creating…";
         try {
-          const data = await callGenerate(true);
-          previewBox.textContent = `Preview: will create ${data.would_create} slot(s), skipping ${data.skipped} existing.`;
-          previewBox.classList.add("visible");
-          confirmBtn.style.display = "";
-        } catch (e: unknown) {
-          previewBox.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
-          previewBox.classList.add("visible");
-        } finally {
-          dryRunBtn.disabled = false;
-          dryRunBtn.textContent = "Preview";
+          const res = await fetch("/api/admin/season/slots", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              season: csSeasonOverride,
+              planned_date: csDateInput.value,
+              event_type: csType.value,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+          window.location.href = `/dashboard/season-planner/${data.id}`;
+        } catch (e) {
+          showMsg(csMsg, "Error: " + (e instanceof Error ? e.message : String(e)), false);
+          csCreate.disabled    = false;
+          csCreate.textContent = "Create Slot";
         }
       });
 
-      confirmBtn?.addEventListener("click", async () => {
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = "Generating…";
+      // ── Add-next-week button ────────────────────────────────
+      document.getElementById("add-week-btn")?.addEventListener("click", async () => {
+        const btn        = document.getElementById("add-week-btn");
+        const nextMonday = btn.dataset.nextMonday;
+        const nextSunday = btn.dataset.nextSunday;
+        const season     = btn.dataset.season || currentSeason;
+        btn.disabled     = true;
+        btn.textContent  = "…";
+        try {
+          const res = await fetch("/api/admin/season/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              season,
+              start_date: nextMonday,
+              end_date:   nextSunday,
+              dry_run: false,
+              overwrite_unclaimed: false,
+            }),
+          });
+          if (!res.ok) throw new Error(`Error ${res.status}`);
+          window.location.reload();
+        } catch (e) {
+          btn.disabled    = false;
+          btn.textContent = "+";
+          alert("Error: " + (e instanceof Error ? e.message : String(e)));
+        }
+      });
+
+      // ── Bulk-generate dialog (secondary) ────────────────────
+      const genDialog  = document.getElementById("generate-dialog");
+      const genPreview = document.getElementById("gen-preview");
+      const genDryRun  = document.getElementById("gen-dry-run");
+      const genConfirm = document.getElementById("gen-confirm");
+
+      function openGenDialog() {
+        genPreview.classList.remove("visible");
+        genPreview.textContent = "";
+        genConfirm.style.display = "none";
+        genDryRun.style.display  = "";
+        genDialog.showModal();
+      }
+      function closeGenDialog() { genDialog.close(); }
+
+      document.getElementById("open-generate-modal")?.addEventListener("click", openGenDialog);
+      document.getElementById("gen-close")?.addEventListener("click",  closeGenDialog);
+      document.getElementById("gen-cancel")?.addEventListener("click", closeGenDialog);
+      genDialog.addEventListener("click", (e) => { if (e.target === genDialog) closeGenDialog(); });
+
+      async function callGenerate(dryRun) {
+        const season    = document.getElementById("gen-season").value.trim();
+        const startDate = document.getElementById("gen-start").value;
+        const endDate   = document.getElementById("gen-end").value;
+        const overwrite = document.getElementById("gen-overwrite").checked;
+        const res = await fetch("/api/admin/season/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ season, start_date: startDate, end_date: endDate, dry_run: dryRun, overwrite_unclaimed: overwrite }),
+        });
+        if (!res.ok) throw new Error(`API error (${res.status}): ${await res.text()}`);
+        return res.json();
+      }
+
+      genDryRun?.addEventListener("click", async () => {
+        genDryRun.disabled    = true;
+        genDryRun.textContent = "Calculating…";
+        genPreview.classList.remove("visible");
+        try {
+          const data = await callGenerate(true);
+          genPreview.textContent = `Preview: will create ${data.would_create} slot(s), skipping ${data.skipped} existing.`;
+          genPreview.classList.add("visible");
+          genConfirm.style.display = "";
+        } catch (e) {
+          genPreview.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
+          genPreview.classList.add("visible");
+        } finally {
+          genDryRun.disabled    = false;
+          genDryRun.textContent = "Preview";
+        }
+      });
+
+      genConfirm?.addEventListener("click", async () => {
+        genConfirm.disabled    = true;
+        genConfirm.textContent = "Generating…";
         try {
           const data = await callGenerate(false);
-          previewBox.textContent = `Done: created ${data.created} slot(s), skipped ${data.skipped}.`;
-          previewBox.classList.add("visible");
-          setTimeout(() => { closeDialog(); window.location.reload(); }, 1200);
-        } catch (e: unknown) {
-          previewBox.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
-          previewBox.classList.add("visible");
-          confirmBtn.disabled = false;
-          confirmBtn.textContent = "Confirm";
+          genPreview.textContent = `Done: created ${data.created} slot(s), skipped ${data.skipped}.`;
+          genPreview.classList.add("visible");
+          setTimeout(() => { closeGenDialog(); window.location.reload(); }, 1200);
+        } catch (e) {
+          genPreview.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
+          genPreview.classList.add("visible");
+          genConfirm.disabled    = false;
+          genConfirm.textContent = "Confirm";
         }
       });
     </script>

@@ -66,6 +66,12 @@ class ClaimRequest(BaseModel):
     claimed_email: Optional[str] = None
 
 
+class CreateSlotRequest(BaseModel):
+    season: str
+    planned_date: date
+    event_type: str
+
+
 class GenerateRequest(BaseModel):
     season: str = "2026"
     start_date: date
@@ -169,6 +175,8 @@ def grouped_season_slots(
             "iso_week": iso_week,
             "label": f"Week {iso_week}",
             "date_range": f"{monday.strftime('%Y-%m-%d')} ~ {sunday.strftime('%m-%d')}",
+            "monday": monday.isoformat(),
+            "sunday": sunday.isoformat(),
             "slots": [SlotOut.model_validate(s).model_dump(mode="json") for s in week_slots],
         })
 
@@ -178,6 +186,38 @@ def grouped_season_slots(
 # ============================================================
 # Phase B — single-slot CRUD
 # ============================================================
+
+@router.post("/api/admin/season/slots", response_model=SlotOut, status_code=201)
+def create_slot(
+    body: CreateSlotRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> PlanSlot:
+    existing = db.query(PlanSlot).filter_by(
+        season=body.season,
+        planned_date=body.planned_date,
+        event_type=body.event_type,
+    ).one_or_none()
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="A slot already exists for this date and type")
+    iso_year, iso_week, _ = body.planned_date.isocalendar()
+    slot = PlanSlot(
+        season=body.season,
+        iso_year=iso_year,
+        iso_week=iso_week,
+        planned_date=body.planned_date,
+        weekday=body.planned_date.weekday(),
+        event_type=body.event_type,
+        status="unclaimed",
+        readiness="idea",
+        auto_generated=False,
+        locked=False,
+    )
+    db.add(slot)
+    db.commit()
+    db.refresh(slot)
+    return slot
+
 
 def _get_slot_or_404(slot_id: int, db: Session) -> PlanSlot:
     slot = db.query(PlanSlot).filter_by(id=slot_id).one_or_none()

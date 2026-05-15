@@ -78,6 +78,8 @@ export interface WeekGroup {
   iso_week: number;
   label: string;
   date_range: string;
+  monday: string;
+  sunday: string;
   slots: PlanSlot[];
 }
 
