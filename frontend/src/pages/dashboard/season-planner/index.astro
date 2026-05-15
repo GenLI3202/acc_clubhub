@@ -54,7 +54,8 @@ function slotColor(eventType: string): string {
   if (eventType === "after_work_south" || eventType === "after_work_north") return "cell-afterwork";
   if (eventType === "weekend_casual") return "cell-casual";
   if (eventType === "weekend_challenge") return "cell-challenge";
-  if (eventType === "special_event") return "cell-special";
+  if (eventType === "special_ride") return "cell-special";
+  if (eventType === "workshop") return "cell-workshop";
   if (eventType === "eyas_program") return "cell-eyas";
   return "cell-other";
 }
@@ -198,7 +199,8 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       .cell-afterwork  { background: #fff8c5; border-color: #d4a017; }
       .cell-casual     { background: #dafbe1; border-color: #57ab5a; }
       .cell-challenge  { background: #ddf4ff; border-color: #54aeff; }
-      .cell-special    { background: #ffeff7; border-color: #bf8700; }
+      .cell-special    { background: #ffeff7; border-color: #8250df; }
+      .cell-workshop   { background: #fff3e0; border-color: #e65c00; }
       .cell-eyas       { background: #f0fff4; border-color: #116329; }
       .cell-other      { background: #eef1f5; border-color: #8c959f; }
 
@@ -342,8 +344,9 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
         <span class="legend-item"><span class="legend-dot" style="background:#fff8c5;border-color:#d4a017;"></span>Afterwork</span>
         <span class="legend-item"><span class="legend-dot" style="background:#dafbe1;border-color:#57ab5a;"></span>Weekend Casual</span>
         <span class="legend-item"><span class="legend-dot" style="background:#ddf4ff;border-color:#54aeff;"></span>Weekend Challenge</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#ffeff7;border-color:#bf8700;"></span>Special Event</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#f0fff4;border-color:#116329;"></span>EYAS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ffeff7;border-color:#8250df;"></span>Special Ride</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#fff3e0;border-color:#e65c00;"></span>Workshop</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f0fff4;border-color:#116329;"></span>EYAS · 雏鹰计划</span>
         <span class="legend-item" style="margin-left:auto;font-size:0.75rem;color:#8c959f;">Click grey cell to add · Click "+" for next week</span>
       </div>
 
@@ -430,8 +433,9 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
             <option value="after_work_north">Thu Evening · North</option>
             <option value="weekend_casual">Weekend Casual</option>
             <option value="weekend_challenge">Weekend Challenge</option>
-            <option value="special_event">Special Event</option>
-            <option value="eyas_program">EYAS Program</option>
+            <option value="special_ride">Special Ride</option>
+            <option value="workshop">Workshop</option>
+            <option value="eyas_program">EYAS · 雏鹰计划</option>
           </select>
         </div>
         <div class="msg" id="cs-msg"></div>

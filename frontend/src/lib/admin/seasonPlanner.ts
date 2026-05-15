@@ -5,7 +5,8 @@ export type EventType =
   | "after_work_north"
   | "weekend_casual"
   | "weekend_challenge"
-  | "special_event"
+  | "special_ride"
+  | "workshop"
   | "eyas_program";
 
 export type SlotStatus =
@@ -28,8 +29,9 @@ export const EVENT_TYPE_LABEL: Record<EventType, string> = {
   after_work_north: "Thu Evening · North",
   weekend_casual: "Weekend Casual",
   weekend_challenge: "Weekend Challenge",
-  special_event: "Special Event",
-  eyas_program: "EYAS Program",
+  special_ride: "Special Ride",
+  workshop: "Workshop",
+  eyas_program: "EYAS · 雏鹰计划",
 };
 
 export const STATUS_LABEL: Record<SlotStatus, string> = {

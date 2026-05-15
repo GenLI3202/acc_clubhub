@@ -21,7 +21,7 @@ WEEKEND_TYPE_EVEN_WEEK = "weekend_challenge"
 # Special-event overrides: ISO date string → event_type
 # Replaces the weekend slot for that week.
 SPECIAL_EVENT_OVERRIDES: dict[str, str] = {
-    # "2026-06-20": "special_event",   # 夏至周年庆
+    # "2026-06-20": "special_ride",    # 夏至周年庆
     # "2026-08-15": "eyas_program",    # 雏鹰计划
 }
 
@@ -30,8 +30,9 @@ EVENT_TYPE_LABELS: dict[str, str] = {
     "after_work_north": "Thu Evening · North",
     "weekend_casual": "Weekend Casual",
     "weekend_challenge": "Weekend Challenge",
-    "special_event": "Special Event",
-    "eyas_program": "EYAS Program",
+    "special_ride": "Special Ride",
+    "workshop": "Workshop",
+    "eyas_program": "EYAS · 雏鹰计划",
 }
 
 DEFAULT_EVENT_TIME: dict[str, str] = {
