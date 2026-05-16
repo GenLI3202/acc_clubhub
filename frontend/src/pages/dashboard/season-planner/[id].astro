@@ -176,31 +176,6 @@ const READINESS_OPTIONS = [
 
       {loadError && <div class="error-banner">{loadError}</div>}
 
-      <!-- Convert modal (hidden by default) -->
-      <div id="convert-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:8px;padding:1.75rem 2rem;max-width:460px;width:92%;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
-          <h3 style="margin:0 0 1.1rem;font-size:1rem;color:#24292f;">Convert to Draft Event</h3>
-          <div class="form-group">
-            <label for="convert-slug">Slug <span style="color:#cf222e;">*</span></label>
-            <input type="text" id="convert-slug" placeholder="e.g. tue-evening-south-2026-06-02" />
-            <p style="margin:0.3rem 0 0;font-size:0.76rem;color:#57606a;">URL key — must be unique across all events.</p>
-          </div>
-          <div class="form-group">
-            <label for="convert-max">Max Participants</label>
-            <input type="number" id="convert-max" min="1" placeholder="Leave blank for unlimited" />
-          </div>
-          <div class="form-group">
-            <label for="convert-deadline">Registration Deadline</label>
-            <input type="date" id="convert-deadline" />
-          </div>
-          <div class="btn-row" style="margin-top:1.1rem;">
-            <button class="action-btn" id="convert-submit-btn">Create Draft</button>
-            <button class="btn-secondary" id="convert-cancel-btn">Cancel</button>
-          </div>
-          <div class="msg" id="convert-msg"></div>
-        </div>
-      </div>
-
       {slot && (
         <>
           <div class="slot-header">
@@ -282,28 +257,6 @@ const READINESS_OPTIONS = [
             <div class="msg" id="ownership-msg"></div>
           </div>
 
-          <!-- Convert to Event -->
-          <div class="card">
-            <h2>Convert to Event</h2>
-            {slot.published_event_id ? (
-              <p style="font-size:0.85rem;color:#57606a;margin:0 0 0.75rem;">
-                Already converted → Event #{slot.published_event_id}. Re-converting will update the existing draft in place.
-              </p>
-            ) : (
-              <p style="font-size:0.85rem;color:#57606a;margin:0 0 0.75rem;">
-                Creates a private draft event from this slot. Set it public once the Markdown content is ready.
-              </p>
-            )}
-            <button
-              class="action-btn"
-              id="convert-btn"
-              disabled={slot.status === "cancelled"}
-              title={slot.status === "cancelled" ? "Cannot convert a cancelled slot" : undefined}
-            >
-              {slot.published_event_id ? "Re-convert (update draft)" : "Convert to Draft Event"}
-            </button>
-          </div>
-
           <!-- Danger zone -->
           {canDelete && (
             <div class="card" style="border-color:#ff818266;">
@@ -319,7 +272,7 @@ const READINESS_OPTIONS = [
       )}
     </div>
 
-    <script define:vars={{ slotId: id, hasClaimed: slot?.claimed_by ?? null, slotDate: slot?.planned_date ?? "", slotEventType: slot?.event_type ?? "" }}>
+    <script define:vars={{ slotId: id, hasClaimed: slot?.claimed_by ?? null }}>
       function showMsg(elId, text, isOk) {
         const el = document.getElementById(elId);
         if (!el) return;
@@ -404,48 +357,6 @@ const READINESS_OPTIONS = [
         }
       });
 
-      // Convert — open modal
-      document.getElementById("convert-btn")?.addEventListener("click", () => {
-        const modal = document.getElementById("convert-modal");
-        modal.style.display = "flex";
-        const slugInput = document.getElementById("convert-slug");
-        if (!slugInput.value && slotDate && slotEventType) {
-          slugInput.value = slotEventType.replace(/_/g, "-") + "-" + slotDate;
-        }
-      });
-
-      document.getElementById("convert-cancel-btn")?.addEventListener("click", () => {
-        document.getElementById("convert-modal").style.display = "none";
-      });
-
-      document.getElementById("convert-modal")?.addEventListener("click", (e) => {
-        if (e.target === e.currentTarget) {
-          e.currentTarget.style.display = "none";
-        }
-      });
-
-      document.getElementById("convert-submit-btn")?.addEventListener("click", async () => {
-        const slug = document.getElementById("convert-slug").value.trim();
-        if (!slug) { showMsg("convert-msg", "Slug is required.", false); return; }
-        const maxVal = document.getElementById("convert-max").value;
-        const deadlineVal = document.getElementById("convert-deadline").value;
-        const btn = document.getElementById("convert-submit-btn");
-        btn.disabled = true;
-        btn.textContent = "Creating…";
-        try {
-          const data = await apiCall(`/api/admin/season/${slotId}/convert`, "POST", {
-            slug,
-            max_participants: maxVal ? parseInt(maxVal, 10) : null,
-            registration_deadline: deadlineVal || null,
-          });
-          showMsg("convert-msg", data.message || "Draft event created!", true);
-          setTimeout(() => { window.location.href = "/dashboard/events/"; }, 1800);
-        } catch (e) {
-          showMsg("convert-msg", "Error: " + e.message, false);
-          btn.disabled = false;
-          btn.textContent = "Create Draft";
-        }
-      });
     </script>
   </body>
 </html>

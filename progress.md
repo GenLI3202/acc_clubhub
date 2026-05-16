@@ -22,6 +22,10 @@
   - [X] Added DB-backed active session tracking so a new admin login supersedes the previous login
   - [X] Added migration `009_add_admin_session_state.sql`
   - [X] Verified with `python3 -m pytest tests/test_auth_admin_login.py tests/test_season_planner.py` (19 passed) and `npm run build`
+- [X] **Season Planner Convert UI Hidden** (2026-05-16)
+  - [X] Previously implemented `convert-to-draft-event`, but the current draft-only flow does not publish Markdown content
+  - [X] Hidden the visible convert entry to keep the season planner focused as a simple calendar/planning surface
+  - [X] Captured the fuller “planner as event CMS” direction in a GitHub issue for later implementation
 - [X] **Season Planner Dashboard — Phase A** (2026-05-15)
   - [X] Drafted implementation plan for issue #143 (活动策划 Dashboard)
   - [X] Saved to `docs/rebuild_plan/future_add_on/season_planner_dashboard_plan.md`
@@ -34,7 +38,7 @@
   - [X] `frontend/src/pages/dashboard/season-planner/index.astro` — SSR weekly board + Generate Slots modal; server-side Astro proxy at `/api/admin/season/generate` to avoid CORS cookie issues
   - [X] Season Planning tile added to `/dashboard/index.astro`
   - [ ] Phase B (edit/claim/status) — pending fresh session
-  - [ ] Phase C (convert-to-event) — pending fresh session
+  - [ ] Phase C (planner-to-published-event CMS workflow) — future issue; draft-only convert UI hidden for now
 - [X] **GitHub CI Noise Reduction** (2026-05-14)
   - [X] Replaced the always-red default Astro check gate with frontend unit tests plus build
   - [X] Added backend pytest coverage to the default GitHub Actions CI
