@@ -16,13 +16,19 @@ try {
 }
 
 const season = Astro.url.searchParams.get("season") || "2026";
+const claimedByFilter = Astro.url.searchParams.get("claimed_by") || "";
 
 let weeks: WeekGroup[] = [];
+let ownerWeeks: WeekGroup[] = [];
 let fetchError: string | null = null;
+let ownerFetchError: string | null = null;
 
 try {
+  const groupedParams = new URLSearchParams({ season });
+  if (claimedByFilter) groupedParams.set("claimed_by", claimedByFilter);
+
   const res = await fetch(
-    `${apiUrl}/api/admin/season/slots/grouped?season=${encodeURIComponent(season)}`,
+    `${apiUrl}/api/admin/season/slots/grouped?${groupedParams.toString()}`,
     { headers: { "Cookie": cookie } },
   );
   if (res.ok) {
@@ -35,6 +41,21 @@ try {
   }
 } catch (e: unknown) {
   fetchError = `Error loading slots: ${e instanceof Error ? e.message : String(e)}`;
+}
+
+try {
+  const res = await fetch(
+    `${apiUrl}/api/admin/season/slots/grouped?season=${encodeURIComponent(season)}`,
+    { headers: { "Cookie": cookie } },
+  );
+  if (res.ok) {
+    const data: GroupedSlotsResponse = await res.json();
+    ownerWeeks = data.weeks || [];
+  } else if (res.status !== 401) {
+    ownerFetchError = `Failed to load owner filters (${res.status})`;
+  }
+} catch (e: unknown) {
+  ownerFetchError = `Error loading owner filters: ${e instanceof Error ? e.message : String(e)}`;
 }
 
 function addDays(dateStr: string, days: number): string {
@@ -147,6 +168,26 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
 const slotSnapshots = Object.fromEntries(
   weeks.flatMap((week) => week.slots.map((slot) => [String(slot.id), slot])),
 );
+const ownerCounts = new Map<string, number>();
+for (const slot of ownerWeeks.flatMap((week) => week.slots)) {
+  if (!slot.claimed_by) continue;
+  ownerCounts.set(slot.claimed_by, (ownerCounts.get(slot.claimed_by) ?? 0) + 1);
+}
+const ownerFilters = [...ownerCounts.entries()].sort(([a], [b]) => a.localeCompare(b));
+
+function plannerUrl(params: Record<string, string | null>): string {
+  const urlParams = new URLSearchParams();
+  urlParams.set("season", season);
+  if (claimedByFilter) urlParams.set("claimed_by", claimedByFilter);
+  for (const [key, value] of Object.entries(params)) {
+    if (value) {
+      urlParams.set(key, value);
+    } else {
+      urlParams.delete(key);
+    }
+  }
+  return `/dashboard/season-planner?${urlParams.toString()}`;
+}
 ---
 
 <!doctype html>
@@ -244,6 +285,36 @@ const slotSnapshots = Object.fromEntries(
         width: 11px; height: 11px; border-radius: 3px;
         border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0;
       }
+      .owner-filter {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.45rem;
+        margin: -0.65rem 0 1.25rem;
+        color: #57606a;
+        font-size: 0.8rem;
+      }
+      .owner-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        min-height: 1.75rem;
+        padding: 0.25rem 0.6rem;
+        border: 1px solid #d0d7de;
+        border-radius: 999px;
+        background: #fff;
+        color: #57606a;
+        text-decoration: none;
+        line-height: 1.2;
+      }
+      .owner-chip:hover { border-color: #8c959f; background: #f6f8fa; }
+      .owner-chip.is-active {
+        border-color: #C62828;
+        background: #ffebe9;
+        color: #86181d;
+        font-weight: 600;
+      }
+      .owner-chip__count { color: #8c959f; font-size: 0.75rem; }
 
       /* Weekly grid */
       .week-section { margin-bottom: 1.5rem; }
@@ -566,6 +637,32 @@ const slotSnapshots = Object.fromEntries(
         <span class="legend-item" style="margin-left:auto;font-size:0.75rem;color:#8c959f;">Click grey cell to add · Click "+" for next week</span>
       </div>
 
+      {ownerFilters.length > 0 && (
+        <div class="owner-filter" aria-label="Owner filter">
+          <span>Owner:</span>
+          <a
+            class={`owner-chip ${claimedByFilter ? "" : "is-active"}`}
+            href={plannerUrl({ claimed_by: null })}
+            aria-current={claimedByFilter ? undefined : "page"}
+          >
+            All
+          </a>
+          {ownerFilters.map(([owner, count]) => (
+            <a
+              class={`owner-chip ${claimedByFilter === owner ? "is-active" : ""}`}
+              href={plannerUrl({
+                claimed_by: claimedByFilter === owner ? null : owner,
+              })}
+              aria-current={claimedByFilter === owner ? "page" : undefined}
+            >
+              <span>{owner}</span>
+              <span class="owner-chip__count">{count}</span>
+            </a>
+          ))}
+        </div>
+      )}
+
+      {ownerFetchError && !fetchError && <div class="error">{ownerFetchError}</div>}
       {fetchError && <div class="error">{fetchError}</div>}
 
       <div id="move-undo-bar" class="undo-bar" role="status" aria-live="polite">
@@ -576,8 +673,16 @@ const slotSnapshots = Object.fromEntries(
 
       {weeks.length === 0 && !fetchError && (
         <div class="empty">
-          No planning slots yet. Click &ldquo;Bulk Generate&rdquo; above or use the&nbsp;
-          <strong>+</strong>&nbsp;button that appears after each week.
+          {claimedByFilter ? (
+            <>
+              No slots claimed by <strong>{claimedByFilter}</strong>.
+            </>
+          ) : (
+            <>
+              No planning slots yet. Click &ldquo;Bulk Generate&rdquo; above or use the&nbsp;
+              <strong>+</strong>&nbsp;button that appears after each week.
+            </>
+          )}
         </div>
       )}
 

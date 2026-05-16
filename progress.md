@@ -11,6 +11,9 @@
 
 ## Recent Updates
 
+- [X] **Season Planner Owner Filter** (2026-05-16)
+  - [X] Added owner chips based on claimed slots, with `claimed_by` URL filtering
+  - [X] Verified with `npm run build` and local authenticated page smoke check
 - [X] **Season Planner Production Generate Route Fix** (2026-05-16)
   - [X] Added backend compatibility for `/api/admin/season/generate`, matching the production frontend rewrite path
   - [X] Verified with `PYTHONPYCACHEPREFIX=/tmp/acc-clubhub-pycache python3 -m pytest tests/test_season_planner.py` (14 passed)
