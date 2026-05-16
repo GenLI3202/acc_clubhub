@@ -288,6 +288,21 @@ class PlanSlot(Base):
                         onupdate=_utcnow, nullable=False)
 
 
+class AdminSessionState(Base):
+    """Single active dashboard session state."""
+
+    __tablename__ = "admin_session_state"
+
+    id = Column(String(32), primary_key=True, default="dashboard")
+    active_session_id = Column(String(128), nullable=False)
+    active_email = Column(String(255), nullable=False)
+    issued_at = Column(DateTime(timezone=True), nullable=False)
+    updated_at = Column(
+        DateTime(timezone=True), default=_utcnow, onupdate=_utcnow,
+        nullable=False,
+    )
+
+
 class Subscriber(Base):
     """
     活动订阅者模型

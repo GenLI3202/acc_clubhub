@@ -1,5 +1,6 @@
 import pytest
 from fastapi import HTTPException, Response
+from http.cookies import SimpleCookie
 
 from routes import auth
 
@@ -43,7 +44,13 @@ def test_email_login_rejects_wrong_password(monkeypatch):
     assert "Invalid login credentials" in exc_info.value.detail
 
 
-def test_email_login_sets_24_hour_session_for_allowlisted_address(monkeypatch):
+def _get_admin_session_cookie(response: Response) -> str:
+    cookie = SimpleCookie()
+    cookie.load(response.headers["set-cookie"])
+    return cookie["admin_session"].value
+
+
+def test_email_login_sets_24_hour_session_for_allowlisted_address(monkeypatch, db):
     monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
     monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
@@ -52,6 +59,7 @@ def test_email_login_sets_24_hour_session_for_allowlisted_address(monkeypatch):
     result = auth.email_login(
         auth.EmailLoginRequest(email="Leader@Example.com", password="secret"),
         response,
+        db,
     )
 
     assert result == {"status": "authenticated", "redirect_to": "/dashboard/events"}
@@ -67,6 +75,7 @@ def test_email_session_is_revoked_when_email_removed(monkeypatch):
         admin_id="leader@example.com",
         auth_provider="email",
         email="leader@example.com",
+        session_id="session-one",
     )
     monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "")
 
@@ -75,4 +84,35 @@ def test_email_session_is_revoked_when_email_removed(monkeypatch):
 
     assert exc_info.value.status_code == 401
 
+
+def test_new_email_login_supersedes_previous_session(monkeypatch, db):
+    monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
+    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
+
+    first_response = Response()
+    auth.email_login(
+        auth.EmailLoginRequest(email="leader@example.com", password="secret"),
+        first_response,
+        db,
+    )
+    first_token = _get_admin_session_cookie(first_response)
+    first_payload = auth.verify_jwt_session(first_token)
+    auth.verify_active_admin_session(first_payload, db)
+
+    second_response = Response()
+    auth.email_login(
+        auth.EmailLoginRequest(email="leader@example.com", password="secret"),
+        second_response,
+        db,
+    )
+    second_token = _get_admin_session_cookie(second_response)
+    second_payload = auth.verify_jwt_session(second_token)
+
+    with pytest.raises(HTTPException) as exc_info:
+        auth.verify_active_admin_session(first_payload, db)
+
+    assert exc_info.value.status_code == 401
+    assert "superseded" in exc_info.value.detail
+    auth.verify_active_admin_session(second_payload, db)
 
