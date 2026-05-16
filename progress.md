@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **Season Planner Drag Move Fix** (2026-05-16)
+  - [X] Added a backend compatibility route for `/api/admin/season/{id}/move`
+  - [X] Kept canonical move behavior at `/api/admin/season/slots/{id}/move`
+  - [X] Added transaction-backed Undo for normal moves and overwrite moves
+  - [X] Fixed ACC anniversary / holiday empty cells so they open the create-slot dialog
+  - [X] Added tests for moving, replacing a target slot, undoing an overwrite, and the dashboard proxy path
+  - [X] Verified with `python3 -m pytest tests/test_season_planner.py` (13 passed), `npm run build`, and local Playwright smoke tests
 - [X] **Season Planner Dashboard — Phase A** (2026-05-15)
   - [X] Drafted implementation plan for issue #143 (活动策划 Dashboard)
   - [X] Saved to `docs/rebuild_plan/future_add_on/season_planner_dashboard_plan.md`

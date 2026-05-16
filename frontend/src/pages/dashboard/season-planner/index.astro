@@ -144,6 +144,9 @@ function isCurrentWeek(monday: string, sunday: string): boolean {
 const lastWeek = weeks.length > 0 ? weeks[weeks.length - 1] : null;
 const nextWeekMonday = lastWeek ? addDays(lastWeek.monday, 7) : null;
 const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
+const slotSnapshots = Object.fromEntries(
+  weeks.flatMap((week) => week.slots.map((slot) => [String(slot.id), slot])),
+);
 ---
 
 <!doctype html>
@@ -203,6 +206,28 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
 
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; margin-bottom: 1rem; }
       .empty { text-align: center; padding: 3rem; color: #57606a; }
+      .undo-bar {
+        display: none;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 0.75rem 0.9rem;
+        background: #fff8c5;
+        border: 1px solid #d4a017;
+        border-radius: 6px;
+        color: #4d2d00;
+        font-size: 0.86rem;
+      }
+      .undo-bar.visible { display: flex; }
+      .undo-bar__text { flex: 1; line-height: 1.4; }
+      .undo-bar__dismiss {
+        border: none;
+        background: transparent;
+        color: #6e4f00;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.15rem 0.3rem;
+      }
 
       /* Legend */
       .legend {
@@ -543,6 +568,12 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
 
       {fetchError && <div class="error">{fetchError}</div>}
 
+      <div id="move-undo-bar" class="undo-bar" role="status" aria-live="polite">
+        <span id="move-undo-text" class="undo-bar__text"></span>
+        <button id="move-undo-btn" class="btn-secondary" type="button">Undo</button>
+        <button id="move-undo-dismiss" class="undo-bar__dismiss" type="button" aria-label="Dismiss undo">✕</button>
+      </div>
+
       {weeks.length === 0 && !fetchError && (
         <div class="empty">
           No planning slots yet. Click &ldquo;Bulk Generate&rdquo; above or use the&nbsp;
@@ -722,7 +753,7 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       </div>
     </dialog>
 
-    <script define:vars={{ currentSeason: season }}>
+    <script define:vars={{ currentSeason: season, slotSnapshots }}>
       // ── Create slot dialog ──────────────────────────────────
       const createDialog = document.getElementById("create-slot-dialog");
       const csDateInput  = document.getElementById("cs-date");
@@ -738,7 +769,7 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
         el.className = "msg visible " + (ok ? "msg-ok" : "msg-err");
       }
 
-      document.querySelectorAll(".day-cell.cell-empty[data-date]").forEach((cell) => {
+      document.querySelectorAll(".day-cell:not([data-slot-id])[data-date]").forEach((cell) => {
         cell.addEventListener("click", () => {
           const d    = cell.dataset.date;
           const wday = parseInt(cell.dataset.weekday);
@@ -878,9 +909,116 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       });
 
       // ── Drag and Drop ──────────────────────────────────────
+      const UNDO_KEY = "accSeasonPlannerLastMoveUndo";
       let dragState = null; // { sourceSlotId, sourceDate, sourceLabel }
-      let pendingMove = null; // { sourceSlotId, sourceLabel, targetDate, existingSlotId, existingLabel }
+      let pendingMove = null; // { sourceSlotId, sourceLabel, sourceDate, targetDate, existingSlotId, existingLabel, replacedSlot }
       let lastDragEndTime = 0;
+
+      function getSlotSnapshot(slotId) {
+        if (!slotId) return null;
+        return slotSnapshots[String(slotId)] || null;
+      }
+
+      function restorePayload(slot) {
+        return {
+          season: slot.season,
+          planned_date: slot.planned_date,
+          event_type: slot.event_type,
+          title: slot.title,
+          location: slot.location,
+          distance_km: slot.distance_km,
+          notes: slot.notes,
+          claimed_by: slot.claimed_by,
+          claimed_email: slot.claimed_email,
+          status: slot.status,
+          readiness: slot.readiness,
+          auto_generated: slot.auto_generated,
+          locked: slot.locked,
+          published_event_id: slot.published_event_id,
+          published_at: slot.published_at,
+        };
+      }
+
+      async function apiJson(path, method, body) {
+        const res = await fetch(path, {
+          method,
+          headers: body ? { "Content-Type": "application/json" } : {},
+          body: body ? JSON.stringify(body) : undefined,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.detail || data.error || `Request failed (${res.status})`);
+        }
+        return data;
+      }
+
+      function clearUndo() {
+        sessionStorage.removeItem(UNDO_KEY);
+        document.getElementById("move-undo-bar")?.classList.remove("visible");
+      }
+
+      function showUndoBar() {
+        const raw = sessionStorage.getItem(UNDO_KEY);
+        if (!raw) return;
+
+        let record;
+        try {
+          record = JSON.parse(raw);
+        } catch {
+          clearUndo();
+          return;
+        }
+
+        const bar = document.getElementById("move-undo-bar");
+        const text = document.getElementById("move-undo-text");
+        if (!bar || !text) return;
+
+        const replacement = record.replacedSlot
+          ? " The overwritten slot can be restored."
+          : "";
+        text.textContent = `${record.sourceLabel} moved from ${record.sourceDate} to ${record.targetDate}.${replacement}`;
+        bar.classList.add("visible");
+      }
+
+      async function undoLastMove() {
+        const raw = sessionStorage.getItem(UNDO_KEY);
+        if (!raw) return;
+
+        let record;
+        try {
+          record = JSON.parse(raw);
+        } catch {
+          clearUndo();
+          return;
+        }
+
+        const undoBtn = document.getElementById("move-undo-btn");
+        if (undoBtn) {
+          undoBtn.disabled = true;
+          undoBtn.textContent = "Undoing...";
+        }
+
+        try {
+          await apiJson("/api/admin/season/undo-move", "POST", {
+            source_slot_id: record.sourceSlotId,
+            source_date: record.sourceDate,
+            replaced_slot: record.replacedSlot ? restorePayload(record.replacedSlot) : null,
+          });
+
+          clearUndo();
+          window.location.reload();
+        } catch (err) {
+          alert("Undo failed: " + (err instanceof Error ? err.message : String(err)));
+          if (undoBtn) {
+            undoBtn.disabled = false;
+            undoBtn.textContent = "Undo";
+          }
+        }
+      }
+
+      showUndoBar();
+      document.getElementById("move-undo-btn")?.addEventListener("click", undoLastMove);
+      document.getElementById("move-undo-dismiss")?.addEventListener("click", clearUndo);
 
       // Suppress link navigation if the mouse released after a drag (not a click)
       document.addEventListener("dragend", () => { lastDragEndTime = Date.now(); }, true);
@@ -950,39 +1088,50 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
 
           const existingSlotId = cell.dataset.slotId || null;
           const existingLabel  = cell.dataset.slotLabel || "existing slot";
+          const replacedSlot   = getSlotSnapshot(existingSlotId);
 
           if (existingSlotId) {
             pendingMove = {
               sourceSlotId: dragState.sourceSlotId,
               sourceLabel:  dragState.sourceLabel,
+              sourceDate:   dragState.sourceDate,
               targetDate,
               existingSlotId,
               existingLabel,
+              replacedSlot,
             };
             document.getElementById("drag-conflict-msg").innerHTML =
               `Moving <strong>${pendingMove.sourceLabel}</strong> to <strong>${targetDate}</strong> will permanently delete <strong>${pendingMove.existingLabel}</strong> on the same date.`;
             document.getElementById("drag-conflict-modal").style.display = "flex";
           } else {
-            await doMove(dragState.sourceSlotId, targetDate, null);
+            await doMove({
+              sourceSlotId: dragState.sourceSlotId,
+              sourceLabel: dragState.sourceLabel,
+              sourceDate: dragState.sourceDate,
+              targetDate,
+              replaceExistingId: null,
+              replacedSlot: null,
+            });
           }
         });
       });
 
-      async function doMove(sourceSlotId, targetDate, replaceExistingId) {
+      async function doMove(move) {
         try {
-          const res = await fetch(`/api/admin/season/${sourceSlotId}/move`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ target_date: targetDate, replace_existing_id: replaceExistingId }),
+          await apiJson(`/api/admin/season/${move.sourceSlotId}/move`, "POST", {
+            target_date: move.targetDate,
+            replace_existing_id: move.replaceExistingId,
           });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            alert("Move failed: " + (err.detail || "Unknown error"));
-            return;
-          }
+          sessionStorage.setItem(UNDO_KEY, JSON.stringify({
+            sourceSlotId: move.sourceSlotId,
+            sourceLabel: move.sourceLabel,
+            sourceDate: move.sourceDate,
+            targetDate: move.targetDate,
+            replacedSlot: move.replacedSlot,
+          }));
           window.location.reload();
         } catch (err) {
-          alert("Move failed: " + String(err));
+          alert("Move failed: " + (err instanceof Error ? err.message : String(err)));
         }
       }
 
@@ -993,7 +1142,14 @@ const nextWeekSunday = lastWeek ? addDays(lastWeek.monday, 13) : null;
       document.getElementById("drag-conflict-confirm")?.addEventListener("click", async () => {
         document.getElementById("drag-conflict-modal").style.display = "none";
         if (!pendingMove) return;
-        await doMove(pendingMove.sourceSlotId, pendingMove.targetDate, pendingMove.existingSlotId);
+        await doMove({
+          sourceSlotId: pendingMove.sourceSlotId,
+          sourceLabel: pendingMove.sourceLabel,
+          sourceDate: pendingMove.sourceDate,
+          targetDate: pendingMove.targetDate,
+          replaceExistingId: pendingMove.existingSlotId,
+          replacedSlot: pendingMove.replacedSlot,
+        });
         pendingMove = null;
       });
     </script>

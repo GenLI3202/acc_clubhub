@@ -91,6 +91,30 @@ class MoveRequest(BaseModel):
     replace_existing_id: Optional[int] = None
 
 
+class RestoreSlotRequest(BaseModel):
+    season: str
+    planned_date: date
+    event_type: str
+    title: Optional[str] = None
+    location: Optional[str] = None
+    distance_km: Optional[float] = None
+    notes: Optional[str] = None
+    claimed_by: Optional[str] = None
+    claimed_email: Optional[str] = None
+    status: str = "unclaimed"
+    readiness: str = "idea"
+    auto_generated: bool = False
+    locked: bool = False
+    published_event_id: Optional[int] = None
+    published_at: Optional[datetime] = None
+
+
+class UndoMoveRequest(BaseModel):
+    source_slot_id: int
+    source_date: date
+    replaced_slot: Optional[RestoreSlotRequest] = None
+
+
 class ConvertRequest(BaseModel):
     slug: str
     max_participants: Optional[int] = None
@@ -251,6 +275,40 @@ def create_slot(
     return slot
 
 
+def _restore_slot_from_snapshot(body: RestoreSlotRequest, db: Session) -> PlanSlot:
+    existing = db.query(PlanSlot).filter_by(
+        season=body.season,
+        planned_date=body.planned_date,
+        event_type=body.event_type,
+    ).one_or_none()
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="A slot already exists for this date and type")
+
+    iso_year, iso_week, _ = body.planned_date.isocalendar()
+    slot = PlanSlot(
+        season=body.season,
+        iso_year=iso_year,
+        iso_week=iso_week,
+        planned_date=body.planned_date,
+        weekday=body.planned_date.weekday(),
+        event_type=body.event_type,
+        title=body.title,
+        location=body.location,
+        distance_km=body.distance_km,
+        notes=body.notes,
+        claimed_by=body.claimed_by,
+        claimed_email=body.claimed_email,
+        status=body.status,
+        readiness=body.readiness,
+        auto_generated=body.auto_generated,
+        locked=body.locked,
+        published_event_id=body.published_event_id,
+        published_at=body.published_at,
+    )
+    db.add(slot)
+    return slot
+
+
 def _get_slot_or_404(slot_id: int, db: Session) -> PlanSlot:
     slot = db.query(PlanSlot).filter_by(id=slot_id).one_or_none()
     if slot is None:
@@ -387,6 +445,56 @@ def send_slot_reminders(
     return {"sent": sent, "target_date": str(target_date)}
 
 
+@router.post("/api/admin/season/slots/undo-move")
+def undo_move_slot(
+    body: UndoMoveRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Undo the last planner move, including restoring an overwritten slot."""
+    slot = _get_slot_or_404(body.source_slot_id, db)
+    if slot.locked:
+        raise HTTPException(status_code=409, detail="Cannot move a locked slot")
+
+    source_conflict = db.query(PlanSlot).filter(
+        PlanSlot.season == slot.season,
+        PlanSlot.planned_date == body.source_date,
+        PlanSlot.event_type == slot.event_type,
+        PlanSlot.id != slot.id,
+    ).one_or_none()
+    if source_conflict is not None:
+        raise HTTPException(
+            status_code=409,
+            detail=f"A '{slot.event_type}' slot already exists on {body.source_date}",
+        )
+
+    iso_year, iso_week, _ = body.source_date.isocalendar()
+    slot.planned_date = body.source_date
+    slot.iso_year = iso_year
+    slot.iso_week = iso_week
+    slot.weekday = body.source_date.weekday()
+    db.flush()
+
+    restored = None
+    if body.replaced_slot is not None:
+        restored = _restore_slot_from_snapshot(body.replaced_slot, db)
+
+    db.commit()
+    db.refresh(slot)
+    if restored is not None:
+        db.refresh(restored)
+
+    return {
+        "slot": SlotOut.model_validate(slot).model_dump(mode="json"),
+        "restored_slot": (
+            SlotOut.model_validate(restored).model_dump(mode="json")
+            if restored is not None
+            else None
+        ),
+    }
+
+
+@router.post("/api/admin/season/{slot_id}/move", response_model=SlotOut, include_in_schema=False)
 @router.post("/api/admin/season/slots/{slot_id}/move", response_model=SlotOut)
 def move_slot(
     slot_id: int,
@@ -394,7 +502,7 @@ def move_slot(
     db: Session = Depends(get_db),
     _admin: dict = Depends(get_current_admin),
 ) -> PlanSlot:
-    """Move a slot to a different date. Optionally replaces (deletes) an existing slot at the target."""
+    """Move a slot to a different date."""
     slot = _get_slot_or_404(slot_id, db)
     if slot.locked:
         raise HTTPException(status_code=409, detail="Cannot move a locked slot")

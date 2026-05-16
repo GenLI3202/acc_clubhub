@@ -209,3 +209,129 @@ def test_delete_blocked_after_convert(client, db):
 
     res = client.delete(f"/api/admin/season/slots/{slot.id}")
     assert res.status_code == 409
+
+
+def test_move_slot_updates_date_metadata(client, db):
+    """Moving a slot updates its planned date and calendar metadata."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+
+    res = client.post(
+        f"/api/admin/season/slots/{slot.id}/move",
+        json={"target_date": "2026-05-22"},
+    )
+
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["planned_date"] == "2026-05-22"
+    assert body["iso_year"] == 2026
+    assert body["iso_week"] == 21
+    assert body["weekday"] == 4
+
+    db.expire_all()
+    moved = db.query(PlanSlot).filter_by(id=slot.id).one()
+    assert moved.planned_date == date(2026, 5, 22)
+    assert moved.iso_week == 21
+    assert moved.weekday == 4
+
+
+def test_move_slot_can_replace_existing_target(client, db):
+    """Moving with replace_existing_id removes the target slot first."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    source = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+    target = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=3).one()
+    target_id = target.id
+
+    res = client.post(
+        f"/api/admin/season/slots/{source.id}/move",
+        json={
+            "target_date": target.planned_date.isoformat(),
+            "replace_existing_id": target.id,
+        },
+    )
+
+    assert res.status_code == 200, res.text
+    assert res.json()["planned_date"] == target.planned_date.isoformat()
+
+    db.expire_all()
+    assert db.query(PlanSlot).filter_by(id=source.id).one().planned_date == target.planned_date
+    assert db.query(PlanSlot).filter_by(id=target_id).one_or_none() is None
+
+
+def test_move_slot_legacy_proxy_path(client, db):
+    """The frontend proxy path maps to the same move behavior."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="weekend_casual").one()
+
+    res = client.post(
+        f"/api/admin/season/{slot.id}/move",
+        json={"target_date": "2026-05-16"},
+    )
+
+    assert res.status_code == 200, res.text
+    assert res.json()["planned_date"] == "2026-05-16"
+
+
+def test_undo_move_restores_overwritten_slot(client, db):
+    """Undo move returns the moved slot and restores overwritten metadata."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    source = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+    target = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=3).one()
+    source_date = source.planned_date
+    target_date = target.planned_date
+    target.title = "Custom Thursday"
+    target.location = "Olympiapark"
+    target.distance_km = 42.5
+    target.notes = "Bring lights"
+    target.claimed_by = "Ada"
+    target.claimed_email = "ada@example.com"
+    target.status = "claimed"
+    target.readiness = "route_ready"
+    target.auto_generated = False
+    db.commit()
+
+    snapshot = {
+        "season": target.season,
+        "planned_date": target.planned_date.isoformat(),
+        "event_type": target.event_type,
+        "title": target.title,
+        "location": target.location,
+        "distance_km": float(target.distance_km),
+        "notes": target.notes,
+        "claimed_by": target.claimed_by,
+        "claimed_email": target.claimed_email,
+        "status": target.status,
+        "readiness": target.readiness,
+        "auto_generated": target.auto_generated,
+        "locked": target.locked,
+    }
+
+    move_res = client.post(
+        f"/api/admin/season/slots/{source.id}/move",
+        json={
+            "target_date": target_date.isoformat(),
+            "replace_existing_id": target.id,
+        },
+    )
+    assert move_res.status_code == 200, move_res.text
+
+    res = client.post(
+        "/api/admin/season/slots/undo-move",
+        json={
+            "source_slot_id": source.id,
+            "source_date": source_date.isoformat(),
+            "replaced_slot": snapshot,
+        },
+    )
+
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["slot"]["planned_date"] == source_date.isoformat()
+    assert body["restored_slot"]["planned_date"] == target_date.isoformat()
+    assert body["restored_slot"]["title"] == "Custom Thursday"
+    assert body["restored_slot"]["location"] == "Olympiapark"
+    assert body["restored_slot"]["distance_km"] == 42.5
+    assert body["restored_slot"]["claimed_by"] == "Ada"
+    assert body["restored_slot"]["status"] == "claimed"
+    assert body["restored_slot"]["readiness"] == "route_ready"
+    assert body["restored_slot"]["auto_generated"] is False
