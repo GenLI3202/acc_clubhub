@@ -11,6 +11,10 @@
 
 ## Recent Updates
 
+- [X] **Season Planner Detail Rewrite Fix** (2026-05-16)
+  - [X] Added backend compatibility for detail short paths used by the production frontend rewrite
+  - [X] Covered get, save, claim, release, and delete short paths in backend tests
+  - [X] Verified with `PYTHONPYCACHEPREFIX=/tmp/acc-clubhub-pycache python3 -m pytest tests/test_season_planner.py` (15 passed)
 - [X] **Season Planner Owner Filter** (2026-05-16)
   - [X] Added owner chips based on claimed slots, with `claimed_by` URL filtering
   - [X] Verified with `npm run build` and local authenticated page smoke check

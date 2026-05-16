@@ -161,6 +161,47 @@ def test_patch_marks_auto_generated_false(client, db):
     assert data["status"] == "unclaimed"  # status unchanged
 
 
+def test_detail_short_aliases_for_frontend_rewrite(client, db, monkeypatch):
+    """Short detail paths support the production frontend rewrite."""
+    import routes.season_planner as season_routes
+
+    monkeypatch.setattr(
+        season_routes,
+        "send_slot_claim_confirmation",
+        lambda **_kwargs: None,
+    )
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+
+    get_res = client.get(f"/api/admin/season/{slot.id}")
+    assert get_res.status_code == 200
+
+    patch_res = client.patch(
+        f"/api/admin/season/{slot.id}",
+        json={"title": "Rewrite Path Ride"},
+    )
+    assert patch_res.status_code == 200
+    assert patch_res.json()["title"] == "Rewrite Path Ride"
+
+    claim_res = client.post(
+        f"/api/admin/season/{slot.id}/claim",
+        json={
+            "claimed_by": "Gen Li",
+            "claimed_email": "gen@example.com",
+        },
+    )
+    assert claim_res.status_code == 200
+    assert claim_res.json()["claimed_by"] == "Gen Li"
+
+    release_res = client.post(f"/api/admin/season/{slot.id}/release")
+    assert release_res.status_code == 200
+    assert release_res.json()["status"] == "unclaimed"
+
+    delete_res = client.delete(f"/api/admin/season/{slot.id}")
+    assert delete_res.status_code == 200
+    assert delete_res.json() == {"deleted": slot.id}
+
+
 # ── Phase C: Convert ──────────────────────────────────────────
 
 

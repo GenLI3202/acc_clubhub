@@ -321,6 +321,11 @@ def _get_slot_or_404(slot_id: int, db: Session) -> PlanSlot:
     return slot
 
 
+@router.get(
+    "/api/admin/season/{slot_id}",
+    response_model=SlotOut,
+    include_in_schema=False,
+)
 @router.get("/api/admin/season/slots/{slot_id}", response_model=SlotOut)
 def get_slot(
     slot_id: int,
@@ -333,6 +338,11 @@ def get_slot(
 _CONTENT_FIELDS = {"title", "location", "distance_km", "notes"}
 
 
+@router.patch(
+    "/api/admin/season/{slot_id}",
+    response_model=SlotOut,
+    include_in_schema=False,
+)
 @router.patch("/api/admin/season/slots/{slot_id}", response_model=SlotOut)
 def patch_slot(
     slot_id: int,
@@ -352,6 +362,11 @@ def patch_slot(
     return slot
 
 
+@router.post(
+    "/api/admin/season/{slot_id}/claim",
+    response_model=SlotOut,
+    include_in_schema=False,
+)
 @router.post("/api/admin/season/slots/{slot_id}/claim", response_model=SlotOut)
 def claim_slot(
     slot_id: int,
@@ -384,6 +399,11 @@ def claim_slot(
     return slot
 
 
+@router.post(
+    "/api/admin/season/{slot_id}/release",
+    response_model=SlotOut,
+    include_in_schema=False,
+)
 @router.post("/api/admin/season/slots/{slot_id}/release", response_model=SlotOut)
 def release_slot(
     slot_id: int,
@@ -399,6 +419,7 @@ def release_slot(
     return slot
 
 
+@router.delete("/api/admin/season/{slot_id}", include_in_schema=False)
 @router.delete("/api/admin/season/slots/{slot_id}")
 def delete_slot(
     slot_id: int,
