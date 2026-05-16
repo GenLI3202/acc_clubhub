@@ -173,6 +173,11 @@ def _query_slots(
 # Endpoints
 # ============================================================
 
+@router.post(
+    "/api/admin/season/generate",
+    response_model=GenerateResponse,
+    include_in_schema=False,
+)
 @router.post("/api/admin/season/slots/generate", response_model=GenerateResponse)
 def generate_season_slots(
     body: GenerateRequest,

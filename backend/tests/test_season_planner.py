@@ -126,6 +126,23 @@ def test_regen_preserves_claimed(db):
     assert result["skipped"] >= 1, "claimed slot must be counted as skipped"
 
 
+def test_generate_short_alias_for_frontend_rewrite(client, db):
+    """POST /api/admin/season/generate supports the frontend Vercel rewrite."""
+    res = client.post(
+        "/api/admin/season/generate",
+        json={
+            "season": "2026",
+            "start_date": WEEK_START.isoformat(),
+            "end_date": WEEK_END.isoformat(),
+            "dry_run": True,
+            "overwrite_unclaimed": False,
+        },
+    )
+
+    assert res.status_code == 200
+    assert res.json() == {"created": 3, "skipped": 0, "would_create": 3}
+
+
 def test_patch_marks_auto_generated_false(client, db):
     """PATCH any content field flips auto_generated to False."""
     generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)

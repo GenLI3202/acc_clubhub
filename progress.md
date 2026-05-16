@@ -11,6 +11,9 @@
 
 ## Recent Updates
 
+- [X] **Season Planner Production Generate Route Fix** (2026-05-16)
+  - [X] Added backend compatibility for `/api/admin/season/generate`, matching the production frontend rewrite path
+  - [X] Verified with `PYTHONPYCACHEPREFIX=/tmp/acc-clubhub-pycache python3 -m pytest tests/test_season_planner.py` (14 passed)
 - [X] **Season Planner Drag Move Fix** (2026-05-16)
   - [X] Added a backend compatibility route for `/api/admin/season/{id}/move`
   - [X] Kept canonical move behavior at `/api/admin/season/slots/{id}/move`
