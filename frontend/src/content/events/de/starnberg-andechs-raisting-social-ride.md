@@ -8,6 +8,7 @@ date: 2026-05-25 10:30
 eventType: social-ride
 cover: /images/events/starnberg-andechs-raisting-social-ride/cover.jpg
 displaySections:
+  - hero
   - upcoming
 status: published
 ACCOfficialRide: true
