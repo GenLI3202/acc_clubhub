@@ -6,7 +6,7 @@ location: Starnberg Bahnhof
 author: ACC Club
 date: 2026-05-25 10:30
 eventType: social-ride
-cover: /images/shared/stock/munich-cycling.jpg
+cover: /images/events/starnberg-andechs-raisting-social-ride/cover.jpg
 displaySections:
   - upcoming
 status: published
