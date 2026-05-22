@@ -1,6 +1,6 @@
 ---
 slug: starnberg-andechs-raisting-social-ride
-title: Montag Social Ride | Starnberg → Andechs → Raisting
+title: Montag Kloster · Satellitenstation Social Ride | Starnberg Runde
 description: Eine frühsommerliche Social Ride Runde ab Starnberg mit See- und Bergblick, Mittagspause in Andechs und Fotostopp in Raisting.
 location: Starnberg Bahnhof
 author: ACC Club

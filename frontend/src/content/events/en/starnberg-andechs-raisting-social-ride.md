@@ -1,6 +1,6 @@
 ---
 slug: starnberg-andechs-raisting-social-ride
-title: Monday Scenic Social Ride | Starnberg → Andechs → Raisting
+title: Monday Abbey · Satellite Station Scenic Social Ride | Starnberg Loop
 description: An early-summer social ride from Starnberg with lake views, alpine scenery, lunch at Andechs Abbey, and a photo stop at Raisting.
 location: Starnberg Bahnhof
 author: ACC Club

@@ -1,6 +1,6 @@
 ---
 slug: starnberg-andechs-raisting-social-ride
-title: 周一湖景修道院休闲骑｜Starnberg → Andechs → Raisting
+title: 周一修道院・卫星站湖景休闲骑｜Starnberg 环线
 description: 从 Starnberg 出发的初夏休闲骑，湖景山景一路相伴，中午在 Andechs 修道院午餐。
 location: Starnberg Bahnhof
 author: ACC Club
