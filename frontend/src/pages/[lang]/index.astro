@@ -5,6 +5,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { locales, defaultLocale, t, type Locale } from "../../lib/i18n";
 import { splitEvents } from "../../lib/events/eventHelpers";
+import { resolveRecurringEvents } from "../../lib/events/recurringEvents";
 import NextRideBanner from "../../components/home/NextRideBanner.astro";
 import MembershipTeaser from "../../components/home/MembershipTeaser.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
@@ -23,7 +24,8 @@ const langEvents = allEvents.filter((e) => {
     const entryLang = e.id.includes("/") ? e.id.split("/")[0] : defaultLocale;
     return entryLang === lang && e.data.status !== "draft";
 });
-const { upcoming } = splitEvents(langEvents);
+const effectiveEvents = resolveRecurringEvents(langEvents);
+const { upcoming } = splitEvents(effectiveEvents);
 const heroEvent = upcoming[0] ?? null;
 
 const eventItems = upcoming.slice(0, 2).map((e) => ({

@@ -14,6 +14,8 @@ const typeLabels: Record<string, string> = {
         lang === "zh" ? "训练营" : lang === "de" ? "Trainingslager" : "Training Camp",
     "social-ride":
         lang === "zh" ? "休闲骑" : lang === "de" ? "Social Ride" : "Social Ride",
+    "after-work":
+        lang === "zh" ? "下班骑" : lang === "de" ? "After-Work Ride" : "After-Work Ride",
     "race":
         lang === "zh" ? "比赛" : lang === "de" ? "Rennen" : "Race",
     "workshop":
@@ -27,7 +29,7 @@ function formatDate(date: Date): string {
     );
 }
 
-const slug = event?.id.split("/").pop();
+const slug = event?.data.slug ?? event?.id.split("/").pop();
 ---
 
 <section class="next-ride-banner">
