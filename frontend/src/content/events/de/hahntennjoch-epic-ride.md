@@ -14,17 +14,15 @@ ACCOfficialRide: true
 ---
 
 Das hier ist eine **Epic Ride** Ausfahrt.
-Wir fahren in die frühsommerlichen Alpen und nehmen den **Hahntennjoch** in Angriff. Das ist keine entspannte Social Ride Runde und auch keine Ausfahrt, bei der ständig gewartet wird — gefahren wird klar als **Drop Ride**. Bitte entscheidet auf Basis eurer eigenen Form, Kletterfähigkeit und Verpflegungsplanung, ob die Tour für euch passt.
+Wir fahren in die frühsommerlichen Alpen und nehmen den **Hahntennjoch** in Angriff. Gefahren wird als **Drop Ride**, daher bitte nach eigener Form, Kletterfähigkeit und Verpflegungsplanung entscheiden, ob die Tour für euch passt.
 
-Es gibt **zwei verschiedene Startpunkte**:
-- Fahrer:innen aus **Garmisch** treffen sich um **9:25** am **Garmisch Bahnhof** und fahren anschließend nach **Ehrwald**
-- Fahrer:innen aus **Ehrwald** starten gegen **10:25** an der **Garmischer Str. 19, 6632 Ehrwald, Austria**
+Es gibt zwei Startpunkte:
+- **Garmisch**: Treffen um **9:25** am **Garmisch Bahnhof**
+- **Ehrwald**: Start gegen **10:25** an der **Garmischer Str. 19, 6632 Ehrwald, Austria**
 
-Beide Seiten treffen sich in **Ehrwald** und fahren danach gemeinsam weiter Richtung **Hahntennjoch**. Nach der Ausfahrt fährt jede:r wieder zum eigenen Startpunkt zurück:
-- Garmisch-Starter zurück nach **Garmisch**
-- Ehrwald-Starter zurück nach **Ehrwald**
+Beide Seiten treffen sich in **Ehrwald** und fahren danach gemeinsam weiter Richtung **Hahntennjoch**. Nach der Ausfahrt geht es jeweils zurück zum eigenen Startpunkt.
 
-Die Route enthält einen **HC-Anstieg**. Abgesehen von **einem Sammelpunkt am Gipfel** wird **nicht gewartet**. Diese Route eignet sich vor allem für Leute mit solider Langstrecken- und längerer Klettererfahrung, die Tempo und Versorgung selbstständig managen können.
+Die Route enthält einen **HC-Anstieg**. Abgesehen von **einem Sammelpunkt am Gipfel** wird **nicht gewartet**. Wer mit längeren Anstiegen noch wenig Erfahrung hat, sollte die Teilnahme bitte gut abwägen.
 
 ---
 
@@ -38,7 +36,7 @@ Die Route enthält einen **HC-Anstieg**. Abgesehen von **einem Sammelpunkt am Gi
 | **Ehrwald-Route** | Ca. **109 km** · [Auf Komoot ansehen](https://www.komoot.com/invite-tour/2974069293?code=hyu3qz-smoGyaOJvu0ekek7kklJ5A-OdLxJd8xbOvJWTKwE7Dw&ref=wtd&share_token=aA7lwy7Spd18bWS4HHLMd2SJSAf8TZZYrSA0LiYvJzn9hdS0Y4&t_s=referral&t_cid=route_share&t_ref_username=3972948535991) |
 | **Regeln** | **Epic Ride / Drop Ride / kein Warten** |
 | **Schwierigkeit** | Ein **HC-Anstieg** · **nur ein Sammelpunkt am Gipfel** · längere Bergerfahrung erforderlich |
-| **Rückkehr** | Garmisch-Starter zurück nach **Garmisch**; Ehrwald-Starter zurück nach **Ehrwald** |
+| **Rückkehr** | Rückkehr jeweils zum eigenen Startpunkt |
 | **Anmeldung** | Gleich wie bei den bisherigen Afterwork-Rides |
 
 ---
@@ -52,6 +50,12 @@ Die Route enthält einen **HC-Anstieg**. Abgesehen von **einem Sammelpunkt am Gi
 #### Ehrwald → Hahntennjoch → Ehrwald
 
 <iframe src="https://www.komoot.com/tour/2974069293/embed?share_token=aA7lwy7Spd18bWS4HHLMd2SJSAf8TZZYrSA0LiYvJzn9hdS0Y4&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
+---
+
+### Bilder / Gallery
+
+<img src="/images/events/hahntennjoch-epic-ride/gallery/01-hahntennjoch-view.jpg" alt="Hahntennjoch Streckenansicht" />
 
 ---
 

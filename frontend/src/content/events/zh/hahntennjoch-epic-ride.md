@@ -13,18 +13,16 @@ status: published
 ACCOfficialRide: true
 ---
 
-这次是 **Epic Ride**。
-路线会经过初夏阿尔卑斯山区，并挑战 **Hahntennjoch** 山口。整体不是休闲骑，也不是等人骑法，而是明确按 **drop ride** 规则执行。请大家根据自己的体能、爬坡能力和补给准备情况决定是否参加。
+这次是一条 **Epic Ride**。
+路线会经过初夏阿尔卑斯山区，并挑战 **Hahntennjoch** 山口。整体按 **drop ride** 规则执行，请大家根据自己的体能、爬坡能力和补给准备情况决定是否参加。
 
-这次活动有 **两个不同出发点**：
-- 从 **Garmisch** 出发的骑友，**9:25** 在 **Garmisch 火车站** 集合，随后骑往 **Ehrwald**
-- 从 **Ehrwald** 出发的骑友，约 **10:25** 在 **Garmischer Str. 19, 6632 Ehrwald, Austria** 出发
+这次活动有两个出发点：
+- **Garmisch**：**9:25** 在 **Garmisch 火车站** 集合出发
+- **Ehrwald**：约 **10:25** 从 **Garmischer Str. 19, 6632 Ehrwald, Austria** 出发
 
-两边会在 **Ehrwald 会合**，之后再一起继续挑战 **Hahntennjoch**。骑行结束后，大家再分别回到各自的出发点：
-- Garmisch 出发的回到 **Garmisch**
-- Ehrwald 出发的回到 **Ehrwald**
+两边会在 **Ehrwald 会合**，之后一起继续挑战 **Hahntennjoch**。骑行结束后，再分别回到各自出发点。
 
-路线包含一个 **HC 级长坡**。当天除 **坡顶集合一次** 外，其余路段 **不等人**。这条路线更适合已经有一定长距离骑行和持续爬坡经验、能够独立控节奏和处理补给的骑友。
+路线包含一个 **HC 级长坡**。当天除 **坡顶集合一次** 外，其余路段 **不等人**。建议参加者具备一定长坡经验，并能独立处理自己的节奏与补给。
 
 ---
 
@@ -38,7 +36,7 @@ ACCOfficialRide: true
 | **Ehrwald 线** | 约 **109 km** · [Komoot 查看路线](https://www.komoot.com/invite-tour/2974069293?code=hyu3qz-smoGyaOJvu0ekek7kklJ5A-OdLxJd8xbOvJWTKwE7Dw&ref=wtd&share_token=aA7lwy7Spd18bWS4HHLMd2SJSAf8TZZYrSA0LiYvJzn9hdS0Y4&t_s=referral&t_cid=route_share&t_ref_username=3972948535991) |
 | **骑行规则** | **Epic Ride / drop ride / 不等人** |
 | **难度提醒** | 包含一个 **HC 级长坡**；仅在 **坡顶集合一次**；需要有一定长坡经验 |
-| **返回** | Garmisch 出发的回到 **Garmisch**；Ehrwald 出发的回到 **Ehrwald** |
+| **返回** | 分别回到各自出发点 |
 | **报名规则** | 按此前 Afterwork 活动一致处理 |
 
 ---
@@ -55,11 +53,17 @@ ACCOfficialRide: true
 
 ---
 
+### 活动图片 / Gallery
+
+<img src="/images/events/hahntennjoch-epic-ride/gallery/01-hahntennjoch-view.jpg" alt="Hahntennjoch 路线风景" />
+
+---
+
 ### 参加前提醒
 
-- 这不是保姆式带骑，请默认按 **drop ride** 理解
+- 本次按 **drop ride** 规则进行
 - 请提前准备好补给、外套、修车工具和应急方案
-- 如果你没有较稳定的长坡经验，这条建议谨慎报名
+- 如长坡经验还不太稳定，建议先谨慎评估再报名
 
 ### 报名 / Join
 

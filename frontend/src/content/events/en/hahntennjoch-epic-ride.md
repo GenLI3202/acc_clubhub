@@ -13,18 +13,16 @@ status: published
 ACCOfficialRide: true
 ---
 
-This one is an **Epic Ride**.
-We head into the early-summer Alps and take on **Hahntennjoch**. This is not a relaxed social spin and it is not a wait-for-everyone ride — it is clearly run as a **drop ride**. Please decide based on your own fitness, climbing ability, and fueling preparation.
+This is an **Epic Ride**.
+We head into the early-summer Alps and take on **Hahntennjoch**. The ride follows **drop ride** rules, so please decide based on your own fitness, climbing ability, and fueling preparation.
 
-There are **two different start points**:
-- Riders starting from **Garmisch** meet at **9:25** at **Garmisch Bahnhof**, then ride on to **Ehrwald**
-- Riders starting from **Ehrwald** roll out at around **10:25** from **Garmischer Str. 19, 6632 Ehrwald, Austria**
+There are two start points:
+- **Garmisch**: meet at **9:25** at **Garmisch Bahnhof**
+- **Ehrwald**: roll out at around **10:25** from **Garmischer Str. 19, 6632 Ehrwald, Austria**
 
-Both sides meet in **Ehrwald**, then continue together toward **Hahntennjoch**. After the ride, everyone returns to their own start point:
-- Garmisch starters return to **Garmisch**
-- Ehrwald starters return to **Ehrwald**
+Both sides meet in **Ehrwald**, then continue together toward **Hahntennjoch**. After the ride, everyone returns to their own start point.
 
-The route includes one **HC-category climb**. Apart from **one regroup at the summit**, the ride **does not wait**. This route is best suited to riders who already have solid long-distance riding and sustained climbing experience, and who can manage their own pace and supplies independently.
+The route includes one **HC-category climb**. Apart from **one regroup at the summit**, the ride **does not wait**. Riders should be comfortable with long climbs and able to manage their own pace and supplies.
 
 ---
 
@@ -38,7 +36,7 @@ The route includes one **HC-category climb**. Apart from **one regroup at the su
 | **Ehrwald route** | Approx. **109 km** · [View on Komoot](https://www.komoot.com/invite-tour/2974069293?code=hyu3qz-smoGyaOJvu0ekek7kklJ5A-OdLxJd8xbOvJWTKwE7Dw&ref=wtd&share_token=aA7lwy7Spd18bWS4HHLMd2SJSAf8TZZYrSA0LiYvJzn9hdS0Y4&t_s=referral&t_cid=route_share&t_ref_username=3972948535991) |
 | **Ride rules** | **Epic Ride / drop ride / no waiting** |
 | **Difficulty** | Includes one **HC-category climb** · **one regroup at the summit only** · prior long-climb experience required |
-| **Return** | Garmisch starters return to **Garmisch**; Ehrwald starters return to **Ehrwald** |
+| **Return** | Return to your respective start point |
 | **Registration** | Same rules as previous Afterwork rides |
 
 ---
@@ -55,11 +53,17 @@ The route includes one **HC-category climb**. Apart from **one regroup at the su
 
 ---
 
+### Gallery
+
+<img src="/images/events/hahntennjoch-epic-ride/gallery/01-hahntennjoch-view.jpg" alt="Hahntennjoch route view" />
+
+---
+
 ### Before You Join
 
-- This is not a guided no-drop ride; assume **drop ride** rules throughout
+- This ride follows **drop ride** rules throughout
 - Please prepare your own nutrition, layers, repair kit, and backup plan
-- If you do not yet have stable long-climb experience, please think carefully before registering
+- If long climbs are still new for you, please assess carefully before registering
 
 ### Registration / Join
 

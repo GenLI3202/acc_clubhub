@@ -55,7 +55,9 @@ const eventTypeLabels: Record<string, Record<string, string>> = {
   'race':          { zh: '比赛', en: 'Race', de: 'Rennen' },
   'workshop':      { zh: '工作坊', en: 'Workshop', de: 'Workshop' },
 };
-const eventTypeLabel = (eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType;
+const eventTypeLabel = entry.data.slug === 'hahntennjoch-epic-ride'
+  ? (lang === 'zh' ? 'Epic Ride' : lang === 'de' ? 'Epic Ride' : 'Epic Ride')
+  : ((eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType);
 
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 
