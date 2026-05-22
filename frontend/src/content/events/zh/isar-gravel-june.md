@@ -8,6 +8,7 @@ date: 2026-06-07
 eventType: training-camp
 displaySections:
   - upcoming
+status: draft
 distanceKm: 60
 cover: /images/shared/stock/munich-cycling.jpg
 aiTemplate: true
