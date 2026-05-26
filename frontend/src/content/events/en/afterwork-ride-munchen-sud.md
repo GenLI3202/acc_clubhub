@@ -36,7 +36,7 @@ We will meet at **17:50** at **Tierpark Hellabrunn · Isar Eingang Tor 4**, with
 
 |  | Details |
 | --- | --- |
-| **Time** | Meet-up at 17:50 · Rollout at 18:00 sharp · Expected return around 19:30 |
+| **Time** | Meet-up at 17:50 · Rollout at 18:00 sharp · Expected return around 20:00 |
 | **Meeting point** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
 | **Route** | Approx. 42.4 km · Approx. 320 m elevation gain · Estimated moving time 1h 48m |
 | **Pace** | Approx. 24 km/h average moving speed · 28–30 km/h cruising speed on the flat |
