@@ -10,6 +10,7 @@ import MembershipTeaser from "../../components/home/MembershipTeaser.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
 import SplashScreen from "../../components/home/SplashScreen.astro";
 import StravaWidget from "../../components/home/StravaWidget.astro";
+import SponsorStrip from "../../components/home/SponsorStrip.astro";
 
 export function getStaticPaths() {
     return locales.map((lang) => ({ params: { lang } }));
@@ -159,6 +160,8 @@ const routeItems = allRoutes
         alternate={false}
         comingSoon={t(lang, "home.comingSoon")}
     />
+
+    <SponsorStrip lang={lang} />
 </BaseLayout>
 
 <style>
