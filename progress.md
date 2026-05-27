@@ -11,6 +11,17 @@
 
 ## Recent Updates
 
+- [X] **Sponsors Bar + Partners Page** (2026-05-27) — branch `phase-sponsors/partners-page-and-strip`
+  - [X] Copied 4 sponsor assets to `frontend/public/images/sponsors/`
+  - [X] `frontend/src/data/sponsors.ts` — typed `SponsorMain` + `SponsorPartner` records
+  - [X] `frontend/src/components/sponsors/PartnerLogo.astro` — typographic logos for 4 "Friends of ACC"
+  - [X] Added `partners.*` i18n keys + `nav.partners` across zh/en/de; added `--color-bg-tint` + `--color-border-ink` tokens
+  - [X] `frontend/src/components/home/SponsorStrip.astro` — greyscale logo strip for homepage
+  - [X] `frontend/src/pages/[lang]/partners.astro` — full Partners page (hero + 2 official cards + 4 friends tiles + CTA)
+  - [X] Wired `SponsorStrip` into `[lang]/index.astro` after last PillarSection
+  - [X] Partners link in main nav (`getNavLinks`) + footer; `mailto:partners@across-cc.de` CTA; deck button `href="#"` placeholder
+  - [X] `npm run build` green; zh/en/de partners pages pre-rendered at build time
+
 - [X] **Season Planner Detail Rewrite Fix** (2026-05-16)
   - [X] Added backend compatibility for detail short paths used by the production frontend rewrite
   - [X] Covered get, save, claim, release, and delete short paths in backend tests

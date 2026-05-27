@@ -1,0 +1,142 @@
+---
+import { t, type Locale } from "../../lib/i18n";
+import { SPONSORS_MAIN, SPONSORS_PARTNERS } from "../../data/sponsors";
+
+interface Props {
+    lang: Locale;
+}
+
+const { lang } = Astro.props;
+const all = [...SPONSORS_MAIN.filter((s) => s.id === "ani"), ...SPONSORS_PARTNERS];
+---
+
+<section class="sponsor-strip">
+    <div class="strip-inner">
+        <div class="strip-header">
+            <div class="strip-label">
+                {t(lang, "partners.strip.label")}
+                <span class="strip-subtitle">— {t(lang, "partners.strip.subtitle")}</span>
+            </div>
+            <a href={`/${lang}/partners`} class="strip-view-all">
+                {t(lang, "partners.viewAll")} →
+            </a>
+        </div>
+        <div class="strip-logos" style={`grid-template-columns: repeat(${all.length}, 1fr);`}>
+            {all.map((s, i) => (
+                <a
+                    href={`/${lang}/partners`}
+                    class:list={["strip-logo-cell", { "strip-logo-cell--first": i === 0 }]}
+                    aria-label={s.name}
+                >
+                    {"logoParent" in s && (
+                        <img src={s.logoParent} alt={s.name} class="strip-img" />
+                    )}
+                    {"logoImg" in s && (
+                        <img src={s.logoImg} alt={s.name} class="strip-img" />
+                    )}
+                </a>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .sponsor-strip {
+        background: var(--color-bg-canvas);
+        border-top: 1px solid var(--color-border-ink);
+        border-bottom: 1px solid var(--color-border-ink);
+    }
+
+    :global(:root.dark) .sponsor-strip {
+        border-top-color: var(--color-border-ink);
+        border-bottom-color: var(--color-border-ink);
+    }
+
+    .strip-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 32px;
+    }
+
+    .strip-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 20px;
+    }
+
+    .strip-label {
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-primary);
+    }
+
+    .strip-subtitle {
+        color: var(--color-text-secondary);
+        margin-left: 10px;
+        font-weight: 400;
+    }
+
+    .strip-view-all {
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        text-decoration: none;
+        transition: opacity 150ms ease;
+    }
+
+    .strip-view-all:hover {
+        opacity: 0.75;
+    }
+
+    .strip-logos {
+        display: grid;
+        align-items: center;
+        gap: 0;
+    }
+
+    .strip-logo-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0;
+        border-left: 1px solid var(--color-border);
+        color: var(--color-primary);
+        opacity: 0.62;
+        filter: grayscale(1);
+        transition: opacity 200ms ease, filter 200ms ease;
+        cursor: pointer;
+        min-height: 60px;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+    .strip-logo-cell--first {
+        border-left: none;
+    }
+
+    .strip-logo-cell:hover {
+        opacity: 1;
+        filter: grayscale(0);
+    }
+
+    .strip-img {
+        max-height: 56px;
+        max-width: 150px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+
+    .strip-img--ledu {
+        max-height: 48px;
+        max-width: 130px;
+    }
+</style>

@@ -1,0 +1,126 @@
+---
+import type { LogoStyle } from "../../data/sponsors";
+
+interface Props {
+    logoStyle: LogoStyle;
+    mono?: boolean;
+}
+
+const { logoStyle, mono = false } = Astro.props;
+---
+
+{logoStyle === "brix" && (
+    <div class="logo-brix">
+        <span class="brix-name">BRIX</span>
+        <span class="brix-sub">coffee</span>
+    </div>
+)}
+
+{logoStyle === "schuster" && (
+    <div class="logo-schuster">
+        <span class="schuster-sport">Sport</span>
+        <span class="schuster-name">Schuster</span>
+    </div>
+)}
+
+{logoStyle === "velothique" && (
+    <div class="logo-velothique">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="6" cy="17" r="4.5" />
+            <circle cx="18" cy="17" r="4.5" />
+            <path d="M6 17 L12 7 L18 17 M9 7 L15 7" />
+        </svg>
+        <span class="velothique-name">Velothique</span>
+    </div>
+)}
+
+{logoStyle === "tegernsee" && (
+    <div class="logo-tegernsee">
+        <span class="tegernsee-seit">seit 1675</span>
+        <span class="tegernsee-name">Tegernsee</span>
+        <span class="tegernsee-brau">Bräu</span>
+    </div>
+)}
+
+<style>
+    /* Shared base */
+    .logo-brix,
+    .logo-schuster,
+    .logo-velothique,
+    .logo-tegernsee {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: currentColor;
+        font-family: var(--font-heading);
+    }
+
+    /* Brix Coffee */
+    .logo-brix { gap: 3px; }
+    .brix-name {
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        font-size: 1.4em;
+    }
+    .brix-sub {
+        font-weight: 400;
+        font-style: italic;
+        letter-spacing: 0.04em;
+        font-size: 0.6em;
+        opacity: 0.65;
+    }
+
+    /* Sport Schuster */
+    .logo-schuster { gap: 4px; }
+    .schuster-sport {
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        font-size: 0.78em;
+        text-transform: uppercase;
+        opacity: 0.7;
+    }
+    .schuster-name {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        font-size: 1.5em;
+        text-transform: uppercase;
+        line-height: 0.85;
+    }
+
+    /* Velothique */
+    .logo-velothique {
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
+    }
+    .velothique-name {
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        font-size: 1em;
+        text-transform: uppercase;
+    }
+
+    /* Tegernsee Bräu */
+    .logo-tegernsee { gap: 2px; }
+    .tegernsee-seit {
+        font-weight: 400;
+        font-style: italic;
+        letter-spacing: 0.02em;
+        font-size: 0.62em;
+        opacity: 0.7;
+    }
+    .tegernsee-name {
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        font-size: 1.2em;
+        text-transform: uppercase;
+        line-height: 0.95;
+    }
+    .tegernsee-brau {
+        font-weight: 500;
+        letter-spacing: 0.32em;
+        font-size: 0.55em;
+        text-transform: uppercase;
+        opacity: 0.7;
+    }
+</style>

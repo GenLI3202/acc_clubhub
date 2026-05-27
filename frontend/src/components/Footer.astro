@@ -15,6 +15,12 @@ const aboutText = {
   en: 'About',
   de: 'Über uns',
 }[lang] || 'About';
+
+const partnersText = {
+  zh: '合作伙伴',
+  en: 'Partners',
+  de: 'Partner',
+}[lang] || 'Partners';
 ---
 
 <footer>
@@ -27,7 +33,9 @@ const aboutText = {
       <span class="divider">&middot;</span>
       <a href={`/${lang}/privacy`}>{privacyText}</a>
       <span class="divider">&middot;</span>
-      <a href="/about">{aboutText}</a>
+      <a href={`/${lang}/about`}>{aboutText}</a>
+      <span class="divider">&middot;</span>
+      <a href={`/${lang}/partners`}>{partnersText}</a>
     </nav>
   </div>
 </footer>

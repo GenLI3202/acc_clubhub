@@ -21,6 +21,8 @@
   --color-text-light: #FFFFFF;
   --color-border: #2D2D2D;
   --color-border-strong: #3D3D3D;
+  --color-bg-tint: #222222;
+  --color-border-ink: #EDEDED;
   /* Accent and secondary stay the same — wine red works on dark */
 
   --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.40);
@@ -45,6 +47,8 @@
   --color-text-light: #FFFFFF;       /* Text on dark backgrounds */
   --color-border: #E5E7EB;           /* Subtle borders (replaces #111 border-rough) */
   --color-border-strong: #D1D5DB;    /* Stronger border for emphasis */
+  --color-bg-tint: #EFEFF1;          /* Very subtle tint for hover states */
+  --color-border-ink: #1A1A1A;       /* High-contrast border for sponsor strip */
 
   /* -----------------------------------------------
      Typography
