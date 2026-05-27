@@ -7,15 +7,14 @@ export interface SponsorMain {
     catKey: string;
     blurbKey: string;
     since: string;
+    videoId?: string;
 }
-
-export type LogoStyle = "brix" | "schuster" | "velothique" | "tegernsee";
 
 export interface SponsorPartner {
     id: string;
     name: string;
     catKey: string;
-    logoStyle: LogoStyle;
+    logoImg: string;
 }
 
 export const SPONSORS_MAIN: readonly SponsorMain[] = [
@@ -23,11 +22,12 @@ export const SPONSORS_MAIN: readonly SponsorMain[] = [
         id: "ani",
         name: "Active Nutrition International",
         parent: "PowerBar · Dymatize · Premier Protein",
-        logoFull: "/images/sponsors/sponsor-ani.png",
-        logoParent: "/images/sponsors/sponsor-ani-parent.png",
+        logoFull: "/images/sponsors/Powerbar_Red_RGB.png",
+        logoParent: "/images/sponsors/Powerbar_Red_RGB.png",
         catKey: "partners.category.nutrition",
         blurbKey: "partners.blurb.ani",
         since: "2026",
+        videoId: "VHULMWU0W5M",
     },
     {
         id: "ledu",
@@ -42,8 +42,9 @@ export const SPONSORS_MAIN: readonly SponsorMain[] = [
 ];
 
 export const SPONSORS_PARTNERS: readonly SponsorPartner[] = [
-    { id: "brix", name: "Brix Coffee", catKey: "partners.category.cafe", logoStyle: "brix" },
-    { id: "schuster", name: "Sport Schuster", catKey: "partners.category.retail", logoStyle: "schuster" },
-    { id: "velothique", name: "Velothique", catKey: "partners.category.service", logoStyle: "velothique" },
-    { id: "tegernsee", name: "Tegernsee Bräu", catKey: "partners.category.afterride", logoStyle: "tegernsee" },
+    { id: "winspace", name: "Winspace Lun", catKey: "partners.category.wheelset", logoImg: "/images/sponsors/winspace_lun_logo.jpeg" },
+    { id: "upvine",   name: "Upvine 静藤",  catKey: "partners.category.wheelset", logoImg: "/images/sponsors/upvine_logo.png" },
+    { id: "superteam",name: "Superteam",    catKey: "partners.category.wheelset", logoImg: "/images/sponsors/superteam_logo.png" },
+    { id: "magicshine",name: "Magicshine",  catKey: "partners.category.lighting",  logoImg: "/images/sponsors/magicshine_logo.png" },
+    { id: "sunrimoon", name: "Sunrimoon",   catKey: "partners.category.helmet",    logoImg: "/images/sponsors/sunrimoon_logo.png" },
 ];

@@ -1,14 +1,13 @@
 ---
 import { t, type Locale } from "../../lib/i18n";
 import { SPONSORS_MAIN, SPONSORS_PARTNERS } from "../../data/sponsors";
-import PartnerLogo from "../sponsors/PartnerLogo.astro";
 
 interface Props {
     lang: Locale;
 }
 
 const { lang } = Astro.props;
-const all = [...SPONSORS_MAIN, ...SPONSORS_PARTNERS];
+const all = [...SPONSORS_MAIN.filter((s) => s.id === "ani"), ...SPONSORS_PARTNERS];
 ---
 
 <section class="sponsor-strip">
@@ -29,22 +28,11 @@ const all = [...SPONSORS_MAIN, ...SPONSORS_PARTNERS];
                     class:list={["strip-logo-cell", { "strip-logo-cell--first": i === 0 }]}
                     aria-label={s.name}
                 >
-                    {s.id === "ani" && (
-                        <img
-                            src="/images/sponsors/sponsor-ani-parent.png"
-                            alt="Active Nutrition International"
-                            class="strip-img"
-                        />
+                    {"logoParent" in s && (
+                        <img src={s.logoParent} alt={s.name} class="strip-img" />
                     )}
-                    {s.id === "ledu" && (
-                        <img
-                            src="/images/sponsors/sponsor-ledu-trim.png"
-                            alt="LeDU München"
-                            class="strip-img strip-img--ledu"
-                        />
-                    )}
-                    {"logoStyle" in s && (
-                        <PartnerLogo logoStyle={s.logoStyle} mono={true} />
+                    {"logoImg" in s && (
+                        <img src={s.logoImg} alt={s.name} class="strip-img" />
                     )}
                 </a>
             ))}
