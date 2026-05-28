@@ -646,4 +646,128 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
         transform: translateY(-1px);
         box-shadow: var(--shadow-md);
     }
+
+    /* ============================================================
+       Mobile layout — < 768px
+       ============================================================ */
+    @media (max-width: 768px) {
+        /* Hero */
+        .hero-watermark {
+            width: 360px;
+            height: 360px;
+            right: -100px;
+            top: -60px;
+        }
+        .hero-inner {
+            padding: 88px 20px 56px;
+        }
+        .hero-lede {
+            font-size: 15px;
+            margin-top: 24px;
+        }
+
+        /* Shared section labels (OFFICIAL PARTNERS / FRIENDS OF ACC) */
+        .section-inner {
+            padding: 56px 20px;
+        }
+        .section-label {
+            gap: 14px;
+        }
+        .section-label-rule {
+            width: 32px;
+        }
+        .section-label-text {
+            white-space: nowrap;
+        }
+
+        /* Official partners: single column, full width */
+        .main-sponsors-grid {
+            grid-template-columns: 1fr;
+            max-width: 100%;
+            gap: 24px;
+            margin-top: 36px;
+        }
+        .main-sponsor-card {
+            padding: 22px 20px 20px;
+            min-height: 0;
+            border-radius: var(--radius-aero);
+        }
+        .card-top {
+            padding-bottom: 18px;
+        }
+        .card-logo-well {
+            padding: 28px 8px;
+            min-height: 140px;
+        }
+        .card-logo-img {
+            max-height: 90px;
+            max-width: 220px;
+        }
+        .card-footer {
+            gap: 14px;
+            padding-top: 18px;
+        }
+        .card-name {
+            font-size: 15px;
+        }
+        .card-blurb {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .card-watch-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Friends grid: 2 columns; last odd item spans both */
+        .friends-grid {
+            grid-template-columns: repeat(2, 1fr);
+            margin-top: 36px;
+        }
+        .friend-tile {
+            padding: 32px 14px 22px;
+            min-height: 150px;
+            border-right: none;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .friend-tile:nth-child(2n-1):not(:last-child) {
+            border-right: 1px solid var(--color-border);
+        }
+        .friend-tile:last-child {
+            border-bottom: none;
+        }
+        /* Odd-count: last item alone spans both columns */
+        .friend-tile:last-child:nth-child(2n-1) {
+            grid-column: 1 / -1;
+        }
+        .friend-logo-img {
+            max-height: 38px;
+            max-width: 100px;
+        }
+        .friend-cat {
+            margin-top: 18px;
+            font-size: 10px;
+        }
+
+        /* CTA */
+        .cta-inner {
+            padding: 64px 20px;
+        }
+        .cta-title {
+            font-size: 30px;
+        }
+        .cta-blurb {
+            font-size: 15px;
+            line-height: 1.65;
+            margin-top: 20px;
+        }
+        .cta-buttons {
+            margin-top: 32px;
+        }
+        .cta-btn {
+            font-size: 11.5px;
+            padding: 14px 22px;
+            letter-spacing: 0.1em;
+        }
+    }
 </style>
