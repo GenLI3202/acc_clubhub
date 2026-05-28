@@ -7,6 +7,7 @@ author: ACC Club
 date: 2026-05-31 10:30
 eventType: social-ride
 cover: /images/events/starnberg-andechs-raisting-social-ride/cover.jpg
+wechatQrCode: /images/events/starnberg-andechs-raisting-social-ride/wechat-qr.jpg
 displaySections:
   - hero
   - upcoming
