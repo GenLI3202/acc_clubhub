@@ -1,10 +1,10 @@
 ---
 slug: starnberg-andechs-raisting-social-ride
-title: Montag Kloster · Satellitenstation Social Ride | Starnberg Runde
+title: Sonntag Kloster · Satellitenstation Social Ride | Starnberg Runde
 description: Eine frühsommerliche Social Ride Runde ab Starnberg mit See- und Bergblick, Mittagspause in Andechs und Fotostopp in Raisting.
 location: Starnberg Bahnhof
 author: ACC Club
-date: 2026-05-25 10:30
+date: 2026-05-31 10:30
 eventType: social-ride
 cover: /images/events/starnberg-andechs-raisting-social-ride/cover.jpg
 displaySections:
@@ -15,7 +15,7 @@ ACCOfficialRide: true
 distanceKm: 58
 ---
 
-Kommt am Montag mit auf eine landschaftlich schöne Social Ride Runde.
+Kommt am Sonntag mit auf eine landschaftlich schöne Social Ride Runde.
 Wir starten am **Starnberg Bahnhof**, genießen frühsommerliche See- und Bergblicke, machen Mittagspause im **Kloster Andechs** und fahren danach an der **Satellitenbodenstation Raisting** vorbei, bevor wir wieder nach **Starnberg** zurückkehren.
 
 Die Strecke ist etwa **58 km** lang und hat rund **590 Höhenmeter**. Es gibt einige wellige Abschnitte, aber wir fahren in einem entspannten **Social Ride** Tempo. Erwarteter Schnitt: **20–23 km/h**. An den Anstiegen sammeln wir uns oben wieder.
@@ -24,7 +24,7 @@ Die Strecke ist etwa **58 km** lang und hat rund **590 Höhenmeter**. Es gibt ei
 
 |  |  |
 | --- | --- |
-| **Zeit** | Montag, 25. Mai · **10:15** Treffen am **Starnberg Bahnhof** · **10:30 pünktlicher Start** |
+| **Zeit** | Sonntag, 31. Mai · **10:15** Treffen am **Starnberg Bahnhof** · **10:30 pünktlicher Start** |
 | **Treffpunkt** | **Starnberg Bahnhof** |
 | **Route** | Starnberg → Andechs → Raisting → Starnberg · [Auf Komoot ansehen](https://www.komoot.com/de-de/tour/1839209835?share_token=ajeER4nezTHBbGZBzEfRvWJ66q6vPLgPnShSe40x7ZXN5yV6JB&ref=wtd) |
 | **Intensität** | Ca. **58 km / 590 Hm** · welliges Profil · erwarteter Schnitt **20–23 km/h** · wir warten oben an Anstiegen |

@@ -1,10 +1,10 @@
 ---
 slug: starnberg-andechs-raisting-social-ride
-title: 周一修道院・卫星站湖景休闲骑｜Starnberg 环线
+title: 周日修道院・卫星站湖景休闲骑｜Starnberg 环线
 description: 从 Starnberg 出发的初夏休闲骑，湖景山景一路相伴，中午在 Andechs 修道院午餐。
 location: Starnberg Bahnhof
 author: ACC Club
-date: 2026-05-25 10:30
+date: 2026-05-31 10:30
 eventType: social-ride
 cover: /images/events/starnberg-andechs-raisting-social-ride/cover.jpg
 displaySections:
@@ -15,7 +15,7 @@ ACCOfficialRide: true
 distanceKm: 58
 ---
 
-周一一起出去骑个风景线。
+周日一起出去骑个风景线。
 这次我们从 **Starnberg 火车站** 出发，沿途可以看初夏的湖景和山景，中午到 **Andechs 修道院** 喝酒吃肉，下午再经过 **Raisting 卫星地面站** 拍照打卡，最后回到 **Starnberg**。
 
 这条路线整体约 **58 km**，累计爬升约 **590 m**，有一些起伏，但整体按 **social ride** 的节奏来走。预计均速 **20–23 km/h**，爬坡时会在坡顶集合，不会把队伍拉散。
@@ -24,7 +24,7 @@ distanceKm: 58
 
 |  |  |
 | --- | --- |
-| **时间** | 5 月 25 日（周一）**10:15** 在 **Starnberg 火车站** 集合；**10:30 准时出发** |
+| **时间** | 5 月 31 日（周日）**10:15** 在 **Starnberg 火车站** 集合；**10:30 准时出发** |
 | **集合地点** | **Starnberg Bahnhof** |
 | **路线** | Starnberg → Andechs → Raisting → Starnberg · [Komoot 查看路线](https://www.komoot.com/de-de/tour/1839209835?share_token=ajeER4nezTHBbGZBzEfRvWJ66q6vPLgPnShSe40x7ZXN5yV6JB&ref=wtd) |
 | **强度** | 约 **58 km / 590 m**，有起伏路；预计均速 **20–23 km/h**；爬坡坡顶等人 |
@@ -32,7 +32,7 @@ distanceKm: 58
 | **午餐安排** | 预计 **12:30–13:00** 到 **Andechs 修道院** 午餐 |
 | **返程** | 预计下午 **3:00 左右** 回到 **Starnberg**；之后可自行乘 **S6 / RB** 返回慕尼黑 |
 | **费用** | **ACC 会员免费**；**非会员 2 欧**，用于保险和路上临时补给 |
-| **天气** | 周一预计 **13–27°C**，早晚偏凉，建议带 **风衣或马甲** |
+| **天气** | 预计 **13–27°C**，早晚偏凉，建议带 **风衣或马甲** |
 | **说明** | 大家可以自行乘火车前往，或者提前骑车过去；领队会在 **Starnberg** 等大家 |
 
 ---

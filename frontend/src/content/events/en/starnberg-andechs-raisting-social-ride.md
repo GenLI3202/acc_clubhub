@@ -1,10 +1,10 @@
 ---
 slug: starnberg-andechs-raisting-social-ride
-title: Monday Abbey · Satellite Station Scenic Social Ride | Starnberg Loop
+title: Sunday Abbey · Satellite Station Scenic Social Ride | Starnberg Loop
 description: An early-summer social ride from Starnberg with lake views, alpine scenery, lunch at Andechs Abbey, and a photo stop at Raisting.
 location: Starnberg Bahnhof
 author: ACC Club
-date: 2026-05-25 10:30
+date: 2026-05-31 10:30
 eventType: social-ride
 cover: /images/events/starnberg-andechs-raisting-social-ride/cover.jpg
 displaySections:
@@ -15,7 +15,7 @@ ACCOfficialRide: true
 distanceKm: 58
 ---
 
-Join us on Monday for a scenic social ride.
+Join us on Sunday for a scenic social ride.
 We roll out from **Starnberg Bahnhof**, enjoy early-summer lake and mountain views, stop for lunch at **Andechs Abbey**, then pass by the **Raisting satellite ground station** for photos before returning to **Starnberg**.
 
 The route is about **58 km** with roughly **590 m** of climbing. There are some rolling sections, but the ride is planned at a friendly **social ride** pace. Expected average speed is **20–23 km/h**, and we regroup at the top of climbs.
@@ -24,7 +24,7 @@ The route is about **58 km** with roughly **590 m** of climbing. There are some 
 
 |  |  |
 | --- | --- |
-| **Time** | Monday, May 25 · **10:15** meet-up at **Starnberg Bahnhof** · **10:30 sharp rollout** |
+| **Time** | Sunday, May 31 · **10:15** meet-up at **Starnberg Bahnhof** · **10:30 sharp rollout** |
 | **Meeting point** | **Starnberg Bahnhof** |
 | **Route** | Starnberg → Andechs → Raisting → Starnberg · [View on Komoot](https://www.komoot.com/de-de/tour/1839209835?share_token=ajeER4nezTHBbGZBzEfRvWJ66q6vPLgPnShSe40x7ZXN5yV6JB&ref=wtd) |
 | **Intensity** | Approx. **58 km / 590 m** · rolling terrain · expected average speed **20–23 km/h** · regroup on climbs |
