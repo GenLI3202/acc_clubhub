@@ -28,7 +28,7 @@ ACCOfficialRide: true
 | **慕尼黑出发建议** | **9:41** 从 **München Hbf** 出发乘火车 |
 | **Rosenheim 集合** | **10:24** 火车到达 **Rosenheim Bahnhof** 后集合出发 |
 | **形式** | **Rosenheim 出发环线骑行** |
-| **路线规模** | 约 **124.3 km** · 累计爬升约 **1538 m** |
+| **路线规模** | 约 **124.3 km** · 累计爬升约 **1538 m** · [Komoot 查看路线](https://www.komoot.com/tour/2996278072?ref=aso&share_token=a6htnvhcLhQsz3LDgWrH8XV1UaVyMDurHAkJWNxoMykpl6PRpp&t_s=referral&t_cid=route_share) |
 | **骑行规则** | **Drop ride / 不等人** |
 | **难度提醒** | 包含一段主要长坡；仅在 **坡顶集合一次**；建议有一定爬坡经验 |
 | **报名规则** | 按此前官网活动页邮件报名方式处理 |
@@ -37,7 +37,7 @@ ACCOfficialRide: true
 
 ### 路线预览
 
-本次路线文件已由组织者提供，页面资源整理完成后会补充路线预览。
+<iframe src="https://www.komoot.com/tour/2996278072/embed?share_token=a6htnvhcLhQsz3LDgWrH8XV1UaVyMDurHAkJWNxoMykpl6PRpp&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ---
 
