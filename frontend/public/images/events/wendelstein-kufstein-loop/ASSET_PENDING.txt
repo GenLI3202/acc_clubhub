@@ -1,0 +1,4 @@
+Pending cover asset for wendelstein-kufstein-loop.
+Intended filename: cover.jpg
+Source: Telegram image supplied by Zhikuan Shen on 2026-05-29 in poster workflow.
+Note: copy the approved image into this directory as cover.jpg before publish.
