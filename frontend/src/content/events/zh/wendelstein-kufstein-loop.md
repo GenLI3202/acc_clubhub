@@ -5,7 +5,7 @@ description: 从 Rosenheim 出发的周末山路环线，约 124.3 km，累计�
 location: Rosenheim Bahnhof
 author: ACC Club
 date: 2026-05-30 10:24
-registrationDeadline: 2026-05-30T09:00:00+02:00
+registrationDeadline: 2026-05-30T11:00:00+02:00
 eventType: social-ride
 cover: /images/events/wendelstein-kufstein-loop/cover.jpg
 displaySections:
