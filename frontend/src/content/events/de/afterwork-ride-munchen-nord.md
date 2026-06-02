@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: Wöchentliche After-Work-Runde am Donnerstag ab 18:00 Uhr ab SAP Garden, westnordwestliche Feierabendstrecke mit 53,5 km und 205 hm.
-date: 2026-06-04 18:00
+description: After-Work-Runde am Donnerstag ab 11:00 Uhr ab SAP Garden, westnordwestliche Strecke mit 53,5 km und 205 hm.
+date: 2026-06-04 11:00
 eventType: after-work
 location: SAP Garden
 author: ACC Club
@@ -26,17 +26,17 @@ recurring:
   registrationDeadlineHoursBefore: 2
 ---
 
-Komm am Donnerstagabend mit auf eine entspannte North Afterwork Ride von ACC.
+Komm am Donnerstag mit auf eine entspannte North Afterwork Ride von ACC.
 
-Das ist eine **lockere Feierabendrunde Richtung Nordwesten**. Unterwegs gibt es ein paar leicht erhöhte Abschnitte mit offenem Blick auf München. Die Strecke ist gut geeignet für eine entspannte Runde nach der Arbeit.
+Das ist eine **lockere Runde Richtung Nordwesten**. Unterwegs gibt es ein paar leicht erhöhte Abschnitte mit offenem Blick auf München. Die Strecke ist gut geeignet für eine entspannte gemeinsame Ausfahrt.
 
-Start ist **am Donnerstag um 18:00 Uhr** am **SAP Garden**. Die Route ist etwa **53,5 km** lang und hat rund **205 hm**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **25 km/h**, die Fahrzeit bei ungefähr **2 Stunden**.
+Start ist **am Donnerstag um 11:00 Uhr** am **SAP Garden**. Die Route ist etwa **53,5 km** lang und hat rund **205 hm**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **25 km/h**, die Fahrzeit bei ungefähr **2 Stunden**.
 
 ***
 
 |  | Infos |
 | --- | --- |
-| **Zeit** | Donnerstag · Start um 18:00 Uhr |
+| **Zeit** | Donnerstag · Start um 11:00 Uhr |
 | **Treffpunkt** | SAP Garden |
 | **Strecke** | Ca. 53,5 km · Ca. 205 hm |
 | **Tempo** | Ca. 25 km/h Durchschnitt |
@@ -56,8 +56,8 @@ Start ist **am Donnerstag um 18:00 Uhr** am **SAP Garden**. Die Route ist etwa *
 
 ### Zur Ausfahrt
 
-Diese Strecke ist als lockere After-Work-Runde gedacht und nicht als harte Trainingseinheit.
-Wenn du nach der Arbeit noch eine stabile gemeinsame Runde mit ACC fahren möchtest, passt diese Nordstrecke sehr gut.
+Diese Strecke ist als lockere Runde gedacht und nicht als harte Trainingseinheit.
+Wenn du eine stabile gemeinsame Runde mit ACC fahren möchtest, passt diese Nordstrecke sehr gut.
 
 ***
 
