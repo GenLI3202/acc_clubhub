@@ -104,7 +104,7 @@ describe('t (translation)', () => {
 describe('getNavLinks', () => {
     it('generates correct number of links', () => {
         const links = getNavLinks('zh');
-        expect(links.length).toBe(7);
+        expect(links.length).toBe(8);
     });
 
     it('generates correct links for zh', () => {
