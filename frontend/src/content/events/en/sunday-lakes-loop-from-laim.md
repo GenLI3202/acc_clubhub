@@ -12,7 +12,7 @@ displaySections:
 maxParticipants: 20
 distanceKm: 57.2
 registrationLink: ''
-status: draft
+status: published
 ACCOfficialRide: true
 ---
 
