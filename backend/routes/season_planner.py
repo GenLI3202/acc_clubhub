@@ -13,10 +13,24 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import Event, PlanSlot
-from services.season_planner import DEFAULT_EVENT_TIME, generate_slots, EVENT_TYPE_LABELS
 from routes.auth import get_current_admin
-from services.email import send_slot_claim_confirmation, send_slot_reminder
+from services.email import (
+    send_slot_assignment_notification,
+    send_slot_claim_confirmation,
+    send_slot_reminder,
+)
+from services.season_assignment import (
+    PlannedAssignment,
+    apply_assignments,
+    get_active_planner_leaders,
+    plan_fair_assignments,
+)
+from models import Event, PlanSlot
+from services.season_planner import (
+    DEFAULT_EVENT_TIME,
+    EVENT_TYPE_LABELS,
+    generate_slots,
+)
 
 router = APIRouter()
 
@@ -84,12 +98,40 @@ class GenerateRequest(BaseModel):
     end_date: date
     dry_run: bool = False
     overwrite_unclaimed: bool = False
+    auto_assign_created: bool = False
 
 
 class GenerateResponse(BaseModel):
     created: int
     skipped: int
     would_create: Optional[int]
+    assigned: int = 0
+    emails_sent: int = 0
+
+
+class PlannerLeaderOut(BaseModel):
+    name: str
+    email: str
+    active: bool
+
+
+class AssignmentOut(BaseModel):
+    slot_id: int
+    planned_date: date
+    event_type: str
+    claimed_by: str
+    claimed_email: str
+
+
+class AutoAssignRequest(BaseModel):
+    season: str = "2026"
+    dry_run: bool = True
+
+
+class AutoAssignResponse(BaseModel):
+    assigned: int
+    emails_sent: int = 0
+    assignments: list[AssignmentOut]
 
 
 class MoveRequest(BaseModel):
@@ -177,6 +219,35 @@ def _query_slots(
     return q.order_by(PlanSlot.planned_date, PlanSlot.event_type).all()
 
 
+def _assignment_out(assignment: PlannedAssignment) -> AssignmentOut:
+    slot = assignment.slot
+    leader = assignment.leader
+    return AssignmentOut(
+        slot_id=slot.id,
+        planned_date=slot.planned_date,
+        event_type=slot.event_type,
+        claimed_by=leader.name,
+        claimed_email=leader.email,
+    )
+
+
+def _send_assignment_notifications(assignments: list[PlannedAssignment]) -> int:
+    sent = 0
+    for assignment in assignments:
+        slot = assignment.slot
+        leader = assignment.leader
+        label = EVENT_TYPE_LABELS.get(slot.event_type, slot.event_type)
+        send_slot_assignment_notification(
+            owner_email=leader.email,
+            owner_name=leader.name,
+            event_type_label=label,
+            planned_date=str(slot.planned_date),
+            slot_id=slot.id,
+        )
+        sent += 1
+    return sent
+
+
 # ============================================================
 # Endpoints
 # ============================================================
@@ -200,7 +271,68 @@ def generate_season_slots(
         dry_run=body.dry_run,
         overwrite_unclaimed=body.overwrite_unclaimed,
     )
-    return GenerateResponse(**result)
+    assignments: list[PlannedAssignment] = []
+    emails_sent = 0
+    created_slot_ids = result.get("created_slot_ids", [])
+    if body.auto_assign_created and not body.dry_run and created_slot_ids:
+        created_slots = (
+            db.query(PlanSlot)
+            .filter(PlanSlot.id.in_(created_slot_ids))
+            .order_by(PlanSlot.planned_date, PlanSlot.event_type)
+            .all()
+        )
+        assignments = plan_fair_assignments(db, body.season, created_slots)
+        apply_assignments(assignments)
+        db.commit()
+        for assignment in assignments:
+            db.refresh(assignment.slot)
+        emails_sent = _send_assignment_notifications(assignments)
+    return GenerateResponse(
+        **result,
+        assigned=len(assignments),
+        emails_sent=emails_sent,
+    )
+
+
+@router.get(
+    "/api/admin/season/leaders",
+    response_model=list[PlannerLeaderOut],
+)
+def list_planner_leaders(
+    _admin: dict = Depends(get_current_admin),
+) -> list[PlannerLeaderOut]:
+    return [
+        PlannerLeaderOut(**leader.__dict__)
+        for leader in get_active_planner_leaders()
+    ]
+
+
+@router.post(
+    "/api/admin/season/slots/auto-assign",
+    response_model=AutoAssignResponse,
+)
+def auto_assign_unclaimed_slots(
+    body: AutoAssignRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> AutoAssignResponse:
+    assignments = plan_fair_assignments(db, body.season)
+    if body.dry_run:
+        return AutoAssignResponse(
+            assigned=len(assignments),
+            assignments=[_assignment_out(assignment) for assignment in assignments],
+        )
+
+    apply_assignments(assignments)
+    db.commit()
+    for assignment in assignments:
+        db.refresh(assignment.slot)
+    emails_sent = _send_assignment_notifications(assignments)
+    return AutoAssignResponse(
+        assigned=len(assignments),
+        emails_sent=emails_sent,
+        assignments=[_assignment_out(assignment) for assignment in assignments],
+    )
 
 
 @router.get("/api/admin/season/slots", response_model=list[SlotOut])
