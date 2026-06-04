@@ -25,8 +25,8 @@ The first part rolls out of the city before opening into quieter roads, with for
 |  |  |
 | --- | --- |
 | **Time** | **Sunday, June 7 · 09:30** |
-| **Meeting point** | **Southwest exit area of Laim S-Bahn station** |
-| **Route** | About **57.2 km** · Estimated **3 h 21 min** · [View route on Komoot](https://www.komoot.com/tour/17046197) |
+| **Meeting point** | **Southwest exit area of Laim S-Bahn station** · [Google Maps meeting point](https://maps.app.goo.gl/GSPhwwt7DArS4h3x9?g_st=ic) |
+| **Route** | About **57.2 km** · Estimated **3 h 21 min** · [View route on Komoot](https://www.komoot.com/tour/3011279518?ref=itd&share_token=aOFYW8IAlj75q7bIYOdKwraJpbuMuXFL6aTIFNwk3SB6j0pB5M&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **Pace** | Relaxed weekend social ride with a steady pace |
 | **Notes** | Please bring a helmet, water, and basic ride supplies; riders should be comfortable with **50 km+** |
 
@@ -34,9 +34,10 @@ The first part rolls out of the city before opening into quieter roads, with for
 
 ## Route Reference
 
-- **Komoot Tour:** [View route](https://www.komoot.com/tour/17046197)
+- **Meeting point:** [Google Maps meeting point](https://maps.app.goo.gl/GSPhwwt7DArS4h3x9?g_st=ic)
+- **Komoot Tour:** [View route](https://www.komoot.com/tour/3011279518?ref=itd&share_token=aOFYW8IAlj75q7bIYOdKwraJpbuMuXFL6aTIFNwk3SB6j0pB5M&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
 
-<iframe src="https://www.komoot.com/tour/17046197/embed?profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/3011279518/embed?profile=1&share_token=aOFYW8IAlj75q7bIYOdKwraJpbuMuXFL6aTIFNwk3SB6j0pB5M" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ---
 
