@@ -60,9 +60,11 @@ export interface PlanSlot {
   title: string | null;
   location: string | null;
   distance_km: number | null;
+  route_url: string | null;
   notes: string | null;
   claimed_by: string | null;
   claimed_email: string | null;
+  backup_or_replacement: string | null;
   status: SlotStatus;
   readiness: SlotReadiness;
   auto_generated: boolean;

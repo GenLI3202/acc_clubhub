@@ -3,7 +3,7 @@
 export const prerender = false;
 
 import type { PlanSlot } from "../../../lib/admin/seasonPlanner";
-import { EVENT_TYPE_LABEL, STATUS_LABEL, READINESS_LABEL } from "../../../lib/admin/seasonPlanner";
+import { EVENT_TYPE_LABEL } from "../../../lib/admin/seasonPlanner";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 const cookie = Astro.request.headers.get("cookie") || "";
@@ -35,7 +35,7 @@ try {
 
 const canDelete =
   slot !== null &&
-  (slot.status === "unclaimed" || slot.status === "cancelled") &&
+  slot.claimed_by === null &&
   slot.published_event_id === null;
 
 function formatDate(d: string): string {
@@ -46,20 +46,12 @@ function formatDate(d: string): string {
   } catch { return d; }
 }
 
-const STATUS_OPTIONS = [
-  { value: "unclaimed",   label: "Unclaimed" },
-  { value: "claimed",     label: "Claimed" },
-  { value: "in_planning", label: "Planning" },
-  { value: "ready",       label: "Ready" },
-  { value: "cancelled",   label: "Cancelled" },
-];
-
 const READINESS_OPTIONS = [
-  { value: "idea",              label: "Idea" },
-  { value: "route_drafted",     label: "Route Drafted" },
-  { value: "leader_confirmed",  label: "Leader Confirmed" },
-  { value: "logistics_done",    label: "Logistics Done" },
-  { value: "ready_to_publish",  label: "Ready to Publish" },
+  { value: "idea",              label: "Idea only / 初步想法" },
+  { value: "route_drafted",     label: "Route sketched / 路线大致确定" },
+  { value: "leader_confirmed",  label: "Owner confirmed / 负责人确认" },
+  { value: "logistics_done",    label: "Logistics ready / 后勤信息完成" },
+  { value: "ready_to_publish",  label: "Ready for agent handoff / 信息完整" },
 ];
 ---
 
@@ -108,6 +100,8 @@ const READINESS_OPTIONS = [
         margin-bottom: 0.3rem;
       }
       .form-group input[type="text"],
+      .form-group input[type="email"],
+      .form-group input[type="url"],
       .form-group input[type="number"],
       .form-group textarea,
       .form-group select {
@@ -147,13 +141,8 @@ const READINESS_OPTIONS = [
       .btn-danger:hover { background: #ffebe9; }
       .btn-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
 
-      .ownership-row { display: flex; gap: 0.6rem; align-items: center; }
-      .ownership-row input[type="text"] {
-        flex: 1; padding: 0.45rem 0.7rem;
-        border: 1px solid #d0d7de; border-radius: 6px;
-        font-size: 0.875rem;
-      }
       .owner-name { font-weight: 600; color: #24292f; }
+      .field-note { margin: 0.3rem 0 0; font-size: 0.78rem; color: #57606a; }
 
       .msg { padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.85rem; margin-top: 0.6rem; }
       .msg-ok  { background: #dafbe1; color: #1a7f37; }
@@ -189,72 +178,79 @@ const READINESS_OPTIONS = [
             </div>
           </div>
 
-          <!-- Details form -->
+          <!-- Planning form -->
           <div class="card">
-            <h2>Details</h2>
+            <h2>Planning Details</h2>
             <div class="form-group">
-              <label for="f-title">Title</label>
-              <input type="text" id="f-title" value={slot.title ?? ""} placeholder="Leave blank to use default" />
+              <label for="f-title">Working title / 活动标题</label>
+              <input type="text" id="f-title" value={slot.title ?? ""} placeholder="Leave blank to use the default slot type" />
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label for="f-location">Location</label>
-                <input type="text" id="f-location" value={slot.location ?? ""} />
+                <label for="f-location">Area / Meeting point</label>
+                <input type="text" id="f-location" value={slot.location ?? ""} placeholder="e.g. Ammersee / Giesing / Olympiapark" />
               </div>
               <div class="form-group">
-                <label for="f-distance">Distance (km)</label>
+                <label for="f-distance">Estimated distance (km)</label>
                 <input type="number" id="f-distance" step="0.1" min="0"
                   value={slot.distance_km != null ? String(slot.distance_km) : ""} />
               </div>
             </div>
             <div class="form-group">
-              <label for="f-notes">Notes / Backup info</label>
-              <textarea id="f-notes">{slot.notes ?? ""}</textarea>
+              <label for="f-route-url">Route link / 路线链接</label>
+              <input type="url" id="f-route-url" value={slot.route_url ?? ""} placeholder="Komoot / Strava / Google Maps URL" />
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="f-status">Status</label>
-                <select id="f-status">
-                  {STATUS_OPTIONS.map((o) => (
-                    <option value={o.value} selected={slot!.status === o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="f-readiness">Readiness</label>
-                <select id="f-readiness">
-                  {READINESS_OPTIONS.map((o) => (
-                    <option value={o.value} selected={slot!.readiness === o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
+            <div class="form-group">
+              <label for="f-notes">Ride idea / 简短备注</label>
+              <textarea id="f-notes" placeholder="Route idea, rough intensity, constraints, or anything the owner should know">{slot.notes ?? ""}</textarea>
             </div>
-            <div class="btn-row">
-              <button class="action-btn" id="save-btn">Save Changes</button>
-            </div>
-            <div class="msg" id="save-msg"></div>
           </div>
 
           <!-- Ownership -->
           <div class="card">
             <h2>Ownership</h2>
-            {slot.claimed_by ? (
-              <div class="btn-row">
-                <span class="owner-name">{slot.claimed_by}</span>
-                {slot.claimed_email && <span style="font-size:0.82rem;color:#57606a;">({slot.claimed_email})</span>}
-                <button class="btn-secondary" id="release-btn">Release</button>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="f-owner">Owner</label>
+                <input type="text" id="f-owner" value={slot.claimed_by ?? ""} placeholder="Unclaimed / 未认领" />
               </div>
-            ) : (
-              <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                <div class="ownership-row">
-                  <input type="text" id="claim-name" placeholder="Owner name" />
-                  <input type="email" id="claim-email" placeholder="Owner email (for reminders)" style="flex:1.5;" />
-                  <button class="action-btn" id="claim-btn">Claim</button>
-                </div>
-                <p style="margin:0;font-size:0.78rem;color:#57606a;">A confirmation email will be sent immediately, and a reminder 7 days before the event.</p>
+              <div class="form-group">
+                <label for="f-owner-email">Owner email</label>
+                <input type="email" id="f-owner-email" value={slot.claimed_email ?? ""} placeholder="Optional, for reminders" />
               </div>
-            )}
+            </div>
+            <div class="form-group">
+              <label for="f-backup">Backup / 替班说明</label>
+              <textarea id="f-backup" placeholder="Who can cover if the owner cannot lead? Any handoff notes?">{slot.backup_or_replacement ?? ""}</textarea>
+            </div>
+            <div class="form-group">
+              <label for="f-readiness">Planning readiness</label>
+              <select id="f-readiness">
+                {READINESS_OPTIONS.map((o) => (
+                  <option value={o.value} selected={slot!.readiness === o.value}>{o.label}</option>
+                ))}
+              </select>
+              <p class="field-note">Internal planning signal only. It does not connect to the public event publishing flow.</p>
+            </div>
+            <div class="btn-row">
+              <button class="action-btn" id="save-btn">Save Slot</button>
+              {slot.claimed_by && (
+                <button class="btn-secondary" id="release-btn" type="button">Clear Owner</button>
+              )}
+            </div>
+            <div class="msg" id="save-msg"></div>
             <div class="msg" id="ownership-msg"></div>
+          </div>
+
+          <div class="card">
+            <h2>Current Summary</h2>
+            <div class="slot-meta">
+              <span class="badge">{slot.claimed_by ? slot.claimed_by : "Unclaimed"}</span>
+              <span class="badge">{READINESS_OPTIONS.find((o) => o.value === slot!.readiness)?.label ?? slot.readiness}</span>
+              {slot.route_url && (
+                <a href={slot.route_url} target="_blank" rel="noreferrer" class="breadcrumb">Open route link</a>
+              )}
+            </div>
           </div>
 
           <!-- Danger zone -->
@@ -262,7 +258,7 @@ const READINESS_OPTIONS = [
             <div class="card" style="border-color:#ff818266;">
               <h2 style="color:#cf222e;">Danger Zone</h2>
               <p style="font-size:0.85rem;color:#57606a;margin:0 0 0.75rem;">
-                This slot is unclaimed and has not been converted to an event.
+                This slot has no owner and can be removed from the planning board.
               </p>
               <button class="btn-danger" id="delete-btn">Delete Slot</button>
               <div class="msg" id="delete-msg"></div>
@@ -272,7 +268,7 @@ const READINESS_OPTIONS = [
       )}
     </div>
 
-    <script define:vars={{ slotId: id, hasClaimed: slot?.claimed_by ?? null }}>
+    <script define:vars={{ slotId: id }}>
       function showMsg(elId, text, isOk) {
         const el = document.getElementById(elId);
         if (!el) return;
@@ -291,58 +287,46 @@ const READINESS_OPTIONS = [
         return data;
       }
 
-      // Save details
       document.getElementById("save-btn")?.addEventListener("click", async () => {
         const btn = document.getElementById("save-btn");
         btn.disabled = true;
-        btn.textContent = "Saving…";
+        btn.textContent = "Saving...";
         try {
           const payload = {
             title: document.getElementById("f-title").value.trim() || null,
             location: document.getElementById("f-location").value.trim() || null,
             distance_km: document.getElementById("f-distance").value
               ? parseFloat(document.getElementById("f-distance").value) : null,
+            route_url: document.getElementById("f-route-url").value.trim() || null,
             notes: document.getElementById("f-notes").value.trim() || null,
-            status: document.getElementById("f-status").value,
+            claimed_by: document.getElementById("f-owner").value.trim() || null,
+            claimed_email: document.getElementById("f-owner-email").value.trim() || null,
+            backup_or_replacement: document.getElementById("f-backup").value.trim() || null,
             readiness: document.getElementById("f-readiness").value,
           };
           await apiCall(`/api/admin/season/${slotId}`, "PATCH", payload);
-          showMsg("save-msg", "Saved.", true);
+          showMsg("save-msg", "Saved. Reloading...", true);
+          setTimeout(() => location.reload(), 700);
         } catch (e) {
           showMsg("save-msg", "Error: " + e.message, false);
-        } finally {
           btn.disabled = false;
-          btn.textContent = "Save Changes";
+          btn.textContent = "Save Slot";
         }
       });
 
-      // Claim
-      document.getElementById("claim-btn")?.addEventListener("click", async () => {
-        const name = document.getElementById("claim-name")?.value.trim();
-        const email = document.getElementById("claim-email")?.value.trim();
-        if (!name) { showMsg("ownership-msg", "Enter a name first.", false); return; }
-        try {
-          await apiCall(`/api/admin/season/${slotId}/claim`, "POST", {
-            claimed_by: name,
-            claimed_email: email || null,
-          });
-          const emailNote = email ? ` Confirmation sent to ${email}.` : "";
-          showMsg("ownership-msg", `Claimed by ${name}.${emailNote} Reloading…`, true);
-          setTimeout(() => location.reload(), 900);
-        } catch (e) {
-          showMsg("ownership-msg", "Error: " + e.message, false);
-        }
-      });
-
-      // Release
       document.getElementById("release-btn")?.addEventListener("click", async () => {
-        if (!confirm("Release this slot? The owner will be cleared.")) return;
+        if (!confirm("Clear the owner for this slot?")) return;
         try {
           await apiCall(`/api/admin/season/${slotId}/release`, "POST");
-          showMsg("ownership-msg", "Released. Reloading…", true);
-          setTimeout(() => location.reload(), 900);
+          showMsg("ownership-msg", "Owner cleared. Reloading...", true);
+          setTimeout(() => location.reload(), 700);
         } catch (e) {
           showMsg("ownership-msg", "Error: " + e.message, false);
+        } finally {
+          const ownerInput = document.getElementById("f-owner");
+          const ownerEmailInput = document.getElementById("f-owner-email");
+          if (ownerInput) ownerInput.value = "";
+          if (ownerEmailInput) ownerEmailInput.value = "";
         }
       });
 
