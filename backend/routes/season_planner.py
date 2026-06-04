@@ -38,9 +38,11 @@ class SlotOut(BaseModel):
     title: Optional[str]
     location: Optional[str]
     distance_km: Optional[float]
+    route_url: Optional[str]
     notes: Optional[str]
     claimed_by: Optional[str]
     claimed_email: Optional[str]
+    backup_or_replacement: Optional[str]
     status: str
     readiness: str
     auto_generated: bool
@@ -55,7 +57,11 @@ class PatchRequest(BaseModel):
     title: Optional[str] = None
     location: Optional[str] = None
     distance_km: Optional[float] = None
+    route_url: Optional[str] = None
     notes: Optional[str] = None
+    claimed_by: Optional[str] = None
+    claimed_email: Optional[str] = None
+    backup_or_replacement: Optional[str] = None
     status: Optional[str] = None
     readiness: Optional[str] = None
     locked: Optional[bool] = None
@@ -98,9 +104,11 @@ class RestoreSlotRequest(BaseModel):
     title: Optional[str] = None
     location: Optional[str] = None
     distance_km: Optional[float] = None
+    route_url: Optional[str] = None
     notes: Optional[str] = None
     claimed_by: Optional[str] = None
     claimed_email: Optional[str] = None
+    backup_or_replacement: Optional[str] = None
     status: str = "unclaimed"
     readiness: str = "idea"
     auto_generated: bool = False
@@ -300,9 +308,11 @@ def _restore_slot_from_snapshot(body: RestoreSlotRequest, db: Session) -> PlanSl
         title=body.title,
         location=body.location,
         distance_km=body.distance_km,
+        route_url=body.route_url,
         notes=body.notes,
         claimed_by=body.claimed_by,
         claimed_email=body.claimed_email,
+        backup_or_replacement=body.backup_or_replacement,
         status=body.status,
         readiness=body.readiness,
         auto_generated=body.auto_generated,
@@ -335,7 +345,16 @@ def get_slot(
     return _get_slot_or_404(slot_id, db)
 
 
-_CONTENT_FIELDS = {"title", "location", "distance_km", "notes"}
+_CONTENT_FIELDS = {
+    "title",
+    "location",
+    "distance_km",
+    "route_url",
+    "notes",
+    "claimed_by",
+    "claimed_email",
+    "backup_or_replacement",
+}
 
 
 @router.patch(
@@ -355,6 +374,11 @@ def patch_slot(
     human_edit = bool(_CONTENT_FIELDS & update_data.keys())
     for field, value in update_data.items():
         setattr(slot, field, value)
+    if "claimed_by" in update_data:
+        if slot.claimed_by and slot.status == "unclaimed":
+            slot.status = "claimed"
+        elif not slot.claimed_by and slot.status == "claimed":
+            slot.status = "unclaimed"
     if human_edit:
         slot.auto_generated = False
     db.commit()
@@ -375,14 +399,21 @@ def claim_slot(
     _admin: dict = Depends(get_current_admin),
 ) -> PlanSlot:
     slot = _get_slot_or_404(slot_id, db)
-    if slot.status != "unclaimed":
+    if slot.claimed_by:
+        raise HTTPException(
+            status_code=409,
+            detail="Cannot claim a slot that already has an owner",
+        )
+    if slot.status in ("published", "cancelled"):
         raise HTTPException(
             status_code=409,
             detail=f"Cannot claim a slot with status '{slot.status}'",
         )
+
     slot.claimed_by = body.claimed_by
     slot.claimed_email = body.claimed_email
-    slot.status = "claimed"
+    if slot.status == "unclaimed":
+        slot.status = "claimed"
     db.commit()
     db.refresh(slot)
 
@@ -413,7 +444,8 @@ def release_slot(
     slot = _get_slot_or_404(slot_id, db)
     slot.claimed_by = None
     slot.claimed_email = None
-    slot.status = "unclaimed"
+    if slot.status == "claimed":
+        slot.status = "unclaimed"
     db.commit()
     db.refresh(slot)
     return slot

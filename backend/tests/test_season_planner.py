@@ -202,6 +202,52 @@ def test_detail_short_aliases_for_frontend_rewrite(client, db, monkeypatch):
     assert delete_res.json() == {"deleted": slot.id}
 
 
+def test_claim_ready_slot_keeps_ready_status(client, db, monkeypatch):
+    """Ready slots can still be claimed without changing their planning status."""
+    import routes.season_planner as season_routes
+
+    monkeypatch.setattr(
+        season_routes,
+        "send_slot_claim_confirmation",
+        lambda **_kwargs: None,
+    )
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+    slot.status = "ready"
+    db.commit()
+
+    res = client.post(
+        f"/api/admin/season/{slot.id}/claim",
+        json={
+            "claimed_by": "Gen Li",
+            "claimed_email": "gen@example.com",
+        },
+    )
+
+    assert res.status_code == 200
+    data = res.json()
+    assert data["claimed_by"] == "Gen Li"
+    assert data["claimed_email"] == "gen@example.com"
+    assert data["status"] == "ready"
+
+
+def test_claim_rejects_slot_that_already_has_owner(client, db):
+    """Claim cannot overwrite an existing owner."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    slot = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+    slot.status = "ready"
+    slot.claimed_by = "Alice"
+    db.commit()
+
+    res = client.post(
+        f"/api/admin/season/{slot.id}/claim",
+        json={"claimed_by": "Bob"},
+    )
+
+    assert res.status_code == 409
+    assert "already has an owner" in res.json()["detail"]
+
+
 # ── Phase C: Convert ──────────────────────────────────────────
 
 

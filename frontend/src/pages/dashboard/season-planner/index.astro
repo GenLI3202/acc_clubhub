@@ -3,7 +3,7 @@
 export const prerender = false;
 
 import type { GroupedSlotsResponse, WeekGroup, PlanSlot, EventType } from "../../../lib/admin/seasonPlanner";
-import { EVENT_TYPE_LABEL, STATUS_LABEL } from "../../../lib/admin/seasonPlanner";
+import { EVENT_TYPE_LABEL } from "../../../lib/admin/seasonPlanner";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
@@ -757,7 +757,7 @@ function plannerUrl(params: Record<string, string | null>): string {
                     <a href={`/dashboard/season-planner/${slot.id}`}>
                       <span class="cell-type">{EVENT_TYPE_LABEL[slot.event_type as EventType] ?? slot.event_type}</span>
                       <span class="cell-date">{slot.planned_date}</span>
-                      <span class="cell-status">{STATUS_LABEL[slot.status] ?? slot.status}</span>
+                      <span class="cell-status">{slot.claimed_by || "Unclaimed"}</span>
                     </a>
                   </div>
                 );

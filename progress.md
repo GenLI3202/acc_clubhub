@@ -294,6 +294,11 @@
 
 ## In Progress
 
+- [ ] **Season Planner Dashboard** (Issue [#143](https://github.com/GenLI3202/acc_clubhub/issues/143))
+  - [X] Board cells now show the owner name when claimed, otherwise `Unclaimed`, instead of showing the internal `claimed` status.
+  - [X] Claim API accepts ready/in-planning slots without downgrading their planning status.
+  - [X] Slot detail page now centers planning details, route links, ownership, backup notes, and readiness instead of manual status management.
+  - [ ] Fair random auto-assignment is tracked separately in Issue [#149](https://github.com/GenLI3202/acc_clubhub/issues/149).
 - [ ] **Admin Dashboard — Outstanding Issues**
   - [ ] **BLOCKED** — `/dashboard/login` returns 404 (Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67))
   - [ ] Registration spot count mismatch in dashboard (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
