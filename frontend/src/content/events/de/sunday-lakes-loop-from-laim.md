@@ -26,7 +26,7 @@ Am Anfang geht es erst einmal aus der Stadt heraus, danach wird die Strecke offe
 | --- | --- |
 | **Zeit** | **Sonntag, 7. Juni · 09:30** |
 | **Treffpunkt** | **Bereich am Südwestausgang der S-Bahn-Station Laim** |
-| **Route** | Ca. **57,2 km** · Geschätzt **3 Std. 21 Min.** · [Route auf Komoot ansehen](https://www.komoot.com/smarttour/17046197?ref=itd&query=d08At6gcQCvhg8%3DFzlsExQar6g7L3W8ACXb9_8YP7eACNLcvVRv1-AO1nOX0t_8U8GU-Tn5I2BeMv38P76IAiTOIAOYARyARDgI1N8FmUv9UgHYAaEoIQf8EJmwB5mhImASMx-F6yK6AA%3D%3D&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
+| **Route** | Ca. **57,2 km** · Geschätzt **3 Std. 21 Min.** · [Route auf Komoot ansehen](https://www.komoot.com/tour/17046197) |
 | **Tempo** | Entspannte Wochenendausfahrt mit konstantem Rhythmus |
 | **Hinweise** | Bitte Helm, Wasser und Basisverpflegung mitbringen; sinnvoll ist eine Grundfitness für **50 km+** |
 
@@ -34,9 +34,9 @@ Am Anfang geht es erst einmal aus der Stadt heraus, danach wird die Strecke offe
 
 ## Routenreferenz
 
-- **Komoot Smart Tour:** [Route ansehen](https://www.komoot.com/smarttour/17046197?ref=itd&query=d08At6gcQCvhg8%3DFzlsExQar6g7L3W8ACXb9_8YP7eACNLcvVRv1-AO1nOX0t_8U8GU-Tn5I2BeMv38P76IAiTOIAOYARyARDgI1N8FmUv9UgHYAaEoIQf8EJmwB5mhImASMx-F6yK6AA%3D%3D&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
+- **Komoot Tour:** [Route ansehen](https://www.komoot.com/tour/17046197)
 
-Im Moment liegt nur der Komoot-Smarttour-Link vor. Deshalb bleibt im Draft zunächst der direkte Link zur Route stehen. Wenn später ein öffentlich einbettbarer Tour-Link dazukommt, kann das noch durch eine Vorschau ersetzt werden.
+<iframe src="https://www.komoot.com/tour/17046197/embed?profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ---
 

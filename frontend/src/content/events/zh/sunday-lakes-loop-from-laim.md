@@ -26,7 +26,7 @@ ACCOfficialRide: true
 | --- | --- |
 | **时间** | **6 月 7 日（周日）09:30** |
 | **集合地点** | **Laim S-Bahn 车站西南端出口附近** |
-| **路线** | 约 **57.2 km** · 预计 **3 小时 21 分** · [Komoot 查看路线](https://www.komoot.com/smarttour/17046197?ref=itd&query=d08At6gcQCvhg8%3DFzlsExQar6g7L3W8ACXb9_8YP7eACNLcvVRv1-AO1nOX0t_8U8GU-Tn5I2BeMv38P76IAiTOIAOYARyARDgI1N8FmUv9UgHYAaEoIQf8EJmwB5mhImASMx-F6yK6AA%3D%3D&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
+| **路线** | 约 **57.2 km** · 预计 **3 小时 21 分** · [Komoot 查看路线](https://www.komoot.com/tour/17046197) |
 | **强度** | 周末休闲骑，整体以稳定推进为主，不是训练拉爆向 |
 | **注意事项** | 请自备头盔、饮水和基础补给；建议有连续骑行 **50 km+** 的基本准备 |
 
@@ -34,9 +34,9 @@ ACCOfficialRide: true
 
 ## 路线参考
 
-- **Komoot Smart Tour**：[查看路线](https://www.komoot.com/smarttour/17046197?ref=itd&query=d08At6gcQCvhg8%3DFzlsExQar6g7L3W8ACXb9_8YP7eACNLcvVRv1-AO1nOX0t_8U8GU-Tn5I2BeMv38P76IAiTOIAOYARyARDgI1N8FmUv9UgHYAaEoIQf8EJmwB5mhImASMx-F6yK6AA%3D%3D&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
+- **Komoot Tour**：[查看路线](https://www.komoot.com/tour/17046197)
 
-当前拿到的是 Komoot 的 smarttour 链接，本地 draft 先保留直达路线页。后面如果补到可直接嵌入的公开 tour 链接，我再替换成站内可预览的 iframe 版本。
+<iframe src="https://www.komoot.com/tour/17046197/embed?profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ---
 
