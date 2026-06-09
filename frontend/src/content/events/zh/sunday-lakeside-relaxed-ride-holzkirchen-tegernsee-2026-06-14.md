@@ -1,19 +1,19 @@
 ---
-slug: sunday-lakeside-relaxed-ride-holzkirchen-tegernsee
+slug: sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14
 title: 周日湖畔轻松骑｜Holzkirchen → Tegernsee
 description: 周日从 Holzkirchen 骑到 Tegernsee，轻松节奏，湖景收尾，终点一起吃午餐。
 location: München Hbf / Holzkirchen Bahnhof
 author: ACC Club
-date: 2026-05-10
+date: 2026-06-14
 eventType: social-ride
-cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
+cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/cover.jpg
 displaySections:
   - hero
   - upcoming
 maxParticipants: 25
 distanceKm: 47.8
 registrationLink: ''
-wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
+wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/wechat-qr.png
 status: published
 ACCOfficialRide: true
 ---
@@ -25,7 +25,7 @@ ACCOfficialRide: true
 
 |                |  |
 | -------------- | -------------------- |
-| **时间**       | 5 月 10 日（周日）9:45 在慕尼黑主火集合；10:02 搭乘 RB55；10:40 从 Holzkirchen 火车站准时出发 |
+| **时间**       | 6 月 14 日（周日）9:45 在慕尼黑主火集合；10:02 搭乘 RB55；10:40 从 Holzkirchen 火车站准时出发 |
 | **集合地点**   | 慕尼黑主火车站 / Holzkirchen 火车站 |
 | **路线**       | Holzkirchen → Tegernsee 周边 → Gmund am Tegernsee · [Komoot 查看路线](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **强度**       | 休闲轻松骑，整体新手友好。预计完成均速 20+ km/h |
@@ -64,10 +64,10 @@ ACC 会为通过官网活动页完成**实名报名**的**非会员**提供活�
 
 扫码加入微信群，方便沟通集合、路况和当天安排。
 
-<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png" alt="周日湖畔轻松骑微信群二维码" style="max-width: 40%;" />
+<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/wechat-qr.png" alt="周日湖畔轻松骑微信群二维码" style="max-width: 40%;" />
 
 ---
 
 ### 活动图片 / Gallery
 
-<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/gallery/01-lakeside-view.jpg" alt="Tegernsee 湖边风景" />
+<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/gallery/01-lakeside-view.jpg" alt="Tegernsee 湖边风景" />

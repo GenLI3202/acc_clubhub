@@ -1,19 +1,19 @@
 ---
-slug: sunday-lakeside-relaxed-ride-holzkirchen-tegernsee
+slug: sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14
 title: Entspannte Sonntagsfahrt am See | Holzkirchen → Tegernsee
 description: Eine lockere Sonntagsausfahrt von Holzkirchen nach Tegernsee mit Seeblick und Mittagessen am Ziel.
 location: München Hbf / Holzkirchen Bahnhof
 author: ACC Club
-date: 2026-05-10
+date: 2026-06-14
 eventType: social-ride
-cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/cover.jpg
+cover: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/cover.jpg
 displaySections:
   - hero
   - upcoming
 maxParticipants: 25
 distanceKm: 47.8
 registrationLink: ''
-wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png
+wechatQrCode: /images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/wechat-qr.png
 status: published
 ACCOfficialRide: true
 ---
@@ -25,7 +25,7 @@ Wir starten in **Holzkirchen** und fahren auf einer aktualisierten Seerunde mit 
 
 |                |  |
 | -------------- | -------------------- |
-| **Zeit**       | Sonntag, 10. Mai · Treffen um 9:45 am München Hbf · RB55 um 10:02 · Gemeinsamer Start um 10:40 am Bahnhof Holzkirchen |
+| **Zeit**       | Sonntag, 14. Juni · Treffen um 9:45 am München Hbf · RB55 um 10:02 · Gemeinsamer Start um 10:40 am Bahnhof Holzkirchen |
 | **Treffpunkt**   | München Hbf / Bahnhof Holzkirchen |
 | **Route**       | Holzkirchen → rund um den Tegernsee → Gmund am Tegernsee · [Route auf Komoot ansehen](https://www.komoot.com/de-de/tour/2936310051?share_token=adPIF6Z4cUjcZdxR8VnE2401OYDNuzqo1rjWG4IRoJzzATnKlH&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=329326660727) |
 | **Tempo**       | Entspannte Ausfahrt, anfängerfreundlich. Erwarteter Schnitt am Ende: 20+ km/h |
@@ -60,14 +60,14 @@ Das ist wichtig, damit euer **Versicherungsschutz** gewährleistet ist.
 
 ACC bietet **Nichtmitgliedern**, die sich mit echtem Namen über die offizielle Eventseite anmelden, eine Veranstaltungsversicherung.
 
-Teilnahmegebühr für Nichtmitglieder: **2 € für Nicht-Studierende / 1 € für Studierende (inkl. Promovierende)**; **für offizielle ACC-Mitglieder kostenlos**. Studierende bringen bitte einen gültigen Studierendenausweis mit; die Gebühr wird vor Ort am Treffpunkt eingesammelt.
+Teilnahmegebühr für Nichtmitglieder: **2 EUR für Nicht-Studierende / 1 EUR für Studierende (inkl. Promovierende)**; **für offizielle ACC-Mitglieder kostenlos**. Studierende bringen bitte einen gültigen Studierendenausweis mit; die Gebühr wird vor Ort am Treffpunkt eingesammelt.
 
 Über den QR-Code kommt ihr in die WeChat-Gruppe für Abstimmung zu Treffpunkt, Route und dem Ablauf am Tag selbst.
 
-<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/wechat-qr.png" alt="WeChat QR für die Sonntagsfahrt am Tegernsee" style="max-width: 40%;" />
+<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/wechat-qr.png" alt="WeChat QR für die Sonntagsfahrt am Tegernsee" style="max-width: 40%;" />
 
 ---
 
 ### Galerie
 
-<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee/gallery/01-lakeside-view.jpg" alt="Seeblick am Tegernsee" />
+<img src="/images/events/sunday-lakeside-relaxed-ride-holzkirchen-tegernsee-2026-06-14/gallery/01-lakeside-view.jpg" alt="Seeblick am Tegernsee" />
