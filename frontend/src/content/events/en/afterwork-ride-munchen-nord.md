@@ -49,7 +49,7 @@ We roll out at **17:50 on Thursday** from **Pflaumstrasse 8, 80995 Munich**. The
 
 ### Meeting point
 
-- Map: <https://maps.google.com/?q=48.217931,11.530051>
+- Map: <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>
 
 ### Route
 

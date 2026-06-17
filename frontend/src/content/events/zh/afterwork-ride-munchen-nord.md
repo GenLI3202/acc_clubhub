@@ -49,7 +49,7 @@ recurring:
 
 ### 集合地点
 
-- 地图：<https://maps.google.com/?q=48.217931,11.530051>
+- 地图：<https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>
 
 ### 路线
 

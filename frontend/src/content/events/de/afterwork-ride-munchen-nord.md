@@ -49,7 +49,7 @@ Start ist **am Donnerstag um 17:50 Uhr** an der **Pflaumstrasse 8, 80995 Münche
 
 ### Treffpunkt
 
-- Karte: <https://maps.google.com/?q=48.217931,11.530051>
+- Karte: <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>
 
 ### Route
 
