@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: After-Work-Runde am Donnerstag ab 17:50 Uhr ab SAP Garden, westnordwestliche Strecke mit 53,5 km und 205 hm.
+description: After-Work-Runde am Donnerstag ab 17:50 Uhr ab Pflaumstrasse 8 in Feldmoching, entspannte 45,6-km-Rennradroute durch den Münchner Norden mit rund 1 Std. 51 Min. Fahrzeit.
 date: 2026-06-04 17:50
 eventType: after-work
-location: SAP Garden
+location: Pflaumstrasse 8, 80995 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -12,7 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 53.5
+distanceKm: 45.6
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
 status: published
@@ -28,19 +28,19 @@ recurring:
 
 Komm am Donnerstag mit auf eine entspannte North Afterwork Ride von ACC.
 
-Das ist eine **lockere Runde Richtung Nordwesten**. Unterwegs gibt es ein paar leicht erhöhte Abschnitte mit offenem Blick auf München. Die Strecke ist gut geeignet für eine entspannte gemeinsame Ausfahrt.
+Das ist eine **lockere After-Work-Rennradrunde** durch den Münchner Norden, unter anderem rund um Feldmoching, Dachauer Moos, Amperauen und den Würmkanal. Die Strecke ist gut geeignet für eine entspannte gemeinsame Ausfahrt.
 
-Start ist **am Donnerstag um 17:50 Uhr** am **SAP Garden**. Die Route ist etwa **53,5 km** lang und hat rund **205 hm**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **25 km/h**, die Fahrzeit bei ungefähr **2 Stunden**.
+Start ist **am Donnerstag um 17:50 Uhr** an der **Pflaumstrasse 8, 80995 München**. Die Route ist etwa **45,6 km** lang, und Komoot schätzt die Fahrzeit auf etwa **1 Std. 51 Min.**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **24-25 km/h**.
 
 ***
 
 |  | Infos |
 | --- | --- |
 | **Zeit** | Donnerstag · Start um 17:50 Uhr |
-| **Treffpunkt** | SAP Garden |
-| **Strecke** | Ca. 53,5 km · Ca. 205 hm |
-| **Tempo** | Ca. 25 km/h Durchschnitt |
-| **Fahrzeit** | Etwa 2 Stunden |
+| **Treffpunkt** | Pflaumstrasse 8, 80995 München |
+| **Strecke** | Ca. 45,6 km · Geschätzte Fahrzeit 1 Std. 51 Min. |
+| **Tempo** | Ca. 24-25 km/h Durchschnitt |
+| **Fahrzeit** | Etwa 1 Std. 51 Min. |
 | **Radtyp** | Rennrad oder Gravelbike empfohlen |
 | **Hinweise** | Bitte Helm und grundlegende Verpflegung mitbringen; bitte prüfe dein Rad vorab; bitte pünktlich sein; entscheide selbst, ob Tempo und Strecke zu dir passen; bei schlechtem Wetter oder wenn sich außer dem Ride Leader weniger als 2 Personen anmelden, wird die Ausfahrt automatisch abgesagt |
 | **Teilnehmerzahl** | Maximal 15 Personen |
@@ -49,7 +49,7 @@ Start ist **am Donnerstag um 17:50 Uhr** am **SAP Garden**. Die Route ist etwa *
 
 ### Treffpunkt
 
-- Karte: <https://maps.app.goo.gl/SQuDhLAtCLbhFJoeA?g_st=ic>
+- Karte: <https://maps.google.com/?q=48.217931,11.530051>
 
 ### Route
 
@@ -66,7 +66,7 @@ Wenn du eine stabile gemeinsame Runde mit ACC fahren möchtest, passt diese Nord
 
 ### Logistics
 
-Die Runde endet voraussichtlich nach etwa **2 Stunden wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
+Die Runde endet voraussichtlich nach etwa **1 Std. 50 Min. bis 2 Stunden wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
 
 ***
 

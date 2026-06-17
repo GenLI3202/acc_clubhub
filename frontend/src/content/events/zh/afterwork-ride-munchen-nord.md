@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: 周四 17:50 从 SAP Garden 出发的北线 Afterwork 轻松骑，西北向路线，约 53.5 km，爬升 205 m。
+description: 周四 17:50 从 Feldmoching 的 Pflaumstrasse 8 出发，北线 afterwork 公路轻松骑，全程约 45.6 km，预计骑行约 1 小时 51 分。
 date: 2026-06-04 17:50
 eventType: after-work
-location: SAP Garden
+location: Pflaumstrasse 8, 80995 Munich
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -12,7 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 53.5
+distanceKm: 45.6
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
 status: published
@@ -28,19 +28,19 @@ recurring:
 
 周四来一条北线轻松 Afterwork。
 
-这是一条**西北向轻松 Afterwork 路线**，沿途会经过一些小高地视野点，可以看到慕尼黑的开阔景色。整体节奏友好，适合出来骑一圈、透口气，也和 ACC 大家一起轻松活动一下。
+这是一条**慕尼黑北部的轻松 afterwork 公路路线**，会经过 Feldmoching、Dachauer Moos、Amperauen 和 Würmkanal 一带。整体节奏友好，适合工作日傍晚出来骑一圈、透口气，也和 ACC 大家一起轻松活动一下。
 
-我们将于**周四 17:50**从**SAP Garden**出发。全程约 **53.5 km**，累计爬升约 **205 m**，预计均速 **25 km/h 左右**，骑行时间约 **2 小时**。
+我们将于**周四 17:50**从**Pflaumstrasse 8, 80995 Munich**出发。全程约 **45.6 km**，Komoot 预计骑行时间约 **1 小时 51 分**，预计均速 **24-25 km/h 左右**。
 
 ***
 
 |  | 信息 |
 | --- | --- |
 | **时间** | 周四 17:50 出发 |
-| **集合地点** | SAP Garden |
-| **路线** | 全程约 53.5 km，累计爬升约 205 m |
-| **配速** | 预计均速 25 km/h 左右 |
-| **骑行时长** | 约 2 小时 |
+| **集合地点** | Pflaumstrasse 8, 80995 Munich |
+| **路线** | 全程约 45.6 km，预计骑行时间约 1 小时 51 分 |
+| **配速** | 预计均速 24-25 km/h 左右 |
+| **骑行时长** | 约 1 小时 51 分 |
 | **适合车辆** | 建议使用 road bike 或 gravel bike |
 | **注意事项** | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线；如遇恶劣天气，或除领骑外报名人数不足 2 人，活动将自动取消 |
 | **人数上限** | 15 人 |
@@ -49,7 +49,7 @@ recurring:
 
 ### 集合地点
 
-- 地图：<https://maps.app.goo.gl/SQuDhLAtCLbhFJoeA?g_st=ic>
+- 地图：<https://maps.google.com/?q=48.217931,11.530051>
 
 ### 路线
 
@@ -66,7 +66,7 @@ recurring:
 
 ### 返程 / Logistics
 
-本次路线预计在 **2 小时左右回到起点**，适合下班后直接参加，当晚正常返回。
+本次路线预计在 **1 小时 50 分到 2 小时左右回到起点**，适合下班后直接参加，当晚正常返回。
 
 ***
 

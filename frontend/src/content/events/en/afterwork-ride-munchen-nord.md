@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: Thursday afterwork ride starting from SAP Garden at 17:50, heading northwest for a relaxed 53.5 km route with 205 m elevation gain.
+description: Thursday afterwork ride starting from Pflaumstrasse 8 in Feldmoching at 17:50, following a relaxed 45.6 km road route through Munich North in about 1h 51m.
 date: 2026-06-04 17:50
 eventType: after-work
-location: SAP Garden
+location: Pflaumstrasse 8, 80995 Munich
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -12,7 +12,7 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 53.5
+distanceKm: 45.6
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
 status: published
@@ -28,19 +28,19 @@ recurring:
 
 Join us on Thursday for an ACC North Afterwork Ride.
 
-This is a **relaxed northwest-facing afterwork route** with a few slightly elevated sections that open up views over Munich. The pace is friendly and suited to a relaxed weekday ride.
+This is a **relaxed afterwork road route** through Munich North, including stretches around Feldmoching, Dachauer Moos, the Amper meadows, and the Wurm Canal. The pace is friendly and suited to a relaxed weekday ride.
 
-We roll out at **17:50 on Thursday** from **SAP Garden**. The route is about **53.5 km** with around **205 m** of elevation gain. Expected average speed is around **25 km/h**, with a total riding time of about **2 hours**.
+We roll out at **17:50 on Thursday** from **Pflaumstrasse 8, 80995 Munich**. The route is about **45.6 km** and Komoot estimates a riding time of about **1 h 51 min**. Expected average speed is around **24-25 km/h**.
 
 ***
 
 |  | Details |
 | --- | --- |
 | **Time** | Thursday · Rollout at 17:50 |
-| **Meeting point** | SAP Garden |
-| **Route** | Approx. 53.5 km · Approx. 205 m elevation gain |
-| **Pace** | Approx. 25 km/h average speed |
-| **Ride time** | About 2 hours |
+| **Meeting point** | Pflaumstrasse 8, 80995 Munich |
+| **Route** | Approx. 45.6 km · Estimated riding time 1 h 51 min |
+| **Pace** | Approx. 24-25 km/h average speed |
+| **Ride time** | About 1 h 51 min |
 | **Bike type** | Road bike or gravel bike recommended |
 | **Notes** | Please bring a helmet and basic supplies; make sure your bike is in good condition; please arrive on time; decide based on your own condition whether this pace and route suit you; the ride will be automatically cancelled in case of severe weather or if fewer than 2 participants register, excluding the ride leader |
 | **Capacity** | Limited to 15 riders |
@@ -49,7 +49,7 @@ We roll out at **17:50 on Thursday** from **SAP Garden**. The route is about **5
 
 ### Meeting point
 
-- Map: <https://maps.app.goo.gl/SQuDhLAtCLbhFJoeA?g_st=ic>
+- Map: <https://maps.google.com/?q=48.217931,11.530051>
 
 ### Route
 
@@ -66,7 +66,7 @@ If you want a steady ride with the ACC crew, this north route is a great fit.
 
 ### Logistics
 
-The route is expected to return to the starting point after about **2 hours**, making it a good weekday evening ride after work.
+The route is expected to return to the starting point after about **1 h 50 min to 2 hours**, making it a good weekday evening ride after work.
 
 ***
 
