@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: 周四 17:50 从 Feldmoching 的 Pflaumstrasse 8 出发，北线 afterwork 公路轻松骑，全程约 45.6 km，预计骑行约 1 小时 51 分。
+description: 周四 17:50 从谷歌地图集合点出发，北线 afterwork 公路轻松骑，全程约 45.6 km，预计骑行约 1 小时 51 分。
 date: 2026-06-04 17:50
 eventType: after-work
-location: Pflaumstrasse 8, 80995 Munich
+location: https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -30,14 +30,14 @@ recurring:
 
 这是一条**慕尼黑北部的轻松 afterwork 公路路线**，会经过 Feldmoching、Dachauer Moos、Amperauen 和 Würmkanal 一带。整体节奏友好，适合工作日傍晚出来骑一圈、透口气，也和 ACC 大家一起轻松活动一下。
 
-我们将于**周四 17:50**从**Pflaumstrasse 8, 80995 Munich**出发。全程约 **45.6 km**，Komoot 预计骑行时间约 **1 小时 51 分**，预计均速 **24-25 km/h 左右**。
+我们将于**周四 17:50**从**<https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>**出发。全程约 **45.6 km**，Komoot 预计骑行时间约 **1 小时 51 分**，预计均速 **24-25 km/h 左右**。
 
 ***
 
 |  | 信息 |
 | --- | --- |
 | **时间** | 周四 17:50 出发 |
-| **集合地点** | [Pflaumstrasse 8, 80995 Munich](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
+| **集合地点** | <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic> |
 | **路线** | 全程约 45.6 km，预计骑行时间约 1 小时 51 分 |
 | **配速** | 预计均速 24-25 km/h 左右 |
 | **骑行时长** | 约 1 小时 51 分 |
