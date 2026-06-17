@@ -41,7 +41,8 @@ Start ist **am Donnerstag um 17:50 Uhr** am **SAP Garden**. Die Route ist etwa *
 | **Strecke** | Ca. 53,5 km · Ca. 205 hm |
 | **Tempo** | Ca. 25 km/h Durchschnitt |
 | **Fahrzeit** | Etwa 2 Stunden |
-| **Anmeldung** | Anmeldung über die ACC Event-Seite |
+| **Radtyp** | Rennrad oder Gravelbike empfohlen |
+| **Hinweise** | Bitte Helm und grundlegende Verpflegung mitbringen; bitte prüfe dein Rad vorab; bitte pünktlich sein; entscheide selbst, ob Tempo und Strecke zu dir passen; bei schlechtem Wetter oder wenn sich außer dem Ride Leader weniger als 2 Personen anmelden, wird die Ausfahrt automatisch abgesagt |
 | **Teilnehmerzahl** | Maximal 15 Personen |
 
 ***
@@ -52,7 +53,9 @@ Start ist **am Donnerstag um 17:50 Uhr** am **SAP Garden**. Die Route ist etwa *
 
 ### Route
 
-- Strava: <https://www.strava.com/routes/3496175694985019426>
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/de-DE/tour/3045768428?ref=itd&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip&ref=its&t_s=referral&t_cid=route_share&t_ref_username=1274182016185)
+
+<iframe src="https://www.komoot.com/tour/3045768428/embed?profile=1&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ### Zur Ausfahrt
 
@@ -61,9 +64,18 @@ Wenn du eine stabile gemeinsame Runde mit ACC fahren möchtest, passt diese Nord
 
 ***
 
+### Logistics
+
+Die Runde endet voraussichtlich nach etwa **2 Stunden wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
+
+***
+
 ### Anmeldung
 
-Bitte melde dich über die **ACC Event-Seite** an.
+Wenn du an dieser Ausfahrt teilnehmen möchtest, melde dich bitte unbedingt **über die auf der Event-Seite angegebene E-Mail-Adresse** an.  
+Nur so können wir Anwesenheit und Teilnahme korrekt dokumentieren; falls später ein Nachweis für Versicherung oder Teilnahme erforderlich ist, gelten **Anmeldedatensatz und Sign-in-Datensatz** als Grundlage.
+
+Der Beitritt zur Gruppe per QR-Code dient nur der Kommunikation rund um die Ausfahrt. Er **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
 
 ***
 

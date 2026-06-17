@@ -41,7 +41,8 @@ We roll out at **17:50 on Thursday** from **SAP Garden**. The route is about **5
 | **Route** | Approx. 53.5 km · Approx. 205 m elevation gain |
 | **Pace** | Approx. 25 km/h average speed |
 | **Ride time** | About 2 hours |
-| **Registration** | Register via the ACC event page |
+| **Bike type** | Road bike or gravel bike recommended |
+| **Notes** | Please bring a helmet and basic supplies; make sure your bike is in good condition; please arrive on time; decide based on your own condition whether this pace and route suit you; the ride will be automatically cancelled in case of severe weather or if fewer than 2 participants register, excluding the ride leader |
 | **Capacity** | Limited to 15 riders |
 
 ***
@@ -52,7 +53,9 @@ We roll out at **17:50 on Thursday** from **SAP Garden**. The route is about **5
 
 ### Route
 
-- Strava: <https://www.strava.com/routes/3496175694985019426>
+- **Komoot route:** [View route](https://www.komoot.com/de-DE/tour/3045768428?ref=itd&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip&ref=its&t_s=referral&t_cid=route_share&t_ref_username=1274182016185)
+
+<iframe src="https://www.komoot.com/tour/3045768428/embed?profile=1&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ### About the ride
 
@@ -61,9 +64,18 @@ If you want a steady ride with the ACC crew, this north route is a great fit.
 
 ***
 
+### Logistics
+
+The route is expected to return to the starting point after about **2 hours**, making it a good weekday evening ride after work.
+
+***
+
 ### Registration
 
-Please register via the **ACC event page**.
+If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
+This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
+
+Joining the group via QR code is only for ride communication. It **does not count as a successful registration** and cannot replace email registration.
 
 ***
 

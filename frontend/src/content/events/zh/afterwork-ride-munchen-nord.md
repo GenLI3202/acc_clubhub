@@ -41,7 +41,8 @@ recurring:
 | **路线** | 全程约 53.5 km，累计爬升约 205 m |
 | **配速** | 预计均速 25 km/h 左右 |
 | **骑行时长** | 约 2 小时 |
-| **报名方式** | 通过 ACC 网页报名 |
+| **适合车辆** | 建议使用 road bike 或 gravel bike |
+| **注意事项** | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线；如遇恶劣天气，或除领骑外报名人数不足 2 人，活动将自动取消 |
 | **人数上限** | 15 人 |
 
 ***
@@ -52,7 +53,9 @@ recurring:
 
 ### 路线
 
-- Strava：<https://www.strava.com/routes/3496175694985019426>
+- **Komoot 路线**：[查看路线](https://www.komoot.com/de-DE/tour/3045768428?ref=itd&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip&ref=its&t_s=referral&t_cid=route_share&t_ref_username=1274182016185)
+
+<iframe src="https://www.komoot.com/tour/3045768428/embed?profile=1&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ### 活动说明
 
@@ -61,9 +64,18 @@ recurring:
 
 ***
 
+### 返程 / Logistics
+
+本次路线预计在 **2 小时左右回到起点**，适合下班后直接参加，当晚正常返回。
+
+***
+
 ### 报名
 
-请通过 **ACC 网页**完成报名。
+如果你想参加本次活动，请务必通过**活动页提供的邮箱完成报名**。  
+这样我们才能做好签到和参与统计；如后续涉及保险或活动参与核对，也会以**报名记录和签到记录**作为依据。
+
+扫码进群仅用于活动沟通，**不等于报名成功**，也不能替代邮件报名。
 
 ***
 
