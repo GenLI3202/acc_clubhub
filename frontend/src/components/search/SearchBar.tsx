@@ -90,7 +90,7 @@ export function SearchBar({ lang, placeholder = 'Search...' }: SearchBarProps): 
         const { collection, slug, lang } = result.item;
 
         // Map collection names to URL paths
-        let basePath = collection;
+        let basePath: string = collection;
         if (collection === 'gear' || collection === 'training') {
             basePath = `knowledge/${collection}`;
         }

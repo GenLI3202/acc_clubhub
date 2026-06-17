@@ -4,6 +4,7 @@ import { defineMiddleware } from "astro:middleware";
 const runI18n = i18nMiddleware({
     prefixDefaultLocale: true,
     redirectToDefaultLocale: false,
+    fallbackType: "redirect",
 });
 
 export const onRequest = defineMiddleware((context, next) => {

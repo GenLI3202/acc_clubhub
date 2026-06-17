@@ -1,3 +1,5 @@
+export type LogoStyle = "brix" | "schuster" | "velothique" | "tegernsee";
+
 export interface SponsorMain {
     id: string;
     name: string;

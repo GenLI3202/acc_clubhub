@@ -21,8 +21,8 @@ try {
   } else {
     authError = `Auth check failed: ${meRes.status}`;
   }
-} catch (e) {
-  authError = `Auth check error: ${e.message}`;
+} catch (e: unknown) {
+  authError = `Auth check error: ${e instanceof Error ? e.message : String(e)}`;
 }
 
 if (adminUser) {
