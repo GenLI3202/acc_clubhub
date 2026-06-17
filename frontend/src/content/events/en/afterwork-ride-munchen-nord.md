@@ -37,7 +37,7 @@ We roll out at **17:50 on Thursday** from **Pflaumstrasse 8, 80995 Munich**. The
 |  | Details |
 | --- | --- |
 | **Time** | Thursday · Rollout at 17:50 |
-| **Meeting point** | Pflaumstrasse 8, 80995 Munich |
+| **Meeting point** | [Pflaumstrasse 8, 80995 Munich](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
 | **Route** | Approx. 45.6 km · Estimated riding time 1 h 51 min |
 | **Pace** | Approx. 24-25 km/h average speed |
 | **Ride time** | About 1 h 51 min |

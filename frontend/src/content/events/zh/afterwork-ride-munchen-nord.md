@@ -37,7 +37,7 @@ recurring:
 |  | 信息 |
 | --- | --- |
 | **时间** | 周四 17:50 出发 |
-| **集合地点** | Pflaumstrasse 8, 80995 Munich |
+| **集合地点** | [Pflaumstrasse 8, 80995 Munich](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
 | **路线** | 全程约 45.6 km，预计骑行时间约 1 小时 51 分 |
 | **配速** | 预计均速 24-25 km/h 左右 |
 | **骑行时长** | 约 1 小时 51 分 |

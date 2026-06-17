@@ -37,7 +37,7 @@ Start ist **am Donnerstag um 17:50 Uhr** an der **Pflaumstrasse 8, 80995 Münche
 |  | Infos |
 | --- | --- |
 | **Zeit** | Donnerstag · Start um 17:50 Uhr |
-| **Treffpunkt** | Pflaumstrasse 8, 80995 München |
+| **Treffpunkt** | [Pflaumstrasse 8, 80995 München](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
 | **Strecke** | Ca. 45,6 km · Geschätzte Fahrzeit 1 Std. 51 Min. |
 | **Tempo** | Ca. 24-25 km/h Durchschnitt |
 | **Fahrzeit** | Etwa 1 Std. 51 Min. |
