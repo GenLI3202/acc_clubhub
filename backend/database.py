@@ -35,13 +35,16 @@ def _get_database_url() -> Optional[str]:
 _db_url = _get_database_url()
 
 if _db_url:
-    _ssl_context = ssl.create_default_context()
+    connect_args = {}
+    if not _db_url.startswith("sqlite"):
+        connect_args["ssl_context"] = ssl.create_default_context()
+
     engine = create_engine(
         _db_url,
-        connect_args={"ssl_context": _ssl_context},
+        connect_args=connect_args,
         pool_pre_ping=True,
         pool_recycle=300,  # Recycle connections after 5 minutes
-        echo=settings.DEBUG  # Log SQL queries in debug mode
+        echo=settings.DEBUG,  # Log SQL queries in debug mode
     )
     # Create SessionLocal class for dependency injection
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
