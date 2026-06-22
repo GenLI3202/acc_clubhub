@@ -16,7 +16,8 @@
   - [X] Added fair random/load-balanced assignment for unclaimed season slots without overwriting existing owners
   - [X] Added admin preview/confirm auto-assignment and add-week auto-assignment with owner emails
   - [X] Added Chinese-first assignment notification copy with English follow-up text
-  - [X] Verified with `PYTHONPYCACHEPREFIX=/tmp/acc-clubhub-pycache python3 -m pytest tests/test_season_planner.py` (20 passed), Python compile checks, and `npm run build`
+  - [X] Updated stale e2e selectors to match the current editorial homepage/content UI and language switcher behavior
+  - [X] Verified on 2026-06-22 with `PYTHONPYCACHEPREFIX=/tmp/acc-clubhub-pycache python3 -m pytest` (132 passed), `npm run test:all`, and `npm run test:e2e` (84 passed, 2 skipped)
 
 - [X] **Sponsors Bar + Partners Page** (2026-05-27) — branch `phase-sponsors/partners-page-and-strip`
   - [X] Copied 4 sponsor assets to `frontend/public/images/sponsors/`

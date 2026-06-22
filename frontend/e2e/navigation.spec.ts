@@ -44,10 +44,13 @@ test.describe('Navigation', () => {
     });
     */
 
-    test('hub cards on homepage are clickable', async ({ page }) => {
+    test('pillar cta links on homepage are clickable', async ({ page }) => {
         await page.goto('/zh/');
 
-        await page.click('.hub-card:has-text("车影骑踪")');
+        await page
+            .locator('.pillar-section', { hasText: '车影骑踪' })
+            .getByRole('link', { name: /查看全部|View All|Alle anzeigen/ })
+            .click();
         await expect(page).toHaveURL('/zh/media');
     });
 });
