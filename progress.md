@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **Starnberg Andechs Raisting Ride Repost** (2026-06-24)
+  - [X] Reposted the existing Starnberg / Andechs / Raisting social ride as a new zh/en/de event for 2026-06-27 10:30.
+  - [X] Kept the original 2026-05-31 event slug intact so dashboard registrations remain tied to the historical event record.
+  - [X] Verified with `npm run build` and local 200 checks for both old and new zh event URLs.
+
 - [X] **Season Planner Fair Random Assignment** (2026-06-04) — branch `issue-149-fair-random-assignment`, Issue [#149](https://github.com/GenLI3202/acc_clubhub/issues/149)
   - [X] Added the 10 active ride leaders dataset for planner ownership assignment
   - [X] Added fair random/load-balanced assignment for unclaimed season slots without overwriting existing owners
