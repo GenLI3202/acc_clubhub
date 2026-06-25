@@ -21,27 +21,31 @@ test.describe('Responsive Design', () => {
         await expect(navList).toBeVisible();
     });
 
-    test('hub cards are visible on mobile', async ({ page }) => {
+    test('pillar sections are visible on mobile', async ({ page }) => {
         await page.goto('/zh/');
-        const cards = page.locator('.hub-card');
-        await expect(cards.first()).toBeVisible();
-        await expect(cards).toHaveCount(5);
+        const sections = page.locator('.pillar-section');
+        await expect(sections.first()).toBeVisible();
+        await expect(sections).toHaveCount(5);
     });
 
     test('content cards are visible on mobile', async ({ page }) => {
         await page.goto('/zh/media');
-        await expect(page.locator('.content-card').first()).toBeVisible();
+        await expect(
+            page.getByRole('link', { name: /RAD RACE ONE TWENTY/ }).first(),
+        ).toBeVisible();
     });
 
     test('article content is readable on mobile', async ({ page }) => {
         await page.goto('/zh/media/alps-summer-2025');
-        await expect(page.locator('h1')).toBeVisible();
+        await expect(
+            page.getByRole('heading', { name: /阿尔卑斯夏日骑行记/ }),
+        ).toBeVisible();
         await expect(page.locator('.article-content')).toBeVisible();
     });
 
     test('language switcher is accessible on mobile', async ({ page }) => {
         await page.goto('/zh/');
-        await expect(page.locator('.lang-switcher')).toBeVisible();
+        await expect(page.locator('.lang-toggle')).toBeVisible();
     });
 });
 
@@ -109,9 +113,8 @@ test.describe('Desktop Layout', () => {
         await expect(page.locator('nav a:has-text("车影骑踪")')).toBeVisible();
     });
 
-    test('hub cards display in grid on desktop', async ({ page }) => {
+    test('pillar sections display on desktop', async ({ page }) => {
         await page.goto('/zh/');
-        const grid = page.locator('.hub-grid');
-        await expect(grid).toBeVisible();
+        await expect(page.locator('.pillar-section').first()).toBeVisible();
     });
 });

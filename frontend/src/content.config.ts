@@ -257,6 +257,8 @@ const eventsCollection = defineCollection({
     wechatQrCode: z.string().optional(),
     distanceKm: z.number().optional(),
     routeDistanceKm: z.number().optional(),
+    routeKomootUrl: z.string().optional(),
+    routeStravaUrl: z.string().optional(),
     // displaySections is the canonical frontmatter field for which sections of the events page this event appears in.
     // 'hero'     → featured carousel at the top (max 2-3 events)
     // 'upcoming' → upcoming events card grid

@@ -121,10 +121,15 @@ def generate_slots(
         ))
 
     created = skipped = 0
+    created_slots: list[PlanSlot] = []
     for s in desired:
         existing: Optional[PlanSlot] = (
             session.query(PlanSlot)
-            .filter_by(season=season, planned_date=s.planned_date, event_type=s.event_type)
+            .filter_by(
+                season=season,
+                planned_date=s.planned_date,
+                event_type=s.event_type,
+            )
             .one_or_none()
         )
         if existing is not None:
@@ -140,7 +145,9 @@ def generate_slots(
             existing.weekday = s.planned_date.weekday()
             continue
         if not dry_run:
-            session.add(PlanSlot(**s.as_dict()))
+            slot = PlanSlot(**s.as_dict())
+            session.add(slot)
+            created_slots.append(slot)
         created += 1
 
     if not dry_run:
@@ -150,4 +157,5 @@ def generate_slots(
         "created": created,
         "skipped": skipped,
         "would_create": created if dry_run else None,
+        "created_slot_ids": [slot.id for slot in created_slots],
     }

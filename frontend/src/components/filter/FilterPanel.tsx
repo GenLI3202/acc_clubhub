@@ -63,6 +63,17 @@ export function FilterPanel({
         setPortalTarget(target as HTMLElement);
     }, []);
 
+    function getSelectedValues(
+        value: FilterState[string],
+    ): string[] {
+        if (Array.isArray(value)) {
+            return value.filter(
+                (item): item is string => typeof item === 'string',
+            );
+        }
+        return typeof value === 'string' ? [value] : [];
+    }
+
     const content = (
         <div className={`filter-panel-wrapper ${className}`} ref={panelRef}>
             {/* Toggle Button */}
@@ -126,10 +137,7 @@ export function FilterPanel({
                                     <FilterCheckboxGroup
                                         field={def.key}
                                         options={options}
-                                        selectedValues={
-                                            Array.isArray(value) ? value :
-                                            value !== undefined ? [value as string] : []
-                                        }
+                                        selectedValues={getSelectedValues(value)}
                                         onChange={(field, newValues) => {
                                             if (def.type === 'select') {
                                                 // For 'select', treat it as a single value or toggle

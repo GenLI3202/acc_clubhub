@@ -501,6 +501,62 @@ def send_slot_claim_confirmation(
         return {"status": "error", "message": str(e)}
 
 
+def send_slot_assignment_notification(
+    owner_email: str,
+    owner_name: str,
+    event_type_label: str,
+    planned_date: str,
+    slot_id: int,
+) -> dict:
+    """Notify a ride leader that they were assigned a planning slot."""
+    if not settings.RESEND_API_KEY:
+        logger.debug(
+            "Skipping slot assignment email (no RESEND_API_KEY): %s",
+            owner_email,
+        )
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    subject = (
+        f"你已被分配为活动策划负责人: {event_type_label} on {planned_date}"
+    )
+    html_body = f"""<div style="font-family:Arial,sans-serif;max-width:600px;">
+<h2 style="color:#C62828;">🚴 活动策划 Owner 分配通知</h2>
+<p>{owner_name}，你好：</p>
+<p>你已被分配为这个活动策划坑位的负责人。
+请提前准备路线、活动 idea 或必要说明。</p>
+<p>You have been assigned as the owner for this season planning slot.
+Please prepare the route, ride idea, or necessary notes in advance.</p>
+<ul>
+  <li><strong>活动类型 / Event type:</strong> {event_type_label}</li>
+  <li><strong>计划日期 / Planned date:</strong> {planned_date}</li>
+  <li><strong>Slot ID:</strong> {slot_id}</li>
+</ul>
+<p>如果这个时间不合适，请自行协调换班，
+并在 dashboard 中更新 owner 或 backup 说明。</p>
+<p>If this date does not work for you, please coordinate a replacement
+and update the owner or backup notes in the dashboard.</p>
+<p>—— ACC ClubHub Admin</p>
+{_CONTACT["zh"]}
+</div>"""
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
+        "to": [owner_email],
+        "subject": subject,
+        "html": html_body,
+    }
+    try:
+        return resend.Emails.send(params)
+    except Exception as e:
+        logger.error(
+            "Failed to send slot assignment email to %s: %s",
+            owner_email,
+            e,
+            exc_info=True,
+        )
+        return {"status": "error", "message": str(e)}
+
+
 def send_slot_reminder(
     owner_email: str,
     owner_name: str,

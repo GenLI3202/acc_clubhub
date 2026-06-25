@@ -2,7 +2,12 @@
 // dashboard/season-planner/index.astro — Season Planning weekly board (SSR)
 export const prerender = false;
 
-import type { GroupedSlotsResponse, WeekGroup, PlanSlot, EventType } from "../../../lib/admin/seasonPlanner";
+import type {
+  GroupedSlotsResponse,
+  WeekGroup,
+  PlanSlot,
+  EventType,
+} from "../../../lib/admin/seasonPlanner";
 import { EVENT_TYPE_LABEL } from "../../../lib/admin/seasonPlanner";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -217,6 +222,13 @@ function plannerUrl(params: Record<string, string | null>): string {
         border-bottom: 1px solid #d0d7de;
       }
       h1 { font-size: 1.5rem; margin: 0; color: #24292f; }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
 
       .btn-ghost {
         padding: 0.35rem 0.8rem;
@@ -609,6 +621,25 @@ function plannerUrl(params: Record<string, string | null>): string {
         display: none;
       }
       .gen-preview-box.visible { display: block; }
+      .assignment-list {
+        max-height: 260px;
+        overflow: auto;
+        margin-top: 0.75rem;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: white;
+      }
+      .assignment-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4rem;
+        padding: 0.55rem 0.7rem;
+        border-bottom: 1px solid #d0d7de;
+        font-size: 0.8rem;
+      }
+      .assignment-row:last-child { border-bottom: none; }
+      .assignment-slot { color: #57606a; }
+      .assignment-owner { color: #24292f; font-weight: 600; }
       .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
       .checkbox-row label { margin: 0; font-weight: 400; font-size: 0.875rem; }
     </style>
@@ -621,7 +652,10 @@ function plannerUrl(params: Record<string, string | null>): string {
 
       <div class="header">
         <h1>Season Planning</h1>
-        <button class="btn-ghost" id="open-generate-modal">Bulk Generate…</button>
+        <div class="header-actions">
+          <button class="btn-ghost" id="open-auto-assign-modal">Auto Assign Unclaimed</button>
+          <button class="btn-ghost" id="open-generate-modal">Bulk Generate…</button>
+        </div>
       </div>
 
       <!-- Legend -->
@@ -824,6 +858,26 @@ function plannerUrl(params: Record<string, string | null>): string {
       </div>
     </dialog>
 
+    <!-- Auto-assign dialog -->
+    <dialog id="auto-assign-dialog">
+      <div class="dialog-header">
+        <span>Auto Assign Unclaimed</span>
+        <button class="btn-secondary" id="assign-close" style="border:none;font-size:1.1rem;padding:0 0.3rem;">✕</button>
+      </div>
+      <div class="dialog-body">
+        <div class="form-group">
+          <label for="assign-season">Season</label>
+          <input type="text" id="assign-season" value={season} />
+        </div>
+        <div class="gen-preview-box" id="assign-preview"></div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn-secondary" id="assign-cancel">Cancel</button>
+        <button class="action-btn" id="assign-dry-run">Preview</button>
+        <button class="action-btn" id="assign-confirm" style="display:none;">Confirm &amp; Email</button>
+      </div>
+    </dialog>
+
     <!-- Bulk-generate dialog (secondary) -->
     <dialog id="generate-dialog">
       <div class="dialog-header">
@@ -858,7 +912,7 @@ function plannerUrl(params: Record<string, string | null>): string {
       </div>
     </dialog>
 
-    <script define:vars={{ currentSeason: season, slotSnapshots }}>
+    <script define:vars={{ currentSeason: season, slotSnapshots, eventTypeLabels: EVENT_TYPE_LABEL }}>
       // ── Create slot dialog ──────────────────────────────────
       const createDialog = document.getElementById("create-slot-dialog");
       const csDateInput  = document.getElementById("cs-date");
@@ -934,6 +988,7 @@ function plannerUrl(params: Record<string, string | null>): string {
               end_date:   nextSunday,
               dry_run: false,
               overwrite_unclaimed: false,
+              auto_assign_created: true,
             }),
           });
           if (!res.ok) throw new Error(`Error ${res.status}`);
@@ -942,6 +997,88 @@ function plannerUrl(params: Record<string, string | null>): string {
           btn.disabled    = false;
           btn.textContent = "+";
           alert("Error: " + (e instanceof Error ? e.message : String(e)));
+        }
+      });
+
+      // ── Auto-assign dialog ─────────────────────────────────
+      const assignDialog = document.getElementById("auto-assign-dialog");
+      const assignPreview = document.getElementById("assign-preview");
+      const assignDryRun = document.getElementById("assign-dry-run");
+      const assignConfirm = document.getElementById("assign-confirm");
+
+      function renderAssignmentPreview(data) {
+        const rows = data.assignments
+          .map((item) => {
+            const label = eventTypeLabels[item.event_type] || item.event_type;
+            return `<div class="assignment-row">
+              <span class="assignment-slot">${item.planned_date} · ${label}</span>
+              <span class="assignment-owner">${item.claimed_by}</span>
+            </div>`;
+          })
+          .join("");
+        if (!rows) {
+          return "No unclaimed slots need assignment.";
+        }
+        return `Will assign ${data.assigned} slot(s):<div class="assignment-list">${rows}</div>`;
+      }
+
+      function openAssignDialog() {
+        assignPreview.classList.remove("visible");
+        assignPreview.textContent = "";
+        assignConfirm.style.display = "none";
+        assignDryRun.style.display = "";
+        assignDialog.showModal();
+      }
+      function closeAssignDialog() { assignDialog.close(); }
+
+      document.getElementById("open-auto-assign-modal")?.addEventListener("click", openAssignDialog);
+      document.getElementById("assign-close")?.addEventListener("click", closeAssignDialog);
+      document.getElementById("assign-cancel")?.addEventListener("click", closeAssignDialog);
+      assignDialog.addEventListener("click", (e) => { if (e.target === assignDialog) closeAssignDialog(); });
+
+      async function callAutoAssign(dryRun) {
+        const season = document.getElementById("assign-season").value.trim();
+        const res = await fetch("/api/admin/season/auto-assign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ season, dry_run: dryRun }),
+        });
+        if (!res.ok) throw new Error(`API error (${res.status}): ${await res.text()}`);
+        return res.json();
+      }
+
+      assignDryRun?.addEventListener("click", async () => {
+        assignDryRun.disabled = true;
+        assignDryRun.textContent = "Calculating…";
+        assignPreview.classList.remove("visible");
+        try {
+          const data = await callAutoAssign(true);
+          assignPreview.innerHTML = renderAssignmentPreview(data);
+          assignPreview.classList.add("visible");
+          if (data.assigned > 0) assignConfirm.style.display = "";
+        } catch (e) {
+          assignPreview.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
+          assignPreview.classList.add("visible");
+        } finally {
+          assignDryRun.disabled = false;
+          assignDryRun.textContent = "Preview";
+        }
+      });
+
+      assignConfirm?.addEventListener("click", async () => {
+        assignConfirm.disabled = true;
+        assignConfirm.textContent = "Assigning…";
+        try {
+          const data = await callAutoAssign(false);
+          assignPreview.textContent =
+            `Done: assigned ${data.assigned} slot(s), sent ${data.emails_sent} email(s).`;
+          assignPreview.classList.add("visible");
+          setTimeout(() => { closeAssignDialog(); window.location.reload(); }, 1200);
+        } catch (e) {
+          assignPreview.textContent = `Error: ${e instanceof Error ? e.message : String(e)}`;
+          assignPreview.classList.add("visible");
+          assignConfirm.disabled = false;
+          assignConfirm.textContent = "Confirm & Email";
         }
       });
 

@@ -88,3 +88,23 @@ export interface WeekGroup {
 export interface GroupedSlotsResponse {
   weeks: WeekGroup[];
 }
+
+export interface PlannerLeader {
+  name: string;
+  email: string;
+  active: boolean;
+}
+
+export interface PlannedAssignment {
+  slot_id: number;
+  planned_date: string;
+  event_type: EventType;
+  claimed_by: string;
+  claimed_email: string;
+}
+
+export interface AutoAssignResponse {
+  assigned: number;
+  emails_sent: number;
+  assignments: PlannedAssignment[];
+}

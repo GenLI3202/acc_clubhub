@@ -11,6 +11,19 @@
 
 ## Recent Updates
 
+- [X] **Starnberg Andechs Raisting Ride Repost** (2026-06-24)
+  - [X] Reposted the existing Starnberg / Andechs / Raisting social ride as a new zh/en/de event for 2026-06-27 10:30.
+  - [X] Kept the original 2026-05-31 event slug intact so dashboard registrations remain tied to the historical event record.
+  - [X] Verified with `npm run build` and local 200 checks for both old and new zh event URLs.
+
+- [X] **Season Planner Fair Random Assignment** (2026-06-04) — branch `issue-149-fair-random-assignment`, Issue [#149](https://github.com/GenLI3202/acc_clubhub/issues/149)
+  - [X] Added the 10 active ride leaders dataset for planner ownership assignment
+  - [X] Added fair random/load-balanced assignment for unclaimed season slots without overwriting existing owners
+  - [X] Added admin preview/confirm auto-assignment and add-week auto-assignment with owner emails
+  - [X] Added Chinese-first assignment notification copy with English follow-up text
+  - [X] Updated stale e2e selectors to match the current editorial homepage/content UI and language switcher behavior
+  - [X] Verified on 2026-06-22 with `PYTHONPYCACHEPREFIX=/tmp/acc-clubhub-pycache python3 -m pytest` (132 passed), `npm run test:all`, and `npm run test:e2e` (84 passed, 2 skipped)
+
 - [X] **Sponsors Bar + Partners Page** (2026-05-27) — branch `phase-sponsors/partners-page-and-strip`
   - [X] Copied 4 sponsor assets to `frontend/public/images/sponsors/`
   - [X] `frontend/src/data/sponsors.ts` — typed `SponsorMain` + `SponsorPartner` records

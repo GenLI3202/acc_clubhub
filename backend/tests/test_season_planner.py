@@ -140,7 +140,13 @@ def test_generate_short_alias_for_frontend_rewrite(client, db):
     )
 
     assert res.status_code == 200
-    assert res.json() == {"created": 3, "skipped": 0, "would_create": 3}
+    assert res.json() == {
+        "created": 3,
+        "skipped": 0,
+        "would_create": 3,
+        "assigned": 0,
+        "emails_sent": 0,
+    }
 
 
 def test_patch_marks_auto_generated_false(client, db):
@@ -246,6 +252,103 @@ def test_claim_rejects_slot_that_already_has_owner(client, db):
 
     assert res.status_code == 409
     assert "already has an owner" in res.json()["detail"]
+
+
+def test_auto_assign_dry_run_does_not_write_existing_slots(client, db):
+    """Auto-assign preview proposes owners without changing unclaimed slots."""
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+    owned = db.query(PlanSlot).filter_by(event_type="afterwork", weekday=1).one()
+    owned.claimed_by = "Existing Owner"
+    owned.claimed_email = "existing@example.com"
+    owned.status = "claimed"
+    db.commit()
+
+    res = client.post(
+        "/api/admin/season/slots/auto-assign",
+        json={"season": "2026", "dry_run": True},
+    )
+
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["assigned"] == 2
+    assert body["emails_sent"] == 0
+
+    db.expire_all()
+    unowned = (
+        db.query(PlanSlot)
+        .filter(PlanSlot.id != owned.id)
+        .order_by(PlanSlot.planned_date)
+        .all()
+    )
+    assert all(slot.claimed_by is None for slot in unowned)
+
+
+def test_auto_assign_claims_unowned_slots_without_repeating_week_owner(
+    client,
+    db,
+    monkeypatch,
+):
+    """Confirming auto-assign writes owners and avoids repeats in a 3-slot week."""
+    import routes.season_planner as season_routes
+
+    monkeypatch.setattr(
+        season_routes,
+        "send_slot_assignment_notification",
+        lambda **_kwargs: None,
+    )
+    generate_slots(db, "2026", WEEK_START, WEEK_END, dry_run=False)
+
+    res = client.post(
+        "/api/admin/season/slots/auto-assign",
+        json={"season": "2026", "dry_run": False},
+    )
+
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["assigned"] == 3
+    assert body["emails_sent"] == 3
+    owners = [item["claimed_by"] for item in body["assignments"]]
+    assert len(set(owners)) == 3
+
+    db.expire_all()
+    slots = db.query(PlanSlot).order_by(PlanSlot.planned_date).all()
+    assert all(slot.claimed_by for slot in slots)
+    assert all(slot.claimed_email for slot in slots)
+    assert all(slot.status == "claimed" for slot in slots)
+
+
+def test_generate_can_auto_assign_created_week(client, db, monkeypatch):
+    """Generate-week trigger can immediately assign the three new slots."""
+    import routes.season_planner as season_routes
+
+    monkeypatch.setattr(
+        season_routes,
+        "send_slot_assignment_notification",
+        lambda **_kwargs: None,
+    )
+
+    res = client.post(
+        "/api/admin/season/generate",
+        json={
+            "season": "2026",
+            "start_date": WEEK_START.isoformat(),
+            "end_date": WEEK_END.isoformat(),
+            "dry_run": False,
+            "overwrite_unclaimed": False,
+            "auto_assign_created": True,
+        },
+    )
+
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["created"] == 3
+    assert body["assigned"] == 3
+    assert body["emails_sent"] == 3
+
+    db.expire_all()
+    slots = db.query(PlanSlot).order_by(PlanSlot.planned_date).all()
+    assert len(slots) == 3
+    assert len({slot.claimed_by for slot in slots}) == 3
 
 
 # ── Phase C: Convert ──────────────────────────────────────────
