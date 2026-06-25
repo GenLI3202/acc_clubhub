@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **North Afterwork Ride Location Display Fix** (2026-06-25)
+  - [X] Replaced the raw Google Maps URL in zh/en/de event location metadata with readable meeting-point labels.
+  - [X] Converted visible markdown URL text to labeled Google Maps links while preserving the destination.
+  - [X] Verified with `npm run build` and local rendered zh event/detail page checks.
+
 - [X] **Starnberg Andechs Raisting Ride Repost** (2026-06-24)
   - [X] Reposted the existing Starnberg / Andechs / Raisting social ride as a new zh/en/de event for 2026-06-27 10:30.
   - [X] Kept the original 2026-05-31 event slug intact so dashboard registrations remain tied to the historical event record.

@@ -4,7 +4,7 @@ title: ACC North Afterwork Ride
 description: Thursday afterwork ride starting from the Google Maps meeting point at 17:50, following a relaxed 45.6 km road route through Munich North in about 1h 51m.
 date: 2026-06-04 17:50
 eventType: after-work
-location: https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic
+location: Google Maps meeting point
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -30,14 +30,14 @@ Join us on Thursday for an ACC North Afterwork Ride.
 
 This is a **relaxed afterwork road route** through Munich North, including stretches around Feldmoching, Dachauer Moos, the Amper meadows, and the Wurm Canal. The pace is friendly and suited to a relaxed weekday ride.
 
-We roll out at **17:50 on Thursday** from **<https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>**. The route is about **45.6 km** and Komoot estimates a riding time of about **1 h 51 min**. Expected average speed is around **24-25 km/h**.
+We roll out at **17:50 on Thursday** from the **[Google Maps meeting point](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic)**. The route is about **45.6 km** and Komoot estimates a riding time of about **1 h 51 min**. Expected average speed is around **24-25 km/h**.
 
 ***
 
 |  | Details |
 | --- | --- |
 | **Time** | Thursday · Rollout at 17:50 |
-| **Meeting point** | <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic> |
+| **Meeting point** | [Google Maps meeting point](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
 | **Route** | Approx. 45.6 km · Estimated riding time 1 h 51 min |
 | **Pace** | Approx. 24-25 km/h average speed |
 | **Ride time** | About 1 h 51 min |
@@ -49,7 +49,7 @@ We roll out at **17:50 on Thursday** from **<https://maps.app.goo.gl/w2AKznqW97o
 
 ### Meeting point
 
-- Map: <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>
+- Map: [Google Maps meeting point](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic)
 
 ### Route
 

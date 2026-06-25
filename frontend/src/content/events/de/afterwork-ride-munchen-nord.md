@@ -4,7 +4,7 @@ title: ACC North Afterwork Ride
 description: After-Work-Runde am Donnerstag ab 17:50 Uhr ab dem Google-Maps-Treffpunkt, entspannte 45,6-km-Rennradroute durch den Münchner Norden mit rund 1 Std. 51 Min. Fahrzeit.
 date: 2026-06-04 17:50
 eventType: after-work
-location: https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic
+location: Google Maps Treffpunkt
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -30,14 +30,14 @@ Komm am Donnerstag mit auf eine entspannte North Afterwork Ride von ACC.
 
 Das ist eine **lockere After-Work-Rennradrunde** durch den Münchner Norden, unter anderem rund um Feldmoching, Dachauer Moos, Amperauen und den Würmkanal. Die Strecke ist gut geeignet für eine entspannte gemeinsame Ausfahrt.
 
-Start ist **am Donnerstag um 17:50 Uhr** bei **<https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>**. Die Route ist etwa **45,6 km** lang, und Komoot schätzt die Fahrzeit auf etwa **1 Std. 51 Min.**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **24-25 km/h**.
+Start ist **am Donnerstag um 17:50 Uhr** beim **[Google Maps Treffpunkt](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic)**. Die Route ist etwa **45,6 km** lang, und Komoot schätzt die Fahrzeit auf etwa **1 Std. 51 Min.**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **24-25 km/h**.
 
 ***
 
 |  | Infos |
 | --- | --- |
 | **Zeit** | Donnerstag · Start um 17:50 Uhr |
-| **Treffpunkt** | <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic> |
+| **Treffpunkt** | [Google Maps Treffpunkt](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
 | **Strecke** | Ca. 45,6 km · Geschätzte Fahrzeit 1 Std. 51 Min. |
 | **Tempo** | Ca. 24-25 km/h Durchschnitt |
 | **Fahrzeit** | Etwa 1 Std. 51 Min. |
@@ -49,7 +49,7 @@ Start ist **am Donnerstag um 17:50 Uhr** bei **<https://maps.app.goo.gl/w2AKznqW
 
 ### Treffpunkt
 
-- Karte: <https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic>
+- Karte: [Google Maps Treffpunkt](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic)
 
 ### Route
 
