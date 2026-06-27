@@ -124,20 +124,20 @@ graph TB
    ```
    From Vercel Neon: 
    # Recommended for most uses
-   DATABASE_URL=postgresql://neondb_owner:npg_YBajKm8ObSA9@ep-dark-dust-aghw9fc1-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+   DATABASE_URL=postgresql://<user>:<password>@<pooled-host>/<database>?sslmode=require
 
    # For uses requiring a connection without pgbouncer
-   DATABASE_URL_UNPOOLED=postgresql://neondb_owner:npg_YBajKm8ObSA9@ep-dark-dust-aghw9fc1.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+   DATABASE_URL_UNPOOLED=postgresql://<user>:<password>@<unpooled-host>/<database>?sslmode=require
 
    # Parameters for constructing your own connection string
-   PGHOST=ep-dark-dust-aghw9fc1-pooler.c-2.eu-central-1.aws.neon.tech
-   PGHOST_UNPOOLED=ep-dark-dust-aghw9fc1.c-2.eu-central-1.aws.neon.tech
-   PGUSER=neondb_owner
-   PGDATABASE=neondb
-   PGPASSWORD=npg_YBajKm8ObSA9
+   PGHOST=<pooled-host>
+   PGHOST_UNPOOLED=<unpooled-host>
+   PGUSER=<user>
+   PGDATABASE=<database>
+   PGPASSWORD=<password>
 
    # Parameters for Vercel Postgres Templates
-   POSTGRES_URL=postgresql://neondb_owner:npg_YBajKm8ObSA9@ep-dark-dust-aghw9fc1-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+   POSTGRES_URL=postgresql://<user>:<password>@<pooled-host>/<database>?sslmode=require
    - `POSTGRES_URL` 等系列变量（通过 Connect Store 自动获取）
 
 ### Step 1: 部署 Waline 服务端

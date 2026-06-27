@@ -308,6 +308,11 @@
   - [X] Dashboard past/all views now include DB-only historical recurring occurrences with RSVP stats.
   - [X] Sync keeps generated after-work history as admin-only records instead of treating it as current Markdown content.
   - [X] Added a dry-run recovery report for the 2026-04-28 Süd and 2026-04-30 Nord RSVP history.
+- [X] **Security Sweep — Footer, Admin Event Creation, Secret Hygiene** (2026-06-27)
+  - [X] Removed the public GitHub footer link from the website footer.
+  - [X] Protected `POST /api/events` with the existing admin session dependency and added regression coverage.
+  - [X] Replaced a committed Neon connection string example in Waline deployment notes with placeholders.
+  - [X] Verified backend tests, frontend type check, frontend build, npm audit, and pip-audit results.
 
 
 ## In Progress
@@ -346,6 +351,9 @@
 - [ ] E2E tests not yet written for registration flow — med
 - [ ] Dark mode (`prefers-color-scheme: dark`) not implemented — low (Issue [#55](https://github.com/GenLI3202/acc_clubhub/issues/55))
 - [ ] Cancelled users cannot re-register via frontend OR be restored by admins, violating DB constraints and sync logic — high
+- [ ] Frontend npm audit reports production advisories in Astro / @astrojs/vercel and transitive dependencies — high; likely needs a planned Astro major-version upgrade
+- [ ] Public RSVP/subscription/login endpoints lack rate limiting or CAPTCHA — high
+- [ ] `POST /api/rsvp` accepts event metadata from public clients and can create/update event rows — high; preserve workflow only with server-side event allowlisting or admin sync
 
 ## Architecture Decisions
 

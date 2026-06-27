@@ -10,6 +10,7 @@ from database import get_db
 from models import Event
 from pydantic import BaseModel
 from datetime import datetime, timezone
+from routes.auth import get_current_admin
 from services.event_counts import (
     get_available_spots,
     sync_event_current_participants,
@@ -174,12 +175,11 @@ class EventCreate(BaseModel):
 @router.post("/api/events", response_model=EventResponse)
 def create_event(
     event_data: EventCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
 ):
     """
     创建新活动 (管理员功能)
-
-    Note: In production, this should be protected with admin authentication
     """
     # Check if slug already exists
     existing = db.query(Event).filter(Event.slug == event_data.slug).first()
