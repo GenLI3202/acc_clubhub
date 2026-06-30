@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: After-Work-Runde am Donnerstag ab 17:50 Uhr ab dem Google-Maps-Treffpunkt, entspannte 45,6-km-Rennradroute durch den Münchner Norden mit rund 1 Std. 51 Min. Fahrzeit.
-date: 2026-06-04 17:50
+description: After-Work-Runde am Donnerstag ab 18:00 Uhr ab OEZ, entspannte 47,4-km-Rennradroute durch den Münchner Norden mit ca. 110 m Anstieg und rund 1 Std. 49 Min. Fahrzeit.
+date: 2026-06-04 18:00
 eventType: after-work
-location: Google Maps Treffpunkt
+location: OEZ Decathlon, Pelkovenstrasse 143, 80992 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
@@ -12,7 +12,8 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 45.6
+distanceKm: 47.4
+routeKomootUrl: https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
 status: published
@@ -28,19 +29,19 @@ recurring:
 
 Komm am Donnerstag mit auf eine entspannte North Afterwork Ride von ACC.
 
-Das ist eine **lockere After-Work-Rennradrunde** durch den Münchner Norden, unter anderem rund um Feldmoching, Dachauer Moos, Amperauen und den Würmkanal. Die Strecke ist gut geeignet für eine entspannte gemeinsame Ausfahrt.
+Das ist eine **lockere After-Work-Rennradrunde ab OEZ** durch den Münchner Norden. Die Strecke hat nur moderate Höhenmeter und eignet sich gut für eine stabile gemeinsame Ausfahrt unter der Woche.
 
-Start ist **am Donnerstag um 17:50 Uhr** beim **[Google Maps Treffpunkt](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic)**. Die Route ist etwa **45,6 km** lang, und Komoot schätzt die Fahrzeit auf etwa **1 Std. 51 Min.**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **24-25 km/h**.
+Treffpunkt und Start ist **am Donnerstag um 18:00 Uhr** bei **OEZ Decathlon, Pelkovenstrasse 143, 80992 München**. Die Route ist etwa **47,4 km** lang, hat ca. **110 m** Anstieg, und Komoot schätzt die Fahrzeit auf etwa **1 Std. 49 Min.**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **26 km/h**.
 
 ***
 
 |  | Infos |
 | --- | --- |
-| **Zeit** | Donnerstag · Start um 17:50 Uhr |
-| **Treffpunkt** | [Google Maps Treffpunkt](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic) |
-| **Strecke** | Ca. 45,6 km · Geschätzte Fahrzeit 1 Std. 51 Min. |
-| **Tempo** | Ca. 24-25 km/h Durchschnitt |
-| **Fahrzeit** | Etwa 1 Std. 51 Min. |
+| **Zeit** | Donnerstag · Treffpunkt und Start um 18:00 Uhr |
+| **Treffpunkt** | OEZ Decathlon, Pelkovenstrasse 143, 80992 München |
+| **Strecke** | Ca. 47,4 km · ca. 110 m Anstieg · geschätzte Fahrzeit 1 Std. 49 Min. |
+| **Tempo** | Komoot-Schätzung: ca. 26 km/h Durchschnitt |
+| **Fahrzeit** | Etwa 1 Std. 49 Min. |
 | **Radtyp** | Rennrad oder Gravelbike empfohlen |
 | **Hinweise** | Bitte Helm und grundlegende Verpflegung mitbringen; bitte prüfe dein Rad vorab; bitte pünktlich sein; entscheide selbst, ob Tempo und Strecke zu dir passen; bei schlechtem Wetter oder wenn sich außer dem Ride Leader weniger als 2 Personen anmelden, wird die Ausfahrt automatisch abgesagt |
 | **Teilnehmerzahl** | Maximal 15 Personen |
@@ -49,24 +50,24 @@ Start ist **am Donnerstag um 17:50 Uhr** beim **[Google Maps Treffpunkt](https:/
 
 ### Treffpunkt
 
-- Karte: [Google Maps Treffpunkt](https://maps.app.goo.gl/w2AKznqW97ogdDCt6?g_st=ic)
+- OEZ Decathlon, Pelkovenstrasse 143, 80992 München
 
 ### Route
 
-- **Komoot-Route:** [Route ansehen](https://www.komoot.com/de-DE/tour/3045768428?ref=itd&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip&ref=its&t_s=referral&t_cid=route_share&t_ref_username=1274182016185)
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
 
-<iframe src="https://www.komoot.com/tour/3045768428/embed?profile=1&share_token=avx9Lkj3Pz1gimiz7mos1z7FIMFas19dPkBxwMoy6Wj11YTRip" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/3074710714/embed?profile=1&share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ### Zur Ausfahrt
 
-Diese Strecke ist als lockere Runde gedacht und nicht als harte Trainingseinheit.
-Wenn du eine stabile gemeinsame Runde mit ACC fahren möchtest, passt diese Nordstrecke sehr gut.
+Diese Strecke ist als stabile Feierabendrunde gedacht und nicht als harte Trainingseinheit.
+Wenn du eine lockere Nordrunde ab OEZ mit ACC fahren möchtest, passt diese Strecke sehr gut.
 
 ***
 
 ### Logistics
 
-Die Runde endet voraussichtlich nach etwa **1 Std. 50 Min. bis 2 Stunden wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
+Die Runde endet voraussichtlich nach etwa **1 Std. 50 Min. wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
 
 ***
 
