@@ -27,7 +27,7 @@ The ride is social and relaxed in spirit: long enough for a proper Sunday outing
 | --- | --- |
 | **Time** | Sunday, 5 July 2026 · **meet at 09:45** |
 | **Meeting point** | **Forst-Kasten-Allee, Parkplatz Waldfriedhof** · 3FWP+8W, 81475 München |
-| **Route** | Munich → Ammersee → Starnberg → Munich · [View on Komoot](https://www.komoot.com/tour/3077203259) |
+| **Route** | Munich → Ammersee → Starnberg → Munich · [View on Komoot](https://www.komoot.com/tour/3077203259?share_token=aaHNoG82GHj2fm0gN8WtjqK7QYtWOav5PBhWCTWrkbId0q1Rw5) |
 | **Distance / elevation** | Full route around **100 km / 773 m** |
 | **Optional points** | Herrsching around **65 km / 544 m**; Starnberg around **83 km / 589 m** |
 | **Pace** | Relaxed social ride, beginner-friendly overall; expected rolling average **20+ km/h** |
@@ -39,11 +39,9 @@ The ride is social and relaxed in spirit: long enough for a proper Sunday outing
 
 ## Route Preview
 
-- **Komoot route**: [View route](https://www.komoot.com/tour/3077203259)
+- **Komoot route**: [View route](https://www.komoot.com/tour/3077203259?share_token=aaHNoG82GHj2fm0gN8WtjqK7QYtWOav5PBhWCTWrkbId0q1Rw5)
 
-<iframe src="https://www.komoot.com/tour/3077203259/embed?profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
-
-> Note: the current Komoot link does not include a share token, so the embed depends on whether the tour is public.
+<iframe src="https://www.komoot.com/tour/3077203259/embed?profile=1&amp;share_token=aaHNoG82GHj2fm0gN8WtjqK7QYtWOav5PBhWCTWrkbId0q1Rw5" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ---
 

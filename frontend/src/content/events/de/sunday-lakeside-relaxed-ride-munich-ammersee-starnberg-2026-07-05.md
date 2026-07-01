@@ -27,7 +27,7 @@ Die Ausfahrt ist als entspannte Social Ride gedacht: lang genug für einen richt
 | --- | --- |
 | **Zeit** | Sonntag, 5. Juli 2026 · **Treffpunkt 09:45** |
 | **Treffpunkt** | **Forst-Kasten-Allee, Parkplatz Waldfriedhof** · 3FWP+8W, 81475 München |
-| **Route** | München → Ammersee → Starnberg → München · [Route auf Komoot](https://www.komoot.com/tour/3077203259) |
+| **Route** | München → Ammersee → Starnberg → München · [Route auf Komoot](https://www.komoot.com/tour/3077203259?share_token=aaHNoG82GHj2fm0gN8WtjqK7QYtWOav5PBhWCTWrkbId0q1Rw5) |
 | **Distanz / Höhenmeter** | Gesamtroute ca. **100 km / 773 m** |
 | **Optionale Punkte** | Herrsching ca. **65 km / 544 m**; Starnberg ca. **83 km / 589 m** |
 | **Tempo** | Entspannte Social Ride, insgesamt anfängerfreundlich; erwarteter Schnitt **20+ km/h** |
@@ -39,11 +39,9 @@ Die Ausfahrt ist als entspannte Social Ride gedacht: lang genug für einen richt
 
 ## Routenvorschau
 
-- **Komoot-Route**: [Route ansehen](https://www.komoot.com/tour/3077203259)
+- **Komoot-Route**: [Route ansehen](https://www.komoot.com/tour/3077203259?share_token=aaHNoG82GHj2fm0gN8WtjqK7QYtWOav5PBhWCTWrkbId0q1Rw5)
 
-<iframe src="https://www.komoot.com/tour/3077203259/embed?profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
-
-> Hinweis: Der aktuelle Komoot-Link enthält keinen share token. Ob das Embed stabil angezeigt wird, hängt davon ab, ob die Tour öffentlich ist.
+<iframe src="https://www.komoot.com/tour/3077203259/embed?profile=1&amp;share_token=aaHNoG82GHj2fm0gN8WtjqK7QYtWOav5PBhWCTWrkbId0q1Rw5" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ---
 
