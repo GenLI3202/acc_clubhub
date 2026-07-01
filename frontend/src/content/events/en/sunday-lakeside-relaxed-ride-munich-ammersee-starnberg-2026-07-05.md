@@ -8,6 +8,7 @@ date: 2026-07-05 09:45
 eventType: social-ride
 cover: /images/events/sunday-lakeside-relaxed-ride-munich-ammersee-starnberg-2026-07-05/cover.jpg
 displaySections:
+  - hero
   - upcoming
 status: published
 ACCOfficialRide: true
