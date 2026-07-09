@@ -31,6 +31,7 @@ We will plan one coffee stop along the way for refuelling, chatting, and photos 
 | **Distance / elevation** | Around **89 km / 715 m** |
 | **Pace** | Relaxed social ride on rolling terrain; expected rolling average **20-24 km/h** |
 | **Coffee stop** | Mid-route cafe, exact stop depending on the day |
+| **Bail-out options** | If the full route is not the right fit on the day, riders can return to Munich by train around **40 km** or **60 km** |
 | **Recommended bikes** | Road bikes preferred; gravel bikes are also suitable |
 | **Notes** | Helmet required. Please bring water, snacks, a spare tube, and make sure your bike is in good condition |
 
@@ -49,7 +50,8 @@ We will plan one coffee stop along the way for refuelling, chatting, and photos 
 - Around **89 km / 715 m**, suitable for a medium-long weekend endurance ride.
 - The route is mostly paved, with relatively quiet roads and a comfortable riding experience.
 - Rolling terrain throughout, without long sustained climbs, so it suits a steady cruising pace.
-- After the coffee stop, the route loops back to Munich without requiring public transport.
+- If your legs, time, or the weather make the full route less suitable on the day, you can choose a nearby station around **40 km** or **60 km** and return to Munich by train. Please check train times, tickets, and bicycle rules yourself.
+- Riders continuing after the coffee stop will complete the loop back to Munich.
 
 ---
 

@@ -31,6 +31,7 @@ Unterwegs planen wir eine Kaffeepause zum Auffüllen, Reden und Fotografieren. D
 | **Distanz / Höhenmeter** | Ca. **89 km / 715 hm** |
 | **Tempo** | Entspannte Social Ride auf welligem Terrain; erwarteter Schnitt **20-24 km/h** |
 | **Kaffeepause** | Cafe etwa in der Mitte der Route, genauer Stopp je nach Situation am Tag |
+| **Optionale Rückfahrt** | Wenn die komplette Runde am Tag nicht passt, ist eine Rückfahrt nach München per Zug bei ca. **40 km** oder **60 km** möglich |
 | **Empfohlene Räder** | Rennrad bevorzugt; Gravelbike ebenfalls geeignet |
 | **Hinweise** | Helm ist Pflicht. Bitte Wasser, Verpflegung und Ersatzschlauch mitnehmen und das Rad vorher prüfen |
 
@@ -49,7 +50,8 @@ Unterwegs planen wir eine Kaffeepause zum Auffüllen, Reden und Fotografieren. D
 - Ca. **89 km / 715 hm**, gut geeignet als mittellange Wochenendrunde.
 - Die Route verläuft überwiegend auf asphaltierten, eher ruhigen Straßen.
 - Viel welliges Terrain, aber keine langen durchgehenden Anstiege, ideal für einen stabilen Rhythmus.
-- Nach der Kaffeepause geht es auf der Runde zurück nach München; öffentliche Verkehrsmittel sind nicht nötig.
+- Wenn Beine, Zeit oder Wetter am Tag nicht für die komplette Runde passen, kann man bei ca. **40 km** oder **60 km** einen passenden Bahnhof in der Nähe wählen und per Zug nach München zurückfahren. Bitte Verbindung, Ticket und Fahrradmitnahme selbst prüfen.
+- Wer nach der Kaffeepause weiterfährt, beendet die Runde zurück nach München.
 
 ---
 
