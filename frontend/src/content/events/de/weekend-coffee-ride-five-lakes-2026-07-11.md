@@ -1,6 +1,6 @@
 ---
 slug: weekend-coffee-ride-five-lakes-2026-07-11
-title: Weekend Coffee Ride | München → Fünf-Seen-Land → Kaffeepause → München
+title: Weekend Coffee Ride | München → Kaffeepause → München
 description: Eine entspannte Samstagsrunde ab München Südwest durch ruhige Landstraßen, ca. 89 km mit 715 hm und Kaffeepause unterwegs.
 location: Forst-Kasten-Allee, Parkplatz Waldfriedhof · 3FWP+8W, 81475 München
 author: ACC Club

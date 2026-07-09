@@ -1,6 +1,6 @@
 ---
 slug: weekend-coffee-ride-five-lakes-2026-07-11
-title: 周末 Coffee Ride｜慕尼黑 → 五湖乡村 → 咖啡休息 → 慕尼黑
+title: 周末 Coffee Ride｜慕尼黑 → 咖啡休息 → 慕尼黑
 description: 周六从慕尼黑西南出发，沿乡村公路完成约 89 km rolling 路线，中段安排咖啡休息，轻松社交节奏返回慕尼黑。
 location: Forst-Kasten-Allee, Parkplatz Waldfriedhof · 3FWP+8W, 81475 München
 author: ACC Club

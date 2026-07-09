@@ -1,6 +1,6 @@
 ---
 slug: weekend-coffee-ride-five-lakes-2026-07-11
-title: Weekend Coffee Ride | Munich → Five Lakes Countryside → Coffee Stop → Munich
+title: Weekend Coffee Ride | Munich → Coffee Stop → Munich
 description: A relaxed Saturday coffee ride from southwest Munich through quiet countryside roads, around 89 km with 715 m of climbing.
 location: Forst-Kasten-Allee, Parkplatz Waldfriedhof · 3FWP+8W, 81475 München
 author: ACC Club
