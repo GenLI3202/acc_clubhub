@@ -44,7 +44,7 @@ PLANNER_LEADERS: tuple[PlannerLeader, ...] = (
     PlannerLeader("Yuan Sheng", "sheng.yuan@hotmail.com", True),
     PlannerLeader("Taoyue Yang", "frankyangty@gmail.com", True),
     PlannerLeader("Yi Xin", "xinyi0887@gmail.com", True),
-    PlannerLeader("Zhang Ziyang", "zzynoah123456@gmail.com", True),
+    PlannerLeader("Ziyang Zhang", "zzynoah123456@gmail.com", True),
 )
 
 

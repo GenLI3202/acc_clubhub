@@ -30,9 +30,45 @@ RIDE_LEADER_NAME_ALIASES = {
     "konfuzius": "Sheng Yuan",
     "shane shen": "Zhikuan Shen",
     "yang taoyue": "Taoyue Yang",
+    "zhang ziyang": "Ziyang Zhang",
 }
 RIDE_LEADER_REPORTING_ROSTER = ("Taoyue Yang",)
+MANUAL_EVENT_CREDIT_OVERRIDES = (
+    {
+        "event_slug": "2026-acc-season-opening",
+        "event_date": datetime(2026, 4, 18, 8, 30, tzinfo=timezone.utc),
+        "distance_km": Decimal("41.60"),
+        "checked_in_count": 19,
+        "effective_group_count": 3,
+        "credited_leader_count": 6,
+        "credit_km": Decimal("20.80"),
+    },
+)
 MANUAL_RIDE_LEADER_CREDITS = (
+    {
+        "leader_name": "Taoyue Yang",
+        "event_id": 0,
+        "event_slug": "2026-acc-season-opening",
+        "event_title": "ACC 2026 开春咖啡骑",
+        "event_date": datetime(2026, 4, 18, 8, 30, tzinfo=timezone.utc),
+        "distance_km": Decimal("41.60"),
+        "checked_in_count": 19,
+        "effective_group_count": 3,
+        "credited_leader_count": 6,
+        "credit_km": Decimal("20.80"),
+    },
+    {
+        "leader_name": "Ziyang Zhang",
+        "event_id": 0,
+        "event_slug": "2026-acc-season-opening",
+        "event_title": "ACC 2026 开春咖啡骑",
+        "event_date": datetime(2026, 4, 18, 8, 30, tzinfo=timezone.utc),
+        "distance_km": Decimal("41.60"),
+        "checked_in_count": 19,
+        "effective_group_count": 3,
+        "credited_leader_count": 6,
+        "credit_km": Decimal("20.80"),
+    },
     {
         "leader_name": "Taoyue Yang",
         "event_id": 0,
@@ -66,6 +102,20 @@ def canonicalize_ride_leader_name(name: str) -> str:
     """Return the reporting name used to merge historical ride leader aliases."""
     normalized = _normalize_leader_name(name)
     return RIDE_LEADER_NAME_ALIASES.get(normalized, name.strip())
+
+
+def _manual_event_credit_override(event: Event) -> dict | None:
+    event_date = event.event_date
+    if event_date is None:
+        return None
+    for override in MANUAL_EVENT_CREDIT_OVERRIDES:
+        override_date = override["event_date"]
+        if (
+            event.slug == override["event_slug"]
+            and event_date.date() == override_date.date()
+        ):
+            return override
+    return None
 
 
 @dataclass
@@ -427,6 +477,12 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
 
     grouped: dict[str, dict] = {}
     for credit in rows:
+        override = _manual_event_credit_override(credit.event)
+        credit_km = (
+            override["credit_km"]
+            if override is not None
+            else _decimal(credit.credit_km) or Decimal("0.00")
+        )
         leader_name = canonicalize_ride_leader_name(credit.leader_name)
         info = grouped.setdefault(
             leader_name,
@@ -437,7 +493,7 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
             },
         )
         info["lead_events_count"] += 1
-        info["total_credited_km"] += _decimal(credit.credit_km) or Decimal("0.00")
+        info["total_credited_km"] += credit_km
 
     for credit in MANUAL_RIDE_LEADER_CREDITS:
         event_date = credit["event_date"]
@@ -512,6 +568,24 @@ def get_ride_leader_event_history(
             != canonical_leader_name
         ):
             continue
+        override = _manual_event_credit_override(event)
+        distance_km = override["distance_km"] if override is not None else credit.distance_km
+        checked_in_count = (
+            override["checked_in_count"]
+            if override is not None
+            else credit.checked_in_count
+        )
+        effective_group_count = (
+            override["effective_group_count"]
+            if override is not None
+            else credit.effective_group_count
+        )
+        credited_leader_count = (
+            override["credited_leader_count"]
+            if override is not None
+            else credit.credited_leader_count
+        )
+        credit_km = override["credit_km"] if override is not None else credit.credit_km
         history.append(
             {
                 "event_id": event.id,
@@ -519,14 +593,14 @@ def get_ride_leader_event_history(
                 "event_title": event.title,
                 "event_date": event.event_date.isoformat() if event.event_date else None,
                 "distance_km": (
-                    float(credit.distance_km)
-                    if credit.distance_km is not None
+                    float(distance_km)
+                    if distance_km is not None
                     else None
                 ),
-                "checked_in_count": credit.checked_in_count,
-                "effective_group_count": credit.effective_group_count,
-                "credited_leader_count": credit.credited_leader_count,
-                "credit_km": float(credit.credit_km),
+                "checked_in_count": checked_in_count,
+                "effective_group_count": effective_group_count,
+                "credited_leader_count": credited_leader_count,
+                "credit_km": float(credit_km),
             }
         )
 

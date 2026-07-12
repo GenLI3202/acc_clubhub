@@ -336,24 +336,61 @@ class TestRideLeaderReporting:
         assert detail_resp.json()["lead_events_count"] == 0
         assert detail_resp.json()["total_credited_km"] == 0.0
 
-    def test_manual_taoyue_credit_appears_in_2026_board(self, client, db):
+    def test_manual_leader_credits_appear_in_2026_board(self, client, db):
+        spring_event = Event(
+            slug="2026-acc-season-opening",
+            title="ACC 2026 开春咖啡骑",
+            event_date=datetime(2026, 4, 18, 8, 30, tzinfo=timezone.utc),
+            location="Munich",
+            event_type="social-ride",
+            max_participants=35,
+            current_participants=0,
+            distance_km=Decimal("41.60"),
+        )
+        db.add(spring_event)
+        db.commit()
+        db.refresh(spring_event)
+        existing_rsvp = _make_checked_in_rsvp(
+            db,
+            spring_event.id,
+            "existing-leader@example.com",
+            "Existing Leader",
+        )
+        _mark_leader(client, spring_event.id, existing_rsvp.id)
+
         summary_resp = _leader_summary(client, 2026)
         detail_resp = _leader_detail(client, "Taoyue Yang", 2026)
+        ziyang_detail_resp = _leader_detail(client, "Ziyang Zhang", 2026)
+        existing_detail_resp = _leader_detail(client, "Existing Leader", 2026)
 
         assert summary_resp.status_code == 200
         leaders = {
             leader["leader_name"]: leader
             for leader in summary_resp.json()["leaders"]
         }
-        assert leaders["Taoyue Yang"]["lead_events_count"] == 1
-        assert leaders["Taoyue Yang"]["total_credited_km"] == 47.4
+        assert leaders["Taoyue Yang"]["lead_events_count"] == 2
+        assert leaders["Taoyue Yang"]["total_credited_km"] == 68.2
+        assert leaders["Ziyang Zhang"]["lead_events_count"] == 1
+        assert leaders["Ziyang Zhang"]["total_credited_km"] == 20.8
+        assert leaders["Existing Leader"]["total_credited_km"] == 20.8
 
         assert detail_resp.status_code == 200
         detail = detail_resp.json()
         assert detail["leader_name"] == "Taoyue Yang"
-        assert detail["lead_events_count"] == 1
-        assert detail["total_credited_km"] == 47.4
+        assert detail["lead_events_count"] == 2
+        assert detail["total_credited_km"] == 68.2
         assert detail["history"] == [
+            {
+                "event_id": 0,
+                "event_slug": "2026-acc-season-opening",
+                "event_title": "ACC 2026 开春咖啡骑",
+                "event_date": "2026-04-18T08:30:00+00:00",
+                "distance_km": 41.6,
+                "checked_in_count": 19,
+                "effective_group_count": 3,
+                "credited_leader_count": 6,
+                "credit_km": 20.8,
+            },
             {
                 "event_id": 0,
                 "event_slug": "afterwork-ride-munich-north-2026-07-02",
@@ -366,6 +403,14 @@ class TestRideLeaderReporting:
                 "credit_km": 47.4,
             }
         ]
+        assert ziyang_detail_resp.status_code == 200
+        assert ziyang_detail_resp.json()["leader_name"] == "Ziyang Zhang"
+        assert ziyang_detail_resp.json()["total_credited_km"] == 20.8
+        assert existing_detail_resp.status_code == 200
+        existing_history = existing_detail_resp.json()["history"]
+        assert existing_history[0]["checked_in_count"] == 19
+        assert existing_history[0]["credited_leader_count"] == 6
+        assert existing_history[0]["credit_km"] == 20.8
 
     def test_annual_aggregation_by_name_and_history(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("40.00")
@@ -462,6 +507,7 @@ class TestRideLeaderReporting:
             ("Konfuzius", "Sheng Yuan", Decimal("40.00")),
             ("Shane Shen", "Zhikuan Shen", Decimal("50.00")),
             ("Yang Taoyue", "Taoyue Yang", Decimal("60.00")),
+            ("Zhang Ziyang", "Ziyang Zhang", Decimal("70.00")),
         ]
         for index, (alias, _canonical_name, distance) in enumerate(
             aliases,
@@ -494,6 +540,7 @@ class TestRideLeaderReporting:
         konfuzius_detail_resp = _leader_detail(client, "Konfuzius", 2026)
         shane_detail_resp = _leader_detail(client, "Shane Shen", 2026)
         taoyue_detail_resp = _leader_detail(client, "Yang Taoyue", 2026)
+        ziyang_detail_resp = _leader_detail(client, "Zhang Ziyang", 2026)
 
         assert summary_resp.status_code == 200
         leaders = {
@@ -506,14 +553,17 @@ class TestRideLeaderReporting:
         assert leaders["Gen Li"]["total_credited_km"] == 50.0
         assert leaders["Sheng Yuan"]["total_credited_km"] == 40.0
         assert leaders["Zhikuan Shen"]["total_credited_km"] == 50.0
-        assert leaders["Taoyue Yang"]["lead_events_count"] == 2
-        assert leaders["Taoyue Yang"]["total_credited_km"] == 107.4
+        assert leaders["Taoyue Yang"]["lead_events_count"] == 3
+        assert leaders["Taoyue Yang"]["total_credited_km"] == 128.2
+        assert leaders["Ziyang Zhang"]["lead_events_count"] == 2
+        assert leaders["Ziyang Zhang"]["total_credited_km"] == 90.8
 
         assert gen_detail_resp.status_code == 200
         assert gen_alias_detail_resp.status_code == 200
         assert konfuzius_detail_resp.status_code == 200
         assert shane_detail_resp.status_code == 200
         assert taoyue_detail_resp.status_code == 200
+        assert ziyang_detail_resp.status_code == 200
         assert gen_detail_resp.json()["leader_name"] == "Gen Li"
         assert gen_detail_resp.json()["lead_events_count"] == 2
         assert gen_alias_detail_resp.json()["leader_name"] == "Gen Li"
@@ -521,7 +571,8 @@ class TestRideLeaderReporting:
         assert konfuzius_detail_resp.json()["leader_name"] == "Sheng Yuan"
         assert shane_detail_resp.json()["leader_name"] == "Zhikuan Shen"
         assert taoyue_detail_resp.json()["leader_name"] == "Taoyue Yang"
-        assert taoyue_detail_resp.json()["lead_events_count"] == 2
+        assert taoyue_detail_resp.json()["lead_events_count"] == 3
+        assert ziyang_detail_resp.json()["leader_name"] == "Ziyang Zhang"
 
     def test_reimbursement_and_subsidy_thresholds_are_reported(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("320.00")
