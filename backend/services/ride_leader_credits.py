@@ -31,6 +31,7 @@ RIDE_LEADER_NAME_ALIASES = {
     "shane shen": "Zhikuan Shen",
     "yang taoyue": "Taoyue Yang",
 }
+RIDE_LEADER_REPORTING_ROSTER = ("Taoyue Yang",)
 
 
 def _utcnow() -> datetime:
@@ -423,6 +424,17 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
         )
         info["lead_events_count"] += 1
         info["total_credited_km"] += _decimal(credit.credit_km) or Decimal("0.00")
+
+    for leader_name in RIDE_LEADER_REPORTING_ROSTER:
+        canonical_name = canonicalize_ride_leader_name(leader_name)
+        grouped.setdefault(
+            canonical_name,
+            {
+                "leader_name": canonical_name,
+                "lead_events_count": 0,
+                "total_credited_km": Decimal("0.00"),
+            },
+        )
 
     result: list[dict] = []
     for leader_name in sorted(grouped):

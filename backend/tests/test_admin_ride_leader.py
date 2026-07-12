@@ -318,6 +318,24 @@ class TestRideLeaderWorkflow:
 
 
 class TestRideLeaderReporting:
+    def test_reporting_roster_includes_taoyue_without_credits(self, client, db):
+        summary_resp = _leader_summary(client, 2026)
+        detail_resp = _leader_detail(client, "Taoyue Yang", 2026)
+
+        assert summary_resp.status_code == 200
+        leaders = {
+            leader["leader_name"]: leader
+            for leader in summary_resp.json()["leaders"]
+        }
+        assert leaders["Taoyue Yang"]["lead_events_count"] == 0
+        assert leaders["Taoyue Yang"]["total_credited_km"] == 0.0
+        assert leaders["Taoyue Yang"]["reimbursement_eligible"] is False
+
+        assert detail_resp.status_code == 200
+        assert detail_resp.json()["leader_name"] == "Taoyue Yang"
+        assert detail_resp.json()["lead_events_count"] == 0
+        assert detail_resp.json()["total_credited_km"] == 0.0
+
     def test_annual_aggregation_by_name_and_history(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("40.00")
         sample_event.event_date = datetime(2026, 4, 18, 10, 30, tzinfo=timezone.utc)
