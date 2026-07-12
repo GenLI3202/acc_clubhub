@@ -104,6 +104,14 @@ def canonicalize_ride_leader_name(name: str) -> str:
     return RIDE_LEADER_NAME_ALIASES.get(normalized, name.strip())
 
 
+def _manual_credit_key(leader_name: str, event_slug: str, event_date: datetime) -> tuple[str, str, str]:
+    return (
+        canonicalize_ride_leader_name(leader_name),
+        event_slug,
+        event_date.date().isoformat(),
+    )
+
+
 def _manual_event_credit_override(event: Event) -> dict | None:
     event_date = event.event_date
     if event_date is None:
@@ -476,6 +484,7 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
     ).order_by(Event.event_date.asc(), EventRideLeaderCredit.id.asc()).all()
 
     grouped: dict[str, dict] = {}
+    db_credit_keys: set[tuple[str, str, str]] = set()
     for credit in rows:
         override = _manual_event_credit_override(credit.event)
         credit_km = (
@@ -484,6 +493,14 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
             else _decimal(credit.credit_km) or Decimal("0.00")
         )
         leader_name = canonicalize_ride_leader_name(credit.leader_name)
+        if credit.event.event_date is not None:
+            db_credit_keys.add(
+                _manual_credit_key(
+                    credit.leader_name,
+                    credit.event.slug,
+                    credit.event.event_date,
+                )
+            )
         info = grouped.setdefault(
             leader_name,
             {
@@ -498,6 +515,13 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
     for credit in MANUAL_RIDE_LEADER_CREDITS:
         event_date = credit["event_date"]
         if not (start <= event_date < end):
+            continue
+        manual_key = _manual_credit_key(
+            str(credit["leader_name"]),
+            str(credit["event_slug"]),
+            event_date,
+        )
+        if manual_key in db_credit_keys:
             continue
         leader_name = canonicalize_ride_leader_name(str(credit["leader_name"]))
         info = grouped.setdefault(
@@ -562,12 +586,17 @@ def get_ride_leader_event_history(
     ).order_by(Event.event_date.asc(), EventRideLeaderCredit.id.asc()).all()
 
     history: list[dict] = []
+    history_keys: set[tuple[str, str, str]] = set()
     for credit, event in rows:
         if (
             canonicalize_ride_leader_name(credit.leader_name)
             != canonical_leader_name
         ):
             continue
+        if event.event_date is not None:
+            history_keys.add(
+                _manual_credit_key(credit.leader_name, event.slug, event.event_date)
+            )
         override = _manual_event_credit_override(event)
         distance_km = override["distance_km"] if override is not None else credit.distance_km
         checked_in_count = (
@@ -610,6 +639,13 @@ def get_ride_leader_event_history(
             continue
         manual_leader_name = canonicalize_ride_leader_name(str(credit["leader_name"]))
         if manual_leader_name != canonical_leader_name:
+            continue
+        manual_key = _manual_credit_key(
+            str(credit["leader_name"]),
+            str(credit["event_slug"]),
+            event_date,
+        )
+        if manual_key in history_keys:
             continue
         history.append(
             {

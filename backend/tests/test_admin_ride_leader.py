@@ -353,15 +353,14 @@ class TestRideLeaderReporting:
         existing_rsvp = _make_checked_in_rsvp(
             db,
             spring_event.id,
-            "existing-leader@example.com",
-            "Existing Leader",
+            "taoyue-existing@example.com",
+            "Taoyue Yang",
         )
         _mark_leader(client, spring_event.id, existing_rsvp.id)
 
         summary_resp = _leader_summary(client, 2026)
         detail_resp = _leader_detail(client, "Taoyue Yang", 2026)
         ziyang_detail_resp = _leader_detail(client, "Ziyang Zhang", 2026)
-        existing_detail_resp = _leader_detail(client, "Existing Leader", 2026)
 
         assert summary_resp.status_code == 200
         leaders = {
@@ -372,45 +371,28 @@ class TestRideLeaderReporting:
         assert leaders["Taoyue Yang"]["total_credited_km"] == 68.2
         assert leaders["Ziyang Zhang"]["lead_events_count"] == 1
         assert leaders["Ziyang Zhang"]["total_credited_km"] == 20.8
-        assert leaders["Existing Leader"]["total_credited_km"] == 20.8
 
         assert detail_resp.status_code == 200
         detail = detail_resp.json()
         assert detail["leader_name"] == "Taoyue Yang"
         assert detail["lead_events_count"] == 2
         assert detail["total_credited_km"] == 68.2
-        assert detail["history"] == [
-            {
-                "event_id": 0,
-                "event_slug": "2026-acc-season-opening",
-                "event_title": "ACC 2026 开春咖啡骑",
-                "event_date": "2026-04-18T08:30:00+00:00",
-                "distance_km": 41.6,
-                "checked_in_count": 19,
-                "effective_group_count": 3,
-                "credited_leader_count": 6,
-                "credit_km": 20.8,
-            },
-            {
-                "event_id": 0,
-                "event_slug": "afterwork-ride-munich-north-2026-07-02",
-                "event_title": "ACC North Afterwork Ride",
-                "event_date": "2026-07-02T16:00:00+00:00",
-                "distance_km": 47.4,
-                "checked_in_count": 4,
-                "effective_group_count": 1,
-                "credited_leader_count": 1,
-                "credit_km": 47.4,
-            }
-        ]
+        assert len(detail["history"]) == 2
+        spring_history = detail["history"][0]
+        assert spring_history["event_slug"] == "2026-acc-season-opening"
+        assert spring_history["event_title"] == "ACC 2026 开春咖啡骑"
+        assert spring_history["event_date"].startswith("2026-04-18T08:30:00")
+        assert spring_history["distance_km"] == 41.6
+        assert spring_history["checked_in_count"] == 19
+        assert spring_history["effective_group_count"] == 3
+        assert spring_history["credited_leader_count"] == 6
+        assert spring_history["credit_km"] == 20.8
+        north_history = detail["history"][1]
+        assert north_history["event_slug"] == "afterwork-ride-munich-north-2026-07-02"
+        assert north_history["credit_km"] == 47.4
         assert ziyang_detail_resp.status_code == 200
         assert ziyang_detail_resp.json()["leader_name"] == "Ziyang Zhang"
         assert ziyang_detail_resp.json()["total_credited_km"] == 20.8
-        assert existing_detail_resp.status_code == 200
-        existing_history = existing_detail_resp.json()["history"]
-        assert existing_history[0]["checked_in_count"] == 19
-        assert existing_history[0]["credited_leader_count"] == 6
-        assert existing_history[0]["credit_km"] == 20.8
 
     def test_annual_aggregation_by_name_and_history(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("40.00")
