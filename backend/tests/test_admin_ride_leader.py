@@ -412,6 +412,7 @@ class TestRideLeaderReporting:
             ("GenL", "Gen Li", Decimal("30.00")),
             ("Konfuzius", "Sheng Yuan", Decimal("40.00")),
             ("Shane Shen", "Zhikuan Shen", Decimal("50.00")),
+            ("Yang Taoyue", "Taoyue Yang", Decimal("60.00")),
         ]
         for index, (alias, _canonical_name, distance) in enumerate(
             aliases,
@@ -443,6 +444,7 @@ class TestRideLeaderReporting:
         gen_alias_detail_resp = _leader_detail(client, "Gen", 2026)
         konfuzius_detail_resp = _leader_detail(client, "Konfuzius", 2026)
         shane_detail_resp = _leader_detail(client, "Shane Shen", 2026)
+        taoyue_detail_resp = _leader_detail(client, "Yang Taoyue", 2026)
 
         assert summary_resp.status_code == 200
         leaders = {
@@ -455,17 +457,20 @@ class TestRideLeaderReporting:
         assert leaders["Gen Li"]["total_credited_km"] == 50.0
         assert leaders["Sheng Yuan"]["total_credited_km"] == 40.0
         assert leaders["Zhikuan Shen"]["total_credited_km"] == 50.0
+        assert leaders["Taoyue Yang"]["total_credited_km"] == 60.0
 
         assert gen_detail_resp.status_code == 200
         assert gen_alias_detail_resp.status_code == 200
         assert konfuzius_detail_resp.status_code == 200
         assert shane_detail_resp.status_code == 200
+        assert taoyue_detail_resp.status_code == 200
         assert gen_detail_resp.json()["leader_name"] == "Gen Li"
         assert gen_detail_resp.json()["lead_events_count"] == 2
         assert gen_alias_detail_resp.json()["leader_name"] == "Gen Li"
         assert gen_alias_detail_resp.json()["lead_events_count"] == 2
         assert konfuzius_detail_resp.json()["leader_name"] == "Sheng Yuan"
         assert shane_detail_resp.json()["leader_name"] == "Zhikuan Shen"
+        assert taoyue_detail_resp.json()["leader_name"] == "Taoyue Yang"
 
     def test_reimbursement_and_subsidy_thresholds_are_reported(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("320.00")

@@ -29,6 +29,7 @@ RIDE_LEADER_NAME_ALIASES = {
     "genl": "Gen Li",
     "konfuzius": "Sheng Yuan",
     "shane shen": "Zhikuan Shen",
+    "yang taoyue": "Taoyue Yang",
 }
 
 
