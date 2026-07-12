@@ -32,6 +32,20 @@ RIDE_LEADER_NAME_ALIASES = {
     "yang taoyue": "Taoyue Yang",
 }
 RIDE_LEADER_REPORTING_ROSTER = ("Taoyue Yang",)
+MANUAL_RIDE_LEADER_CREDITS = (
+    {
+        "leader_name": "Taoyue Yang",
+        "event_id": 0,
+        "event_slug": "afterwork-ride-munich-north-2026-07-02",
+        "event_title": "ACC North Afterwork Ride",
+        "event_date": datetime(2026, 7, 2, 16, 0, tzinfo=timezone.utc),
+        "distance_km": Decimal("47.40"),
+        "checked_in_count": 4,
+        "effective_group_count": 1,
+        "credited_leader_count": 1,
+        "credit_km": Decimal("47.40"),
+    },
+)
 
 
 def _utcnow() -> datetime:
@@ -425,6 +439,22 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
         info["lead_events_count"] += 1
         info["total_credited_km"] += _decimal(credit.credit_km) or Decimal("0.00")
 
+    for credit in MANUAL_RIDE_LEADER_CREDITS:
+        event_date = credit["event_date"]
+        if not (start <= event_date < end):
+            continue
+        leader_name = canonicalize_ride_leader_name(str(credit["leader_name"]))
+        info = grouped.setdefault(
+            leader_name,
+            {
+                "leader_name": leader_name,
+                "lead_events_count": 0,
+                "total_credited_km": Decimal("0.00"),
+            },
+        )
+        info["lead_events_count"] += 1
+        info["total_credited_km"] += credit["credit_km"]
+
     for leader_name in RIDE_LEADER_REPORTING_ROSTER:
         canonical_name = canonicalize_ride_leader_name(leader_name)
         grouped.setdefault(
@@ -499,6 +529,28 @@ def get_ride_leader_event_history(
                 "credit_km": float(credit.credit_km),
             }
         )
+
+    for credit in MANUAL_RIDE_LEADER_CREDITS:
+        event_date = credit["event_date"]
+        if not (start <= event_date < end):
+            continue
+        manual_leader_name = canonicalize_ride_leader_name(str(credit["leader_name"]))
+        if manual_leader_name != canonical_leader_name:
+            continue
+        history.append(
+            {
+                "event_id": credit["event_id"],
+                "event_slug": credit["event_slug"],
+                "event_title": credit["event_title"],
+                "event_date": event_date.isoformat(),
+                "distance_km": float(credit["distance_km"]),
+                "checked_in_count": credit["checked_in_count"],
+                "effective_group_count": credit["effective_group_count"],
+                "credited_leader_count": credit["credited_leader_count"],
+                "credit_km": float(credit["credit_km"]),
+            }
+        )
+    history.sort(key=lambda row: (row["event_date"] or "", row["event_id"]))
     return history
 
 
