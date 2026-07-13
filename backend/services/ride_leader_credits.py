@@ -69,18 +69,6 @@ MANUAL_RIDE_LEADER_CREDITS = (
         "credited_leader_count": 6,
         "credit_km": Decimal("20.80"),
     },
-    {
-        "leader_name": "Taoyue Yang",
-        "event_id": 0,
-        "event_slug": "afterwork-ride-munich-north-2026-07-02",
-        "event_title": "ACC North Afterwork Ride",
-        "event_date": datetime(2026, 7, 2, 16, 0, tzinfo=timezone.utc),
-        "distance_km": Decimal("47.40"),
-        "checked_in_count": 4,
-        "effective_group_count": 1,
-        "credited_leader_count": 1,
-        "credit_km": Decimal("47.40"),
-    },
 )
 
 

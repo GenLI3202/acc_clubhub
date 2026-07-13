@@ -367,17 +367,17 @@ class TestRideLeaderReporting:
             leader["leader_name"]: leader
             for leader in summary_resp.json()["leaders"]
         }
-        assert leaders["Taoyue Yang"]["lead_events_count"] == 2
-        assert leaders["Taoyue Yang"]["total_credited_km"] == 68.2
+        assert leaders["Taoyue Yang"]["lead_events_count"] == 1
+        assert leaders["Taoyue Yang"]["total_credited_km"] == 20.8
         assert leaders["Ziyang Zhang"]["lead_events_count"] == 1
         assert leaders["Ziyang Zhang"]["total_credited_km"] == 20.8
 
         assert detail_resp.status_code == 200
         detail = detail_resp.json()
         assert detail["leader_name"] == "Taoyue Yang"
-        assert detail["lead_events_count"] == 2
-        assert detail["total_credited_km"] == 68.2
-        assert len(detail["history"]) == 2
+        assert detail["lead_events_count"] == 1
+        assert detail["total_credited_km"] == 20.8
+        assert len(detail["history"]) == 1
         spring_history = detail["history"][0]
         assert spring_history["event_slug"] == "2026-acc-season-opening"
         assert spring_history["event_title"] == "ACC 2026 开春咖啡骑"
@@ -387,9 +387,6 @@ class TestRideLeaderReporting:
         assert spring_history["effective_group_count"] == 3
         assert spring_history["credited_leader_count"] == 6
         assert spring_history["credit_km"] == 20.8
-        north_history = detail["history"][1]
-        assert north_history["event_slug"] == "afterwork-ride-munich-north-2026-07-02"
-        assert north_history["credit_km"] == 47.4
         assert ziyang_detail_resp.status_code == 200
         assert ziyang_detail_resp.json()["leader_name"] == "Ziyang Zhang"
         assert ziyang_detail_resp.json()["total_credited_km"] == 20.8
