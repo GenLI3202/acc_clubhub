@@ -8,6 +8,7 @@ type RecurringConfig = {
     rolloverTime?: string;
     slugBase?: string;
     registrationDeadlineHoursBefore?: number;
+    registrationDeadlineOverrides?: Record<string, string>;
     paused?: boolean;
 };
 
@@ -105,7 +106,13 @@ function get_deadline(
     recurring: RecurringConfig,
     event_date: Date,
     occurrence_delta_ms: number,
+    local_date: string,
 ): string | null {
+    const override = recurring.registrationDeadlineOverrides?.[local_date];
+    if (override) {
+        return new Date(override).toISOString();
+    }
+
     if (typeof recurring.registrationDeadlineHoursBefore === "number") {
         return new Date(
             event_date.getTime() - recurring.registrationDeadlineHoursBefore * 60 * 60 * 1000,
@@ -184,6 +191,7 @@ export function resolveRecurringEvent(
                 recurring,
                 event_date,
                 occurrence_delta_ms,
+                local_date,
             ),
         },
     };

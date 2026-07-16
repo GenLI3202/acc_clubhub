@@ -57,6 +57,27 @@ describe("resolveRecurringEvent", () => {
         expect(event.data.date).toBe("2026-04-30T15:30:00.000Z");
         expect(event.data.registrationDeadline).toBe("2026-04-29T20:00:00.000Z");
     });
+
+    it("uses a dated registration deadline override for one occurrence", () => {
+        const event = resolveRecurringEvent(
+            {
+                ...baseEvent,
+                data: {
+                    ...baseEvent.data,
+                    recurring: {
+                        ...baseEvent.data.recurring,
+                        registrationDeadlineOverrides: {
+                            "2026-04-30": "2026-04-30T19:00:00+02:00",
+                        },
+                    },
+                },
+            },
+            new Date("2026-04-24T08:00:00.000Z"),
+        );
+
+        expect(event.data.slug).toBe("afterwork-ride-2026-04-30");
+        expect(event.data.registrationDeadline).toBe("2026-04-30T17:00:00.000Z");
+    });
 });
 
 describe("resolveEventEntryBySlug", () => {

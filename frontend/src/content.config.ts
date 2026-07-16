@@ -274,6 +274,7 @@ const eventsCollection = defineCollection({
       rolloverTime: z.string().regex(/^\d{2}:\d{2}$/).optional().default('22:00'),
       slugBase: z.string().optional(),
       registrationDeadlineHoursBefore: z.number().nonnegative().optional(),
+      registrationDeadlineOverrides: z.record(z.string(), z.string()).optional(),
       paused: z.boolean().optional().default(false),
     }).optional(),
     // featured is deprecated. displaySection remains only for legacy parse compatibility; new content should use displaySections.

@@ -25,6 +25,8 @@ recurring:
   rolloverTime: 22:00
   slugBase: afterwork-ride
   registrationDeadlineHoursBefore: 2
+  registrationDeadlineOverrides:
+    "2026-07-16": "2026-07-16T19:00:00+02:00"
 ---
 
 Join us on Thursday for an ACC North Afterwork Ride.
