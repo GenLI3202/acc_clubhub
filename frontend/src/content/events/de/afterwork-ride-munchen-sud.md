@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:50 Uhr und Abfahrt um 18:00 Uhr am Tierpark Hellabrunn.
+description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:50 Uhr und Abfahrt um 18:00 Uhr ab Liesl-Karlstadt-Straße 1.
 date: 2026-05-05 17:50
 eventType: after-work
-location: Tierpark Hellabrunn, Isar Eingang Tor 4
+location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud/cover.jpg
 displaySections:
@@ -12,7 +12,8 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 42.4
+distanceKm: 40.1
+routeKomootUrl: https://www.komoot.com/tour/3127453714?share_token=adc06dIBnGsDqEyjNyPXRg5b1GPZ5ayTSAZw3dNk2ghAUtjP2R
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
 status: published
@@ -30,16 +31,16 @@ Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Süden.
 
 Diese **After-Work Social Ride** richtet sich an alle, die nach der Arbeit noch locker fahren, frische Luft schnappen und gemeinsam mit ACC eine angenehme Abendrunde drehen möchten. Das Tempo ist freundlich, aber grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt.
 
-Treffpunkt ist um **17:50 Uhr** bei **Tierpark Hellabrunn · Isar Eingang Tor 4**, die **pünktliche Abfahrt ist um 18:00 Uhr**. Die Strecke ist etwa **42,4 km** lang und hat rund **320 hm**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **24 km/h**, auf flachen Abschnitten fahren wir ungefähr **28–30 km/h**. Die Rückkehr zum Startpunkt ist gegen **20:30 Uhr** geplant.
+Treffpunkt ist um **17:50 Uhr** bei **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, die **pünktliche Abfahrt ist um 18:00 Uhr**. Die Strecke ist etwa **40,1 km** lang und hat rund **330 hm**. Komoot schätzt die Fahrzeit auf etwa **1 Std. 48 Min.** und die Durchschnittsgeschwindigkeit auf rund **22,3 km/h**. Die Rückkehr zum Startpunkt ist gegen **20:30 Uhr** geplant.
 
 ---
 
 |                | Infos |
 | -------------- | ----- |
 | **Zeit**       | Treffen um 17:50 Uhr · Pünktliche Abfahrt um 18:00 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
-| **Treffpunkt** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
-| **Strecke**    | Ca. 42,4 km · Ca. 320 hm · Geschätzte Fahrzeit 1 Std. 48 Min. |
-| **Tempo**      | Ca. 24 km/h Durchschnitt · 28–30 km/h Reisegeschwindigkeit auf flachen Abschnitten |
+| **Treffpunkt** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
+| **Strecke**    | Ca. 40,1 km · Ca. 330 hm · Geschätzte Fahrzeit 1 Std. 48 Min. |
+| **Tempo**      | Komoot schätzt ca. 22,3 km/h Durchschnitt |
 | **Radtyp**     | Rennrad oder Gravelbike empfohlen |
 | **Hinweise**   | Bitte Helm und grundlegende Verpflegung mitbringen; bitte prüfe dein Rad vorab; bitte pünktlich sein; entscheide selbst, ob Tempo und Strecke zu dir passen; bei schlechtem Wetter oder wenn sich außer dem Ride Leader weniger als 2 Personen anmelden, wird die Ausfahrt automatisch abgesagt |
 | **Teilnehmerzahl** | Begrenzt auf 15 Personen |
@@ -77,6 +78,6 @@ Der Beitritt zur Gruppe per QR-Code dient nur der Kommunikation rund um die Ausf
 
 ### Streckenübersicht
 
-- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its)
+- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/3127453714?share_token=adc06dIBnGsDqEyjNyPXRg5b1GPZ5ayTSAZw3dNk2ghAUtjP2R)
 
-<iframe src="https://www.komoot.com/tour/2901905197/embed?share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/3127453714/embed?profile=1&share_token=adc06dIBnGsDqEyjNyPXRg5b1GPZ5ayTSAZw3dNk2ghAUtjP2R" width="100%" height="700" frameborder="0" scrolling="no"></iframe>

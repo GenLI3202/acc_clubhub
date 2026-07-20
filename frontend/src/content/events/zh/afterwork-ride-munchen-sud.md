@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: 每周二下班后 17:50 集合、18:00 从 Tierpark Hellabrunn 出发的慕尼黑南区轻松社交骑行。
+description: 每周二下班后 17:50 集合、18:00 从 Liesl-Karlstadt-Straße 1 出发的慕尼黑南区轻松社交骑行。
 date: 2026-05-05 17:50
 eventType: after-work
-location: Tierpark Hellabrunn, Isar Eingang Tor 4
+location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud/cover.jpg
 displaySections:
@@ -12,7 +12,8 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 42.4
+distanceKm: 40.1
+routeKomootUrl: https://www.komoot.com/tour/3127453714?share_token=adc06dIBnGsDqEyjNyPXRg5b1GPZ5ayTSAZw3dNk2ghAUtjP2R
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
 status: published
@@ -30,16 +31,16 @@ recurring:
 
 这是一场以 **after-work 社交休闲骑** 为主的路线，适合想在工作日傍晚出来透透气、活动一下，也和 ACC 车友一起骑车的人。整体节奏友好，但默认参加者具备基础公路骑行能力。
 
-我们将于 **17:50** 在 **Tierpark Hellabrunn · Isar Eingang Tor 4** 集合，**18:00 准时出发**。路线全程约 **42.4 km**，累计爬升约 **320 m**。预计完成均速约 **24 km/h**，平路巡航大致在 **28–30 km/h**，预计 **20:30 左右回到起点**。
+我们将于 **17:50** 在 **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln** 集合，**18:00 准时出发**。路线全程约 **40.1 km**，累计爬升约 **330 m**。Komoot 预计骑行时间约 **1 小时 48 分**，预计均速约 **22.3 km/h**，预计 **20:30 左右回到起点**。
 
 ***
 
 |  | 信息 |
 | --- | --- |
 | **时间** | 17:50 集合，18:00 准时发车，预计 20:00 回到起点 |
-| **集合地点** | Tierpark Hellabrunn, Isar Eingang Tor 4 |
-| **路线** | 全程约 42.4 km，累计爬升约 320 m，预计 moving time 1h 48m |
-| **强度** | 完成均速约 24 km/h，平路巡航约 28–30 km/h；偏轻松社交骑，但需具备基础骑行能力 |
+| **集合地点** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
+| **路线** | 全程约 40.1 km，累计爬升约 330 m，预计 moving time 1h 48m |
+| **强度** | Komoot 预计均速约 22.3 km/h；偏轻松社交骑，但需具备基础骑行能力 |
 | **适合车辆** | 建议使用 road bike 或 gravel bike |
 | **注意事项** | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线；如遇恶劣天气，或除领骑外报名人数不足 2 人，活动将自动取消 |
 | **人数限制** | 限 15 人 |
@@ -48,9 +49,9 @@ recurring:
 
 ### 路线预览
 
-- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its)
+- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/3127453714?share_token=adc06dIBnGsDqEyjNyPXRg5b1GPZ5ayTSAZw3dNk2ghAUtjP2R)
 
-<iframe src="https://www.komoot.com/tour/2901905197/embed?share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&profile=1" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/3127453714/embed?profile=1&share_token=adc06dIBnGsDqEyjNyPXRg5b1GPZ5ayTSAZw3dNk2ghAUtjP2R" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ### 活动说明
 
