@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Weekly relaxed social after-work ride every Tuesday with meet-up at 17:50 and rollout at 18:00, starting from Liesl-Karlstadt-Straße 1 in München Süd.
-date: 2026-05-05 17:50
+description: Weekly relaxed social after-work ride every Tuesday with meet-up at 17:15 and rollout at 17:30, starting from Liesl-Karlstadt-Straße 1 in München Süd.
+date: 2026-05-05 17:15
 eventType: after-work
 location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
@@ -31,13 +31,13 @@ Join us for a relaxed ride through München Süd after work.
 
 This is an **after-work social ride** for riders who want to get some fresh air, spin their legs after work, and enjoy an easy evening ride with ACC. The pace is friendly, but participants should be comfortable with basic road riding.
 
-We will meet at **17:50** at **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, with a **prompt rollout at 18:00**. The route is about **40.1 km** with around **330 m** of elevation gain. Komoot estimates a moving time of about **1h 48m** and an average speed of around **22.3 km/h**. We expect to return to the starting point at around **20:30**.
+We will meet at **17:15** at **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, with a **prompt rollout at 17:30**. The route is about **40.1 km** with around **330 m** of elevation gain. Komoot estimates a moving time of about **1h 48m** and an average speed of around **22.3 km/h**. We expect to return to the starting point at around **20:30**.
 
 ***
 
 |  | Details |
 | --- | --- |
-| **Time** | Meet-up at 17:50 · Rollout at 18:00 sharp · Expected return around 20:00 |
+| **Time** | Meet-up at 17:15 · Rollout at 17:30 sharp · Expected return around 20:00 |
 | **Meeting point** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
 | **Route** | Approx. 40.1 km · Approx. 330 m elevation gain · Estimated moving time 1h 48m |
 | **Pace** | Komoot estimates around 22.3 km/h average moving speed |

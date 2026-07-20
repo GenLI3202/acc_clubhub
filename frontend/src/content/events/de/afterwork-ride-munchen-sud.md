@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:50 Uhr und Abfahrt um 18:00 Uhr ab Liesl-Karlstadt-Straße 1.
-date: 2026-05-05 17:50
+description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:15 Uhr und Abfahrt um 17:30 Uhr ab Liesl-Karlstadt-Straße 1.
+date: 2026-05-05 17:15
 eventType: after-work
 location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
@@ -31,13 +31,13 @@ Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Süden.
 
 Diese **After-Work Social Ride** richtet sich an alle, die nach der Arbeit noch locker fahren, frische Luft schnappen und gemeinsam mit ACC eine angenehme Abendrunde drehen möchten. Das Tempo ist freundlich, aber grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt.
 
-Treffpunkt ist um **17:50 Uhr** bei **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, die **pünktliche Abfahrt ist um 18:00 Uhr**. Die Strecke ist etwa **40,1 km** lang und hat rund **330 hm**. Komoot schätzt die Fahrzeit auf etwa **1 Std. 48 Min.** und die Durchschnittsgeschwindigkeit auf rund **22,3 km/h**. Die Rückkehr zum Startpunkt ist gegen **20:30 Uhr** geplant.
+Treffpunkt ist um **17:15 Uhr** bei **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, die **pünktliche Abfahrt ist um 17:30 Uhr**. Die Strecke ist etwa **40,1 km** lang und hat rund **330 hm**. Komoot schätzt die Fahrzeit auf etwa **1 Std. 48 Min.** und die Durchschnittsgeschwindigkeit auf rund **22,3 km/h**. Die Rückkehr zum Startpunkt ist gegen **20:30 Uhr** geplant.
 
 ---
 
 |                | Infos |
 | -------------- | ----- |
-| **Zeit**       | Treffen um 17:50 Uhr · Pünktliche Abfahrt um 18:00 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
+| **Zeit**       | Treffen um 17:15 Uhr · Pünktliche Abfahrt um 17:30 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
 | **Treffpunkt** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
 | **Strecke**    | Ca. 40,1 km · Ca. 330 hm · Geschätzte Fahrzeit 1 Std. 48 Min. |
 | **Tempo**      | Komoot schätzt ca. 22,3 km/h Durchschnitt |
