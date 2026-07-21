@@ -114,7 +114,13 @@ export const GET: APIRoute = async ({ params }) => {
     const gearCollection = await getCollection('gear', ({ id, data }) => isLangMatch(id, data.lang, lang));
     const trainingCollection = await getCollection('training', ({ id, data }) => isLangMatch(id, data.lang, lang));
     const routesCollection = await getCollection('routes', ({ id, data }) => isLangMatch(id, data.lang, lang));
-    const eventsCollection = await getCollection('events', ({ id, data }) => isLangMatch(id, data.lang, lang));
+    const eventsCollection = await getCollection(
+      'events',
+      ({ id, data }) =>
+        isLangMatch(id, data.lang, lang) &&
+        data.status !== 'draft' &&
+        data.directOnly !== true
+    );
 
     // Transformiere Media Items
     const mediaItems: MediaSearchItem[] = mediaCollection.map(item => {

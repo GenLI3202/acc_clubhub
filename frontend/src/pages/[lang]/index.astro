@@ -23,7 +23,7 @@ const { lang } = Astro.params as { lang: Locale };
 const allEvents = await getCollection("events");
 const langEvents = allEvents.filter((e) => {
     const entryLang = e.id.includes("/") ? e.id.split("/")[0] : defaultLocale;
-    return entryLang === lang && e.data.status !== "draft";
+    return entryLang === lang && e.data.status !== "draft" && e.data.directOnly !== true;
 });
 const effectiveEvents = resolveRecurringEvents(langEvents);
 const { upcoming } = splitEvents(effectiveEvents);

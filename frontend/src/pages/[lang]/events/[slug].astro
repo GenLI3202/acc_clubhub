@@ -60,6 +60,8 @@ const eventTypeLabel = entry.data.slug === 'hahntennjoch-epic-ride'
   : ((eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType);
 
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
+const registrationReopened = entry.data.registrationReopened === true;
+const showRegistrationForm = (!isPastEvent || registrationReopened) && !entry.data.registrationLink;
 
 // Effective registration deadline: explicit value in frontmatter, or default to day before event at 22:00
 const rawDeadline = entry.data.registrationDeadline;
@@ -132,12 +134,12 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
   )}
 
   <!-- Registration Form: inline compact, before comments -->
-  {isPastEvent && (
+  {isPastEvent && !registrationReopened && (
     <div slot="before-comments" class="event-ended-notice">
       {endedLabels[lang] ?? endedLabels.en}
     </div>
   )}
-  {!isPastEvent && !entry.data.registrationLink && (
+  {showRegistrationForm && (
     <div
       slot="before-comments"
       id="registration-container"
@@ -158,7 +160,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
     </div>
   )}
   <!-- Floating subscribe banner: only on past events (active events have the form checkbox) -->
-  {isPastEvent && <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />}
+  {isPastEvent && !registrationReopened && <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />}
 </ArticleLayout>
 
 <!-- Client-side script to hydrate registration form -->
