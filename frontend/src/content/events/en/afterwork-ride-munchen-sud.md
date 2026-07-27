@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Weekly relaxed social after-work ride every Tuesday with meet-up at 17:00 and rollout at 17:15, starting from Liesl-Karlstadt-Straße 1 in München Süd.
-date: 2026-05-05 17:00
+description: Weekly relaxed social after-work ride every Tuesday with meet-up at 16:45 and rollout at 17:00, starting from Liesl-Karlstadt-Straße 1 in München Süd.
+date: 2026-05-05 16:45
 eventType: after-work
 location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
@@ -31,13 +31,13 @@ Join us for a relaxed ride through München Süd after work.
 
 This is an **after-work social ride** for riders who want to get some fresh air, spin their legs after work, and enjoy an easy evening ride with ACC. The pace is friendly, but participants should be comfortable with basic road riding.
 
-We will meet at **17:00** at **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, with a **prompt rollout at 17:15**. Please follow the Komoot link for the route details. We expect to return to the starting point at around **19:00**.
+We will meet at **16:45** at **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, with a **prompt rollout at 17:00**. Please follow the Komoot link for the route details. We expect to return to the starting point at around **19:00**.
 
 ***
 
 |  | Details |
 | --- | --- |
-| **Time** | Meet-up at 17:00 · Rollout at 17:15 sharp · Expected return around 19:00 |
+| **Time** | Meet-up at 16:45 · Rollout at 17:00 sharp · Expected return around 19:00 |
 | **Meeting point** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
 | **Route** | Please follow the Komoot route link |
 | **Pace** | Relaxed social ride; basic road-riding ability required |

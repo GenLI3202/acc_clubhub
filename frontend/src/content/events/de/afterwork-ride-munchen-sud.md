@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:00 Uhr und Abfahrt um 17:15 Uhr ab Liesl-Karlstadt-Straße 1.
-date: 2026-05-05 17:00
+description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 16:45 Uhr und Abfahrt um 17:00 Uhr ab Liesl-Karlstadt-Straße 1.
+date: 2026-05-05 16:45
 eventType: after-work
 location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
@@ -31,13 +31,13 @@ Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Süden.
 
 Diese **After-Work Social Ride** richtet sich an alle, die nach der Arbeit noch locker fahren, frische Luft schnappen und gemeinsam mit ACC eine angenehme Abendrunde drehen möchten. Das Tempo ist freundlich, aber grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt.
 
-Treffpunkt ist um **17:00 Uhr** bei **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, die **pünktliche Abfahrt ist um 17:15 Uhr**. Die Details zur Strecke findest du im Komoot-Link. Die Rückkehr zum Startpunkt ist gegen **19:00 Uhr** geplant.
+Treffpunkt ist um **16:45 Uhr** bei **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln**, die **pünktliche Abfahrt ist um 17:00 Uhr**. Die Details zur Strecke findest du im Komoot-Link. Die Rückkehr zum Startpunkt ist gegen **19:00 Uhr** geplant.
 
 ---
 
 |                | Infos |
 | -------------- | ----- |
-| **Zeit**       | Treffen um 17:00 Uhr · Pünktliche Abfahrt um 17:15 Uhr · Rückkehr voraussichtlich gegen 19:00 Uhr |
+| **Zeit**       | Treffen um 16:45 Uhr · Pünktliche Abfahrt um 17:00 Uhr · Rückkehr voraussichtlich gegen 19:00 Uhr |
 | **Treffpunkt** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
 | **Strecke**    | Bitte dem Komoot-Routenlink folgen |
 | **Tempo**      | Entspannte Social Ride; grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt |

@@ -1,8 +1,8 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: 每周二下班后 17:00 集合、17:15 从 Liesl-Karlstadt-Straße 1 出发的慕尼黑南区轻松社交骑行。
-date: 2026-05-05 17:00
+description: 每周二下班后 16:45 集合、17:00 从 Liesl-Karlstadt-Straße 1 出发的慕尼黑南区轻松社交骑行。
+date: 2026-05-05 16:45
 eventType: after-work
 location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
 author: ACC Club
@@ -31,13 +31,13 @@ recurring:
 
 这是一场以 **after-work 社交休闲骑** 为主的路线，适合想在工作日傍晚出来透透气、活动一下，也和 ACC 车友一起骑车的人。整体节奏友好，但默认参加者具备基础公路骑行能力。
 
-我们将于 **17:00** 在 **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln** 集合，**17:15 准时出发**。路线以 Komoot 链接为准，预计 **19:00 左右回到起点**。
+我们将于 **16:45** 在 **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln** 集合，**17:00 准时出发**。路线以 Komoot 链接为准，预计 **19:00 左右回到起点**。
 
 ***
 
 |  | 信息 |
 | --- | --- |
-| **时间** | 17:00 集合，17:15 准时发车，预计 19:00 回到起点 |
+| **时间** | 16:45 集合，17:00 准时发车，预计 19:00 回到起点 |
 | **集合地点** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
 | **路线** | 以 Komoot 路线链接为准 |
 | **强度** | 偏轻松社交骑，但需具备基础骑行能力 |
