@@ -10,7 +10,7 @@ cover: /images/events/acc-weekend-aquaride-2026-08-01/cover.jpg
 wechatQrCode: /images/events/acc-weekend-aquaride-2026-08-01/wechat-qr.png
 displaySections:
   - upcoming
-status: draft
+status: published
 ACCOfficialRide: true
 distanceKm: 29.2
 routeKomootUrl: https://www.komoot.com/tour/3158133442?share_token=aGsUjdU9K2HvcEDTaQyiSzpWyoabrUYXwFKaQjwDZG9XURlUxI
