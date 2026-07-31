@@ -9,6 +9,7 @@ eventType: social-ride
 cover: /images/events/acc-weekend-aquaride-2026-08-01/cover.jpg
 wechatQrCode: /images/events/acc-weekend-aquaride-2026-08-01/wechat-qr.png
 displaySections:
+  - hero
   - upcoming
 status: published
 ACCOfficialRide: true
