@@ -16,7 +16,6 @@ const mainSponsorData = SPONSORS_MAIN.filter((s) => ["ani", "grc", "magicshine"]
     ...s,
     cat: t(lang, s.catKey as Parameters<typeof t>[1]),
     blurb: t(lang, s.blurbKey as Parameters<typeof t>[1]),
-    sinceLabel: t(lang, "partners.since"),
 }));
 
 const partnerData = SPONSORS_PARTNERS.map((s) => ({
@@ -26,7 +25,7 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
-    <main class="partners-page">
+    <div class="partners-page">
 
         {/* ============================================================
             1. EDITORIAL HEADER
@@ -65,11 +64,15 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
                         <div class="main-sponsor-card">
                             <div class="card-top">
                                 <div class="card-eyebrow">
-                                    OFFICIAL · {s.cat.toUpperCase()} · {s.sinceLabel.toUpperCase()} {s.since}
+                                    OFFICIAL · {s.cat.toUpperCase()}
                                 </div>
                             </div>
                             <div class="card-logo-well">
-                                <img src={s.logoFull} alt={s.name} class="card-logo-img" />
+                                <img
+                                    src={s.logoFull}
+                                    alt={s.name}
+                                    class:list={["card-logo-img", { "logo--invert-dark": s.invertOnDark }]}
+                                />
                             </div>
                             <div class="card-footer">
                                 <div class="card-footer-text">
@@ -103,11 +106,15 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
                     <span class="section-label-text">{t(lang, "partners.friends")}</span>
                     <span class="section-label-rule" aria-hidden="true"></span>
                 </div>
-                <div class="friends-grid">
+                <div class="friends-grid" style={`--logo-count: ${partnerData.length};`}>
                     {partnerData.map((s, i) => (
                         <div class:list={["friend-tile", { "friend-tile--no-border": i === partnerData.length - 1 }]}>
                             <div class="friend-logo">
-                                <img src={s.logoImg} alt={s.name} class="friend-logo-img" />
+                                <img
+                                    src={s.logoImg}
+                                    alt={s.name}
+                                    class:list={["friend-logo-img", { "logo--invert-dark": s.invertOnDark }]}
+                                />
                             </div>
                             <div class="friend-cat">{s.cat}</div>
                         </div>
@@ -136,7 +143,7 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
             </div>
         </section>
 
-    </main>
+    </div>
 
     <!-- Video modal -->
     <div class="video-modal" id="video-modal" aria-hidden="true" role="dialog" aria-modal="true">
@@ -189,6 +196,12 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
 </BaseLayout>
 
 <style>
+    /* Override main constraints for full-bleed layout */
+    :global(main) {
+        max-width: none;
+        padding: 0;
+    }
+
     .partners-page {
         background: var(--color-bg-canvas);
     }
@@ -298,26 +311,25 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
         padding: 80px 32px;
     }
 
+    /* minmax(0, …) so a wide logo's min-content width can't steal column space
+       from a narrow one — otherwise the 4:1 marks squeeze the squarer ones. */
     .main-sponsors-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 32px;
-        max-width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 28px;
         margin-top: 56px;
-        margin-left: auto;
-        margin-right: auto;
     }
 
     .main-sponsor-card {
         background: var(--color-bg-canvas);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-card);
-        padding: 32px 36px 28px;
+        padding: 28px 28px 24px;
         box-shadow: var(--shadow-sm);
         position: relative;
         display: flex;
         flex-direction: column;
-        min-height: 420px;
+        min-height: 340px;
         transition: transform 250ms ease, box-shadow 250ms ease;
     }
 
@@ -346,13 +358,15 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 44px 12px;
-        min-height: 200px;
+        padding: 32px 12px;
+        min-height: 150px;
     }
 
+    /* Capping width and height together keeps wordmarks of very different
+       aspect ratios (4:1 vs 2.5:1) at a similar optical area. */
     .card-logo-img {
-        max-height: 140px;
-        max-width: 360px;
+        max-height: 72px;
+        max-width: 76%;
         width: auto;
         height: auto;
         object-fit: contain;
@@ -481,6 +495,13 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
         margin-top: 2px;
     }
 
+    /* Dark-ink logos would vanish on the dark canvas. Inverting flips them to
+       light; the paired hue-rotate puts chromatic marks back to their own hue
+       (Magicshine's orange would otherwise come out blue). */
+    :global(:root.dark) .logo--invert-dark {
+        filter: invert(1) hue-rotate(180deg);
+    }
+
     /* ---- Friends section ---- */
     .section-friends {
         background: var(--color-bg-secondary);
@@ -489,7 +510,7 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
 
     .friends-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(var(--logo-count, 4), minmax(0, 1fr));
         gap: 0;
         border: 1px solid var(--color-border);
         background: var(--color-bg-canvas);
@@ -652,7 +673,7 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
        ============================================================ */
     @media (max-width: 1024px) {
         .main-sponsors-grid {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
@@ -691,8 +712,7 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
 
         /* Official partners: single column, full width */
         .main-sponsors-grid {
-            grid-template-columns: 1fr;
-            max-width: 100%;
+            grid-template-columns: minmax(0, 1fr);
             gap: 24px;
             margin-top: 36px;
         }
@@ -730,7 +750,7 @@ const partnerData = SPONSORS_PARTNERS.map((s) => ({
 
         /* Friends grid: 2 columns; last odd item spans both */
         .friends-grid {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             margin-top: 36px;
         }
         .friend-tile {

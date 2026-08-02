@@ -29,10 +29,18 @@ const all = [...SPONSORS_MAIN.filter((s) => ["ani", "grc", "magicshine"].include
                     aria-label={s.name}
                 >
                     {"logoParent" in s && (
-                        <img src={s.logoParent} alt={s.name} class="strip-img" />
+                        <img
+                            src={s.logoParent}
+                            alt={s.name}
+                            class:list={["strip-img", { "logo--invert-dark": s.invertOnDark }]}
+                        />
                     )}
                     {"logoImg" in s && (
-                        <img src={s.logoImg} alt={s.name} class="strip-img" />
+                        <img
+                            src={s.logoImg}
+                            alt={s.name}
+                            class:list={["strip-img", { "logo--invert-dark": s.invertOnDark }]}
+                        />
                     )}
                 </a>
             ))}
@@ -97,7 +105,7 @@ const all = [...SPONSORS_MAIN.filter((s) => ["ani", "grc", "magicshine"].include
 
     .strip-logos {
         display: grid;
-        grid-template-columns: repeat(var(--logo-count, 6), 1fr);
+        grid-template-columns: repeat(var(--logo-count, 6), minmax(0, 1fr));
         align-items: center;
         gap: 0;
     }
@@ -106,7 +114,7 @@ const all = [...SPONSORS_MAIN.filter((s) => ["ani", "grc", "magicshine"].include
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 8px 0;
+        padding: 8px 12px;
         border-left: 1px solid var(--color-border);
         color: var(--color-primary);
         opacity: 0.62;
@@ -127,13 +135,20 @@ const all = [...SPONSORS_MAIN.filter((s) => ["ani", "grc", "magicshine"].include
         filter: grayscale(0);
     }
 
+    /* Percentage rather than a fixed cap so logos never outgrow their cell as
+       the roster changes. */
     .strip-img {
         max-height: 56px;
-        max-width: 150px;
+        max-width: 100%;
         width: auto;
         height: auto;
         object-fit: contain;
         display: block;
+    }
+
+    /* Dark-ink logos would vanish on the dark canvas — see partners.astro. */
+    :global(:root.dark) .logo--invert-dark {
+        filter: invert(1) hue-rotate(180deg);
     }
 
     .strip-img--ledu {

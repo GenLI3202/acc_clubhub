@@ -10,6 +10,8 @@ export interface SponsorMain {
     blurbKey: string;
     since: string;
     videoId?: string;
+    /** Logo is dark ink on transparency — needs lightening to stay legible in dark mode. */
+    invertOnDark?: boolean;
 }
 
 export interface SponsorPartner {
@@ -17,6 +19,8 @@ export interface SponsorPartner {
     name: string;
     catKey: string;
     logoImg: string;
+    /** Logo is dark ink on transparency — needs lightening to stay legible in dark mode. */
+    invertOnDark?: boolean;
 }
 
 export const SPONSORS_MAIN: readonly SponsorMain[] = [
@@ -50,6 +54,7 @@ export const SPONSORS_MAIN: readonly SponsorMain[] = [
         catKey: "partners.category.apparel",
         blurbKey: "partners.blurb.grc",
         since: "2026",
+        invertOnDark: true,
     },
     {
         id: "magicshine",
@@ -60,6 +65,7 @@ export const SPONSORS_MAIN: readonly SponsorMain[] = [
         catKey: "partners.category.lighting",
         blurbKey: "partners.blurb.magicshine",
         since: "2026",
+        invertOnDark: true,
     },
 ];
 
@@ -67,5 +73,5 @@ export const SPONSORS_PARTNERS: readonly SponsorPartner[] = [
     { id: "winspace", name: "Winspace Lun", catKey: "partners.category.wheelset", logoImg: "/images/sponsors/winspace_lun_logo.jpeg" },
     { id: "upvine",   name: "Upvine 静藤",  catKey: "partners.category.wheelset", logoImg: "/images/sponsors/upvine_logo.png" },
     { id: "superteam",name: "Superteam",    catKey: "partners.category.wheelset", logoImg: "/images/sponsors/superteam_logo.png" },
-    { id: "sunrimoon", name: "Sunrimoon",   catKey: "partners.category.helmet",    logoImg: "/images/sponsors/sunrimoon_logo.png" },
+    { id: "sunrimoon", name: "Sunrimoon",   catKey: "partners.category.helmet",    logoImg: "/images/sponsors/sunrimoon_logo.png", invertOnDark: true },
 ];
