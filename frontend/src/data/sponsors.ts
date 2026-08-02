@@ -41,6 +41,16 @@ export const SPONSORS_MAIN: readonly SponsorMain[] = [
         blurbKey: "partners.blurb.ledu",
         since: "2026",
     },
+    {
+        id: "grc",
+        name: "GRC",
+        parent: "GRC",
+        logoFull: "/images/sponsors/grc_logo.png",
+        logoParent: "/images/sponsors/grc_logo.png",
+        catKey: "partners.category.apparel",
+        blurbKey: "partners.blurb.grc",
+        since: "2026",
+    },
 ];
 
 export const SPONSORS_PARTNERS: readonly SponsorPartner[] = [

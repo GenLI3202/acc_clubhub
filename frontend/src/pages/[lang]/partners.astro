@@ -12,7 +12,7 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Locale };
 const pageTitle = t(lang, "nav.partners");
 
-const mainSponsorData = SPONSORS_MAIN.filter((s) => s.id === "ani").map((s) => ({
+const mainSponsorData = SPONSORS_MAIN.filter((s) => ["ani", "grc"].includes(s.id)).map((s) => ({
     ...s,
     cat: t(lang, s.catKey as Parameters<typeof t>[1]),
     blurb: t(lang, s.blurbKey as Parameters<typeof t>[1]),

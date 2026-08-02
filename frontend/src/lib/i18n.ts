@@ -176,6 +176,7 @@ export const ui = {
         'partners.ctaDeck': '下载 Partnership Deck',
         'partners.blurb.ani': '官方营养合作伙伴 —— 团骑、长距离、恢复，每一程的能量补给。',
         'partners.blurb.ledu': '长距离骑行后的那一桌 —— 我们在慕尼黑的周日驿站。',
+        'partners.blurb.grc': '官方骑行服饰合作伙伴 —— 每一次出车，专业剪裁贴身相伴。',
         'partners.category.nutrition': '营养',
         'partners.category.hospitality': '餐饮',
         'partners.category.cafe': '咖啡',
@@ -185,6 +186,7 @@ export const ui = {
         'partners.category.wheelset': '轮组',
         'partners.category.lighting': '灯具',
         'partners.category.helmet': '头盔',
+        'partners.category.apparel': '骑行服饰',
     },
     en: {
         'nav.home': 'Home',
@@ -334,6 +336,7 @@ export const ui = {
         'partners.ctaDeck': 'Download Partnership Deck',
         'partners.blurb.ani': 'Official nutrition partner — bars, gels, and recovery for every ACC ride.',
         'partners.blurb.ledu': 'A table after the long ride — our Sunday post-ride stop in München.',
+        'partners.blurb.grc': 'Official apparel partner — precision-cut kit for every ACC ride.',
         'partners.category.nutrition': 'Nutrition',
         'partners.category.hospitality': 'Hospitality',
         'partners.category.cafe': 'Café',
@@ -343,6 +346,7 @@ export const ui = {
         'partners.category.wheelset': 'Wheelset',
         'partners.category.lighting': 'Lighting',
         'partners.category.helmet': 'Helmet',
+        'partners.category.apparel': 'Apparel',
     },
     de: {
         'nav.home': 'Startseite',
@@ -492,6 +496,7 @@ export const ui = {
         'partners.ctaDeck': 'Partnership Deck herunterladen',
         'partners.blurb.ani': 'Offizieller Ernährungspartner — Riegel, Gels und Recovery für jede ACC-Tour.',
         'partners.blurb.ledu': 'Ein Tisch nach der langen Tour — unser Sonntags-Stopp in München.',
+        'partners.blurb.grc': 'Offizieller Bekleidungspartner — präzise geschnittenes Kit für jede ACC-Tour.',
         'partners.category.nutrition': 'Ernährung',
         'partners.category.hospitality': 'Gastronomie',
         'partners.category.cafe': 'Café',
@@ -501,6 +506,7 @@ export const ui = {
         'partners.category.wheelset': 'Laufradsatz',
         'partners.category.lighting': 'Beleuchtung',
         'partners.category.helmet': 'Helm',
+        'partners.category.apparel': 'Bekleidung',
     },
 } as const;
 
