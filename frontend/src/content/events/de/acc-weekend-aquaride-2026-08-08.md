@@ -1,13 +1,13 @@
 ---
-slug: acc-weekend-aquaride-2026-08-01
+slug: acc-weekend-aquaride-2026-08-08
 title: English Garden Aqua Ride
 description: Eine entspannte Sightseeing-Runde am Samstagmorgen ab Münchner Freiheit durch den Englischen Garten, ca. 29,2 km mit geplanter sommerlicher Wasserpause.
 location: Münchner Freiheit, München
 author: ACC Club
-date: 2026-08-01 09:30
+date: 2026-08-08 09:30
 eventType: social-ride
-cover: /images/events/acc-weekend-aquaride-2026-08-01/cover.jpg
-wechatQrCode: /images/events/acc-weekend-aquaride-2026-08-01/wechat-qr.png
+cover: /images/events/acc-weekend-aquaride-2026-08-08/cover.jpg
+wechatQrCode: /images/events/acc-weekend-aquaride-2026-08-08/wechat-qr.png
 displaySections:
   - hero
   - upcoming
@@ -28,7 +28,7 @@ Die Wasserpause und die Stopps passen wir an die Situation am Tag an. Die tatsä
 
 |  |  |
 | --- | --- |
-| **Zeit** | Samstag, 1. August 2026 · **Abfahrt 09:30** |
+| **Zeit** | Samstag, 8. August 2026 · **Abfahrt 09:30** |
 | **Treffpunkt** | **Münchner Freiheit** · [Google Maps](https://maps.app.goo.gl/RXRRAgpYdFKG3VcQ6?g_st=ic) |
 | **Route** | **ACC-Weekend-AquaRide** · [Route auf Komoot](https://www.komoot.com/tour/3158133442?share_token=aGsUjdU9K2HvcEDTaQyiSzpWyoabrUYXwFKaQjwDZG9XURlUxI) |
 | **Distanz / Höhenmeter** | Ca. **29,2 km / 120 hm**, Komoot-Fahrzeit ca. **1h48m** |
@@ -51,6 +51,8 @@ Der Fokus liegt auf einer lockeren Runde rund um den Englischen Garten, mit Somm
 
 Die Wasserpause ist optional, Sicherheit geht vor. Bitte prüfe deine eigene Verfassung und die Situation vor Ort, bevor du ins Wasser gehst. Wer nicht ins Wasser möchte, kann am Rand pausieren, reden oder Fotos machen.
 
+Wir weisen auf Sicherheit hin und achten aufeinander, aber Wasseraktivitäten sind mit gewissen Risiken verbunden. Bitte schätze deine eigenen Fähigkeiten realistisch ein und achte selbst auf deine Sicherheit und deine Sachen. Für Zwischenfälle während der Wasserpause liegt die Verantwortung bei den Teilnehmenden selbst.
+
 ---
 
 ### Rückfahrt / Logistics
@@ -67,4 +69,4 @@ Die Anmeldung mit echtem Namen ist für den Versicherungsschutz erforderlich. Er
 
 Nach der Website-Anmeldung scanne bitte den QR-Code unten, um der WeChat-Gruppe für Treffpunktdetails, Straßenlage und kurzfristige Updates beizutreten. Die WeChat-Gruppe ist nur für Kommunikation und ersetzt nicht die Website-Anmeldung.
 
-<img src="/images/events/acc-weekend-aquaride-2026-08-01/wechat-qr.png" alt="English Garden Aqua Ride WeChat group QR code" style="max-width: 40%;" />
+<img src="/images/events/acc-weekend-aquaride-2026-08-08/wechat-qr.png" alt="English Garden Aqua Ride WeChat group QR code" style="max-width: 40%;" />
