@@ -112,7 +112,10 @@ export const GET: APIRoute = async ({ params }) => {
     // Sammle alle Collections für die angegebene Sprache
     const mediaCollection = await getCollection('media', ({ id, data }) => isLangMatch(id, data.lang, lang));
     const gearCollection = await getCollection('gear', ({ id, data }) => isLangMatch(id, data.lang, lang));
-    const trainingCollection = await getCollection('training', ({ id, data }) => isLangMatch(id, data.lang, lang));
+    const trainingCollection = await getCollection(
+      'training',
+      ({ id, data }) => isLangMatch(id, data.lang, lang) && data.status !== 'draft'
+    );
     const routesCollection = await getCollection('routes', ({ id, data }) => isLangMatch(id, data.lang, lang));
     const eventsCollection = await getCollection(
       'events',
