@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **Group Riding Rules Hand Gestures Illustration** (2026-08-05)
+  - [X] Generated vector infographic diagram illustrating key group riding hand signals (停车/STOP, 减速/SLOW DOWN, 坑洞/POTHOLE, 转向/TURN, 变单列/SINGLE FILE).
+  - [X] Placed image asset at `frontend/public/images/knowledge/training/acc-group-riding-hand-signals.png`.
+  - [X] Embedded illustration in `frontend/src/content/knowledge/training/zh/acc-group-riding-rules.md` under `### 常用手势`.
+
 - [X] **North Afterwork Ride Location Display Fix** (2026-06-25)
   - [X] Replaced the raw Google Maps URL in zh/en/de event location metadata with readable meeting-point labels.
   - [X] Converted visible markdown URL text to labeled Google Maps links while preserving the destination.
