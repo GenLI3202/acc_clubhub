@@ -9,7 +9,8 @@ import { getLangFromEntry, t, type Locale } from '../../../../lib/i18n';
 
 export async function getStaticPaths() {
   const allTraining = await getCollection('training');
-  return allTraining.map((entry) => {
+  // Drafts are excluded from the library index; don't leave their detail pages reachable either.
+  return allTraining.filter((entry) => entry.data.status !== 'draft').map((entry) => {
     const lang = getLangFromEntry(entry.filePath, 'training');
     return {
       params: { lang, slug: entry.data.slug },

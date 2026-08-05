@@ -1,0 +1,471 @@
+---
+// components/home/HomeHero.astro
+// Homepage hero carousel: slide 0 is the club brand slide (team photo),
+// followed by one slide per event flagged for the hero section.
+// Auto-advances; pauses on hover/focus and when the tab is hidden.
+// Separate from events/EventHero.astro on purpose — that one is the events
+// page hero and deliberately has no autoplay.
+
+import type { CollectionEntry } from 'astro:content';
+import { t, type Locale } from '../../lib/i18n';
+
+interface Props {
+  lang: Locale;
+  events?: CollectionEntry<'events'>[];
+  /** Auto-advance interval in ms. Set to 0 to disable autoplay. */
+  intervalMs?: number;
+}
+
+const { lang, events = [], intervalMs = 5000 } = Astro.props;
+
+const BRAND_IMAGE = '/images/home/acc-hero-group.jpg';
+
+const typeLabels: Record<string, string> = {
+  'training-camp': lang === 'zh' ? '训练营' : lang === 'de' ? 'Trainingslager' : 'Training Camp',
+  'social-ride':   lang === 'zh' ? '休闲骑' : lang === 'de' ? 'Social Ride'    : 'Social Ride',
+  'after-work':    lang === 'zh' ? '下班骑' : lang === 'de' ? 'After-Work'     : 'After-Work Ride',
+  'race':          lang === 'zh' ? '比赛'   : lang === 'de' ? 'Rennen'         : 'Race',
+  'workshop':      lang === 'zh' ? '工作坊' : lang === 'de' ? 'Workshop'       : 'Workshop',
+  'training-ride': lang === 'zh' ? '训练骑' : lang === 'de' ? 'Trainingsfahrt' : 'Training Ride',
+  'special':       lang === 'zh' ? '特别活动' : lang === 'de' ? 'Special'      : 'Special Event',
+  'gathering':     lang === 'zh' ? '聚会'   : lang === 'de' ? 'Treffen'        : 'Gathering',
+  'multi-day':     lang === 'zh' ? '多日活动' : lang === 'de' ? 'Mehrtägig'    : 'Multi-Day',
+};
+
+const detailsLabel = lang === 'zh' ? '了解详情 →' : lang === 'de' ? 'Mehr erfahren →' : 'Learn More →';
+const prevLabel = lang === 'zh' ? '上一张' : lang === 'de' ? 'Zurück' : 'Previous slide';
+const nextLabel = lang === 'zh' ? '下一张' : lang === 'de' ? 'Weiter' : 'Next slide';
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString(
+    lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
+}
+
+// Slide 0 is always the brand slide; events follow.
+const slides = [
+  {
+    kind: 'brand' as const,
+    image: BRAND_IMAGE,
+    eyebrow: 'Across Cycling Club · München',
+    title: 'ACC ClubHub',
+    meta: null as string | null,
+    body: t(lang, 'home.tagline'),
+    href: `/${lang}/events`,
+    cta: t(lang, 'home.heroCta'),
+  },
+  ...events.map((event) => ({
+    kind: 'event' as const,
+    image: event.data.coverImage || BRAND_IMAGE,
+    eyebrow: typeLabels[event.data.eventType] ?? event.data.eventType,
+    title: event.data.title,
+    meta: `${formatDate(event.data.date)} · ${event.data.location}`,
+    body: event.data.description,
+    href: `/${lang}/events/${event.data.slug}`,
+    cta: detailsLabel,
+  })),
+];
+
+const hasCarousel = slides.length > 1;
+---
+
+<section
+  class="homepage-hero"
+  id="homeHero"
+  data-interval={hasCarousel ? intervalMs : 0}
+  aria-roledescription={hasCarousel ? 'carousel' : undefined}
+>
+  {slides.map((slide, i) => (
+    <div
+      class:list={['hero-slide', { active: i === 0 }]}
+      style={`background-image: url('${slide.image}')`}
+      aria-hidden={i !== 0}
+    ></div>
+  ))}
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    {slides.map((slide, i) => (
+      <div class:list={['hero-slide-content', { active: i === 0 }]} aria-hidden={i !== 0}>
+        <p class="hero-eyebrow">{slide.eyebrow}</p>
+        <h1 class:list={['hero-title', { 'hero-title--event': slide.kind === 'event' }]}>
+          {slide.title}
+        </h1>
+        {slide.meta && <p class="hero-meta">{slide.meta}</p>}
+        {slide.body && <p class="hero-tagline">{slide.body}</p>}
+        <a href={slide.href} class="hero-cta" tabindex={i === 0 ? 0 : -1}>{slide.cta}</a>
+      </div>
+    ))}
+  </div>
+
+  {hasCarousel && (
+    <>
+      <button class="hero-arrow hero-arrow--prev" id="homeHeroPrev" aria-label={prevLabel}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="hero-arrow hero-arrow--next" id="homeHeroNext" aria-label={nextLabel}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <div class="hero-dots">
+        {slides.map((slide, i) => (
+          <button
+            class:list={['hero-dot', { active: i === 0 }]}
+            data-dot={i}
+            aria-label={slide.title}
+          ></button>
+        ))}
+      </div>
+    </>
+  )}
+</section>
+
+<script>
+  const hero = document.getElementById('homeHero');
+  if (hero) {
+    const slides = hero.querySelectorAll<HTMLElement>('.hero-slide');
+    const contents = hero.querySelectorAll<HTMLElement>('.hero-slide-content');
+    const dots = hero.querySelectorAll<HTMLElement>('.hero-dot');
+    const interval = Number(hero.dataset.interval || 0);
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    function goTo(index: number) {
+      const next = (index + slides.length) % slides.length;
+      if (next === current) return;
+
+      slides[current].classList.remove('active');
+      slides[current].setAttribute('aria-hidden', 'true');
+      contents[current].classList.remove('active');
+      contents[current].setAttribute('aria-hidden', 'true');
+      contents[current].querySelector('a')?.setAttribute('tabindex', '-1');
+      dots[current]?.classList.remove('active');
+
+      current = next;
+
+      slides[current].classList.add('active');
+      slides[current].setAttribute('aria-hidden', 'false');
+      contents[current].classList.add('active');
+      contents[current].setAttribute('aria-hidden', 'false');
+      contents[current].querySelector('a')?.setAttribute('tabindex', '0');
+      dots[current]?.classList.add('active');
+    }
+
+    // Autoplay — skipped entirely when the visitor prefers reduced motion.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function start() {
+      if (timer || !interval || reduceMotion || slides.length < 2) return;
+      timer = setInterval(() => goTo(current + 1), interval);
+    }
+
+    function stop() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    /** Manual navigation restarts the clock so the new slide gets a full interval. */
+    function jump(index: number) {
+      stop();
+      goTo(index);
+      start();
+    }
+
+    document.getElementById('homeHeroPrev')?.addEventListener('click', () => jump(current - 1));
+    document.getElementById('homeHeroNext')?.addEventListener('click', () => jump(current + 1));
+    dots.forEach((dot) => dot.addEventListener('click', () => jump(Number(dot.dataset.dot))));
+
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', start);
+    hero.addEventListener('focusin', stop);
+    hero.addEventListener('focusout', start);
+
+    document.addEventListener('visibilitychange', () => {
+      document.hidden ? stop() : start();
+    });
+
+    hero.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') jump(current - 1);
+      if (e.key === 'ArrowRight') jump(current + 1);
+    });
+
+    // Horizontal swipe on touch devices. Ignores mostly-vertical gestures so
+    // it never competes with page scrolling.
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    hero.addEventListener(
+      'touchstart',
+      (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+        stop();
+      },
+      { passive: true }
+    );
+
+    hero.addEventListener(
+      'touchend',
+      (e) => {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+          jump(dx < 0 ? current + 1 : current - 1);
+        } else {
+          start();
+        }
+      },
+      { passive: true }
+    );
+
+    start();
+  }
+</script>
+
+<style>
+  .homepage-hero {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    min-height: 480px;
+    max-height: 760px;
+    overflow: hidden;
+    background-color: var(--color-primary);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  /* ---- Background slides ---- */
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 40%;
+    background-color: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+
+  .hero-slide.active {
+    opacity: 1;
+  }
+
+  /* Two scrims: the vertical one anchors the content to the bottom, the
+     horizontal one keeps left-aligned copy legible over busy photography
+     (event covers are group shots — bright jerseys right where the title sits). */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.65) 0%,
+        rgba(0, 0, 0, 0.4) 45%,
+        rgba(0, 0, 0, 0) 75%
+      ),
+      linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0.15) 100%
+      );
+  }
+
+  /* ---- Content ---- */
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 3rem 2rem 4.5rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+  }
+
+  /* Stack every slide's content in one grid cell so the hero keeps the
+     height of its tallest slide and nothing reflows between transitions. */
+  .hero-slide-content {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease,
+      visibility 0.5s;
+    align-self: end;
+  }
+
+  .hero-slide-content.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
+  }
+
+  /* Event titles are prose, not a wordmark — they need a smaller size and
+     a max-width so long Chinese titles don't run the full viewport. */
+  .hero-title--event {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    max-width: 16em;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-meta {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 2rem;
+    max-width: 520px;
+    line-height: 1.5;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--color-accent);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition:
+      background var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-cta:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  /* ---- Arrows ---- */
+  .hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    cursor: pointer;
+    transition:
+      background var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .hero-arrow:hover {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .hero-arrow:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  .hero-arrow--prev { left: 1rem; }
+  .hero-arrow--next { right: 1rem; }
+
+  /* ---- Dots ---- */
+  .hero-dots {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .hero-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition:
+      background var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .hero-dot.active {
+    background: #ffffff;
+    transform: scale(1.3);
+  }
+
+  .hero-dot:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .hero-arrow {
+      width: 36px;
+      height: 36px;
+      /* Content fills the lower half on narrow screens — keep the arrows up in
+         the image area so they don't sit on top of the eyebrow/title. */
+      top: 30%;
+    }
+    .hero-arrow--prev { left: 0.5rem; }
+    .hero-arrow--next { right: 0.5rem; }
+    .hero-content {
+      padding: 2rem 1.25rem 4rem;
+    }
+    .hero-title--event {
+      max-width: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide,
+    .hero-slide-content {
+      transition: none;
+    }
+  }
+</style>

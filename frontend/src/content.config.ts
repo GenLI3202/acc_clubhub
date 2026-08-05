@@ -38,6 +38,8 @@ const GEAR_CATEGORIES = [
 
 // Training Categories (Governance Guide 2.2)
 const TRAINING_CATEGORIES = [
+  'safety',     // 安全与规范
+  'skills',     // 骑行技术
   'physical',   // 体能训练
   'planning',   // 训练计划
   'wellness',   // 营养与健康
@@ -269,6 +271,10 @@ const eventsCollection = defineCollection({
     // Past events (date < today) always appear in the archive regardless of this field.
     displaySection: z.enum(EVENT_SECTIONS).optional().default('upcoming'),
     displaySections: z.array(z.enum(EVENT_SECTIONS)).min(1).optional(),
+    // Pins an event to the front of the hero carousel. Lower sorts first;
+    // events without it fall back to soonest-date order behind those with it.
+    // Use to spotlight a campaign that isn't the chronologically next ride.
+    heroPriority: z.number().int().optional(),
     recurring: z.object({
       enabled: z.boolean().optional().default(true),
       frequency: z.enum(RECURRENCE_FREQUENCIES).default('weekly'),
