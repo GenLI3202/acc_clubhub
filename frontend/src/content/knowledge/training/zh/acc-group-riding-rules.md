@@ -57,6 +57,8 @@ cover: /images/media/adventure/rad-race-120-2025/gallery/2026-group-turn.jpg
 
 ### 常用手势
 
+![ACC 团骑常用手势示意图](/images/knowledge/training/acc-group-riding-hand-signals.png)
+
 | 信号 | 动作 | 含义 |
 | --- | --- | --- |
 | **停车** | 举起手掌（五指张开）过肩 | 前方需要停车 |
