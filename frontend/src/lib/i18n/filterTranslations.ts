@@ -16,6 +16,8 @@ export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, s
         'electronics': { zh: '电子设备', de: 'Elektronik', en: 'Electronics' },
         'apparel': { zh: '骑行服饰', de: 'Bekleidung', en: 'Apparel' },
         'maintenance': { zh: '维修保养', de: 'Wartung', en: 'Maintenance' },
+        'safety': { zh: '安全与规范', de: 'Sicherheit & Regeln', en: 'Safety & Rules' },
+        'skills': { zh: '骑行技术', de: 'Fahrtechnik', en: 'Riding Skills' },
         'physical': { zh: '体能训练', de: 'Körperlich', en: 'Physical' },
         'planning': { zh: '训练规划', de: 'Planung', en: 'Planning' },
         'wellness': { zh: '健康恢复', de: 'Wellness', en: 'Wellness' },

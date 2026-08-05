@@ -38,6 +38,8 @@ const GEAR_CATEGORIES = [
 
 // Training Categories (Governance Guide 2.2)
 const TRAINING_CATEGORIES = [
+  'safety',     // 安全与规范
+  'skills',     // 骑行技术
   'physical',   // 体能训练
   'planning',   // 训练计划
   'wellness',   // 营养与健康

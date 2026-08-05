@@ -50,28 +50,20 @@ const featuredItems = sortedTraining
   });
 
 // Category shelves: top 4 items per category
-const CATEGORY_ORDER = ['physical', 'planning', 'wellness', 'analytics'] as const;
+const CATEGORY_ORDER = ['safety', 'skills', 'physical', 'planning', 'wellness', 'analytics'] as const;
 type TrainingCategory = (typeof CATEGORY_ORDER)[number];
 
-const byCategory: Record<TrainingCategory, typeof sortedTraining> = {
-  physical: sortedTraining.filter((e) => e.data.category === 'physical').slice(0, 4),
-  planning: sortedTraining.filter((e) => e.data.category === 'planning').slice(0, 4),
-  wellness: sortedTraining.filter((e) => e.data.category === 'wellness').slice(0, 4),
-  analytics: sortedTraining.filter((e) => e.data.category === 'analytics').slice(0, 4),
-};
+const byCategory = Object.fromEntries(
+  CATEGORY_ORDER.map((cat) => [cat, sortedTraining.filter((e) => e.data.category === cat).slice(0, 4)])
+) as Record<TrainingCategory, typeof sortedTraining>;
 
-const categoryTitles: Record<TrainingCategory, string> = {
-  physical: t(lang, 'knowledge.training.category.physical'),
-  planning: t(lang, 'knowledge.training.category.planning'),
-  wellness: t(lang, 'knowledge.training.category.wellness'),
-  analytics: t(lang, 'knowledge.training.category.analytics'),
-};
-const categoryDescs: Record<TrainingCategory, string> = {
-  physical: t(lang, 'knowledge.training.categoryDesc.physical'),
-  planning: t(lang, 'knowledge.training.categoryDesc.planning'),
-  wellness: t(lang, 'knowledge.training.categoryDesc.wellness'),
-  analytics: t(lang, 'knowledge.training.categoryDesc.analytics'),
-};
+const categoryTitles = Object.fromEntries(
+  CATEGORY_ORDER.map((cat) => [cat, t(lang, `knowledge.training.category.${cat}`)])
+) as Record<TrainingCategory, string>;
+
+const categoryDescs = Object.fromEntries(
+  CATEGORY_ORDER.map((cat) => [cat, t(lang, `knowledge.training.categoryDesc.${cat}`)])
+) as Record<TrainingCategory, string>;
 
 const pageTitle = t(lang, 'nav.training');
 ---
