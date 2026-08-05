@@ -83,31 +83,49 @@ const pageTitle = t(lang, 'nav.training');
       </>
     )}
 
-    <SectionRule label={t(lang, 'editorial.section.byCategory')} />
+    {sortedTraining.length === 0 ? (
+      <p class="training-empty">{t(lang, 'knowledge.training.empty')}</p>
+    ) : (
+      <>
+        <SectionRule label={t(lang, 'editorial.section.byCategory')} />
 
-    {CATEGORY_ORDER.map((cat) => (
-      <CategoryShelf
-        category={cat}
-        items={byCategory[cat]}
-        lang={lang}
-        viewAllHref={`/${lang}/knowledge/training?category=${cat}#all-articles`}
-        categoryTitle={categoryTitles[cat]}
-        categoryDesc={categoryDescs[cat]}
-      />
-    ))}
+        {CATEGORY_ORDER.map((cat) => (
+          <CategoryShelf
+            category={cat}
+            items={byCategory[cat]}
+            lang={lang}
+            viewAllHref={`/${lang}/knowledge/training?category=${cat}#all-articles`}
+            categoryTitle={categoryTitles[cat]}
+            categoryDesc={categoryDescs[cat]}
+          />
+        ))}
 
-    <SectionRule label={t(lang, 'editorial.section.allArticles')} />
+        <SectionRule label={t(lang, 'editorial.section.allArticles')} />
 
-    <TrainingLibraryPage
-      client:load
-      initialItems={sortedTraining}
-      lang={lang}
-    />
+        <TrainingLibraryPage
+          client:load
+          initialItems={sortedTraining}
+          lang={lang}
+        />
+      </>
+    )}
   </article>
 </BaseLayout>
 
 <style>
   .training-library-page {
     padding-bottom: 0;
+  }
+
+  /* Shown when a locale has no published articles yet, so the page reads as
+     "in progress" rather than a stack of empty section rules. */
+  .training-empty {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: var(--color-text-muted, #6b6b6b);
   }
 </style>
