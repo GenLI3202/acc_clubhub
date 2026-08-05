@@ -6,7 +6,7 @@ location: 慕尼黑 · 具体集合点每期提前一周公布
 author: ACC Club
 date: 2026-08-15 09:00
 eventType: training-camp
-cover: /images/media/adventure/rad-race-120-2025/gallery/2026-group.jpg
+cover: /images/events/acc-eaglet-program-2026/cover.jpg
 displaySections:
   - hero
   - upcoming
