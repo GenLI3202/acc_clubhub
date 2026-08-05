@@ -10,6 +10,7 @@ cover: /images/media/adventure/rad-race-120-2025/gallery/2026-group.jpg
 displaySections:
   - hero
   - upcoming
+heroPriority: 1
 status: published
 ACCOfficialRide: true
 registrationDeadline: 2026-08-13 23:59
@@ -46,15 +47,17 @@ registrationLink: ''
 
 ***
 
-## 费用
+## 课程费用
 
-| 身份 | 费用 |
+| 身份 | 课程费 |
 | --- | --- |
 | **ACC 会员** | **免费** |
 | 非会员 · 学生 | **10 €** |
 | 非会员 · 非学生 | **15 €** |
 
-费用为三期课程的整体价格。[了解如何成为 ACC 会员 →](/zh/membership)
+课程费为**三期课程的整体价格**，不是每期单收。[了解如何成为 ACC 会员 →](/zh/membership)
+
+> 请注意：本页报名表中显示的 **1 € / 2 € 是 BLSV 非会员骑行保险费**，与上表的课程费是两回事。具体缴费方式会在开课前于微信群统一通知。
 
 ***
 

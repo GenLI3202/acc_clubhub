@@ -28,10 +28,16 @@ const langEvents = allEvents.filter((e) => {
 const effectiveEvents = resolveRecurringEvents(langEvents);
 const { upcoming, past } = splitEvents(effectiveEvents);
 
-// Carousel hero: events configured for the hero section, sorted by date
+// Carousel hero: events configured for the hero section. Events with an explicit
+// heroPriority lead (lower first); the rest follow by soonest date.
 const carouselEvents = upcoming
   .filter((e) => isEventInSection(e, 'hero'))
-  .sort((a, b) => new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf());
+  .sort((a, b) => {
+    const pa = a.data.heroPriority ?? Number.POSITIVE_INFINITY;
+    const pb = b.data.heroPriority ?? Number.POSITIVE_INFINITY;
+    if (pa !== pb) return pa - pb;
+    return new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf();
+  });
 
 // Upcoming cards: events configured for the upcoming section
 const upcomingCards = upcoming.filter((e) => isEventInSection(e, 'upcoming'));

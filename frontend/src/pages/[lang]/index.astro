@@ -4,8 +4,9 @@ export const prerender = true;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { locales, defaultLocale, t, type Locale } from "../../lib/i18n";
-import { splitEvents } from "../../lib/events/eventHelpers";
+import { splitEvents, isEventInSection } from "../../lib/events/eventHelpers";
 import { resolveRecurringEvents } from "../../lib/events/recurringEvents";
+import HomeHero from "../../components/home/HomeHero.astro";
 import NextRideBanner from "../../components/home/NextRideBanner.astro";
 import MembershipTeaser from "../../components/home/MembershipTeaser.astro";
 import PillarSection from "../../components/home/PillarSection.astro";
@@ -28,6 +29,19 @@ const langEvents = allEvents.filter((e) => {
 const effectiveEvents = resolveRecurringEvents(langEvents);
 const { upcoming } = splitEvents(effectiveEvents);
 const heroEvent = upcoming[0] ?? null;
+
+// Hero carousel: upcoming events flagged for the hero section. Events with an
+// explicit heroPriority lead (lower first); the rest follow by soonest date.
+// The brand slide is prepended inside HomeHero, so this may safely be empty.
+const heroCarouselEvents = upcoming
+    .filter((e) => isEventInSection(e, "hero"))
+    .sort((a, b) => {
+        const pa = a.data.heroPriority ?? Number.POSITIVE_INFINITY;
+        const pb = b.data.heroPriority ?? Number.POSITIVE_INFINITY;
+        if (pa !== pb) return pa - pb;
+        return new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf();
+    })
+    .slice(0, 3);
 
 const eventItems = upcoming.slice(0, 2).map((e) => ({
     title: e.data.title,
@@ -56,6 +70,24 @@ const mediaItems = allMedia
         href: `/${lang}/media/${e.data.slug ?? e.id.split("/").pop()}`,
     }));
 
+const allTraining = await getCollection("training");
+const trainingItems = allTraining
+    .filter((e) => {
+        const entryLang = e.id.includes("/")
+            ? e.id.split("/")[0]
+            : defaultLocale;
+        return entryLang === lang && e.data.status !== "draft";
+    })
+    .sort(
+        (a, b) =>
+            new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
+    )
+    .slice(0, 2)
+    .map((e) => ({
+        title: e.data.title,
+        href: `/${lang}/knowledge/training/${e.data.slug ?? e.id.split("/").pop()}`,
+    }));
+
 const allRoutes = await getCollection("routes");
 const routeItems = allRoutes
     .filter((e) => {
@@ -80,18 +112,8 @@ const routeItems = allRoutes
 >
     <SplashScreen />
 
-    <!-- Hero: full-width, breaks out of main's max-width -->
-    <section slot="hero" class="homepage-hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <p class="hero-eyebrow">Across Cycling Club · München</p>
-            <h1 class="hero-title">ACC ClubHub</h1>
-            <p class="hero-tagline">{t(lang, "home.tagline")}</p>
-            <a href={`/${lang}/events`} class="hero-cta">
-                {t(lang, "home.heroCta")}
-            </a>
-        </div>
-    </section>
+    <!-- Hero carousel: full-width, breaks out of main's max-width -->
+    <HomeHero slot="hero" lang={lang} events={heroCarouselEvents} />
 
     <!-- Next Ride Banner -->
     <NextRideBanner event={heroEvent} lang={lang} />
@@ -136,7 +158,10 @@ const routeItems = allRoutes
         imageAlt="Training ride"
         imagePosition="left"
         alternate={false}
-        comingSoon={t(lang, "home.comingSoon")}
+        items={trainingItems}
+        comingSoon={trainingItems.length === 0
+            ? t(lang, "home.comingSoon")
+            : undefined}
     />
 
     <PillarSection
@@ -166,95 +191,3 @@ const routeItems = allRoutes
     <SponsorStrip lang={lang} />
 </BaseLayout>
 
-<style>
-    /* ---- Hero ---- */
-    .homepage-hero {
-        position: relative;
-        width: 100%;
-        height: 85vh;
-        min-height: 480px;
-        max-height: 760px;
-        overflow: hidden;
-        background-image: url("/images/home/acc-hero-group.jpg");
-        background-size: cover;
-        background-position: center 40%;
-        display: flex;
-        align-items: flex-end;
-    }
-
-    .hero-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.75) 0%,
-            rgba(0, 0, 0, 0.35) 50%,
-            rgba(0, 0, 0, 0.1) 100%
-        );
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 1;
-        padding: 3rem 2rem;
-        max-width: var(--max-width);
-        margin: 0 auto;
-        width: 100%;
-    }
-
-    .hero-eyebrow {
-        font-family: var(--font-heading);
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 0.5rem;
-    }
-
-    .hero-title {
-        font-family: var(--font-heading);
-        font-size: clamp(3rem, 8vw, 5.5rem);
-        font-weight: 700;
-        color: #ffffff;
-        line-height: 1;
-        margin-bottom: 1rem;
-        letter-spacing: -0.03em;
-    }
-
-    .hero-tagline {
-        font-family: var(--font-body);
-        font-size: clamp(1rem, 2vw, 1.2rem);
-        color: rgba(255, 255, 255, 0.85);
-        margin-bottom: 2rem;
-        max-width: 480px;
-        line-height: 1.5;
-    }
-
-    .hero-cta {
-        display: inline-block;
-        background: var(--color-accent);
-        color: #ffffff;
-        font-family: var(--font-heading);
-        font-weight: 700;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 0.75rem 2rem;
-        border-radius: var(--radius-btn);
-        text-decoration: none;
-        transition:
-            background var(--transition-fast),
-            transform var(--transition-fast),
-            box-shadow var(--transition-fast);
-        box-shadow: var(--shadow-md);
-    }
-
-    .hero-cta:hover {
-        background: var(--color-accent-dark);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-        color: #ffffff;
-        text-decoration: none;
-    }
-</style>
