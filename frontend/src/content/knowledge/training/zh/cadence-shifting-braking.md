@@ -165,4 +165,4 @@ cover: /images/media/adventure/rad-race-120-2025/gallery/2025-sonntag.jpg
 ## 下一步
 
 - 车辆设置 → [座高、握姿与变速调整](/zh/knowledge/training/bike-setup-basics)
-- 团骑规范 → [ACC 团骑规范：手势、队形与安全距离](/zh/knowledge/training/acc-group-riding-rules)
+- 团骑规范 → [团骑规范：手势、队形与安全距离](/zh/knowledge/training/acc-group-riding-rules)
