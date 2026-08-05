@@ -22,7 +22,7 @@ recurring:
   frequency: weekly
   intervalWeeks: 1
   timezone: Europe/Berlin
-  rolloverTime: 22:00
+  rolloverTime: "22:00"
   slugBase: afterwork-ride
   registrationDeadlineHoursBefore: 2
   registrationDeadlineOverrides:
