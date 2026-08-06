@@ -59,7 +59,7 @@ registrationLink: ''
 
 ### 第三部分：团骑基础
 
-**ACC 团骑规范**——手势、口令、单列 / 双列、超车、安全距离、如何通过路口。
+**团骑规范**——手势、口令、单列 / 双列、超车、安全距离、如何通过路口。
 
 其中最重要的一条：**严禁叠轮**。这是团骑摔车最主要的单一原因。
 
@@ -91,7 +91,7 @@ registrationLink: ''
 
 - [出发前准备：装备清单与 ABC 快速检查](/zh/knowledge/training/pre-ride-check-abc)
 - [德国骑行交规与路权：新手必读](/zh/knowledge/training/german-cycling-traffic-rules)
-- [ACC 团骑规范：手势、队形与安全距离](/zh/knowledge/training/acc-group-riding-rules)
+- [团骑规范：手势、队形与安全距离](/zh/knowledge/training/acc-group-riding-rules)
 - [车辆基础设置：座高、握姿与变速调整](/zh/knowledge/training/bike-setup-basics)
 - [踏频、换挡与刹车：三项核心骑行技术](/zh/knowledge/training/cadence-shifting-braking)
 
