@@ -11,10 +11,15 @@
 
 ## Recent Updates
 
-- [X] **Group Riding Rules Hand Gestures Illustration** (2026-08-05)
-  - [X] Generated vector infographic diagram illustrating key group riding hand signals (停车/STOP, 减速/SLOW DOWN, 坑洞/POTHOLE, 转向/TURN, 变单列/SINGLE FILE).
-  - [X] Placed image asset at `frontend/public/images/knowledge/training/acc-group-riding-hand-signals.png`.
-  - [X] Embedded illustration in `frontend/src/content/knowledge/training/zh/acc-group-riding-rules.md` under `### 常用手势`.
+- [X] **Eaglet Program Content i18n** (2026-08-06) — branch `phase-2/eaglet-i18n`
+  - [X] Added complete German and English versions of all three separately registrable Eaglet Program sessions.
+  - [X] Added complete German and English versions of the five published training articles.
+  - [X] Kept event-to-event and event-to-training links within the selected locale.
+  - [X] Removed stale Chinese ACC-specific wording from two event-page references.
+  - [X] Verified with `npm run check` (0 errors), `npm test` (48 passed), `npm run build`, and local rendered-page checks for de/en training shelves, legal content, event ordering, links, and images.
+
+- [X] **Group Riding Hand-Signal Illustration Withdrawn** (2026-08-05)
+  - [X] Removed the experimental illustration and its article reference after visual review; the published group-riding article remains text-only.
 
 - [X] **North Afterwork Ride Location Display Fix** (2026-06-25)
   - [X] Replaced the raw Google Maps URL in zh/en/de event location metadata with readable meeting-point labels.

@@ -81,13 +81,11 @@ Garmin / Wahoo / Strava 的实际使用：导航、GPX 导入、爬升判断、�
 - **第一次参加可以完全不轮车**，跟在中后段，提前告诉领骑
 - 感觉吃力就跳过一轮。把队伍拉爆才是问题
 
-> 轮换方向由当日领骑在出发前统一宣布，**以现场宣布为准**。
-
 ***
 
 ## 课前预习
 
-- [ACC 团骑规范：手势、队形与安全距离](/zh/knowledge/training/acc-group-riding-rules)
+- [团骑规范：手势、队形与安全距离](/zh/knowledge/training/acc-group-riding-rules)
 - [踏频、换挡与刹车：三项核心骑行技术](/zh/knowledge/training/cadence-shifting-braking)
 - [德国骑行交规与路权：新手必读](/zh/knowledge/training/german-cycling-traffic-rules)
 
