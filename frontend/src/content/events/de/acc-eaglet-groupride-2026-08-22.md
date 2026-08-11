@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-groupride-2026-08-22
 title: Eaglet-Programm 3.0 · Kurs 2｜Gruppenfahrtechnik
-description: Windschattenfahren, Rotation, Handzeichen, Formation, Effizienz. 40–60 km Gruppentraining mit Berg- und Kurventechnik, Verpflegungsstrategie und Routenplanung. Mitglieder kostenlos, Studierende 10 €, Nicht-Studierende 15 €.
-location: München · genauer Treffpunkt wird eine Woche vorher bekanntgegeben
+description: Windschatten, Rotation, Handzeichen und Formation auf 40–60 km.
+location: Rapha München, Frauenstraße 8, 80469 München
 author: ACC Club
 date: 2026-08-22 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ Kurs 1 vorher zu absolvieren ist empfohlen, gleichwertige Grundkenntnisse reiche
 |  |  |
 | --- | --- |
 | **Zeit** | 22. August 2026 (**Samstag**) · **Abfahrt 9:30 Uhr** |
-| **Treffpunkt** | München · genauer Ort wird eine Woche vorher bekanntgegeben |
+| **Treffpunkt** | **Rapha München, Frauenstraße 8, 80469 München** |
 | **Distanz / Intensität** | **40–60 km**, mittleres Tempo, mit Guide während der gesamten Fahrt |
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte Wasser, Verpflegung und grundlegendes Werkzeug mitbringen |
 
-> Der genaue Treffpunkt wird eine Woche vor dem Kurs in der WeChat-Gruppe bekanntgegeben. Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden — wir informieren rechtzeitig.
+> Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden. Wir informieren die Teilnehmenden rechtzeitig.
 
 ***
 

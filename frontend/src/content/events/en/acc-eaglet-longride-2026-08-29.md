@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-longride-2026-08-29
 title: Eaglet Program 3.0 · Session 3｜Real-World Riding
-description: Long-distance riding, fueling strategy, pacing, real-route practice. 60–90 km practice ride with hands-on bike maintenance and a gear session, joined by experienced ACC guides and pro riders. Free for members, 10 € for students, 15 € for non-students.
-location: Munich · exact meeting point announced one week ahead
+description: Long-distance pacing, fueling and route practice over 60–90 km.
+location: Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen
 author: ACC Club
 date: 2026-08-29 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ Completing Sessions 1 and 2 first is recommended, but equivalent group-riding ex
 |  |  |
 | --- | --- |
 | **Time** | August 29, 2026 (**Saturday**) · **departure 9:30 AM** |
-| **Meeting point** | Munich · exact location announced one week ahead |
+| **Meeting point** | **Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen** |
 | **Distance / Intensity** | **60–90 km**, with a long climb and a long descent, led by a guide throughout |
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring plenty of water and snacks, a spare tube, and basic tools |
 
-> The exact meeting point will be posted in the WeChat group one week before the session. In case of bad weather, the session may move to Sunday — we'll notify you in time.
+> In case of bad weather, the session may move to Sunday. We will notify participants in time.
 
 ***
 

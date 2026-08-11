@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-longride-2026-08-29
 title: Eaglet-Programm 3.0 · Kurs 3｜Praxis & Langstrecke
-description: Langstreckenfahrten, Verpflegungsstrategie, Pacing, echtes Streckentraining. 60–90 km Praxisfahrt mit Fahrradwartung und Ausrüstungstipps, begleitet von erfahrenen ACC-Guides und Pro-Fahrern. Mitglieder kostenlos, Studierende 10 €, Nicht-Studierende 15 €.
-location: München · genauer Treffpunkt wird eine Woche vorher bekanntgegeben
+description: Pacing, Verpflegung und Streckenpraxis auf 60–90 km.
+location: Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen
 author: ACC Club
 date: 2026-08-29 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ Kurs 1 und 2 vorher zu absolvieren ist empfohlen, gleichwertige Gruppenfahrerfah
 |  |  |
 | --- | --- |
 | **Zeit** | 29. August 2026 (**Samstag**) · **Abfahrt 9:30 Uhr** |
-| **Treffpunkt** | München · genauer Ort wird eine Woche vorher bekanntgegeben |
+| **Treffpunkt** | **Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen** |
 | **Distanz / Intensität** | **60–90 km**, mit langem Anstieg und langer Abfahrt, mit Guide während der gesamten Fahrt |
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte ausreichend Wasser und Verpflegung, Ersatzschlauch und Werkzeug mitbringen |
 
-> Der genaue Treffpunkt wird eine Woche vor dem Kurs in der WeChat-Gruppe bekanntgegeben. Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden — wir informieren rechtzeitig.
+> Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden. Wir informieren die Teilnehmenden rechtzeitig.
 
 ***
 

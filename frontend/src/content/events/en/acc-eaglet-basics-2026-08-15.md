@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-basics-2026-08-15
 title: Eaglet Program 3.0 · Session 1｜Basics & Safety
-description: Gear checks, riding etiquette, braking and shifting, road safety. 20–30 km easy pace from Theresienwiese, theory combined with a practice ride. Free for members, 10 € for students, 15 € for non-students.
-location: Munich · exact meeting point announced one week ahead
+description: Gear checks, road safety, braking and shifting in a 20–30 km practice ride.
+location: Am Bavariapark 5, 80339 München-Schwanthalerhöhe
 author: ACC Club
 date: 2026-08-15 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ No group-riding experience needed — that's exactly what this session teaches.
 |  |  |
 | --- | --- |
 | **Time** | August 15, 2026 (**Saturday**) · **departure 9:30 AM** |
-| **Meeting point** | Munich · exact location announced one week ahead |
+| **Meeting point** | **Am Bavariapark 5, 80339 München-Schwanthalerhöhe** |
 | **Distance / Intensity** | **20–30 km**, easy pace, led by a guide throughout |
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring water and basic snacks |
 
-> The exact meeting point will be posted in the WeChat group one week before the session. In case of bad weather, the session may move to Sunday — we'll notify you in time.
+> In case of bad weather, the session may move to Sunday. We will notify participants in time.
 
 ***
 
