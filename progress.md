@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **Eaglet Program Meeting Points + Mobile Hero Copy** (2026-08-11) — branch `phase-2/eaglet-mobile-hero`
+  - [X] Set confirmed meeting points for all three sessions across zh/en/de event metadata and detail pages.
+  - [X] Shortened all nine localized Hero descriptions and removed fee details from Hero copy while retaining fees in the event body.
+  - [X] Removed obsolete notices saying meeting points would be announced later.
+  - [X] Verified all nine homepage Hero slides at 375 px, `npm run check` (0 errors), `npm test` (48 passed), and `npm run build`.
+  - [X] Ran the Markdown-to-database sync locally and verified all three event rows contain the new locations and shortened descriptions.
+
 - [X] **Eaglet Program Content i18n** (2026-08-06) — branch `phase-2/eaglet-i18n`
   - [X] Added complete German and English versions of all three separately registrable Eaglet Program sessions.
   - [X] Added complete German and English versions of the five published training articles.

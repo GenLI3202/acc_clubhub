@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-groupride-2026-08-22
 title: Eaglet Program 3.0 · Session 2｜Group Riding Skills
-description: Drafting, rotation, hand signals, formation, efficiency. 40–60 km group training with climbing and cornering technique, fueling strategy, and route planning. Free for members, 10 € for students, 15 € for non-students.
-location: Munich · exact meeting point announced one week ahead
+description: Drafting, rotation, hand signals and formation in a 40–60 km group ride.
+location: Rapha München, Frauenstraße 8, 80469 München
 author: ACC Club
 date: 2026-08-22 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ Completing Session 1 first is recommended, but equivalent basic knowledge also w
 |  |  |
 | --- | --- |
 | **Time** | August 22, 2026 (**Saturday**) · **departure 9:30 AM** |
-| **Meeting point** | Munich · exact location announced one week ahead |
+| **Meeting point** | **Rapha München, Frauenstraße 8, 80469 München** |
 | **Distance / Intensity** | **40–60 km**, moderate pace, led by a guide throughout |
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring water, snacks, and basic tools |
 
-> The exact meeting point will be posted in the WeChat group one week before the session. In case of bad weather, the session may move to Sunday — we'll notify you in time.
+> In case of bad weather, the session may move to Sunday. We will notify participants in time.
 
 ***
 

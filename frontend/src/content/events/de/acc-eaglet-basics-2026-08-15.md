@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-basics-2026-08-15
 title: Eaglet-Programm 3.0 · Kurs 1｜Grundlagen & Sicherheit
-description: Ausrüstungscheck, Fahrregeln, Bremsen und Schalten, Verkehrssicherheit. 20–30 km lockeres Tempo ab Theresienwiese, Theorie kombiniert mit Praxisfahrt. Mitglieder kostenlos, Studierende 10 €, Nicht-Studierende 15 €.
-location: München · genauer Treffpunkt wird eine Woche vorher bekanntgegeben
+description: Ausrüstungscheck, Verkehrssicherheit, Bremsen und Schalten auf 20–30 km.
+location: Am Bavariapark 5, 80339 München-Schwanthalerhöhe
 author: ACC Club
 date: 2026-08-15 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ Keine Vorkenntnisse im Gruppenfahren nötig — genau das lernst du hier.
 |  |  |
 | --- | --- |
 | **Zeit** | 15. August 2026 (**Samstag**) · **Abfahrt 9:30 Uhr** |
-| **Treffpunkt** | München · genauer Ort wird eine Woche vorher bekanntgegeben |
+| **Treffpunkt** | **Am Bavariapark 5, 80339 München-Schwanthalerhöhe** |
 | **Distanz / Intensität** | **20–30 km**, entspanntes Tempo, mit Guide während der gesamten Fahrt |
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte Wasser und Grundverpflegung mitbringen |
 
-> Der genaue Treffpunkt wird eine Woche vor dem Kurs in der WeChat-Gruppe bekanntgegeben. Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden — wir informieren rechtzeitig.
+> Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden. Wir informieren die Teilnehmenden rechtzeitig.
 
 ***
 

@@ -1,8 +1,8 @@
 ---
 slug: acc-eaglet-longride-2026-08-29
 title: 雏鹰计划 3.0 · 第三课｜实战提升
-description: 长距离骑行、补给策略、配速管理、真实路线练习。60–90 km 实战骑行，含车辆维护实操与装备分享，由 ACC 资深领骑与 Pro 分享经验。会员免费，学生 10 欧，非学生 15 欧。
-location: 慕尼黑 · 具体集合点提前一周公布
+description: 长距离配速、补给与路线实战，60–90 km 综合训练。
+location: Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen
 author: ACC Club
 date: 2026-08-29 09:30
 eventType: training-camp
@@ -32,12 +32,12 @@ registrationLink: ''
 |  |  |
 | --- | --- |
 | **时间** | 2026 年 8 月 29 日（**周六**）**9:30 出发** |
-| **集合地点** | 慕尼黑 · 具体地点提前一周公布 |
+| **集合地点** | **Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen** |
 | **距离 / 强度** | **60–90 km**，含长爬坡与长下坡，全程有领骑带队 |
 | **课程费** | ACC 会员**免费** · 非会员学生 **10 €** · 非会员非学生 **15 €** |
 | **注意事项** | 头盔必戴；请携带充足饮水与补给、备用内胎与随车工具 |
 
-> 具体集合地点会在开课前一周于微信群公布。如遇恶劣天气，可能顺延至周日，届时另行通知。
+> 如遇恶劣天气，课程可能顺延至周日，届时另行通知。
 
 ***
 
