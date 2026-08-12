@@ -66,13 +66,15 @@ The ride is expected to return to the starting point at around **19:00**, which 
 If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
 This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
 
-Joining the group via QR code is only for ride communication. It **does not count as a successful registration** and cannot replace email registration.
+Please scan the QR code below to add **Ronnie**, the South ride leader, on WeChat. Include “South After Work” in your friend request. Ronnie will add participants to the event group for meeting details, route conditions, and same-day updates.
+
+Adding the ride leader or joining the event group is for ride communication only. It **does not count as a successful registration** and cannot replace email registration.
 
 ***
 
-### WeChat QR Code
+### Add the South Ride Leader on WeChat
 
-![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
+![WeChat QR code for Ronnie, the South ride leader](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
 
 ***
 

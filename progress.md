@@ -11,6 +11,12 @@
 
 ## Recent Updates
 
+- [X] **Afterwork Ride Leader WeChat QR Update** (2026-08-12)
+  - [X] Replaced the expiring North and South Afterwork group QR codes with the personal WeChat QR codes for ride leaders Dashu (大树) and Ronnie, respectively.
+  - [X] Updated zh/en/de event copy to tell participants to add the relevant ride leader, who will invite them to the event group.
+  - [X] Preserved the existing email-registration requirement and clarified that adding the ride leader or joining the group does not count as registration.
+  - [X] Verified both PNG assets, all six localized recurring-event pages, `npm run check` (0 errors), `npm run test` (48 passed), and `npm run build`.
+
 - [X] **Eaglet Program Meeting Points + Mobile Hero Copy** (2026-08-11) — branch `phase-2/eaglet-mobile-hero`
   - [X] Set confirmed meeting points for all three sessions across zh/en/de event metadata and detail pages.
   - [X] Shortened all nine localized Hero descriptions and removed fee details from Hero copy while retaining fees in the event body.

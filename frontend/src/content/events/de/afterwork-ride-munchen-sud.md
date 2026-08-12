@@ -66,13 +66,15 @@ Die Runde endet voraussichtlich gegen **19:00 Uhr wieder am Startpunkt** und eig
 Wenn du an dieser Ausfahrt teilnehmen möchtest, melde dich bitte unbedingt **über die auf der Event-Seite angegebene E-Mail-Adresse** an.  
 Nur so können wir Anwesenheit und Teilnahme korrekt dokumentieren; falls später ein Nachweis für Versicherung oder Teilnahme erforderlich ist, gelten **Anmeldedatensatz und Sign-in-Datensatz** als Grundlage.
 
-Der Beitritt zur Gruppe per QR-Code dient nur der Kommunikation rund um die Ausfahrt. Er **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
+Bitte scanne den QR-Code unten und füge **Ronnie**, die Ride-Leitung der Südrunde, bei WeChat hinzu. Schreibe „South After Work“ in die Freundschaftsanfrage. Ronnie fügt Teilnehmende anschließend zur Event-Gruppe hinzu, in der Treffpunktdetails, Streckenhinweise und kurzfristige Änderungen geteilt werden.
+
+Das Hinzufügen der Ride-Leitung bzw. der Beitritt zur Event-Gruppe dient nur der Kommunikation. Es **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
 
 ---
 
-### WeChat QR-Code
+### Ride-Leitung der Südrunde bei WeChat hinzufügen
 
-![ACC After Work Ride WeChat QR](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
+![WeChat-QR-Code von Ronnie, Ride-Leitung der Südrunde](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
 
 ---
 
