@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from app import app
 from fastapi.testclient import TestClient
-from models import RSVP, Event
+from models import RSVP, Event, EventRideLeaderAssignment
 from routes.auth import get_current_admin
 from services.email import send_ride_leader_registration_alert
 from services.registration_alerts import (
@@ -75,18 +75,32 @@ def _v2_payload(
     }
 
 
+def _mark_active_leader(db: Session, rsvp: RSVP) -> None:
+    """Create an active ride-leader assignment for an RSVP."""
+    rsvp.checked_in_at = datetime.now(timezone.utc)
+    db.add(
+        EventRideLeaderAssignment(
+            event_id=rsvp.event_id,
+            rsvp_id=rsvp.id,
+            is_active=True,
+        ),
+    )
+    db.commit()
+
+
 def test_claim_and_release_registration_alerts(
     client: TestClient,
     db: Session,
     sample_event: Event,
 ) -> None:
-    """A registered dashboard user can claim and release event alerts."""
+    """An active ride leader can claim and release event alerts."""
     leader = _add_rsvp(
         db,
         sample_event,
         email="leader@example.com",
         name="Ride Leader",
     )
+    _mark_active_leader(db, leader)
     _set_admin_email("LEADER@example.com")
 
     claim_response = client.post(
@@ -138,7 +152,29 @@ def test_claim_requires_matching_active_rsvp(
     )
 
     assert response.status_code == 409
-    assert response.json()["detail"]["error_code"] == ("RIDE_LEADER_RSVP_REQUIRED")
+    assert response.json()["detail"]["error_code"] == ("ACTIVE_RIDE_LEADER_REQUIRED")
+
+
+def test_claim_requires_active_ride_leader_assignment(
+    client: TestClient,
+    db: Session,
+    sample_event: Event,
+) -> None:
+    """A matching RSVP alone cannot claim ride-leader notifications."""
+    _add_rsvp(
+        db,
+        sample_event,
+        email="rider@example.com",
+        name="Regular Rider",
+    )
+    _set_admin_email("rider@example.com")
+
+    response = client.post(
+        f"/api/admin/events/{sample_event.id}/registration-alerts/claim",
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"]["error_code"] == ("ACTIVE_RIDE_LEADER_REQUIRED")
 
 
 def test_new_rsvp_triggers_alerts_after_commit(
@@ -148,20 +184,22 @@ def test_new_rsvp_triggers_alerts_after_commit(
     monkeypatch: Any,
 ) -> None:
     """Every active claimed leader receives one alert after commit."""
-    _add_rsvp(
+    leader_one = _add_rsvp(
         db,
         sample_event,
         email="leader-one@example.com",
         name="Leader One",
         receives_registration_alerts=True,
     )
-    _add_rsvp(
+    leader_two = _add_rsvp(
         db,
         sample_event,
         email="leader-two@example.com",
         name="Leader Two",
         receives_registration_alerts=True,
     )
+    _mark_active_leader(db, leader_one)
+    _mark_active_leader(db, leader_two)
     captured: list[dict[str, Any]] = []
 
     def capture_alerts(**kwargs: Any) -> int:
@@ -194,20 +232,22 @@ def test_alert_service_notifies_each_claimed_leader(
     sample_event: Event,
 ) -> None:
     """The alert service sends one message to every active subscriber."""
-    _add_rsvp(
+    leader_one = _add_rsvp(
         db,
         sample_event,
         email="leader-one@example.com",
         name="Leader One",
         receives_registration_alerts=True,
     )
-    _add_rsvp(
+    leader_two = _add_rsvp(
         db,
         sample_event,
         email="leader-two@example.com",
         name="Leader Two",
         receives_registration_alerts=True,
     )
+    _mark_active_leader(db, leader_one)
+    _mark_active_leader(db, leader_two)
 
     with patch(
         "services.registration_alerts.send_ride_leader_registration_alert",
@@ -270,7 +310,7 @@ def test_alert_recipients_exclude_participant_and_cancelled_leader(
     sample_event: Event,
 ) -> None:
     """Self-alerts and subscriptions on cancelled RSVPs stay inactive."""
-    _add_rsvp(
+    returning_leader = _add_rsvp(
         db,
         sample_event,
         email="returning@example.com",
@@ -284,7 +324,7 @@ def test_alert_recipients_exclude_participant_and_cancelled_leader(
         name="Active Leader",
         receives_registration_alerts=True,
     )
-    _add_rsvp(
+    cancelled_leader = _add_rsvp(
         db,
         sample_event,
         email="cancelled-leader@example.com",
@@ -292,6 +332,24 @@ def test_alert_recipients_exclude_participant_and_cancelled_leader(
         status="cancelled",
         receives_registration_alerts=True,
     )
+    inactive_leader = _add_rsvp(
+        db,
+        sample_event,
+        email="inactive-leader@example.com",
+        name="Inactive Leader",
+        receives_registration_alerts=True,
+    )
+    _mark_active_leader(db, returning_leader)
+    _mark_active_leader(db, active_leader)
+    _mark_active_leader(db, cancelled_leader)
+    db.add(
+        EventRideLeaderAssignment(
+            event_id=sample_event.id,
+            rsvp_id=inactive_leader.id,
+            is_active=False,
+        ),
+    )
+    db.commit()
 
     recipients = get_registration_alert_recipients(
         db,

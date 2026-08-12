@@ -260,6 +260,14 @@ def revoke_invalid_leader_records_for_rsvp(db: Session, event_id: int, rsvp_id: 
         assignment.revoked_at = now
         changed = True
 
+    rsvp = db.query(RSVP).filter(
+        RSVP.event_id == event_id,
+        RSVP.id == rsvp_id,
+    ).first()
+    if rsvp is not None and rsvp.receives_registration_alerts:
+        rsvp.receives_registration_alerts = False
+        changed = True
+
     credit = db.query(EventRideLeaderCredit).filter(
         EventRideLeaderCredit.event_id == event_id,
         EventRideLeaderCredit.rsvp_id == rsvp_id,
@@ -287,6 +295,7 @@ def recalculate_event_ride_leader_state(db: Session, event_id: int) -> CreditSna
         else:
             assignment.is_active = False
             assignment.revoked_at = now
+            assignment.rsvp.receives_registration_alerts = False
 
     result = compute_credit_snapshot(
         event.distance_km,
@@ -300,6 +309,7 @@ def recalculate_event_ride_leader_state(db: Session, event_id: int) -> CreditSna
         for assignment in overflow:
             assignment.is_active = False
             assignment.revoked_at = now
+            assignment.rsvp.receives_registration_alerts = False
         result = compute_credit_snapshot(
             event.distance_km,
             checked_in_count,
@@ -383,11 +393,20 @@ def mark_rsvp_as_ride_leader(db: Session, event_id: int, rsvp_id: int) -> Credit
         assignment.is_active = True
         assignment.revoked_at = None
 
+    rsvp.receives_registration_alerts = True
+
     db.flush()
     return recalculate_event_ride_leader_state(db, event_id)
 
 
 def unmark_rsvp_as_ride_leader(db: Session, event_id: int, rsvp_id: int) -> CreditSnapshotResult:
+    rsvp = db.query(RSVP).filter(
+        RSVP.event_id == event_id,
+        RSVP.id == rsvp_id,
+    ).first()
+    if rsvp is not None:
+        rsvp.receives_registration_alerts = False
+
     assignment = db.query(EventRideLeaderAssignment).filter(
         EventRideLeaderAssignment.event_id == event_id,
         EventRideLeaderAssignment.rsvp_id == rsvp_id,
