@@ -3,25 +3,32 @@
 from datetime import datetime
 from typing import Optional
 
-from models import RSVP
+from models import RSVP, EventRideLeaderAssignment
 from services.email import send_ride_leader_registration_alert
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 
-def find_event_rsvp_by_email(
+def find_active_ride_leader_rsvp_by_email(
     db: Session,
     event_id: int,
     email: str,
 ) -> Optional[RSVP]:
-    """Return an active RSVP matching a dashboard user's email."""
+    """Return an active ride leader matching a dashboard user's email."""
     normalized_email = email.strip().lower()
     return (
         db.query(RSVP)
+        .join(
+            EventRideLeaderAssignment,
+            EventRideLeaderAssignment.rsvp_id == RSVP.id,
+        )
         .filter(
             RSVP.event_id == event_id,
             func.lower(RSVP.email) == normalized_email,
-            RSVP.status != "cancelled",
+            RSVP.status == "confirmed",
+            RSVP.checked_in_at.is_not(None),
+            EventRideLeaderAssignment.event_id == event_id,
+            EventRideLeaderAssignment.is_active.is_(True),
         )
         .one_or_none()
     )
@@ -36,11 +43,18 @@ def get_registration_alert_recipients(
     normalized_participant_email = participant_email.strip().lower()
     return (
         db.query(RSVP)
+        .join(
+            EventRideLeaderAssignment,
+            EventRideLeaderAssignment.rsvp_id == RSVP.id,
+        )
         .filter(
             RSVP.event_id == event_id,
             RSVP.receives_registration_alerts.is_(True),
-            RSVP.status != "cancelled",
+            RSVP.status == "confirmed",
+            RSVP.checked_in_at.is_not(None),
             func.lower(RSVP.email) != normalized_participant_email,
+            EventRideLeaderAssignment.event_id == event_id,
+            EventRideLeaderAssignment.is_active.is_(True),
         )
         .order_by(RSVP.id)
         .all()

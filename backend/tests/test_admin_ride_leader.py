@@ -106,6 +106,7 @@ class TestRideLeaderWorkflow:
         snapshot = db.query(EventRideLeaderSnapshot).filter_by(event_id=sample_event.id).first()
 
         assert assignment is not None and assignment.is_active is True
+        assert confirmed_rsvp.receives_registration_alerts is True
         assert credit is not None and credit.is_active is True
         assert float(credit.credit_km) == 48.5
         assert snapshot is not None
@@ -166,6 +167,29 @@ class TestRideLeaderWorkflow:
         assignment = db.query(EventRideLeaderAssignment).first()
         assert assignment is not None
         assert assignment.is_active is False
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.receives_registration_alerts is False
+
+    def test_undo_check_in_stops_leader_registration_alerts(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ):
+        sample_event.distance_km = Decimal("48.50")
+        db.commit()
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+
+        response = client.post(
+            f"/api/admin/events/{sample_event.id}/rsvp/check-in/undo",
+            json={"rsvp_id": confirmed_rsvp.id},
+        )
+
+        assert response.status_code == 200
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.receives_registration_alerts is False
 
     def test_cap_enforcement_works(self, client, db, sample_event, confirmed_rsvp):
         sample_event.distance_km = Decimal("60.00")

@@ -483,7 +483,7 @@ function formatKm(value: number | null | undefined): string {
                   <p>
                     {eventData.registration_alerts.subscribed
                       ? `${eventData.registration_alerts.leader_name} receives an email when someone registers.`
-                      : "Claim alerts to receive an email when someone registers."}
+                      : "Ride leaders receive new registration alerts automatically."}
                   </p>
                   <button
                     type="button"
@@ -502,12 +502,12 @@ function formatKm(value: number | null | undefined): string {
                 </>
               ) : (
                 <p>
-                  Register for this event with your Dashboard login email
-                  before claiming alerts.
+                  Mark a checked-in RSVP as ride leader to enable new
+                  registration alerts automatically.
                 </p>
               )}
               <p>
-                Alert ownership is separate from post-ride leader credit.
+                Removing the ride leader also stops their alerts.
               </p>
             </section>
           </div>
@@ -791,7 +791,7 @@ function formatKm(value: number | null | undefined): string {
       async function markRideLeader(rsvpId, rsvpName, btn) {
         const confirmed = await confirmAction({
           title: "Mark ride leader",
-          message: `Credit ${rsvpName} as ride leader for this event?`,
+          message: `Credit ${rsvpName} as ride leader and enable new registration emails?`,
           confirmLabel: "Mark leader",
         });
         if (!confirmed) return;

@@ -26,7 +26,7 @@ from services.event_counts import (
     get_available_spots,
     sync_event_current_participants,
 )
-from services.registration_alerts import find_event_rsvp_by_email
+from services.registration_alerts import find_active_ride_leader_rsvp_by_email
 from services.ride_leader_credits import (
     get_annual_ride_leader_progress,
     get_annual_ride_leader_summary,
@@ -261,7 +261,7 @@ def get_event_rsvps(
     )
     admin_email = _admin.get("email")
     admin_rsvp = (
-        find_event_rsvp_by_email(db, event_id, admin_email)
+        find_active_ride_leader_rsvp_by_email(db, event_id, admin_email)
         if isinstance(admin_email, str)
         else None
     )
@@ -357,16 +357,17 @@ def claim_registration_alerts(
             },
         )
 
-    leader_rsvp = find_event_rsvp_by_email(db, event_id, admin_email)
+    leader_rsvp = find_active_ride_leader_rsvp_by_email(
+        db,
+        event_id,
+        admin_email,
+    )
     if leader_rsvp is None:
         raise HTTPException(
             status_code=409,
             detail={
-                "error_code": "RIDE_LEADER_RSVP_REQUIRED",
-                "message": (
-                    "Register for this event with your dashboard email "
-                    "before claiming alerts"
-                ),
+                "error_code": "ACTIVE_RIDE_LEADER_REQUIRED",
+                "message": "Only an active ride leader can claim alerts",
             },
         )
 
@@ -408,13 +409,17 @@ def release_registration_alerts(
             },
         )
 
-    leader_rsvp = find_event_rsvp_by_email(db, event_id, admin_email)
+    leader_rsvp = find_active_ride_leader_rsvp_by_email(
+        db,
+        event_id,
+        admin_email,
+    )
     if leader_rsvp is None:
         raise HTTPException(
             status_code=409,
             detail={
-                "error_code": "RIDE_LEADER_RSVP_REQUIRED",
-                "message": "No active RSVP matches your dashboard email",
+                "error_code": "ACTIVE_RIDE_LEADER_REQUIRED",
+                "message": "No active ride leader matches your dashboard email",
             },
         )
 
@@ -538,7 +543,7 @@ def activate_ride_leader(
     db.commit()
     return {
         "success": True,
-        "message": "Ride leader marked",
+        "message": "Ride leader marked and registration alerts enabled",
         "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
     }
 
@@ -554,7 +559,7 @@ def deactivate_ride_leader(
     db.commit()
     return {
         "success": True,
-        "message": "Ride leader removed",
+        "message": "Ride leader removed and registration alerts stopped",
         "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
     }
 

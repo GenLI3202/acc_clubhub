@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **Ride Leader RSVP Alert Auto-Subscription Fix** (2026-08-12) — branch `phase-4/ride-leader-alert-autoclaim`
+  - [X] Automatically enable new-RSVP email alerts when a checked-in RSVP is marked as ride leader.
+  - [X] Stop alerts when the leader role or check-in is removed, and require an active leader assignment during recipient selection.
+  - [X] Restricted manual alert claims to active ride leaders and clarified the Dashboard workflow copy.
+  - [X] Added migration `012_sync_ride_leader_registration_alerts.sql` to enable alerts for existing active ride leaders and clear stale subscriptions.
+  - [X] Verified 23 related backend tests, the full backend suite (145 passed plus the known historical-alias baseline failure), Ruff, `npm run test` (48 passed), `npm run check` (0 errors), and `npm run build`.
+
 - [X] **Ride Leader New RSVP Alerts** (2026-08-12) — branch `phase-4/ride-leader-rsvp-alerts`
   - [X] Let a registered Dashboard user claim or stop per-event new-RSVP alerts when the login email matches an active RSVP.
   - [X] Notify every claimed leader after a confirmed or waitlist RSVP commits, while excluding the new participant and cancelled recipients.
