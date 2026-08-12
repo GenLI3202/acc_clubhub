@@ -116,6 +116,11 @@ class RSVP(Base):
     privacy_accepted = Column(Boolean, default=False)
     view_token = Column(String(64), nullable=True, index=True)
     checked_in_at = Column(DateTime(timezone=True), nullable=True, index=True)
+    receives_registration_alerts = Column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
     created_at = Column(
         DateTime(timezone=True), default=_utcnow, index=True,
     )

@@ -4,6 +4,7 @@ Phase 4.3.3: Resend integration for event confirmations
 """
 
 import logging
+from html import escape
 from typing import Optional
 from datetime import datetime
 from config import settings
@@ -460,6 +461,92 @@ def send_waitlist_email(
         return resend.Emails.send(params)
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+def send_ride_leader_registration_alert(
+    leader_email: str,
+    leader_name: str,
+    participant_name: str,
+    registration_status: str,
+    event_title: str,
+    event_date: datetime,
+    event_id: int,
+    confirmed_count: int,
+    max_participants: Optional[int],
+) -> dict:
+    """Send a ride leader an operational alert for a new RSVP.
+
+    Args:
+        leader_email: Alert recipient address.
+        leader_name: Alert recipient display name.
+        participant_name: New participant display name.
+        registration_status: Confirmed or waitlist RSVP status.
+        event_title: Event display title.
+        event_date: Event start time.
+        event_id: Event identifier used for the dashboard link.
+        confirmed_count: Current number of confirmed participants.
+        max_participants: Event capacity, or None for unlimited capacity.
+
+    Returns:
+        Resend response, or a skipped/error status dictionary.
+    """
+    if not settings.RESEND_API_KEY:
+        logger.debug(
+            "Skipping ride leader registration alert (no RESEND_API_KEY): %s",
+            leader_email,
+        )
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
+    dashboard_url = f"{frontend_url}/dashboard/events/{event_id}"
+    date_text = event_date.strftime("%Y-%m-%d %H:%M")
+    status_text = escape(registration_status.replace("_", " ").title())
+    capacity_text = (
+        f"{confirmed_count} / {max_participants}"
+        if max_participants is not None
+        else str(confirmed_count)
+    )
+    safe_leader_name = escape(leader_name)
+    safe_participant_name = escape(participant_name)
+    safe_event_title = escape(event_title)
+    subject_event = " ".join(event_title.splitlines()).strip()
+    subject_participant = " ".join(participant_name.splitlines()).strip()
+    subject_status = " ".join(registration_status.splitlines()).strip()
+    subject = (
+        f"New {subject_status} RSVP for {subject_event}: "
+        f"{subject_participant}"
+    )
+    html_body = f"""<div style="font-family:Arial,sans-serif;max-width:600px;">
+<h2 style="color:#C62828;">New Event Registration</h2>
+<p>Hi {safe_leader_name},</p>
+<p><strong>{safe_participant_name}</strong> has registered for an event where
+you receive ride-leader alerts.</p>
+<ul>
+  <li><strong>Event:</strong> {safe_event_title}</li>
+  <li><strong>Date:</strong> {date_text}</li>
+  <li><strong>Registration status:</strong> {status_text}</li>
+  <li><strong>Confirmed riders:</strong> {capacity_text}</li>
+</ul>
+<p><a href="{dashboard_url}">Open the event dashboard</a></p>
+<p>— ACC ClubHub Team</p>
+{_CONTACT["en"]}
+</div>"""
+    params = {
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
+        "to": [leader_email],
+        "subject": subject,
+        "html": html_body,
+    }
+    try:
+        return resend.Emails.send(params)
+    except Exception as exc:
+        logger.error(
+            "Failed to send ride leader registration alert to %s: %s",
+            leader_email,
+            exc,
+            exc_info=True,
+        )
+        return {"status": "error", "message": str(exc)}
 
 
 def send_slot_claim_confirmation(
