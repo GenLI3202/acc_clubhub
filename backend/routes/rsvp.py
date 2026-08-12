@@ -21,6 +21,7 @@ from services.event_counts import (
     count_confirmed_rsvps,
     sync_event_current_participants,
 )
+from services.registration_alerts import send_registration_alerts
 
 logger = logging.getLogger(__name__)
 
@@ -230,6 +231,25 @@ def create_rsvp(
             view_token=new_rsvp.view_token,
         )
 
+    try:
+        send_registration_alerts(
+            db=db,
+            event_id=event.id,
+            event_title=event.title,
+            event_date=event.event_date,
+            participant_name=rsvp_data.name,
+            participant_email=str(rsvp_data.email),
+            registration_status=rsvp_status,
+            confirmed_count=event.current_participants or 0,
+            max_participants=event.max_participants,
+        )
+    except Exception as email_err:
+        logger.error(
+            "Ride leader registration alerts failed: %s",
+            email_err,
+            exc_info=True,
+        )
+
     return RSVPResponse(
         success=True,
         message=(
@@ -410,6 +430,25 @@ def create_rsvp_v2(
             )
     except Exception as email_err:
         logging.error("Email send failed (RSVP still saved): %s", email_err)
+
+    try:
+        send_registration_alerts(
+            db=db,
+            event_id=event.id,
+            event_title=event.title,
+            event_date=event.event_date,
+            participant_name=data.name,
+            participant_email=str(data.email),
+            registration_status=rsvp_status,
+            confirmed_count=event.current_participants or 0,
+            max_participants=event.max_participants,
+        )
+    except Exception as email_err:
+        logger.error(
+            "Ride leader registration alerts failed: %s",
+            email_err,
+            exc_info=True,
+        )
 
     return RSVPResponse(
         success=True,

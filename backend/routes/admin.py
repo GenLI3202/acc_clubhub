@@ -26,6 +26,7 @@ from services.event_counts import (
     get_available_spots,
     sync_event_current_participants,
 )
+from services.registration_alerts import find_event_rsvp_by_email
 from services.ride_leader_credits import (
     get_annual_ride_leader_progress,
     get_annual_ride_leader_summary,
@@ -48,6 +49,7 @@ REQUIRED_SCHEMA_COLUMNS = {
         "view_token",
         "cancel_reason",
         "checked_in_at",
+        "receives_registration_alerts",
     },
     "events": {
         "distance_km",
@@ -257,6 +259,12 @@ def get_event_rsvps(
         .order_by(RSVP.created_at)
         .all()
     )
+    admin_email = _admin.get("email")
+    admin_rsvp = (
+        find_event_rsvp_by_email(db, event_id, admin_email)
+        if isinstance(admin_email, str)
+        else None
+    )
 
     ride_leader_summary = serialize_ride_leader_snapshot(snapshot)
 
@@ -287,6 +295,9 @@ def get_event_rsvps(
                 "notes": r.notes,
                 "created_at": r.created_at.isoformat() if r.created_at else None,
                 "is_ride_leader": r.id in active_leader_ids,
+                "receives_registration_alerts": (
+                    r.receives_registration_alerts
+                ),
                 "ride_leader_credit_km": (
                     float(credit_map[r.id].credit_km)
                     if r.id in credit_map else None
@@ -294,6 +305,13 @@ def get_event_rsvps(
             }
             for r in rsvps
         ],
+        "registration_alerts": {
+            "eligible": admin_rsvp is not None,
+            "subscribed": bool(
+                admin_rsvp and admin_rsvp.receives_registration_alerts
+            ),
+            "leader_name": admin_rsvp.name if admin_rsvp else None,
+        },
         "summary": {
             "total": len(rsvps),
             "confirmed": len([r for r in rsvps if r.status == "confirmed"]),
@@ -305,6 +323,107 @@ def get_event_rsvps(
             ]),
             **ride_leader_summary,
         },
+    }
+
+
+# Ride leader registration alerts
+
+@router.post(
+    "/api/admin/events/{event_id}/registration-alerts/claim",
+)
+def claim_registration_alerts(
+    event_id: int,
+    db: Session = Depends(get_db),
+    current_admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Subscribe the logged-in ride leader to new RSVP alerts."""
+    event = db.query(Event).filter(Event.id == event_id).one_or_none()
+    if event is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_FOUND",
+                "message": "Event not found",
+            },
+        )
+
+    admin_email = current_admin.get("email")
+    if not isinstance(admin_email, str):
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "ADMIN_EMAIL_REQUIRED",
+                "message": "Dashboard session email is required",
+            },
+        )
+
+    leader_rsvp = find_event_rsvp_by_email(db, event_id, admin_email)
+    if leader_rsvp is None:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "RIDE_LEADER_RSVP_REQUIRED",
+                "message": (
+                    "Register for this event with your dashboard email "
+                    "before claiming alerts"
+                ),
+            },
+        )
+
+    leader_rsvp.receives_registration_alerts = True
+    db.commit()
+    db.refresh(leader_rsvp)
+    return {
+        "active": True,
+        "leader_name": leader_rsvp.name,
+    }
+
+
+@router.post(
+    "/api/admin/events/{event_id}/registration-alerts/release",
+)
+def release_registration_alerts(
+    event_id: int,
+    db: Session = Depends(get_db),
+    current_admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Stop new RSVP alerts for the logged-in ride leader."""
+    event = db.query(Event).filter(Event.id == event_id).one_or_none()
+    if event is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_FOUND",
+                "message": "Event not found",
+            },
+        )
+
+    admin_email = current_admin.get("email")
+    if not isinstance(admin_email, str):
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "ADMIN_EMAIL_REQUIRED",
+                "message": "Dashboard session email is required",
+            },
+        )
+
+    leader_rsvp = find_event_rsvp_by_email(db, event_id, admin_email)
+    if leader_rsvp is None:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "RIDE_LEADER_RSVP_REQUIRED",
+                "message": "No active RSVP matches your dashboard email",
+            },
+        )
+
+    leader_rsvp.receives_registration_alerts = False
+    db.commit()
+    db.refresh(leader_rsvp)
+    return {
+        "active": False,
+        "leader_name": leader_rsvp.name,
     }
 
 

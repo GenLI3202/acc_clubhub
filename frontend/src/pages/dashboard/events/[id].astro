@@ -51,6 +51,7 @@ if (isLocalPreview) {
         notes: "Needs a stable confirm modal",
         created_at: "2026-04-24T12:00:00.000Z",
         is_ride_leader: true,
+        receives_registration_alerts: true,
         ride_leader_credit_km: 48.5,
       },
       {
@@ -64,6 +65,7 @@ if (isLocalPreview) {
         notes: "",
         created_at: "2026-04-23T12:00:00.000Z",
         is_ride_leader: false,
+        receives_registration_alerts: false,
         ride_leader_credit_km: null,
       },
     ],
@@ -79,6 +81,11 @@ if (isLocalPreview) {
       max_credited_leader_count: 2,
       credit_per_leader_km: 48.5,
       total_credited_km: 48.5,
+    },
+    registration_alerts: {
+      eligible: true,
+      subscribed: true,
+      leader_name: "Preview Confirmed Rider",
     },
   };
 } else {
@@ -99,6 +106,14 @@ if (isLocalPreview) {
     const message = e instanceof Error ? e.message : String(e);
     fetchError = `Failed to fetch RSVPs: ${message}`;
   }
+}
+
+if (eventData && !eventData.registration_alerts) {
+  eventData.registration_alerts = {
+    eligible: false,
+    subscribed: false,
+    leader_name: null,
+  };
 }
 
 function formatDate(dateStr: string | null): string {
@@ -461,6 +476,40 @@ function formatKm(value: number | null | undefined): string {
                 <div><dt>Total Credited</dt><dd>{formatKm(eventData.summary.total_credited_km)}</dd></div>
               </dl>
             </section>
+            <section class="ride-summary-card">
+              <h3>New RSVP Alerts</h3>
+              {eventData.registration_alerts.eligible ? (
+                <>
+                  <p>
+                    {eventData.registration_alerts.subscribed
+                      ? `${eventData.registration_alerts.leader_name} receives an email when someone registers.`
+                      : "Claim alerts to receive an email when someone registers."}
+                  </p>
+                  <button
+                    type="button"
+                    class={`action-btn ${eventData.registration_alerts.subscribed ? "secondary" : ""}`}
+                    id={eventData.registration_alerts.subscribed
+                      ? "release-registration-alerts"
+                      : "claim-registration-alerts"}
+                    aria-label={eventData.registration_alerts.subscribed
+                      ? "Stop new registration alerts for this event"
+                      : "Claim new registration alerts for this event"}
+                  >
+                    {eventData.registration_alerts.subscribed
+                      ? "Stop alerts"
+                      : "Claim alerts"}
+                  </button>
+                </>
+              ) : (
+                <p>
+                  Register for this event with your Dashboard login email
+                  before claiming alerts.
+                </p>
+              )}
+              <p>
+                Alert ownership is separate from post-ride leader credit.
+              </p>
+            </section>
           </div>
 
           <div class="actions">
@@ -518,11 +567,16 @@ function formatKm(value: number | null | undefined): string {
                     </td>
                     <td>
                       <div class="row-state">
-                        {rsvp.is_ride_leader ? (
-                          <span class="badge badge-ride-leader">ride leader</span>
-                        ) : (
-                          <span style="color:#8b949e; font-size:0.8rem;">—</span>
-                        )}
+                      {rsvp.is_ride_leader && (
+                        <span class="badge badge-ride-leader">ride leader</span>
+                      )}
+                      {rsvp.receives_registration_alerts && (
+                        <span class="badge badge-ride-leader">RSVP alerts</span>
+                      )}
+                      {!rsvp.is_ride_leader
+                        && !rsvp.receives_registration_alerts && (
+                        <span style="color:#8b949e; font-size:0.8rem;">—</span>
+                      )}
                       </div>
                       {rsvp.ride_leader_credit_km != null && (
                         <div class="leader-credit">{formatKm(rsvp.ride_leader_credit_km)}</div>
@@ -879,6 +933,53 @@ function formatKm(value: number | null | undefined): string {
         btn.addEventListener("click", () => {
           restoreRsvp(btn.dataset.rsvpId, btn.dataset.rsvpName, btn);
         });
+      });
+
+      async function update_registration_alerts(action, button) {
+        const confirmed = await confirmAction({
+          title: action === "claim" ? "Claim new RSVP alerts" : "Stop new RSVP alerts",
+          message: action === "claim"
+            ? "Receive an email whenever another rider registers for this event?"
+            : "Stop receiving new registration emails for this event?",
+          confirmLabel: action === "claim" ? "Claim alerts" : "Stop alerts",
+        });
+        if (!confirmed) return;
+
+        button.disabled = true;
+        try {
+          const response = await fetch(
+            `/dashboard/api/events/${id}/registration-alerts/${action}`,
+            {
+              method: "POST",
+              credentials: "include",
+            },
+          );
+          const data = await response.json();
+          if (!response.ok) {
+            const detail = typeof data.detail === "object"
+              ? data.detail.message
+              : data.detail;
+            throw new Error(detail || `${response.status}`);
+          }
+          window.location.reload();
+        } catch (error) {
+          alert("Failed to update registration alerts: " + error.message);
+          button.disabled = false;
+        }
+      }
+
+      const claim_alerts_button = document.getElementById(
+        "claim-registration-alerts",
+      );
+      claim_alerts_button?.addEventListener("click", () => {
+        update_registration_alerts("claim", claim_alerts_button);
+      });
+
+      const release_alerts_button = document.getElementById(
+        "release-registration-alerts",
+      );
+      release_alerts_button?.addEventListener("click", () => {
+        update_registration_alerts("release", release_alerts_button);
       });
 
       document.getElementById("notify-btn")?.addEventListener("click", async () => {

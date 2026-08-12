@@ -11,6 +11,14 @@
 
 ## Recent Updates
 
+- [X] **Ride Leader New RSVP Alerts** (2026-08-12) — branch `phase-4/ride-leader-rsvp-alerts`
+  - [X] Let a registered Dashboard user claim or stop per-event new-RSVP alerts when the login email matches an active RSVP.
+  - [X] Notify every claimed leader after a confirmed or waitlist RSVP commits, while excluding the new participant and cancelled recipients.
+  - [X] Keep participant email and notes out of the alert email; include event details, registration status, confirmed capacity, and a Dashboard link.
+  - [X] Added migration `011_add_rsvp_registration_alerts.sql` and schema-health coverage for the RSVP alert subscription flag.
+  - [X] Verified 8 focused backend tests, `npm run check` (0 errors), `npm run test` (48 passed), `npm run build`, Ruff on new Python files, and a local Dashboard preview (HTTP 200 plus screenshot review).
+  - [X] Full backend suite reached 143 passed with one existing historical-alias assertion failure reproduced unchanged on a clean `master` archive.
+
 - [X] **Afterwork Ride Leader WeChat QR Update** (2026-08-12)
   - [X] Replaced the expiring North and South Afterwork group QR codes with the personal WeChat QR codes for ride leaders Dashu (大树) and Ronnie, respectively.
   - [X] Updated zh/en/de event copy to tell participants to add the relevant ride leader, who will invite them to the event group.
