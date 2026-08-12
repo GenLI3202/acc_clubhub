@@ -78,10 +78,12 @@ recurring:
 如果你想参加本次活动，请务必通过**活动页提供的邮箱完成报名**。  
 这样我们才能做好签到和参与统计；如后续涉及保险或活动参与核对，也会以**报名记录和签到记录**作为依据。
 
-扫码进群仅用于活动沟通，**不等于报名成功**，也不能替代邮件报名。
+请扫描下方二维码添加北线领骑**大树**的微信，并备注“北线 After Work”。大树会将参与者拉入活动群，方便接收集合、路况和当天临时调整。
+
+添加领骑微信或进入活动群仅用于活动沟通，**不等于报名成功**，也不能替代邮件报名。
 
 ***
 
-### 活动二维码
+### 添加北线领骑微信
 
-![ACC North Afterwork Ride WeChat QR](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+![大树（北线领骑）微信二维码](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)

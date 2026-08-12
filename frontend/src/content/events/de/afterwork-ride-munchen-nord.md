@@ -78,10 +78,12 @@ Die Runde endet voraussichtlich nach etwa **1 Std. 50 Min. wieder am Startpunkt*
 Wenn du an dieser Ausfahrt teilnehmen möchtest, melde dich bitte unbedingt **über die auf der Event-Seite angegebene E-Mail-Adresse** an.  
 Nur so können wir Anwesenheit und Teilnahme korrekt dokumentieren; falls später ein Nachweis für Versicherung oder Teilnahme erforderlich ist, gelten **Anmeldedatensatz und Sign-in-Datensatz** als Grundlage.
 
-Der Beitritt zur Gruppe per QR-Code dient nur der Kommunikation rund um die Ausfahrt. Er **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
+Bitte scanne den QR-Code unten und füge **Dashu (大树)**, die Ride-Leitung der Nordrunde, bei WeChat hinzu. Schreibe „North After Work“ in die Freundschaftsanfrage. Dashu fügt Teilnehmende anschließend zur Event-Gruppe hinzu, in der Treffpunktdetails, Streckenhinweise und kurzfristige Änderungen geteilt werden.
+
+Das Hinzufügen der Ride-Leitung bzw. der Beitritt zur Event-Gruppe dient nur der Kommunikation. Es **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
 
 ***
 
-### WeChat QR-Code
+### Ride-Leitung der Nordrunde bei WeChat hinzufügen
 
-![ACC North Afterwork Ride WeChat QR](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+![WeChat-QR-Code von Dashu, Ride-Leitung der Nordrunde](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)

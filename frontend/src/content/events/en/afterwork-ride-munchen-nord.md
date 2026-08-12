@@ -78,10 +78,12 @@ The route is expected to return to the starting point after about **1 h 50 min**
 If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
 This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
 
-Joining the group via QR code is only for ride communication. It **does not count as a successful registration** and cannot replace email registration.
+Please scan the QR code below to add **Dashu (大树)**, the North ride leader, on WeChat. Include “North After Work” in your friend request. Dashu will add participants to the event group for meeting details, route conditions, and same-day updates.
+
+Adding the ride leader or joining the event group is for ride communication only. It **does not count as a successful registration** and cannot replace email registration.
 
 ***
 
-### WeChat QR Code
+### Add the North Ride Leader on WeChat
 
-![ACC North Afterwork Ride WeChat QR](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+![WeChat QR code for Dashu, the North ride leader](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
