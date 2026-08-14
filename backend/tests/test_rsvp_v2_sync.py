@@ -1,6 +1,9 @@
-import pytest
 from datetime import datetime, timezone
+from unittest.mock import patch
+
+from fastapi.testclient import TestClient
 from models import Event
+from sqlalchemy.orm import Session
 
 
 def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
@@ -100,3 +103,54 @@ def test_create_rsvp_v2_does_not_clear_existing_distance(client_no_auth, db):
     db.expire_all()
     updated_event = db.query(Event).filter(Event.slug == slug).first()
     assert float(updated_event.distance_km) == 42.4
+
+
+def test_create_rsvp_v2_passes_route_to_confirmation_email(
+    client_no_auth: TestClient,
+    db: Session,
+) -> None:
+    """The route is forwarded to email without being stored on Event."""
+    route_url = (
+        "https://www.komoot.com/de-de/tour/3200651827"
+        "?share_token=test-token&ref=wtd"
+    )
+    payload = {
+        "email": "route-rider@example.com",
+        "name": "Route Rider",
+        "privacy_accepted": True,
+        "event_slug": "route-email-test",
+        "event_title": "Route Email Test",
+        "event_location": "Munich",
+        "event_date": "2026-09-01T09:00:00.000Z",
+        "route_komoot_url": route_url,
+        "lang": "en",
+    }
+
+    with patch("routes.rsvp.send_confirmation_email") as mock_send:
+        response = client_no_auth.post("/api/rsvp", json=payload)
+
+    assert response.status_code == 200
+    assert mock_send.call_args.kwargs["route_komoot_url"] == route_url
+    event = db.query(Event).filter(Event.slug == "route-email-test").one()
+    assert "route_komoot_url" not in event.__table__.columns
+
+
+def test_create_rsvp_v2_rejects_non_komoot_route(
+    client_no_auth: TestClient,
+) -> None:
+    """The public RSVP endpoint rejects arbitrary email-link domains."""
+    payload = {
+        "email": "route-rider@example.com",
+        "name": "Route Rider",
+        "privacy_accepted": True,
+        "event_slug": "route-email-test",
+        "event_title": "Route Email Test",
+        "event_location": "Munich",
+        "event_date": "2026-09-01T09:00:00.000Z",
+        "route_komoot_url": "https://example.com/phishing",
+        "lang": "en",
+    }
+
+    response = client_no_auth.post("/api/rsvp", json=payload)
+
+    assert response.status_code == 422

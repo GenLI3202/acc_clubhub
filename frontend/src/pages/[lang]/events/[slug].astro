@@ -152,6 +152,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
       data-registration-deadline={effectiveDeadline}
       data-wechat-qr-code={entry.data.wechatQrCode ?? ''}
       data-distance-km={entry.data.distanceKm != null ? String(entry.data.distanceKm) : ''}
+      data-route-komoot-url={entry.data.routeKomootUrl ?? ''}
       data-acc-official-ride={isACCOfficialRide ? 'true' : ''}
       data-lang={lang}
       data-api-url={apiUrl}
@@ -184,6 +185,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
     const wechatQrCode = container.dataset.wechatQrCode || null;
     const distanceKmRaw = container.dataset.distanceKm;
     const distanceKm = distanceKmRaw ? parseFloat(distanceKmRaw) : null;
+    const routeKomootUrl = container.dataset.routeKomootUrl || null;
     const isACCOfficialRide = container.dataset.accOfficialRide === 'true';
     const lang = (container.dataset.lang ?? 'zh') as Locale;
     const apiUrl = container.dataset.apiUrl ?? '';
@@ -204,6 +206,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
         registrationDeadline,
         wechatQrCode,
         distanceKm,
+        routeKomootUrl,
         isACCOfficialRide,
         lang,
         apiUrl,
