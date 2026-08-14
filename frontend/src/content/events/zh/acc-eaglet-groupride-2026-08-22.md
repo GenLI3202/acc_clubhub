@@ -14,6 +14,7 @@ heroPriority: 2
 status: published
 ACCOfficialRide: true
 distanceKm: 60
+routeKomootUrl: https://www.komoot.com/de-de/tour/3200651827?share_token=aClTH3NvAYXHu4tCFlTV6MMX9MplpSWkCJ4fGvjjFPpQnP1W5p&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ registrationLink: ''
 | **时间** | 2026 年 8 月 22 日（**周六**）**9:30 出发** |
 | **集合地点** | **Rapha München, Frauenstraße 8, 80469 München** |
 | **距离 / 强度** | **40–60 km**，中等节奏，全程有领骑带队 |
+| **路线** | [Komoot 查看路线](https://www.komoot.com/de-de/tour/3200651827?share_token=aClTH3NvAYXHu4tCFlTV6MMX9MplpSWkCJ4fGvjjFPpQnP1W5p&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **课程费** | ACC 会员**免费** · 非会员学生 **10 €** · 非会员非学生 **15 €** |
 | **注意事项** | 头盔必戴；请携带饮水、补给与基础随车工具 |
 

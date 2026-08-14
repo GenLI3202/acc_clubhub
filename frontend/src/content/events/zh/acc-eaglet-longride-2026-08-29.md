@@ -14,6 +14,7 @@ heroPriority: 3
 status: published
 ACCOfficialRide: true
 distanceKm: 90
+routeKomootUrl: https://www.komoot.com/de-de/tour/3200649987?share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ registrationLink: ''
 | **时间** | 2026 年 8 月 29 日（**周六**）**9:30 出发** |
 | **集合地点** | **Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen** |
 | **距离 / 强度** | **60–90 km**，含长爬坡与长下坡，全程有领骑带队 |
+| **路线** | [Komoot 查看路线](https://www.komoot.com/de-de/tour/3200649987?share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **课程费** | ACC 会员**免费** · 非会员学生 **10 €** · 非会员非学生 **15 €** |
 | **注意事项** | 头盔必戴；请携带充足饮水与补给、备用内胎与随车工具 |
 

@@ -14,6 +14,7 @@ heroPriority: 3
 status: published
 ACCOfficialRide: true
 distanceKm: 90
+routeKomootUrl: https://www.komoot.com/de-de/tour/3200649987?share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ Completing Sessions 1 and 2 first is recommended, but equivalent group-riding ex
 | **Time** | August 29, 2026 (**Saturday**) · **departure 9:30 AM** |
 | **Meeting point** | **Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen** |
 | **Distance / Intensity** | **60–90 km**, with a long climb and a long descent, led by a guide throughout |
+| **Route** | [View on Komoot](https://www.komoot.com/de-de/tour/3200649987?share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring plenty of water and snacks, a spare tube, and basic tools |
 

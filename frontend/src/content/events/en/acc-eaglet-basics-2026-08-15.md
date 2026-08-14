@@ -14,6 +14,7 @@ heroPriority: 1
 status: published
 ACCOfficialRide: true
 distanceKm: 30
+routeKomootUrl: https://www.komoot.com/de-de/tour/3190190865?share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ No group-riding experience needed — that's exactly what this session teaches.
 | **Time** | August 15, 2026 (**Saturday**) · **departure 9:30 AM** |
 | **Meeting point** | **Am Bavariapark 5, 80339 München-Schwanthalerhöhe** |
 | **Distance / Intensity** | **20–30 km**, easy pace, led by a guide throughout |
+| **Route** | [View on Komoot](https://www.komoot.com/de-de/tour/3190190865?share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring water and basic snacks |
 

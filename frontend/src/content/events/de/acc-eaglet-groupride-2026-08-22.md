@@ -14,6 +14,7 @@ heroPriority: 2
 status: published
 ACCOfficialRide: true
 distanceKm: 60
+routeKomootUrl: https://www.komoot.com/de-de/tour/3200651827?share_token=aClTH3NvAYXHu4tCFlTV6MMX9MplpSWkCJ4fGvjjFPpQnP1W5p&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ Kurs 1 vorher zu absolvieren ist empfohlen, gleichwertige Grundkenntnisse reiche
 | **Zeit** | 22. August 2026 (**Samstag**) · **Abfahrt 9:30 Uhr** |
 | **Treffpunkt** | **Rapha München, Frauenstraße 8, 80469 München** |
 | **Distanz / Intensität** | **40–60 km**, mittleres Tempo, mit Guide während der gesamten Fahrt |
+| **Route** | [Auf Komoot ansehen](https://www.komoot.com/de-de/tour/3200651827?share_token=aClTH3NvAYXHu4tCFlTV6MMX9MplpSWkCJ4fGvjjFPpQnP1W5p&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte Wasser, Verpflegung und grundlegendes Werkzeug mitbringen |
 
