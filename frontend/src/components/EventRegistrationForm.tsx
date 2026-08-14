@@ -14,6 +14,7 @@ interface EventRegistrationFormProps {
     registrationDeadline: string | null;
     wechatQrCode: string | null;
     distanceKm: number | null;
+    routeKomootUrl: string | null;
     isACCOfficialRide: boolean;
     lang: Locale;
     apiUrl: string;
@@ -39,6 +40,7 @@ export function EventRegistrationForm({
     registrationDeadline,
     wechatQrCode,
     distanceKm,
+    routeKomootUrl,
     isACCOfficialRide,
     lang,
     apiUrl,
@@ -110,6 +112,7 @@ export function EventRegistrationForm({
                     registration_deadline: registrationDeadline,
                     wechat_qr_code: wechatQrCode,
                     distance_km: distanceKm,
+                    route_komoot_url: routeKomootUrl,
                 }),
             });
 

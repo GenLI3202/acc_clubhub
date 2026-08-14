@@ -14,6 +14,7 @@ heroPriority: 1
 status: published
 ACCOfficialRide: true
 distanceKm: 30
+routeKomootUrl: https://www.komoot.com/de-de/tour/3190190865?share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ registrationLink: ''
 | **时间** | 2026 年 8 月 15 日（**周六**）**9:30 出发** |
 | **集合地点** | **Am Bavariapark 5, 80339 München-Schwanthalerhöhe** |
 | **距离 / 强度** | **20–30 km**，轻松节奏，全程有领骑带队 |
+| **路线** | [Komoot 查看路线](https://www.komoot.com/de-de/tour/3190190865?share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **课程费** | ACC 会员**免费** · 非会员学生 **10 €** · 非会员非学生 **15 €** |
 | **注意事项** | 头盔必戴；请携带饮水与基础补给 |
 

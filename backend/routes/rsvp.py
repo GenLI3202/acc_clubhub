@@ -3,25 +3,27 @@ ACC ClubHub Backend - RSVP API Routes
 Phase 4.3: Email-based event registration (no OAuth required)
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from typing import Optional
-from database import get_db
-from models import Event, RSVP, Subscriber
-from pydantic import BaseModel, EmailStr
-from datetime import datetime, timezone
-import secrets
 import logging
+import secrets
+from datetime import datetime, timezone
+from typing import Optional
+from urllib.parse import urlparse
+
+from database import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
+from models import RSVP, Event, Subscriber
+from pydantic import BaseModel, EmailStr, field_validator
 from services.email import (
     send_confirmation_email,
-    send_waitlist_email,
     send_subscription_confirmation_email,
+    send_waitlist_email,
 )
 from services.event_counts import (
     count_confirmed_rsvps,
     sync_event_current_participants,
 )
 from services.registration_alerts import send_registration_alerts
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +76,25 @@ class RSVPCreateV2(BaseModel):
     registration_deadline: Optional[datetime] = None
     wechat_qr_code: Optional[str] = None
     distance_km: Optional[float] = None
+    route_komoot_url: Optional[str] = None
+
+    @field_validator("route_komoot_url")
+    @classmethod
+    def validate_route_komoot_url(cls, value: Optional[str]) -> Optional[str]:
+        """Allow only HTTPS links hosted by Komoot."""
+        if not value:
+            return None
+
+        parsed = urlparse(value)
+        hostname = parsed.hostname or ""
+        is_komoot_host = hostname == "komoot.com" or hostname.endswith(
+            ".komoot.com",
+        )
+        if parsed.scheme != "https" or not is_komoot_host:
+            raise ValueError(
+                "route_komoot_url must be an HTTPS URL hosted by Komoot",
+            )
+        return value
 
 
 class SubscribeRequest(BaseModel):
@@ -417,6 +438,7 @@ def create_rsvp_v2(
                 event_slug=event.slug,
                 view_token=new_rsvp.view_token,
                 wechat_qr_code=data.wechat_qr_code,
+                route_komoot_url=data.route_komoot_url,
             )
         else:
             send_waitlist_email(

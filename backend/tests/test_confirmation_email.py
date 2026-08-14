@@ -3,11 +3,11 @@ Tests for send_confirmation_email — focuses on QR code URL construction.
 No actual emails are sent (RESEND_API_KEY is empty in test env).
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone
-from services.email import send_confirmation_email
+from unittest.mock import MagicMock, patch
 
+import pytest
+from services.email import send_confirmation_email
 
 SAMPLE_DATE = datetime(2026, 4, 19, 9, 0, tzinfo=timezone.utc)
 FRONTEND_URL = "https://www.across-cc.de"
@@ -68,3 +68,50 @@ def test_no_qr_code_omits_img_tag():
     )
     assert "WeChat QR Code" not in params["html"]
     assert "<img" not in params["html"]
+
+
+@pytest.mark.parametrize(
+    ("lang", "label"),
+    [
+        ("zh", "查看 Komoot 路线"),
+        ("en", "View route on Komoot"),
+        ("de", "Route auf Komoot ansehen"),
+    ],
+)
+def test_route_link_is_localized_and_html_safe(
+    lang: str,
+    label: str,
+) -> None:
+    """A supplied Komoot route appears as a localized safe link."""
+    route_url = (
+        "https://www.komoot.com/de-de/tour/3200651827"
+        "?share_token=test-token&ref=wtd"
+    )
+
+    params = _capture_email_params(
+        user_email="test@example.com",
+        user_name="Test User",
+        event_title="Test Ride",
+        event_date=SAMPLE_DATE,
+        lang=lang,
+        route_komoot_url=route_url,
+    )
+
+    assert label in params["html"]
+    assert (
+        'href="https://www.komoot.com/de-de/tour/3200651827'
+        '?share_token=test-token&amp;ref=wtd"'
+    ) in params["html"]
+
+
+def test_no_route_omits_komoot_link() -> None:
+    """Confirmation emails without a route omit the Komoot section."""
+    params = _capture_email_params(
+        user_email="test@example.com",
+        user_name="Test User",
+        event_title="Test Ride",
+        event_date=SAMPLE_DATE,
+        route_komoot_url=None,
+    )
+
+    assert "komoot.com" not in params["html"]

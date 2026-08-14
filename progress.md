@@ -11,6 +11,18 @@
 
 ## Recent Updates
 
+- [X] **Komoot Routes in RSVP Confirmation Emails** (2026-08-15)
+  - [X] Forwarded optional `routeKomootUrl` metadata through the website RSVP request into confirmation emails without storing it in PostgreSQL.
+  - [X] Added localized Komoot links for zh/en/de emails and omitted the section for events without a route.
+  - [X] Restricted the public RSVP field to HTTPS Komoot URLs and HTML-escaped the rendered link.
+  - [X] Verified 11 focused backend tests, 151 passing full-suite tests plus the known historical-alias baseline failure, frontend `npm run test:all`, and an intercepted browser RSVP containing the exact Session 2 route URL.
+
+- [X] **Eaglet Program Komoot Routes Restored** (2026-08-15)
+  - [X] Added the confirmed Komoot route for each of the three Eaglet sessions across zh/en/de event metadata.
+  - [X] Used share-token URLs for all three sessions to keep the public route links accessible.
+  - [X] Added localized visible route links to all nine event detail tables.
+  - [X] Verified all nine route fields and links, `npm run check` (0 errors), `npm run test` (48 passed), `npm run build`, and rendered zh/en/de event pages (HTTP 200 with the expected route links).
+
 - [X] **Ride Leader RSVP Alert Auto-Subscription Fix** (2026-08-12) — branch `phase-4/ride-leader-alert-autoclaim`
   - [X] Automatically enable new-RSVP email alerts when a checked-in RSVP is marked as ride leader.
   - [X] Stop alerts when the leader role or check-in is removed, and require an active leader assignment during recipient selection.

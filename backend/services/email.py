@@ -4,11 +4,12 @@ Phase 4.3.3: Resend integration for event confirmations
 """
 
 import logging
+from datetime import datetime
 from html import escape
 from typing import Optional
-from datetime import datetime
-from config import settings
+
 import resend
+from config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ def send_confirmation_email(
     event_slug: str = "",
     view_token: str = "",
     wechat_qr_code: Optional[str] = None,
+    route_komoot_url: Optional[str] = None,
 ) -> dict:
     """Send RSVP confirmation email"""
     if not settings.RESEND_API_KEY:
@@ -58,6 +60,17 @@ def send_confirmation_email(
         f'style="width:180px;height:180px;margin-top:8px;border:1px solid #eee;border-radius:4px;" /></p>'
         if qr_url else ""
     )
+    route_labels = {
+        "zh": "查看 Komoot 路线",
+        "en": "View route on Komoot",
+        "de": "Route auf Komoot ansehen",
+    }
+    route_html = (
+        '<p style="margin-top:1.2em;">'
+        f'<a href="{escape(route_komoot_url, quote=True)}">'
+        f'{route_labels.get(lang, route_labels["en"])}</a></p>'
+        if route_komoot_url else ""
+    )
 
     templates = {
         "zh": {
@@ -69,6 +82,7 @@ def send_confirmation_email(
     <li><strong>时间：</strong>{date_str}</li>
     <li><strong>地点：</strong>{event_location or "待定"}</li>
 </ul>
+{route_html}
 {f'<p><a href="{participant_link}">查看参与名单</a></p>' if participant_link else ""}
 {qr_html}
 <p>祝您骑行愉快！</p>
@@ -83,6 +97,7 @@ def send_confirmation_email(
     <li><strong>Date:</strong> {date_str}</li>
     <li><strong>Location:</strong> {event_location or "TBD"}</li>
 </ul>
+{route_html}
 {f'<p><a href="{participant_link}">View participant list</a></p>' if participant_link else ""}
 {qr_html}
 <p>Enjoy your ride!</p>
@@ -97,6 +112,7 @@ def send_confirmation_email(
     <li><strong>Datum:</strong> {date_str}</li>
     <li><strong>Ort:</strong> {event_location or "TBD"}</li>
 </ul>
+{route_html}
 {f'<p><a href="{participant_link}">Teilnehmerliste ansehen</a></p>' if participant_link else ""}
 {qr_html}
 <p>Viel Spaß beim Radfahren!</p>

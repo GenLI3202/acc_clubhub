@@ -14,6 +14,7 @@ heroPriority: 1
 status: published
 ACCOfficialRide: true
 distanceKm: 30
+routeKomootUrl: https://www.komoot.com/de-de/tour/3190190865?share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ Keine Vorkenntnisse im Gruppenfahren nötig — genau das lernst du hier.
 | **Zeit** | 15. August 2026 (**Samstag**) · **Abfahrt 9:30 Uhr** |
 | **Treffpunkt** | **Am Bavariapark 5, 80339 München-Schwanthalerhöhe** |
 | **Distanz / Intensität** | **20–30 km**, entspanntes Tempo, mit Guide während der gesamten Fahrt |
+| **Route** | [Auf Komoot ansehen](https://www.komoot.com/de-de/tour/3190190865?share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte Wasser und Grundverpflegung mitbringen |
 

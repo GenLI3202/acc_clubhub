@@ -14,6 +14,7 @@ heroPriority: 3
 status: published
 ACCOfficialRide: true
 distanceKm: 90
+routeKomootUrl: https://www.komoot.com/de-de/tour/3200649987?share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 ---
 
@@ -34,6 +35,7 @@ Kurs 1 und 2 vorher zu absolvieren ist empfohlen, gleichwertige Gruppenfahrerfah
 | **Zeit** | 29. August 2026 (**Samstag**) · **Abfahrt 9:30 Uhr** |
 | **Treffpunkt** | **Holzkirchen Bahnhof Fahrradabstellanlage, Bahnhofpl. 9, 83607 Holzkirchen** |
 | **Distanz / Intensität** | **60–90 km**, mit langem Anstieg und langer Abfahrt, mit Guide während der gesamten Fahrt |
+| **Route** | [Auf Komoot ansehen](https://www.komoot.com/de-de/tour/3200649987?share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=2285951965613) |
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte ausreichend Wasser und Verpflegung, Ersatzschlauch und Werkzeug mitbringen |
 
