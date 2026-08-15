@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **Eaglet Program Komoot Route Embeds** (2026-08-15)
+  - [X] Embedded the Komoot map, elevation profile, and route details for all three Eaglet sessions across zh/en/de event pages.
+  - [X] Reused each session's share-token route and the existing Afterwork event embed structure.
+  - [X] Verified all nine iframe sources, `npm run check` (0 errors), `npm run test` (48 passed), `npm run build`, and the rendered Chinese Session 1 page (HTTP 200 with the expected embed URL).
+
 - [X] **Komoot Routes in RSVP Confirmation Emails** (2026-08-15)
   - [X] Forwarded optional `routeKomootUrl` metadata through the website RSVP request into confirmation emails without storing it in PostgreSQL.
   - [X] Added localized Komoot links for zh/en/de emails and omitted the section for events without a route.

@@ -39,6 +39,8 @@ Completing Session 1 first is recommended, but equivalent basic knowledge also w
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring water, snacks, and basic tools |
 
+<iframe src="https://www.komoot.com/tour/3200651827/embed?profile=1&share_token=aClTH3NvAYXHu4tCFlTV6MMX9MplpSWkCJ4fGvjjFPpQnP1W5p" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
 > In case of bad weather, the session may move to Sunday. We will notify participants in time.
 
 ***

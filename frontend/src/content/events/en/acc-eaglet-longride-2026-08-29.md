@@ -39,6 +39,8 @@ Completing Sessions 1 and 2 first is recommended, but equivalent group-riding ex
 | **Course fee** | ACC members **free** · non-member students **10 €** · non-member non-students **15 €** |
 | **Notes** | Helmet required; please bring plenty of water and snacks, a spare tube, and basic tools |
 
+<iframe src="https://www.komoot.com/tour/3200649987/embed?profile=1&share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
 > In case of bad weather, the session may move to Sunday. We will notify participants in time.
 
 ***

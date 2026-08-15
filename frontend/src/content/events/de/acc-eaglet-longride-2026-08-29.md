@@ -39,6 +39,8 @@ Kurs 1 und 2 vorher zu absolvieren ist empfohlen, gleichwertige Gruppenfahrerfah
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte ausreichend Wasser und Verpflegung, Ersatzschlauch und Werkzeug mitbringen |
 
+<iframe src="https://www.komoot.com/tour/3200649987/embed?profile=1&share_token=akz56AGsKn8m3NddGmgi6h1pXdzVGjGhvpDrxQPREkP8obzmkl" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
 > Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden. Wir informieren die Teilnehmenden rechtzeitig.
 
 ***

@@ -39,6 +39,8 @@ Kurs 1 vorher zu absolvieren ist empfohlen, gleichwertige Grundkenntnisse reiche
 | **Kursgebühr** | ACC-Mitglieder **kostenlos** · Nicht-Mitglieder (Studierende) **10 €** · Nicht-Mitglieder (sonstige) **15 €** |
 | **Zu beachten** | Helmpflicht; bitte Wasser, Verpflegung und grundlegendes Werkzeug mitbringen |
 
+<iframe src="https://www.komoot.com/tour/3200651827/embed?profile=1&share_token=aClTH3NvAYXHu4tCFlTV6MMX9MplpSWkCJ4fGvjjFPpQnP1W5p" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
 > Bei schlechtem Wetter kann der Termin auf Sonntag verschoben werden. Wir informieren die Teilnehmenden rechtzeitig.
 
 ***

@@ -39,6 +39,8 @@ registrationLink: ''
 | **课程费** | ACC 会员**免费** · 非会员学生 **10 €** · 非会员非学生 **15 €** |
 | **注意事项** | 头盔必戴；请携带饮水与基础补给 |
 
+<iframe src="https://www.komoot.com/tour/3190190865/embed?profile=1&share_token=axmnC31fAwZrtZF0OaxMDJbysi0KMcgA3sTf4TjYHY0zm8Bf5x" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+
 > 如遇恶劣天气，课程可能顺延至周日，届时另行通知。
 
 ***
