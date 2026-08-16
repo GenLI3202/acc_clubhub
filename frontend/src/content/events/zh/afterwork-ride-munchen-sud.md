@@ -1,10 +1,10 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: 每周二下班后 16:45 集合、17:00 从 Liesl-Karlstadt-Straße 1 出发的慕尼黑南区轻松社交骑行。
-date: 2026-05-05 16:45
+description: 每周二下班后 17:50 集合、18:00 从慕尼黑动物园出发的慕尼黑南区轻松社交骑行。
+date: 2026-05-05 17:50
 eventType: after-work
-location: Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln
+location: 慕尼黑动物园 · Tierparkstraße 30, 81543 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud/cover.jpg
 displaySections:
@@ -12,8 +12,8 @@ displaySections:
   - hero
   - upcoming
 maxParticipants: 15
-distanceKm: 40.1
-routeKomootUrl: https://www.komoot.com/tour/3127845298?share_token=atl7U3hhNsR0TAyf3KugF3R18twquZNnSUuo9RBV4vECDEjaX5
+distanceKm: 42
+routeKomootUrl: https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
 status: published
@@ -31,15 +31,15 @@ recurring:
 
 这是一场以 **after-work 社交休闲骑** 为主的路线，适合想在工作日傍晚出来透透气、活动一下，也和 ACC 车友一起骑车的人。整体节奏友好，但默认参加者具备基础公路骑行能力。
 
-我们将于 **16:45** 在 **Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln** 集合，**17:00 准时出发**。路线以 Komoot 链接为准，预计 **19:00 左右回到起点**。
+我们将于 **17:50** 在 **慕尼黑动物园 · Tierparkstraße 30, 81543 München** 集合，**18:00 准时出发**。路线以 Komoot 链接为准，全程约 **42 km**，累计爬升约 **320 m**，预计 **20:00 左右回到起点**。
 
 ***
 
 |  | 信息 |
 | --- | --- |
-| **时间** | 16:45 集合，17:00 准时发车，预计 19:00 回到起点 |
-| **集合地点** | Liesl-Karlstadt-Straße 1, 81476 München-Thalkirchen-Obersendling-Forstenried-Fürstenried-Solln |
-| **路线** | 以 Komoot 路线链接为准 |
+| **时间** | 17:50 集合，18:00 准时发车，预计 20:00 回到起点 |
+| **集合地点** | 慕尼黑动物园 · Tierparkstraße 30, 81543 München |
+| **路线** | 约 **42 km / 320 m 爬升**，以 Komoot 路线链接为准 |
 | **强度** | 偏轻松社交骑，但需具备基础骑行能力 |
 | **适合车辆** | 建议使用 road bike 或 gravel bike |
 | **注意事项** | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线；如遇恶劣天气，或除领骑外报名人数不足 2 人，活动将自动取消 |
@@ -49,9 +49,9 @@ recurring:
 
 ### 路线预览
 
-- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/3127845298?share_token=atl7U3hhNsR0TAyf3KugF3R18twquZNnSUuo9RBV4vECDEjaX5)
+- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
 
-<iframe src="https://www.komoot.com/tour/3127845298/embed?profile=1&share_token=atl7U3hhNsR0TAyf3KugF3R18twquZNnSUuo9RBV4vECDEjaX5" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+<iframe src="https://www.komoot.com/tour/2901905197/embed?profile=1&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
 ### 活动说明
 
@@ -64,7 +64,7 @@ recurring:
 
 ### 返程 / Logistics
 
-本次路线预计于 **19:00 左右回到起点**，结束位置与集合点一致，适合下班后参与并在当天晚间返回。
+本次路线预计于 **20:00 左右回到起点**，结束位置与集合点一致，适合下班后参与并在当天晚间返回。
 
 ***
 
