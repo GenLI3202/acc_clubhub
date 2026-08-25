@@ -17,10 +17,12 @@ from database import get_db
 from models import Event, RSVP, Subscriber
 from routes.auth import get_current_admin
 from services.email import (
-    send_cancellation_email,
     send_broadcast_email,
+    send_cancellation_email,
+    send_event_cancellation_email,
     send_registrant_notification_email,
 )
+from services.event_cancellation import EventCancellationReason
 from services.event_counts import (
     count_confirmed_rsvps,
     get_available_spots,
@@ -52,6 +54,8 @@ REQUIRED_SCHEMA_COLUMNS = {
         "receives_registration_alerts",
     },
     "events": {
+        "cancellation_reason",
+        "cancelled_at",
         "distance_km",
     },
 }
@@ -76,6 +80,12 @@ class SyncOccurrencesResponse(BaseModel):
 
 class RideLeaderRequest(BaseModel):
     rsvp_id: int
+
+
+class CancelEventRequest(BaseModel):
+    """Event-wide cancellation request."""
+
+    reason: EventCancellationReason
 
 
 # ── Admin Schema Health ──────────────────────────────────────
@@ -224,6 +234,11 @@ def list_events(
                 event.registration_deadline.isoformat()
                 if event.registration_deadline else None
             ),
+            "cancellation_reason": event.cancellation_reason,
+            "cancelled_at": (
+                event.cancelled_at.isoformat()
+                if event.cancelled_at else None
+            ),
             "distance_km": float(event.distance_km) if event.distance_km is not None else None,
         })
 
@@ -278,6 +293,11 @@ def get_event_rsvps(
             "max_participants": event.max_participants,
             "current_participants": confirmed_count,
             "distance_km": float(event.distance_km) if event.distance_km is not None else None,
+            "cancellation_reason": event.cancellation_reason,
+            "cancelled_at": (
+                event.cancelled_at.isoformat()
+                if event.cancelled_at else None
+            ),
         },
         "rsvps": [
             {
@@ -561,6 +581,117 @@ def deactivate_ride_leader(
         "success": True,
         "message": "Ride leader removed and registration alerts stopped",
         "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
+    }
+
+
+# ── Admin Cancel Event ────────────────────────────────────────
+
+@router.post("/api/admin/events/{event_id}/cancel")
+def cancel_event(
+    event_id: int,
+    body: CancelEventRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Cancel an event and notify every active registrant.
+
+    The event state is committed before email delivery. Confirmed and
+    waitlisted RSVPs remain unchanged so the registration record is preserved.
+
+    Args:
+        event_id: Database identifier of the event to cancel.
+        body: Validated cancellation reason.
+        db: Active database session.
+        _admin: Authenticated admin session.
+
+    Returns:
+        Cancellation state and email delivery summary.
+
+    Raises:
+        HTTPException: If the event is missing or already cancelled.
+    """
+    event = (
+        db.query(Event)
+        .filter(Event.id == event_id)
+        .with_for_update()
+        .first()
+    )
+    if not event:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_FOUND",
+                "message": "Event not found",
+            },
+        )
+
+    if event.cancelled_at is not None:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_ALREADY_CANCELLED",
+                "message": "Event is already cancelled",
+                "cancellation_reason": event.cancellation_reason,
+            },
+        )
+
+    reason = body.reason.value
+    event.cancellation_reason = reason
+    event.cancelled_at = datetime.now(timezone.utc)
+
+    try:
+        db.commit()
+        db.refresh(event)
+    except Exception:
+        db.rollback()
+        raise
+
+    rsvps = (
+        db.query(RSVP)
+        .filter(RSVP.event_id == event_id)
+        .order_by(RSVP.created_at)
+        .all()
+    )
+    sent = 0
+    skipped = 0
+    failed = 0
+
+    for rsvp in rsvps:
+        if rsvp.status == "cancelled":
+            skipped += 1
+            continue
+
+        try:
+            result = send_event_cancellation_email(
+                user_email=rsvp.email,
+                user_name=rsvp.name,
+                event_title=event.title,
+                event_date=event.event_date,
+                event_location=event.location,
+                cancellation_reason=reason,
+                event_slug=event.slug,
+            )
+            if result.get("status") == "error":
+                failed += 1
+            elif result.get("status") == "skipped":
+                skipped += 1
+            else:
+                sent += 1
+        except Exception as error:
+            logger.error(
+                "Event cancellation email failed for %s: %s",
+                rsvp.email,
+                error,
+                exc_info=True,
+            )
+            failed += 1
+
+    return {
+        "success": True,
+        "reason": reason,
+        "sent": sent,
+        "skipped": skipped,
+        "failed": failed,
     }
 
 

@@ -10,6 +10,7 @@ from typing import Optional
 
 import resend
 from config import settings
+from services.event_cancellation import get_cancellation_reason_label
 
 logger = logging.getLogger(__name__)
 
@@ -219,6 +220,90 @@ def send_cancellation_email(
     except Exception as e:
         logger.error("Failed to send cancellation email: %s", e, exc_info=True)
         return {"status": "error", "message": str(e)}
+
+
+def send_event_cancellation_email(
+    user_email: str,
+    user_name: str,
+    event_title: str,
+    event_date: Optional[datetime] = None,
+    event_location: Optional[str] = None,
+    cancellation_reason: str = "other",
+    event_slug: str = "",
+) -> dict:
+    """Send an event-wide cancellation notice to a registered rider.
+
+    Args:
+        user_email: Recipient email address.
+        user_name: Recipient display name.
+        event_title: Cancelled event title.
+        event_date: Scheduled event date and time.
+        event_location: Scheduled meeting location.
+        cancellation_reason: Valid event cancellation reason code.
+        event_slug: Public event page slug.
+
+    Returns:
+        Resend response or a local skipped/error status dictionary.
+    """
+    if not settings.RESEND_API_KEY:
+        logger.debug(
+            "Skipping event cancellation email (no RESEND_API_KEY): %s",
+            user_email,
+        )
+        return {"status": "skipped", "reason": "no_api_key"}
+
+    safe_name = escape(user_name)
+    safe_title = escape(event_title)
+    safe_location = escape(event_location or "")
+    safe_reason = escape(
+        get_cancellation_reason_label(cancellation_reason),
+    )
+    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
+    event_link = (
+        f"{frontend_url}/en/events/{escape(event_slug, quote=True)}"
+        if event_slug
+        else frontend_url
+    )
+
+    html_body = (
+        '<div style="font-family:Arial,sans-serif;max-width:600px;">'
+        f'<h2 style="color:#C62828;">Event Cancelled: {safe_title}</h2>'
+        f"<p>Hello {safe_name},</p>"
+        "<p>The following event has been cancelled:</p>"
+        "<ul>"
+        f"<li><strong>Event:</strong> {safe_title}</li>"
+        + (f"<li><strong>Date:</strong> {date_str}</li>" if date_str else "")
+        + (
+            f"<li><strong>Location:</strong> {safe_location}</li>"
+            if safe_location
+            else ""
+        )
+        + f"<li><strong>Reason:</strong> {safe_reason}</li>"
+        + "</ul>"
+        + f'<p><a href="{event_link}">View event details</a></p>'
+        + "<p>— ACC ClubHub Team</p>"
+        + _CONTACT["en"]
+        + "</div>"
+    )
+
+    params = {
+        "from": "ACC ClubHub <noreply@events.across-cc.de>",
+        "to": [user_email],
+        "subject": f"Event Cancelled: {event_title}",
+        "html": html_body,
+    }
+
+    try:
+        return resend.Emails.send(params)
+    except Exception as error:
+        logger.error(
+            "Failed to send event cancellation email to %s: %s",
+            user_email,
+            error,
+            exc_info=True,
+        )
+        return {"status": "error", "message": str(error)}
 
 
 def send_broadcast_email(

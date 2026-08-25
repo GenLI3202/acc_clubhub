@@ -255,3 +255,10 @@
   text-align: center;
   margin: 1.5rem 0;
 }
+
+.event-cancelled-notice {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-main);
+  font-weight: 600;
+}

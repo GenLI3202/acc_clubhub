@@ -143,6 +143,16 @@ def create_rsvp(
             detail=f"Event with id {event_id} not found",
         )
 
+    if event.cancelled_at is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "error_code": "EVENT_CANCELLED",
+                "message": "This event has been cancelled",
+                "cancellation_reason": event.cancellation_reason,
+            },
+        )
+
     # 2. 检查报名截止时间
     if (
         event.registration_deadline
@@ -304,6 +314,16 @@ def create_rsvp_v2(
     event = db.query(Event).filter(
         Event.slug == data.event_slug,
     ).with_for_update().first()
+
+    if event and event.cancelled_at is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "error_code": "EVENT_CANCELLED",
+                "message": "This event has been cancelled",
+                "cancellation_reason": event.cancellation_reason,
+            },
+        )
 
     event_date_dt = data.event_date
     if event_date_dt.tzinfo is None:

@@ -2,6 +2,11 @@
 // dashboard/events/[id].astro — Admin event RSVP detail (SSR)
 export const prerender = false;
 
+import {
+  EVENT_CANCELLATION_REASON_OPTIONS,
+  get_cancellation_reason_label,
+} from '../../../lib/events/eventCancellation';
+
 const { id } = Astro.params;
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 const isLocalPreview = import.meta.env.DEV
@@ -38,6 +43,8 @@ if (isLocalPreview) {
       max_participants: 15,
       current_participants: 2,
       distance_km: 48.5,
+      cancellation_reason: null,
+      cancelled_at: null,
     },
     rsvps: [
       {
@@ -223,6 +230,30 @@ function formatKm(value: number | null | undefined): string {
       .ride-summary-list dt { color: #57606a; }
       .ride-summary-list dd { margin: 0; font-weight: 600; color: #24292f; }
       .actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+      .event-cancellation-action {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .event-cancellation-action select {
+        min-width: 240px;
+        padding: 0.4rem 0.7rem;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: white;
+        color: #24292f;
+        font-size: 0.85rem;
+      }
+      .event-cancelled-state {
+        padding: 0.65rem 0.85rem;
+        border: 1px solid #ff818266;
+        border-radius: 6px;
+        background: #ffebe9;
+        color: #cf222e;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
       .action-btn {
         display: inline-block;
         padding: 0.4rem 0.9rem;
@@ -434,6 +465,13 @@ function formatKm(value: number | null | undefined): string {
               <span>👥 {eventData.event.current_participants}/{eventData.event.max_participants || "∞"}</span>
               <span>📏 {formatKm(eventData.event.distance_km)}</span>
             </div>
+            {eventData.event.cancelled_at && (
+              <div class="event-cancelled-state">
+                Cancelled — {get_cancellation_reason_label(
+                  eventData.event.cancellation_reason,
+                )} · {formatDate(eventData.event.cancelled_at)}
+              </div>
+            )}
           </div>
 
           <div class="summary-bar">
@@ -525,6 +563,33 @@ function formatKm(value: number | null | undefined): string {
             </button>
             <span id="notify-status"></span>
           </div>
+
+          <div style="height: 1rem;"></div>
+
+          {!eventData.event.cancelled_at && (
+            <div class="event-cancellation-action">
+              <select
+                id="event-cancellation-reason"
+                aria-label="Select event cancellation reason"
+              >
+                <option value="">Select cancellation reason</option>
+                {EVENT_CANCELLATION_REASON_OPTIONS.map((option) => (
+                  <option value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                class="action-btn secondary"
+                id="cancel-event-btn"
+                data-recipient-count={
+                  eventData.summary.confirmed + eventData.summary.waitlist
+                }
+              >
+                Cancel event &amp; notify registrants
+              </button>
+              <span id="cancel-event-status"></span>
+            </div>
+          )}
 
           <div style="height: 1.5rem;"></div>
 
@@ -1014,6 +1079,62 @@ function formatKm(value: number | null | undefined): string {
           btn.disabled = false;
         }
       });
+
+      document.getElementById("cancel-event-btn")?.addEventListener(
+        "click",
+        async () => {
+          const button = document.getElementById("cancel-event-btn");
+          const select = document.getElementById("event-cancellation-reason");
+          const status = document.getElementById("cancel-event-status");
+          const reason = select?.value ?? "";
+          const reasonLabel = select?.selectedOptions[0]?.textContent ?? reason;
+          const recipientCount = button?.dataset.recipientCount ?? "0";
+
+          if (!reason) {
+            status.textContent = "Select a cancellation reason.";
+            status.style.color = "#cf222e";
+            select?.focus();
+            return;
+          }
+
+          const confirmed = await confirmAction({
+            title: "Cancel event",
+            message: `Cancel this event due to ${reasonLabel.toLowerCase()} and send cancellation email to all ${recipientCount} confirmed and waitlisted registrants?`,
+            confirmLabel: "Cancel event & send email",
+            danger: true,
+          });
+          if (!confirmed) return;
+
+          button.disabled = true;
+          select.disabled = true;
+          status.textContent = "Cancelling event and sending email…";
+          status.style.color = "#57606a";
+
+          try {
+            const response = await fetch(`/api/admin/events/${id}/cancel`, {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ reason }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+              const detail = typeof data.detail === "object"
+                ? data.detail.message
+                : data.detail;
+              throw new Error(detail || `${response.status}`);
+            }
+            status.textContent = `Sent: ${data.sent} · Skipped: ${data.skipped} · Failed: ${data.failed}`;
+            status.style.color = data.failed > 0 ? "#9a6700" : "#1a7f37";
+            window.setTimeout(() => window.location.reload(), 1500);
+          } catch (error) {
+            status.textContent = `Failed: ${error.message}`;
+            status.style.color = "#cf222e";
+            button.disabled = false;
+            select.disabled = false;
+          }
+        },
+      );
     </script>
   </body>
 </html>

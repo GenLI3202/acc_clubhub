@@ -7,6 +7,7 @@ import { getCollection, render } from 'astro:content';
 import { t, type Locale } from '../../../lib/i18n';
 import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
+import { get_cancellation_notice } from '../../../lib/events/eventCancellation';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
@@ -27,6 +28,23 @@ const { Content } = await render(sourceEntry);
 
 // API URL from environment
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+
+let cancellationReason: string | null = null;
+let isEventCancelled = false;
+try {
+  const operationalState = await fetch(
+    `${apiUrl}/api/events/${encodeURIComponent(entry.data.slug)}`,
+    { cache: 'no-store' },
+  );
+  if (operationalState.ok) {
+    const eventState = await operationalState.json();
+    isEventCancelled = eventState.is_cancelled === true;
+    cancellationReason = eventState.cancellation_reason ?? null;
+  }
+} catch {
+  // The RSVP API remains the authoritative cancellation guard if unavailable.
+}
 
 // Participant portal: check for token in query param
 let participantData = null;
@@ -61,7 +79,12 @@ const eventTypeLabel = entry.data.slug === 'hahntennjoch-epic-ride'
 
 const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
 const registrationReopened = entry.data.registrationReopened === true;
-const showRegistrationForm = (!isPastEvent || registrationReopened) && !entry.data.registrationLink;
+const showRegistrationForm = (
+  (!isPastEvent || registrationReopened)
+  && !entry.data.registrationLink
+  && !isEventCancelled
+);
+const cancellationNotice = get_cancellation_notice(cancellationReason, lang);
 
 // Effective registration deadline: explicit value in frontmatter, or default to day before event at 22:00
 const rawDeadline = entry.data.registrationDeadline;
@@ -91,7 +114,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
   backLabel={t(lang, 'nav.events')}
 >
   <!-- Fallback: External registration link (if provided) -->
-  {entry.data.registrationLink && (
+  {entry.data.registrationLink && !isEventCancelled && (
     <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
       {registrationLabels[lang] || registrationLabels.en} →
     </a>
@@ -134,7 +157,16 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
   )}
 
   <!-- Registration Form: inline compact, before comments -->
-  {isPastEvent && !registrationReopened && (
+  {isEventCancelled && (
+    <div
+      slot="before-comments"
+      class="event-ended-notice event-cancelled-notice"
+      role="status"
+    >
+      {cancellationNotice}
+    </div>
+  )}
+  {isPastEvent && !registrationReopened && !isEventCancelled && (
     <div slot="before-comments" class="event-ended-notice">
       {endedLabels[lang] ?? endedLabels.en}
     </div>

@@ -189,6 +189,8 @@ const currentRows: AdminEventRow[] = zhEvents.map((e) => {
     db_id: stats?.id ?? null,
     in_db: !!stats,
     distance_km: stats?.distance_km ?? (e.data.distanceKm ?? null),
+    cancellation_reason: stats?.cancellation_reason ?? null,
+    cancelled_at: stats?.cancelled_at ?? null,
   };
 });
 const allMerged = mergeAdminEventRows(currentRows, dbRows, now);
@@ -319,6 +321,7 @@ function getCategoryUrl(category: AdminEventCategory): string {
         font-weight: 700;
       }
       .status-open { background: #dafbe1; color: #1a7f37; }
+      .status-cancelled { background: #ffebe9; color: #cf222e; }
       .status-full,
       .status-waitlist { background: #fff8c5; color: #9a6700; }
       .status-closed,
