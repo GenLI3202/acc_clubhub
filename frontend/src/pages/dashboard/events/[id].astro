@@ -4,6 +4,7 @@ export const prerender = false;
 
 import {
   EVENT_CANCELLATION_REASON_OPTIONS,
+  format_cancellation_timestamp,
   get_cancellation_reason_label,
 } from '../../../lib/events/eventCancellation';
 
@@ -469,7 +470,9 @@ function formatKm(value: number | null | undefined): string {
               <div class="event-cancelled-state">
                 Cancelled — {get_cancellation_reason_label(
                   eventData.event.cancellation_reason,
-                )} · {formatDate(eventData.event.cancelled_at)}
+                )} · {format_cancellation_timestamp(
+                  eventData.event.cancelled_at,
+                )}
               </div>
             )}
           </div>

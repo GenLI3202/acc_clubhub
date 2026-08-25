@@ -16,8 +16,9 @@
   - [X] Persisted event-wide cancellation state separately from RSVP status and blocked both public registration endpoints after cancellation.
   - [X] Sent an English cancellation email to every confirmed and waitlisted registrant while skipping already-cancelled RSVPs.
   - [X] Updated public zh/en/de event pages from the live operational API without a frontend rebuild, hiding internal and external registration controls and showing the localized reason.
+  - [X] Rendered cancellation timestamps in `Europe/Berlin`, including automatic CET/CEST daylight-saving conversion on Vercel SSR.
   - [X] Added migration `013_add_event_cancellation.sql` and schema-health coverage for the cancellation columns.
-  - [X] Verified 11 focused backend tests, 52 frontend tests, `npm run check` (0 errors), `npm run build`, and local SSR output for both Admin controls and a weather-cancelled Chinese event page. The full backend suite remains at 160 passed plus the known historical-alias baseline failure.
+  - [X] Verified 11 focused backend tests, 54 frontend tests (including summer and winter timezone cases under `TZ=UTC`), `npm run check` (0 errors), `npm run build`, and local SSR output for both Admin controls and a weather-cancelled Chinese event page. The full backend suite remains at 160 passed plus the known historical-alias baseline failure.
 
 - [X] **Eaglet Program Komoot Route Embeds** (2026-08-15)
   - [X] Embedded the Komoot map, elevation profile, and route details for all three Eaglet sessions across zh/en/de event pages.
