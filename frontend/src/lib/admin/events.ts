@@ -15,6 +15,7 @@ export type AdminEventCategory = AdminEventType | 'all';
 
 export type AdminEventStatusKey =
   | 'open'
+  | 'cancelled'
   | 'full'
   | 'waitlist'
   | 'closed'
@@ -41,6 +42,8 @@ export type AdminEventRow = {
   db_id: number | null;
   in_db: boolean;
   distance_km?: number | null;
+  cancellation_reason: string | null;
+  cancelled_at: string | null;
 };
 
 export type AdminEventDbRow = {
@@ -57,6 +60,8 @@ export type AdminEventDbRow = {
   cancelled_count: number;
   spots_remaining: number | null;
   distance_km?: number | null;
+  cancellation_reason: string | null;
+  cancelled_at: string | null;
 };
 
 const EVENT_TYPE_LABELS: Record<AdminEventType, string> = {
@@ -113,6 +118,10 @@ export function getAdminEventStatus(
 ): AdminEventStatus {
   if (!event.in_db || event.db_id === null) {
     return { key: 'not-synced', label: 'Not Synced' };
+  }
+
+  if (event.cancelled_at !== null) {
+    return { key: 'cancelled', label: 'Cancelled' };
   }
 
   if (isPastEvent(event, now)) {
@@ -194,6 +203,8 @@ export function dbRowToAdminEvent(row: AdminEventDbRow): AdminEventRow | null {
     db_id: row.id,
     in_db: true,
     distance_km: row.distance_km ?? null,
+    cancellation_reason: row.cancellation_reason,
+    cancelled_at: row.cancelled_at,
   };
 }
 

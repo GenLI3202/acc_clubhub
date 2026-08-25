@@ -26,6 +26,8 @@ function event(overrides: Partial<AdminEventRow>): AdminEventRow {
     spots_remaining: 20,
     db_id: 1,
     in_db: true,
+    cancellation_reason: null,
+    cancelled_at: null,
     ...overrides,
   };
 }
@@ -78,6 +80,10 @@ describe('admin event helpers', () => {
   });
 
   it('derives clear operational statuses', () => {
+    expect(getAdminEventStatus(event({
+      cancellation_reason: 'weather',
+      cancelled_at: '2026-04-24T08:00:00.000Z',
+    }), NOW).key).toBe('cancelled');
     expect(getAdminEventStatus(event({ db_id: null, in_db: false }), NOW).key)
       .toBe('not-synced');
     expect(getAdminEventStatus(event({ waitlist_count: 1 }), NOW).key)
@@ -147,6 +153,8 @@ describe('admin event helpers', () => {
       cancelled_count: 1,
       spots_remaining: 10,
       distance_km: 48.5,
+      cancellation_reason: 'insufficient_staff',
+      cancelled_at: '2026-04-24T08:00:00.000Z',
     })).toMatchObject({
       db_id: 42,
       slug: 'afterwork-ride-2026-04-30',
@@ -154,6 +162,7 @@ describe('admin event helpers', () => {
       confirmed_count: 5,
       distance_km: 48.5,
       in_db: true,
+      cancellation_reason: 'insufficient_staff',
     });
   });
 });

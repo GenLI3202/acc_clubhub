@@ -3,6 +3,7 @@ import { useState, useEffect } from 'preact/hooks';
 import type { VNode } from 'preact';
 import type { Locale } from '../lib/i18n';
 import { t } from '../lib/i18n';
+import { get_cancellation_notice } from '../lib/events/eventCancellation';
 
 interface EventRegistrationFormProps {
     eventSlug: string;
@@ -124,12 +125,27 @@ export function EventRegistrationForm({
             }
 
             if (!response.ok) {
-                if (data.detail?.includes('already registered')) {
+                const detail = data.detail;
+                if (detail?.error_code === 'EVENT_CANCELLED') {
+                    throw new Error(get_cancellation_notice(
+                        detail.cancellation_reason,
+                        lang,
+                    ));
+                } else if (
+                    typeof detail === 'string'
+                    && detail.includes('already registered')
+                ) {
                     throw new Error(t(lang, 'event.errorDuplicate'));
-                } else if (data.detail?.includes('deadline')) {
+                } else if (
+                    typeof detail === 'string'
+                    && detail.includes('deadline')
+                ) {
                     throw new Error(t(lang, 'event.errorDeadline'));
                 } else {
-                    throw new Error(data.detail || t(lang, 'event.errorServer'));
+                    const message = typeof detail === 'string'
+                        ? detail
+                        : detail?.message;
+                    throw new Error(message || t(lang, 'event.errorServer'));
                 }
             }
 

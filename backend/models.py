@@ -47,6 +47,8 @@ class Event(Base):
     max_participants = Column(Integer, nullable=True)
     current_participants = Column(Integer, default=0)
     registration_deadline = Column(DateTime(timezone=True), nullable=True)
+    cancellation_reason = Column(String(50), nullable=True)
+    cancelled_at = Column(DateTime(timezone=True), nullable=True)
     distance_km = Column(Numeric(8, 2), nullable=True)
     is_public = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
