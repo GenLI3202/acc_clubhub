@@ -76,3 +76,21 @@ export function get_cancellation_notice(
   }
   return CANCELLATION_NOTICES[reason][lang] ?? CANCELLATION_NOTICES[reason].en;
 }
+
+export function format_cancellation_timestamp(
+  value: string | null | undefined,
+): string {
+  if (!value) return '—';
+
+  const timestamp = new Date(value);
+  if (Number.isNaN(timestamp.valueOf())) return value;
+
+  return timestamp.toLocaleString('en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Berlin',
+  });
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  format_cancellation_timestamp,
   get_cancellation_notice,
   type EventCancellationReason,
 } from '../eventCancellation';
@@ -35,5 +36,17 @@ describe('event cancellation copy', () => {
     expect(get_cancellation_notice('legacy-value', 'en')).toBe(
       'This event has been cancelled. Registration is closed.',
     );
+  });
+
+  it('formats summer cancellation timestamps in Munich time', () => {
+    expect(
+      format_cancellation_timestamp('2026-08-25T14:10:35.581465Z'),
+    ).toBe('25 Aug 2026, 16:10');
+  });
+
+  it('formats winter cancellation timestamps in Munich time', () => {
+    expect(
+      format_cancellation_timestamp('2026-01-25T14:10:35.581465Z'),
+    ).toBe('25 Jan 2026, 15:10');
   });
 });
