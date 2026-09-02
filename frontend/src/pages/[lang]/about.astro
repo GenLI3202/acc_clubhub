@@ -92,7 +92,19 @@ const phNote = t(lang, 'about.placeholderNote');
           foot of the page. ACROSS sits above it because naming the shared
           word is the one thing the Chinese can't do for itself. */}
       <div class="roads-intro" data-reveal>
-        <h2 class="roads-word" id="roads-heading">Across</h2>
+        {/* Speed-ghost wordmark. Redrawn as vectors from the logo study —
+            same letterform construction as the ACC mark in the hero, so the
+            two agree. Inline rather than an <img> so currentColor follows
+            the theme; the echoes stay vermilion in both. */}
+        <h2 class="roads-word" id="roads-heading">
+          <span class="sr-only">Across</span>
+          <svg class="roads-mark" viewBox="0 0 1478 230" aria-hidden="true" focusable="false">
+          <path d="M 392 0 L 314 0 L 266 46 L 266 184 L 314 230 L 392 230 L 392 204 L 326 204 L 292 172 L 292 58 L 326 26 L 392 26 Z" fill="#C62828" opacity="0.18" fill-rule="evenodd"/>
+          <path d="M 434 0 L 356 0 L 308 46 L 308 184 L 356 230 L 434 230 L 434 204 L 368 204 L 334 172 L 334 58 L 368 26 L 434 26 Z" fill="#C62828" opacity="0.34" fill-rule="evenodd"/>
+          <path d="M 476 0 L 398 0 L 350 46 L 350 184 L 398 230 L 476 230 L 476 204 L 410 204 L 376 172 L 376 58 L 410 26 L 476 26 Z" fill="#C62828" opacity="0.58" fill-rule="evenodd"/>
+          <path d="M 92 0 L 148 0 L 240 230 L 178 230 L 160 176 L 74 176 L 54 230 L 0 230 Z M 92 138 L 120 62 L 146 138 Z M 440 0 L 592 0 L 592 54 L 470 54 L 448 76 L 448 154 L 470 176 L 592 176 L 592 230 L 440 230 L 392 184 L 392 46 Z M 618 0 L 768 0 L 818 46 L 818 104 L 788 132 L 820 230 L 760 230 L 734 142 L 674 142 L 674 230 L 618 230 Z M 674 54 L 758 54 L 762 58 L 762 84 L 758 88 L 674 88 Z M 894 0 L 998 0 L 1046 46 L 1046 184 L 998 230 L 894 230 L 846 184 L 846 46 Z M 924 54 L 968 54 L 990 76 L 990 154 L 968 176 L 924 176 L 902 154 L 902 76 Z M 1116 0 L 1262 0 L 1262 54 L 1142 54 L 1128 68 L 1128 90 L 1142 104 L 1220 104 L 1262 146 L 1262 188 L 1218 230 L 1072 230 L 1072 176 L 1192 176 L 1206 162 L 1206 140 L 1192 126 L 1114 126 L 1072 84 L 1072 42 Z M 1332 0 L 1478 0 L 1478 54 L 1358 54 L 1344 68 L 1344 90 L 1358 104 L 1436 104 L 1478 146 L 1478 188 L 1434 230 L 1288 230 L 1288 176 L 1408 176 L 1422 162 L 1422 140 L 1408 126 L 1330 126 L 1288 84 L 1288 42 Z" fill="currentColor" fill-rule="evenodd"/>
+          </svg>
+        </h2>
         <p class="roads-name">
           <span>穿</span><i aria-hidden="true">·</i><span>越</span><i aria-hidden="true">·</i><span>无疆</span>
         </p>
@@ -634,15 +646,26 @@ const phNote = t(lang, 'about.placeholderNote');
      the split name sits under it as the Chinese reading of the same
      idea, not as a competing headline. */
   .roads-word {
-    font-family: var(--font-heading);
-    font-size: clamp(2.4rem, 6vw, 4rem);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-indent: 0.1em;
-    line-height: 1.05;
-    color: var(--color-text-main);
     margin: 0;
+    color: var(--color-text-main);
+    line-height: 0;
+  }
+  .roads-mark {
+    display: block;
+    width: clamp(260px, 36vw, 470px);
+    height: auto;
+    margin: 0 auto;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
   .roads-name {
     font-family: var(--font-heading);
