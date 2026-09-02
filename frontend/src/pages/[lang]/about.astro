@@ -1,8 +1,15 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/about.astro
-// Editorial about page — hero, Across poem, stamp-wall garage marquee, contact.
-// Based on Phase 8 Claude Design output.
+// About page — phase 9 redesign.
+//
+// Built inside the site's own V4 "Rapha-Inspired Modern" system (see
+// styles/variables.css): photography-led, Jost headings, Inter body,
+// no ornament. The three ACROSS chapters read as a quiet triptych —
+// English title plus the Chinese idiom — and open into a detail
+// overlay that carries the full prose. The prose ships in the markup
+// (visually hidden, not injected) so crawlers and screen readers get
+// the whole page without interacting.
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
@@ -15,1184 +22,949 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Locale };
 const pageTitle = t(lang, 'nav.about');
 
-// Split into two rows, preserving original order (i % 2).
-const row1 = MEMBERS.filter((_, i) => i % 2 === 0);
-const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
+// Every ride photo on this page is a stand-in. Flip to false once real
+// photography lands — it drops the stripe overlay and the corner badge.
+const PHOTOS_ARE_PLACEHOLDER = true;
+
+const CHAPTERS = [
+  {
+    id: 'paths',
+    en: 'Across paths',
+    symbol: '/images/about/symbols/parallel.svg',
+    photo: '/images/about/placeholder/paths.jpg',
+    idiom: t(lang, 'about.ch1Idiom'),
+    gloss: t(lang, 'about.ch1Gloss'),
+    prose: t(lang, 'about.ch1Prose'),
+  },
+  {
+    id: 'mountains',
+    en: 'Across mountains',
+    symbol: '/images/about/symbols/mountain-rider.svg',
+    photo: '/images/about/placeholder/mountains.jpg',
+    idiom: t(lang, 'about.ch2Idiom'),
+    gloss: t(lang, 'about.ch2Gloss'),
+    prose: t(lang, 'about.ch2Prose'),
+  },
+  {
+    id: 'borders',
+    en: 'Across borders',
+    symbol: '/images/about/symbols/bridge.svg',
+    photo: '/images/about/placeholder/borders.jpg',
+    idiom: t(lang, 'about.ch3Idiom'),
+    gloss: t(lang, 'about.ch3Gloss'),
+    prose: t(lang, 'about.ch3Prose'),
+  },
+] as const;
+
+const phClass = PHOTOS_ARE_PLACEHOLDER ? 'is-placeholder' : '';
+const phNote = t(lang, 'about.placeholderNote');
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
-  <article class="about-page">
-    {/* ============================================================
-        1. TITLE BLOCK
-       ============================================================ */}
-    <div class="about-title-block">
-      <div class="about-eyebrow">{t(lang, 'about.eyebrow')}</div>
-      <h1 class="about-h1">{t(lang, 'about.h1')}</h1>
-      <div class="about-subtitle">{t(lang, 'about.subtitle')}</div>
+  {/* Hero rides BaseLayout's named slot so it sits outside <main>'s
+      max-width box — the same escape HomeHero uses on the homepage. */}
+  <section slot="hero" class:list={['about-hero', phClass]} data-ph-note={phNote}>
+    <img class="about-hero-img" src="/images/about/placeholder/hero.jpg" alt="" />
+    <div class="about-hero-scrim"></div>
+
+    <div class="about-hero-inner">
+      <img class="about-hero-mark" src="/images/about/acc-wordmark.svg" alt="ACC" width="700" height="230" />
+      <p class="about-hero-eyebrow">{t(lang, 'about.eyebrow')}</p>
+      <h1 class="about-hero-title">Across</h1>
+      <p class="about-hero-meta">Across Cycling Club · München · 2023</p>
+      <p class="about-hero-lede">{t(lang, 'about.heroLede')}</p>
+      <a class="btn-solid" href="#join">{t(lang, 'about.heroCta')}</a>
     </div>
+  </section>
 
+  <article class="about">
     {/* ============================================================
-        2. INTRO LEDE
+        2. THE THREE ROADS — quiet by default, prose lives in the
+           overlay below
        ============================================================ */}
-    <div class="about-intro">
-      <p>{t(lang, 'about.intro1')}</p>
-      <p>
-        {t(lang, 'about.intro2Prefix')}
-        <em> {t(lang, 'about.intro2Em')}</em>
-      </p>
-    </div>
-
-    <span class="intro-to-poem-divider" aria-hidden="true"></span>
-
-    {/* ============================================================
-        3. ACROSS — three-beat poem
-       ============================================================ */}
-    <section class="across-poem" aria-label="The meaning of across" data-poem>
-      <div class="across-stanzas">
-        <div class="across-stanza" data-order="1">
-          <div class="across-glyph-bg">
-            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
-              <polyline points="10,160 100,70 190,120 300,20 400,96 500,50 590,150"/>
-            </svg>
-          </div>
-          <div class="across-text">
-            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord1')}</div>
-            <div class="across-gloss">{t(lang, 'about.poemGloss1')}</div>
-          </div>
-        </div>
-        <div class="across-stanza" data-order="2">
-          <div class="across-glyph-bg">
-            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
-              <path d="M20,30 C180,40 260,150 580,160"/>
-              <path d="M20,160 C180,150 260,40 580,30"/>
-            </svg>
-          </div>
-          <div class="across-text">
-            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord2')}</div>
-            <div class="across-gloss">{t(lang, 'about.poemGloss2')}</div>
-          </div>
-        </div>
-        <div class="across-stanza" data-order="3">
-          <div class="across-glyph-bg">
-            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
-              <path d="M 230,90 m -100,0 a 100,70 0 1,0 200,0 a 100,70 0 1,0 -200,0"/>
-              <path d="M 370,90 m -100,0 a 100,70 0 1,0 200,0 a 100,70 0 1,0 -200,0"/>
-              <path class="dashed" d="M 295,90 L 305,90"/>
-            </svg>
-          </div>
-          <div class="across-text">
-            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord3')}</div>
-            <div class="across-gloss">{t(lang, 'about.poemGloss3')}</div>
-          </div>
-        </div>
+    <section class="roads" aria-labelledby="roads-heading">
+      <div class="roads-intro" data-reveal>
+        <p class="eyebrow">The name</p>
+        <p class="roads-line" id="roads-heading">
+          <b>Across</b> {t(lang, 'about.thesisLine')}
+        </p>
       </div>
 
-      <div class="across-signature" data-signature>
-        <span class="across-signature-rule"></span>
-        <div class="across-signature-text">
-          <b>Across</b> {t(lang, 'about.signatureClub')}
-        </div>
-      </div>
+      <ul class="roads-grid">
+        {CHAPTERS.map((c, i) => (
+          <li class="road" data-reveal style={`--i:${i}`}>
+            <button class="road-btn" type="button" data-open={i} aria-haspopup="dialog">
+              <img class="road-symbol" src={c.symbol} alt="" width="60" height="40" />
+              <span class="road-en">{c.en}</span>
+              <span class="road-idiom">{c.idiom}</span>
+              {c.gloss && <span class="road-gloss">{c.gloss}</span>}
+              <span class="road-more">
+                {t(lang, 'about.readMore')}
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
 
     {/* ============================================================
-        4. OUR GARAGE — stamp-wall marquee
+        3. CODA
        ============================================================ */}
-    <div class="section-rule">{t(lang, 'about.sectionRuleGarage')}</div>
+    <section class="coda bleed" data-reveal>
+      <p class="coda-lead">{t(lang, 'about.codaLead')}</p>
+      <img class="coda-mark" src="/images/about/chuanyue-wujiang.png" alt="穿越无疆" />
+      <p class="coda-sub">Across · Paths · Mountains · Borders</p>
+    </section>
 
-    <section class="garage-section">
-      <h2 class="garage-h2">{t(lang, 'about.garageH2Prefix')}</h2>
-      <p class="garage-lede">{t(lang, 'about.garageLede')}</p>
-      <p class="garage-desc">{t(lang, 'about.garageDesc')}</p>
-
-      <div class="garage-stamp-wall" data-stamp-wall>
-        <div class="stamp-rows">
-          {[row1, row2].map((row) => {
-            // Single continuous strip: 6 originals + 3 cloned head tiles so a
-            // 2-tile step can scroll through all 6 and wrap seamlessly back to
-            // the start after the clone slot.
-            const tiles = [...row, ...row.slice(0, 3)];
-            return (
-              <div class="stamp-row-clip">
-                <div class="stamp-track" data-track>
-                  {tiles.map((m, idx) => (
-                    <button
-                      class="stamp-tile"
-                      type="button"
-                      data-member-id={m.id}
-                      aria-hidden={idx >= 6 ? 'true' : undefined}
-                      tabindex={idx >= 6 ? -1 : undefined}
-                    >
-                      <img
-                        class="stamp-ring stamp-ring-light"
-                        src="/images/about/logo-stamp-red-transparent.png"
-                        alt=""
-                        draggable="false"
-                        loading="lazy"
-                      />
-                      <img
-                        class="stamp-ring stamp-ring-dark"
-                        src="/images/about/logo-stamp-white-transparent.png"
-                        alt=""
-                        draggable="false"
-                        loading="lazy"
-                      />
-                      <div class="stamp-bike-wrap">
-                        <img class="stamp-bike" src={m.photo} alt="" draggable="false" loading="lazy"/>
-                      </div>
-                      <div class="stamp-caption">
-                        {m.name}
-                        <div class="stamp-subcaption">{m.bike} · {m.joined}</div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <button class="stamp-arrow stamp-arrow--prev" type="button" data-stamp-prev aria-label="Previous page">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="stamp-arrow stamp-arrow--next" type="button" data-stamp-next aria-label="Next page">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-
-        <div class="stamp-dots" data-stamp-dots>
-          <button class="stamp-dot active" type="button" data-stamp-dot="0" aria-label="Page 1"></button>
-          <button class="stamp-dot" type="button" data-stamp-dot="1" aria-label="Page 2"></button>
-          <button class="stamp-dot" type="button" data-stamp-dot="2" aria-label="Page 3"></button>
-        </div>
+    {/* ============================================================
+        4. OUR GARAGE
+       ============================================================ */}
+    <section class="garage">
+      <div class="garage-head" data-reveal>
+        <p class="eyebrow">{t(lang, 'about.sectionRuleGarage')}</p>
+        <h2 class="garage-h2">{t(lang, 'about.garageH2Prefix')}</h2>
+        <p class="garage-lede">{t(lang, 'about.garageDesc')}</p>
       </div>
+
+      <ul class="garage-grid">
+        {MEMBERS.map((m) => (
+          <li class="bike-card" data-reveal>
+            <button class="bike-btn" type="button" data-member={m.id} aria-haspopup="dialog">
+              <span class="bike-stage">
+                <img class="bike-ring" src="/images/about/logo-stamp-red-transparent.png" alt="" />
+                <img class="bike-photo" src={m.photo} alt="" loading="lazy" />
+              </span>
+              <span class="bike-name">{m.name}</span>
+              <span class="bike-meta">{m.bike} · {m.joined}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
 
     {/* ============================================================
         5. CONTACT
        ============================================================ */}
-    <div class="section-rule">{t(lang, 'about.sectionRuleJoin')}</div>
-
-    <section class="contact-section">
-      <div class="contact-eyebrow">{t(lang, 'about.contactEyebrow')}</div>
-      <h2 class="contact-h2">{t(lang, 'about.contactH2')}</h2>
-      <p class="contact-lede">{t(lang, 'about.contactLede')}</p>
-      <div class="contact-channels">
-        <a class="channel-btn primary" href={`mailto:${t(lang, 'about.contactEmail')}`}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>
-          </svg>
-          {t(lang, 'about.contactEmail')}
-        </a>
-        <a class="channel-btn ghost" href="https://www.strava.com/clubs/accmunich" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
-          </svg>
-          {t(lang, 'about.contactStrava')}
-        </a>
+    <section class="join bleed" id="join">
+      <div class="join-inner" data-reveal>
+        <p class="eyebrow">{t(lang, 'about.contactTagline')}</p>
+        <h2 class="join-h2">{t(lang, 'about.contactHeadline')}</h2>
+        <p class="join-body">{t(lang, 'about.contactBody')}</p>
+        <div class="join-actions">
+          <a class="btn-solid" href={`mailto:${t(lang, 'about.contactEmail')}`}>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+            {t(lang, 'about.contactCta')}
+          </a>
+          <a class="btn-outline" href="https://www.strava.com/clubs/accmunich" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+            {t(lang, 'about.contactStrava')}
+          </a>
+        </div>
       </div>
     </section>
   </article>
 
-  {/* Member card overlay — shown when user clicks a stamp */}
-  <div class="member-card-backdrop" data-member-card aria-hidden="true">
-    <div class="member-card" role="dialog" aria-modal="true" aria-labelledby="member-card-name">
-      {/* Top 2/3 — large bike photo */}
-      <div class="member-card-bike">
-        <img data-member-card-photo alt=""/>
-      </div>
-      {/* Bottom 1/3 — avatar (1/4) + text (3/4) */}
-      <div class="member-card-footer">
-        <div class="member-card-avatar">
-          <div class="member-card-initials" data-member-card-avatar></div>
-        </div>
-        <div class="member-card-body">
-          <div class="member-card-role" data-member-card-role></div>
-          <div class="member-card-name" id="member-card-name" data-member-card-name></div>
-          <p class="member-card-bio" data-member-card-bio></p>
-          <div class="member-card-meta" data-member-card-meta></div>
-        </div>
-      </div>
-      <button class="member-card-close" type="button" aria-label="Close" data-member-card-close>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M6 6l12 12M18 6L6 18"/>
-        </svg>
+  {/* ==============================================================
+      Chapter overlay — the "interactive view". Prose is rendered
+      here in the markup, so it is indexable and reachable without JS.
+     ============================================================== */}
+  <div class="sheet" data-sheet="chapter" hidden>
+    <div class="sheet-backdrop" data-sheet-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-idiom">
+      <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
+
+      <div class="sheet-grid">
+        {CHAPTERS.map((c, i) => (
+          <article class="sheet-slide" data-slide={i} hidden={i !== 0}>
+            <div class:list={['sheet-media', phClass]} data-ph-note={phNote}>
+              <img src={c.photo} alt="" />
+            </div>
+            <div class="sheet-body">
+              <img class="sheet-symbol" src={c.symbol} alt="" width="60" height="40" />
+              <p class="sheet-en">{c.en}</p>
+              <h2 class="sheet-idiom" id={i === 0 ? 'sheet-idiom' : undefined}>{c.idiom}</h2>
+              {c.gloss && <p class="sheet-gloss">{c.gloss}</p>}
+              <p class="sheet-prose">{c.prose}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="sheet-nav">
+        <button class="sheet-arrow" type="button" data-sheet-prev aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="sheet-count" data-sheet-count>1 / 3</span>
+        <button class="sheet-arrow" type="button" data-sheet-next aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
     </div>
   </div>
 
-  <script is:inline define:vars={{ members: MEMBERS }}>
-  // ------------------------------------------------------------------
-  // Across poem — sequential reveal via IntersectionObserver + timers
-  // ------------------------------------------------------------------
-  (function initPoem() {
-    const poem = document.querySelector('[data-poem]');
-    if (!poem) return;
-    const stanzas = poem.querySelectorAll('.across-stanza');
-    const signature = poem.querySelector('[data-signature]');
-    let started = false;
+  {/* Member card overlay — same sheet chrome, bike detail */}
+  <div class="sheet" data-sheet="member" hidden>
+    <div class="sheet-backdrop" data-sheet-close></div>
+    <div class="sheet-panel sheet-panel--member" role="dialog" aria-modal="true" aria-labelledby="member-name">
+      <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="sheet-grid">
+        <article class="sheet-slide">
+          <div class="sheet-media sheet-media--bike">
+            <img data-member-photo alt="" />
+          </div>
+          <div class="sheet-body">
+            <p class="sheet-en" data-member-role></p>
+            <h2 class="sheet-idiom" id="member-name" data-member-name></h2>
+            <p class="sheet-prose" data-member-bio></p>
+            <p class="sheet-gloss" data-member-meta></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
 
-    const io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting || started) continue;
-        started = true;
-        io.disconnect();
-        stanzas.forEach((s, i) => {
-          setTimeout(() => s.classList.add('in'), i * 1400);
-        });
-        if (signature) {
-          setTimeout(() => signature.classList.add('in'), stanzas.length * 1400);
+  <script is:inline define:vars={{ members: MEMBERS, total: CHAPTERS.length }}>
+    // ---------------------------------------------------------------
+    // Scroll reveals — content is visible by default and only hidden
+    // once JS confirms it can animate, so a failed script never leaves
+    // the page blank.
+    // ---------------------------------------------------------------
+    (function initReveal() {
+      const nodes = Array.from(document.querySelectorAll('[data-reveal]'));
+      if (!nodes.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      document.documentElement.classList.add('reveal-ready');
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
         }
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      nodes.forEach((n) => io.observe(n));
+    })();
+
+    // ---------------------------------------------------------------
+    // Sheets — one open/close/focus implementation for both overlays.
+    // ---------------------------------------------------------------
+    (function initSheets() {
+      const sheets = Array.from(document.querySelectorAll('[data-sheet]'));
+      if (!sheets.length) return;
+      let lastFocus = null;
+
+      function open(sheet) {
+        lastFocus = document.activeElement;
+        sheet.hidden = false;
+        // Force a reflow so the transition has a start value. rAF would
+        // work too, but it never fires in a backgrounded tab — the sheet
+        // would then open stuck at opacity 0.
+        void sheet.offsetWidth;
+        sheet.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        const x = sheet.querySelector('.sheet-x');
+        if (x) x.focus();
       }
-    }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
-    io.observe(poem);
-  })();
+      function close(sheet) {
+        sheet.classList.remove('open');
+        document.body.style.overflow = '';
+        window.setTimeout(() => { sheet.hidden = true; }, 240);
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+      function openSheet() { return sheets.find((s) => !s.hidden); }
 
-  // ------------------------------------------------------------------
-  // Stamp wall — single continuous strip, 3 tiles visible, 2-tile step.
-  // Each row renders 6 originals + 3 cloned head tiles so we can step
-  // through 3 logical positions (0, 2, 4 tiles) and wrap seamlessly:
-  // advancing past step 2 slides onto the clone head, then we snap back
-  // to step 0 without transition. Tile pitch is measured from the DOM so
-  // the same math works across responsive widths.
-  // ------------------------------------------------------------------
-  (function initStampWall() {
-    const wall = document.querySelector('[data-stamp-wall]');
-    if (!wall) return;
-    const tracks = Array.from(wall.querySelectorAll('[data-track]'));
-    if (!tracks.length) return;
-    const dots = Array.from(wall.querySelectorAll('[data-stamp-dot]'));
-
-    const TOTAL_STEPS = 3;          // 3 logical stops → 3 dots
-    const TILES_PER_STEP = 2;       // shift 2 tiles per row per step (4 bikes total)
-    const SLIDE_MS = 700;
-    const DWELL_MS = 4500;
-
-    let current = 0;                // 0..TOTAL_STEPS (TOTAL_STEPS = wrap slot)
-    let unit = 0;                   // px: tile-width + gap
-    let timerId = null;
-    let paused = false;
-    let animating = false;
-
-    function measureUnit() {
-      const sample = tracks[0].querySelectorAll('.stamp-tile');
-      if (sample.length < 2) return;
-      const r0 = sample[0].getBoundingClientRect();
-      const r1 = sample[1].getBoundingClientRect();
-      const u = r1.left - r0.left;
-      if (u > 0) unit = u;
-    }
-
-    function applyTransform(stepIdx, animated) {
-      const x = -stepIdx * TILES_PER_STEP * unit;
-      tracks.forEach((track) => {
-        track.style.transition = animated
-          ? 'transform ' + SLIDE_MS + 'ms cubic-bezier(0.2, 0.8, 0.2, 1)'
-          : 'none';
-        track.style.transform = 'translate3d(' + x + 'px, 0, 0)';
-      });
-    }
-
-    function setActiveDot(visibleIdx) {
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === visibleIdx));
-    }
-
-    function advance() {
-      if (animating || unit === 0) return;
-      animating = true;
-      const target = current + 1;
-      applyTransform(target, true);
-      setActiveDot(target % TOTAL_STEPS);
-      current = target;
-
-      window.setTimeout(() => {
-        if (current >= TOTAL_STEPS) {
-          applyTransform(0, false);
-          void tracks[0].offsetWidth;
-          current = 0;
-        }
-        animating = false;
-      }, SLIDE_MS + 30);
-    }
-
-    function jumpTo(stepIdx) {
-      if (animating || unit === 0) return;
-      const visible = current % TOTAL_STEPS;
-      if (stepIdx === visible) return;
-      animating = true;
-      applyTransform(stepIdx, true);
-      setActiveDot(stepIdx);
-      current = stepIdx;
-      window.setTimeout(() => { animating = false; }, SLIDE_MS + 30);
-    }
-
-    function userStep(delta) {
-      if (animating || unit === 0) return;
-      const visible = current % TOTAL_STEPS;
-      if (delta > 0 && visible === TOTAL_STEPS - 1) {
-        advance();
-      } else if (delta < 0 && visible === 0) {
-        // backward wrap: silently jump to clone slot, then animate to last step
-        animating = true;
-        applyTransform(TOTAL_STEPS, false);
-        void tracks[0].offsetWidth;
-        current = TOTAL_STEPS;
-        requestAnimationFrame(() => {
-          applyTransform(TOTAL_STEPS - 1, true);
-          setActiveDot(TOTAL_STEPS - 1);
-          current = TOTAL_STEPS - 1;
-          window.setTimeout(() => { animating = false; }, SLIDE_MS + 30);
+      sheets.forEach((sheet) => {
+        sheet.querySelectorAll('[data-sheet-close]').forEach((el) => {
+          el.addEventListener('click', () => close(sheet));
         });
-      } else {
-        jumpTo((visible + delta + TOTAL_STEPS) % TOTAL_STEPS);
-      }
-      stopTimer();
-      window.setTimeout(startTimer, DWELL_MS);
-    }
-
-    function startTimer() {
-      stopTimer();
-      timerId = window.setInterval(() => {
-        if (!paused) advance();
-      }, DWELL_MS);
-    }
-    function stopTimer() {
-      if (timerId !== null) {
-        window.clearInterval(timerId);
-        timerId = null;
-      }
-    }
-
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        jumpTo(i);
-        stopTimer();
-        window.setTimeout(startTimer, DWELL_MS);
       });
-    });
-
-    const prevBtn = wall.querySelector('[data-stamp-prev]');
-    const nextBtn = wall.querySelector('[data-stamp-next]');
-    if (prevBtn) prevBtn.addEventListener('click', () => userStep(-1));
-    if (nextBtn) nextBtn.addEventListener('click', () => userStep(1));
-
-    wall.addEventListener('mouseenter', () => { paused = true; });
-    wall.addEventListener('mouseleave', () => { paused = false; });
-
-    // Initial measure + re-measure on resize (keep current step position)
-    measureUnit();
-    applyTransform(0, false);
-    setActiveDot(0);
-
-    const ro = new ResizeObserver(() => {
-      measureUnit();
-      if (!animating) applyTransform(current, false);
-    });
-    ro.observe(tracks[0]);
-
-    startTimer();
-  })();
-
-  // ------------------------------------------------------------------
-  // Stamp tile click → wobble + member card overlay
-  // ------------------------------------------------------------------
-  (function initStampClicks() {
-    const backdrop = document.querySelector('[data-member-card]');
-    if (!backdrop) return;
-    const closeBtn = backdrop.querySelector('[data-member-card-close]');
-    const elPhoto = backdrop.querySelector('[data-member-card-photo]');
-    const elAvatar = backdrop.querySelector('[data-member-card-avatar]');
-    const elRole = backdrop.querySelector('[data-member-card-role]');
-    const elName = backdrop.querySelector('[data-member-card-name]');
-    const elBio = backdrop.querySelector('[data-member-card-bio]');
-    const elMeta = backdrop.querySelector('[data-member-card-meta]');
-
-    const byId = Object.fromEntries(members.map((m) => [m.id, m]));
-
-    function initials(name) {
-      return name.trim().split(/\s+/).map((w) => w[0].toUpperCase()).join('');
-    }
-
-    function open(id) {
-      const m = byId[id];
-      if (!m) return;
-      elPhoto.src = m.photo;
-      elAvatar.textContent = initials(m.name);
-      elRole.textContent = `${m.role} · ${m.tenure}`;
-      elName.textContent = m.name;
-      elBio.textContent = m.bio;
-      elMeta.textContent = `${m.bike} · ${m.joined}`;
-      backdrop.setAttribute('aria-hidden', 'false');
-      backdrop.classList.add('open');
-    }
-    function close() {
-      backdrop.classList.remove('open');
-      backdrop.setAttribute('aria-hidden', 'true');
-    }
-
-    document.querySelectorAll('.stamp-tile').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-member-id');
-        btn.classList.remove('wobble');
-        void btn.offsetWidth;
-        btn.classList.add('wobble');
-        setTimeout(() => open(id), 420);
+      document.addEventListener('keydown', (e) => {
+        const sheet = openSheet();
+        if (!sheet) return;
+        if (e.key === 'Escape') close(sheet);
       });
-    });
-    closeBtn.addEventListener('click', close);
-    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
-    });
-  })();
 
+      // ---- chapter sheet ----
+      const chapter = document.querySelector('[data-sheet="chapter"]');
+      if (chapter) {
+        const slides = Array.from(chapter.querySelectorAll('[data-slide]'));
+        const count = chapter.querySelector('[data-sheet-count]');
+        let current = 0;
+
+        function show(i) {
+          current = (i + total) % total;
+          slides.forEach((s, n) => { s.hidden = n !== current; });
+          if (count) count.textContent = (current + 1) + ' / ' + total;
+        }
+
+        document.querySelectorAll('[data-open]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            show(Number(btn.getAttribute('data-open')));
+            open(chapter);
+          });
+        });
+        const prev = chapter.querySelector('[data-sheet-prev]');
+        const next = chapter.querySelector('[data-sheet-next]');
+        if (prev) prev.addEventListener('click', () => show(current - 1));
+        if (next) next.addEventListener('click', () => show(current + 1));
+
+        document.addEventListener('keydown', (e) => {
+          if (chapter.hidden) return;
+          if (e.key === 'ArrowLeft') show(current - 1);
+          if (e.key === 'ArrowRight') show(current + 1);
+        });
+      }
+
+      // ---- member sheet ----
+      const member = document.querySelector('[data-sheet="member"]');
+      if (member) {
+        const byId = Object.fromEntries(members.map((m) => [m.id, m]));
+        const elPhoto = member.querySelector('[data-member-photo]');
+        const elRole = member.querySelector('[data-member-role]');
+        const elName = member.querySelector('[data-member-name]');
+        const elBio = member.querySelector('[data-member-bio]');
+        const elMeta = member.querySelector('[data-member-meta]');
+
+        document.querySelectorAll('[data-member]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const m = byId[btn.getAttribute('data-member')];
+            if (!m) return;
+            elPhoto.src = m.photo;
+            elRole.textContent = m.role;
+            elName.textContent = m.name;
+            elBio.textContent = m.bio;
+            elMeta.textContent = m.bike + ' · ' + m.tenure;
+            open(member);
+          });
+        });
+      }
+    })();
   </script>
 </BaseLayout>
 
 <style>
-  .about-page {
+  .about {
     max-width: none;
-    padding: 64px 24px 0;
+    padding: 0;
   }
 
-  /* ---------- Title ---------- */
-  .about-title-block {
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: center;
+  /* Escape <main>'s centred max-width box for full-width bands.
+     Padding mirrors the negative margin so inner content stays put. */
+  .bleed {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: calc(50vw - 50%);
+    padding-right: calc(50vw - 50%);
   }
-  .about-eyebrow {
+
+  :global(main:has(.about)) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  /* .bleed spans 100vw, which counts the scrollbar and so overhangs the
+     client box by a few px each side. Clip it on this page only — `clip`
+     rather than `hidden` so no new scroll container is created (that
+     would break position: sticky elsewhere in the layout). */
+  :global(body:has(.about)) {
+    overflow-x: clip;
+  }
+
+  .eyebrow {
     font-family: var(--font-heading);
-    font-size: 11px;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
     text-transform: uppercase;
+    letter-spacing: 0.15em;
     color: var(--color-accent);
-    margin-bottom: 14px;
-  }
-  .about-h1 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(40px, 5.5vw, 64px);
-    letter-spacing: -0.025em;
-    line-height: 1.05;
-    color: var(--color-text-main);
     margin: 0;
   }
-  .about-h1::after {
-    content: '';
-    display: block;
-    width: 48px;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--color-accent);
-    margin: 18px auto 0;
-  }
-  .about-subtitle {
-    font-family: var(--font-heading);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 17px;
-    color: var(--color-text-secondary);
-    margin-top: 14px;
-    letter-spacing: 0.01em;
-  }
 
-  /* ---------- Intro ---------- */
-  .about-intro {
-    max-width: 860px;
-    margin: 48px auto 0;
-    text-align: center;
-    padding: 0 24px;
-  }
-  .about-intro p {
-    font-family: var(--font-body);
-    font-size: 20px;
-    line-height: 1.7;
-    font-weight: 400;
-    color: var(--color-text-main);
-    margin: 0;
-    letter-spacing: -0.005em;
-  }
-  .about-intro p + p {
-    margin-top: 18px;
-    font-size: 17.5px;
-    color: var(--color-text-secondary);
-  }
-  .about-intro em {
-    font-style: italic;
-    color: var(--color-text-main);
-  }
-
-  .intro-to-poem-divider {
-    display: block;
-    width: 1px;
-    height: 48px;
-    background: var(--color-text-secondary);
-    margin: 72px auto 0;
-    opacity: 0.55;
-  }
-
-  /* ---------- Section rule ---------- */
-  .section-rule {
-    max-width: 700px;
-    margin: 96px auto 0;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-family: var(--font-heading);
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--color-text-secondary);
-  }
-  .section-rule::before,
-  .section-rule::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--color-border-strong);
-  }
-
-  /* ---------- Across poem ---------- */
-  .across-poem {
-    max-width: 900px;
-    margin: 56px auto 0;
-    padding: 0 24px;
-  }
-  .across-stanzas {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .across-stanza {
-    position: relative;
-    min-height: 18vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 800ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .across-stanza.in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .across-glyph-bg {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: clamp(200px, 38%, 340px);
-    height: 52%;
-    z-index: 0;
-    color: var(--color-accent);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 600ms ease 180ms;
-  }
-  .across-stanza.in .across-glyph-bg { opacity: 0.22; }
-  :global(:root.dark) .across-stanza.in .across-glyph-bg { opacity: 0.32; }
-  .across-glyph-bg svg {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-  .across-glyph-bg :global(path),
-  .across-glyph-bg :global(line),
-  .across-glyph-bg :global(polyline) {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 900;
-    stroke-dashoffset: 900;
-    transition: stroke-dashoffset 1400ms cubic-bezier(0.55, 0, 0.25, 1) 260ms;
-  }
-  .across-stanza.in .across-glyph-bg :global(path),
-  .across-stanza.in .across-glyph-bg :global(line),
-  .across-stanza.in .across-glyph-bg :global(polyline) {
-    stroke-dashoffset: 0;
-  }
-  .across-glyph-bg :global(.dashed) {
-    stroke-dasharray: 6 8;
-    stroke-dashoffset: 0;
-    opacity: 0;
-    transition: opacity 600ms ease 900ms;
-  }
-  .across-stanza.in .across-glyph-bg :global(.dashed) { opacity: 0.9; }
-
-  .across-text {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-  }
-  .across-word {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-style: italic;
-    font-size: clamp(34px, 4.8vw, 54px);
-    letter-spacing: -0.03em;
-    line-height: 1;
-    color: var(--color-text-main);
-  }
-  .across-word .across-key {
-    color: var(--color-accent);
-    font-style: italic;
-  }
-  .across-gloss {
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.5;
-    color: var(--color-text-secondary);
-    font-style: italic;
-    margin: 12px auto 0;
-    max-width: 520px;
-  }
-
-  .across-signature {
-    margin-top: 72px;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 900ms ease 200ms, transform 900ms ease 200ms;
-  }
-  .across-signature.in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .across-signature-rule {
-    display: block;
-    width: 36px;
-    height: 1px;
-    background: var(--color-border-strong);
-    margin: 0 auto 18px;
-  }
-  .across-signature-text {
-    font-family: var(--font-heading);
-    font-style: italic;
-    font-size: 17px;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--color-text-secondary);
-  }
-  .across-signature-text b {
-    font-weight: 700;
-    font-style: italic;
-    color: var(--color-text-main);
-  }
-
-  @media (max-width: 640px) {
-    .across-stanza { min-height: 22vh; }
-    .across-gloss { font-size: 14.5px; }
-  }
-
-  /* ---------- Garage ---------- */
-  .garage-section {
-    max-width: 1200px;
-    margin: 28px auto 0;
-    padding: 0 24px;
-    text-align: center;
-  }
-  .garage-h2 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(30px, 3.8vw, 44px);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--color-text-main);
-    max-width: 720px;
-    margin: 0 auto;
-    font-style: italic;
-  }
-  .garage-lede {
-    font-family: var(--font-body);
-    font-size: clamp(14px, 1.2vw, 16px);
-    line-height: 1.6;
-    color: var(--color-text-muted);
-    max-width: 640px;
-    margin: 14px auto 0;
-  }
-  .garage-desc {
-    font-family: var(--font-body);
-    font-size: clamp(13px, 1.05vw, 14.5px);
-    line-height: 1.75;
-    color: var(--color-text-secondary);
-    max-width: 620px;
-    margin: 18px auto 0;
-    font-style: italic;
-    text-align: center;
-  }
-
-  .garage-stamp-wall {
-    position: relative;
-    margin-top: 44px;
-    border-top: 1px solid var(--color-border-strong);
-    border-bottom: 1px solid var(--color-border-strong);
-    overflow: hidden;
-    background: var(--color-bg-canvas);
-  }
-  :global(:root.dark) .garage-stamp-wall {
-    background: #0d0d0d;
-  }
-  .garage-stamp-wall::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.07), transparent 60%);
-    pointer-events: none;
-  }
-  :global(:root.dark) .garage-stamp-wall::before {
-    background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.14), transparent 60%);
-  }
-
-  .stamp-rows {
-    --stamp-gap: clamp(20px, 3vw, 56px);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    padding: 40px clamp(48px, 6vw, 96px) 24px;
-    justify-content: center;
-    max-width: 1240px;
-    margin: 0 auto;
-  }
-  .stamp-row-clip {
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    width: 100%;
-  }
-  .stamp-track {
-    display: flex;
-    flex-direction: row;
-    gap: var(--stamp-gap);
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-  }
-
-  .stamp-tile {
-    container-type: inline-size;
-    flex: 0 0 calc((100% - 2 * var(--stamp-gap)) / 3);
-    width: calc((100% - 2 * var(--stamp-gap)) / 3);
-    aspect-ratio: 240 / 280;
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    position: relative;
-    font: inherit;
-    color: inherit;
-  }
-  .stamp-tile.wobble { animation: stampPulse 800ms cubic-bezier(0.36, 0, 0.2, 1); }
-
-  @media (max-width: 640px) {
-    .stamp-tile {
-      flex: 0 0 calc((100% - var(--stamp-gap)) / 2);
-      width: calc((100% - var(--stamp-gap)) / 2);
-    }
-    .stamp-rows {
-      padding-left: clamp(28px, 4vw, 48px);
-      padding-right: clamp(28px, 4vw, 48px);
-    }
-  }
-
-  .stamp-ring {
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    width: 90%;
-    aspect-ratio: 1;
-    height: auto;
-    object-fit: contain;
-    pointer-events: none;
-    user-select: none;
-  }
-  .stamp-ring-light { opacity: 0.22; display: block; }
-  .stamp-ring-dark  { opacity: 0.18; display: none; }
-  :global(:root.dark) .stamp-ring-light { display: none; }
-  :global(:root.dark) .stamp-ring-dark  { display: block; }
-
-  .stamp-bike-wrap {
-    position: absolute;
-    inset: 26% 14% calc(40px + 22cqw) 14%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform-origin: 50% 100%;
-  }
-  .stamp-tile.wobble .stamp-bike-wrap {
-    animation: bikeWobbleTight 800ms cubic-bezier(0.36, 0, 0.2, 1);
-  }
-  .stamp-bike {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22));
-    pointer-events: none;
-    user-select: none;
-  }
-  :global(:root.dark) .stamp-bike {
-    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
-  }
-
-  .stamp-caption {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-text-main);
-    line-height: 1.45;
-  }
-  .stamp-subcaption {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--color-accent);
-    margin-top: 2px;
-    letter-spacing: 0.12em;
-  }
-
-  .stamp-dots {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    padding: 6px 0 26px;
-    position: relative;
-    z-index: 2;
-  }
-  .stamp-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1.5px solid rgba(0, 0, 0, 0.28);
-    cursor: pointer;
-    padding: 0;
-    transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
-                background-color 320ms ease,
-                border-color 320ms ease;
-  }
-  .stamp-dot:hover { border-color: var(--color-accent); }
-  .stamp-dot.active {
-    width: 26px;
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-  :global(:root.dark) .stamp-dot { border-color: rgba(255, 255, 255, 0.32); }
-  :global(:root.dark) .stamp-dot.active {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  .stamp-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 4;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: var(--color-accent);
-    opacity: 0.78;
-    transition: opacity 200ms ease, transform 200ms ease;
-  }
-  .stamp-arrow:hover { opacity: 1; }
-  .stamp-arrow--prev { left: clamp(8px, 2.5vw, 28px); }
-  .stamp-arrow--next { right: clamp(8px, 2.5vw, 28px); }
-  .stamp-arrow--prev:hover { transform: translateY(-50%) translateX(-3px); }
-  .stamp-arrow--next:hover { transform: translateY(-50%) translateX(3px); }
-  .stamp-arrow:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; border-radius: 4px; }
-
-  @keyframes stampPulse {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.06); }
-    55% { transform: scale(0.97); }
-    80% { transform: scale(1.02); }
-  }
-  @keyframes bikeWobbleTight {
-    0%, 100% { transform: rotate(0); }
-    20% { transform: rotate(-9deg); }
-    40% { transform: rotate(7deg); }
-    60% { transform: rotate(-4deg); }
-    80% { transform: rotate(2deg); }
-  }
-
-  /* ---------- Contact ---------- */
-  .contact-section {
-    max-width: 700px;
-    margin: 96px auto 0;
-    padding: 0 24px 88px;
-    text-align: center;
-  }
-  .contact-eyebrow {
-    font-family: var(--font-heading);
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-accent);
-  }
-  .contact-h2 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(30px, 3.8vw, 40px);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--color-text-main);
-    margin-top: 10px;
-  }
-  .contact-lede {
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.65;
-    color: var(--color-text-secondary);
-    margin: 16px auto 0;
-    max-width: 520px;
-  }
-  .contact-channels {
-    margin-top: 36px;
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .channel-btn {
+  /* Buttons — same anatomy as the site's .btn set */
+  .btn-solid,
+  .btn-outline {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.55rem;
     font-family: var(--font-heading);
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: 0.9rem;
+    font-weight: 600;
     text-transform: uppercase;
-    padding: 14px 22px;
+    letter-spacing: 0.06em;
+    padding: 0.85rem 1.6rem;
     border-radius: var(--radius-btn);
-    transition: all 250ms ease;
-    cursor: pointer;
-    border: none;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
   }
-  .channel-btn.primary {
+  .btn-solid {
     background: var(--color-accent);
     color: #fff;
     box-shadow: var(--shadow-sm);
   }
-  .channel-btn.primary:hover {
-    background: var(--color-accent-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
-  .channel-btn.ghost {
+  .btn-solid:hover { background: var(--color-accent-dark); transform: translateY(-1px); }
+  .btn-outline {
     background: transparent;
     color: var(--color-text-main);
     border: 1.5px solid var(--color-border-strong);
   }
-  .channel-btn.ghost:hover {
-    background: var(--color-text-main);
-    color: var(--color-bg-canvas);
-    border-color: var(--color-text-main);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+  .btn-outline:hover { border-color: var(--color-text-main); transform: translateY(-1px); }
+
+  /* ---------- Placeholder photography ---------- */
+  .is-placeholder { position: relative; }
+  .is-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(45deg,
+      rgba(198, 40, 40, 0.17) 0 14px, rgba(198, 40, 40, 0) 14px 36px);
+  }
+  .is-placeholder::after {
+    content: attr(data-ph-note);
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 5;
+    font-family: var(--font-heading);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-accent);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   }
 
-  /* ---------- Member card overlay ---------- */
-  .member-card-backdrop {
-    position: fixed;
+  /* ---------- Hero ---------- */
+  .about-hero {
+    position: relative;
+    height: 78vh;
+    min-height: 460px;
+    max-height: 720px;
+    overflow: hidden;
+    background: var(--color-primary);
+    display: flex;
+    align-items: flex-end;
+  }
+  .about-hero-img {
+    position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    animation: heroDrift 26s ease-in-out infinite alternate;
+  }
+  @keyframes heroDrift {
+    from { transform: scale(1); }
+    to   { transform: scale(1.07); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about-hero-img { animation: none; }
+  }
+  .about-hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0) 75%),
+      linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%);
+  }
+  .about-hero-inner {
+    position: relative;
+    z-index: 3;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+    padding: 3rem 2rem 4rem;
+    box-sizing: border-box;
+  }
+  .about-hero-mark {
+    width: 128px;
+    height: auto;
+    display: block;
+    margin-bottom: 1.35rem;
+    filter: brightness(0) invert(1);
+  }
+  .about-hero-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 0.5rem;
+  }
+  .about-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.9rem;
+  }
+  .about-hero-meta {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.04em;
+    margin: 0 0 0.9rem;
+  }
+  .about-hero-lede {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.65;
+    max-width: 34rem;
+    margin: 0 0 2rem;
+  }
+
+  /* ---------- The three roads ---------- */
+  .roads {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: clamp(64px, 9vw, 120px) 2rem;
+    box-sizing: border-box;
+  }
+  .roads-intro { text-align: center; }
+  .roads-line {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 2.6vw, 1.85rem);
+    font-weight: 500;
+    line-height: 1.75;
+    color: var(--color-text-main);
+    max-width: 40rem;
+    margin: 0.9rem auto 0;
+  }
+  .roads-line b {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+  }
+
+  .roads-grid {
+    list-style: none;
+    margin: clamp(48px, 7vw, 88px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+  .road + .road { border-left: 1px solid var(--color-border); }
+
+  .road-btn {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    padding: clamp(24px, 3vw, 40px) clamp(16px, 2.5vw, 32px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+    border-radius: var(--radius-aero);
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .road-btn:hover { background: var(--color-bg-secondary); transform: translateY(-3px); }
+  .road-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  .road-symbol {
+    width: 56px;
+    height: auto;
+    display: block;
+    margin-bottom: 1.4rem;
+    transition: transform 0.3s ease;
+  }
+  .road-btn:hover .road-symbol { transform: scale(1.08); }
+
+  .road-en {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-accent);
+  }
+  .road-idiom {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3.4vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    color: var(--color-text-main);
+    margin-top: 0.85rem;
+  }
+  .road-gloss {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-top: 0.7rem;
+    max-width: 17rem;
+  }
+  .road-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-text-secondary);
+    margin-top: 1.6rem;
+    transition: color 0.2s ease, gap 0.2s ease;
+  }
+  .road-btn:hover .road-more { color: var(--color-accent); gap: 0.65rem; }
+
+  /* ---------- Coda ---------- */
+  .coda {
+    background: var(--color-primary);
+    padding: clamp(60px, 8vw, 96px) 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .coda-lead {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0;
+  }
+  .coda-mark {
+    width: min(400px, 72vw);
+    height: auto;
+    display: block;
+    margin-top: 1.5rem;
+    filter: invert(1);
+  }
+  .coda-sub {
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 1.75rem 0 0;
+    text-align: center;
+  }
+
+  /* ---------- Garage ---------- */
+  .garage {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: clamp(64px, 9vw, 104px) 2rem;
+    box-sizing: border-box;
+  }
+  .garage-head { text-align: center; }
+  .garage-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-text-main);
+    margin: 0.85rem 0 0;
+  }
+  .garage-lede {
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    max-width: 38rem;
+    margin: 0.85rem auto 0;
+  }
+  .garage-grid {
+    list-style: none;
+    margin: clamp(32px, 5vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+  }
+  .bike-btn {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    padding: 1.1rem 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .bike-btn:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+  .bike-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .bike-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
-    z-index: 60;
-    pointer-events: none;
-    transition: background 220ms ease;
   }
-  .member-card-backdrop.open {
-    background: rgba(0, 0, 0, 0.38);
-    pointer-events: auto;
+  .bike-ring {
+    position: absolute;
+    width: 78%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    opacity: 0.16;
   }
-  :global(:root.dark) .member-card-backdrop.open {
-    background: rgba(0, 0, 0, 0.62);
+  .bike-photo {
+    position: relative;
+    max-width: 90%;
+    max-height: 86%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  .bike-btn:hover .bike-photo { transform: scale(1.05); }
+  .bike-name {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin-top: 0.7rem;
+  }
+  .bike-meta {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    letter-spacing: 0.05em;
+    margin-top: 0.2rem;
   }
 
-  /* Card — column layout, 2/3 bike + 1/3 footer */
-  .member-card {
+  /* ---------- Join ---------- */
+  .join {
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
+    padding: clamp(64px, 9vw, 104px) 2rem;
+  }
+  .join-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .join-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+    color: var(--color-text-main);
+    margin: 0.85rem 0 0;
+  }
+  .join-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--color-text-secondary);
+    margin: 1rem 0 0;
+  }
+  .join-actions {
+    display: flex;
+    gap: 0.9rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  /* ---------- Sheet (both overlays) ---------- */
+  .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 4vw, 48px);
+  }
+  /* An author `display` beats the UA sheet's `[hidden] { display: none }`,
+     so the closed overlay would otherwise sit invisibly over the page and
+     swallow every click. */
+  .sheet[hidden] { display: none; }
+  .sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    transition: opacity 0.24s ease;
+  }
+  .sheet.open .sheet-backdrop { opacity: 1; }
+  :global(:root.dark) .sheet-backdrop { background: rgba(0, 0, 0, 0.72); }
+
+  .sheet-panel {
     position: relative;
-    width: min(720px, 94vw);
-    max-height: min(82vh, 580px);
+    width: min(1000px, 100%);
+    max-height: 90vh;
+    overflow: auto;
     background: var(--color-bg-canvas);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-xl);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transform: translateY(20px) scale(0.97);
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(18px) scale(0.98);
+    transition: opacity 0.26s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .member-card-backdrop.open .member-card {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-  }
+  .sheet.open .sheet-panel { opacity: 1; transform: none; }
+  .sheet-panel--member { width: min(760px, 100%); }
 
-  /* Top 2/3 — large bike photo */
-  .member-card-bike {
-    flex: 2;
-    min-height: 0;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  :global(:root.dark) .member-card-bike {
-    background: #111;
-  }
-  .member-card-bike img {
-    max-width: 68%;
-    max-height: 88%;
-    object-fit: contain;
-    filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.18));
-    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  :global(:root.dark) .member-card-bike img {
-    filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.6));
-  }
-  .member-card-backdrop.open .member-card-bike img {
-    transform: scale(1.03);
-  }
-
-  /* Bottom 1/3 — avatar (1/4) + text (3/4) */
-  .member-card-footer {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: row;
-    border-top: 1px solid var(--color-border);
-  }
-
-  /* Avatar column — 1/4 width */
-  .member-card-avatar {
-    flex: 0 0 25%;
-    border-right: 1px solid var(--color-border);
-    background: #f5f5f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px;
-    overflow: hidden;
-  }
-  :global(:root.dark) .member-card-avatar {
-    background: #181818;
-  }
-
-  /* Initials badge */
-  .member-card-initials {
-    width: clamp(52px, 9cqw, 72px);
-    height: clamp(52px, 9cqw, 72px);
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: #fff;
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(16px, 2.8cqw, 24px);
-    letter-spacing: 0.06em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    flex-shrink: 0;
-  }
-  :global(:root.dark) .member-card-initials {
-    background: var(--color-accent);
-    color: #fff;
-    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.25);
-  }
-
-  /* Text column — 3/4 width */
-  .member-card-body {
-    flex: 1;
-    min-width: 0;
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
-  }
-  .member-card-role {
-    font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--color-accent);
-  }
-  .member-card-name {
-    font-family: var(--font-heading);
-    font-size: clamp(20px, 2.8vw, 26px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--color-text-main);
-    line-height: 1.15;
-  }
-  .member-card-bio {
-    font-family: var(--font-body);
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: var(--color-text-main);
-    margin: 2px 0 0;
-  }
-  .member-card-meta {
-    font-family: var(--font-body);
-    font-size: 11.5px;
-    color: var(--color-text-secondary);
-    margin-top: 4px;
-  }
-
-  /* Close button — floats over bike photo */
-  .member-card-close {
+  .sheet-x {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 9999px;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
     border: 1px solid rgba(255, 255, 255, 0.35);
-    background: rgba(0, 0, 0, 0.28);
+    background: rgba(0, 0, 0, 0.32);
     color: #fff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 180ms ease;
-    z-index: 2;
+    transition: background 0.2s ease;
   }
-  .member-card-close:hover {
-    background: rgba(0, 0, 0, 0.52);
+  .sheet-x:hover { background: rgba(0, 0, 0, 0.55); }
+
+  .sheet-slide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+  .sheet-media { position: relative; overflow: hidden; min-height: 260px; }
+  .sheet-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sheet-media--bike {
+    background: var(--color-bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .sheet-media--bike img { object-fit: contain; }
+
+  .sheet-body {
+    padding: clamp(28px, 3.5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .sheet-symbol { width: 52px; height: auto; display: block; margin-bottom: 1.2rem; }
+  .sheet-en {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-accent);
+    margin: 0;
+  }
+  .sheet-idiom {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-main);
+    margin: 0.6rem 0 0;
+  }
+  .sheet-gloss {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin: 0.7rem 0 0;
+  }
+  .sheet-prose {
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.95;
+    color: var(--color-text-main);
+    margin: 1.4rem 0 0;
+    text-align: justify;
+    text-justify: inter-ideograph;
   }
 
-  @media (max-width: 500px) {
-    .member-card { max-height: 90vh; }
-    .member-card-body { padding: 12px 14px; }
-    .member-card-avatar { padding: 10px; }
+  .sheet-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 0 0 1.4rem;
+  }
+  .sheet-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-strong);
+    background: transparent;
+    color: var(--color-text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .sheet-arrow:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .sheet-count {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--color-text-secondary);
+    min-width: 3.5rem;
+    text-align: center;
+  }
+
+  /* ---------- Reveals ---------- */
+  :global(html.reveal-ready) [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  :global(html.reveal-ready) [data-reveal].in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px) {
+    .roads-grid { grid-template-columns: 1fr; }
+    .road + .road { border-left: none; border-top: 1px solid var(--color-border); }
+    .sheet-slide { grid-template-columns: 1fr; }
+    .sheet-media { min-height: 200px; max-height: 38vh; }
+  }
+  @media (max-width: 560px) {
+    .about-hero-inner { padding: 2rem 1.25rem 2.5rem; }
+    .roads, .garage, .join { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .join-actions { flex-direction: column; }
+    .join-actions a { justify-content: center; }
   }
 </style>
-
