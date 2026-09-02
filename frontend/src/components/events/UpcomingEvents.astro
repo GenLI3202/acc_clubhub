@@ -21,6 +21,17 @@ const typeLabels: Record<string, string> = {
   'workshop': lang === 'zh' ? '工作坊' : lang === 'de' ? 'Workshop' : 'Workshop',
 };
 
+const epicRideSlugs = new Set([
+  'hahntennjoch-epic-ride',
+  'acc-epic-ride-munich-linden-loop-2026-09-05',
+]);
+
+function getTypeLabel(event: CollectionEntry<'events'>): string {
+  return epicRideSlugs.has(event.data.slug)
+    ? 'Epic Ride'
+    : (typeLabels[event.data.eventType] ?? event.data.eventType);
+}
+
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   return d.toLocaleDateString(
@@ -41,7 +52,7 @@ function formatDate(dateStr: string): string {
               <div class="upcoming-card-img" style={`background-image: url('${event.data.coverImage}')`}></div>
             )}
             <div class="upcoming-card-body">
-              <span class="upcoming-type">{typeLabels[event.data.eventType] ?? event.data.eventType}</span>
+              <span class="upcoming-type">{getTypeLabel(event)}</span>
               <h3>{event.data.title}</h3>
               <p class="upcoming-meta">{formatDate(event.data.date)} · {event.data.location}</p>
               {event.data.description && <p class="upcoming-desc">{event.data.description}</p>}

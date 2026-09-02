@@ -32,6 +32,17 @@ const typeLabels: Record<string, string> = {
   'multi-day':     lang === 'zh' ? '多日活动' : lang === 'de' ? 'Mehrtägig'    : 'Multi-Day',
 };
 
+const epicRideSlugs = new Set([
+  'hahntennjoch-epic-ride',
+  'acc-epic-ride-munich-linden-loop-2026-09-05',
+]);
+
+function getTypeLabel(event: CollectionEntry<'events'>): string {
+  return epicRideSlugs.has(event.data.slug)
+    ? 'Epic Ride'
+    : (typeLabels[event.data.eventType] ?? event.data.eventType);
+}
+
 const detailsLabel = lang === 'zh' ? '了解详情 →' : lang === 'de' ? 'Mehr erfahren →' : 'Learn More →';
 const prevLabel = lang === 'zh' ? '上一张' : lang === 'de' ? 'Zurück' : 'Previous slide';
 const nextLabel = lang === 'zh' ? '下一张' : lang === 'de' ? 'Weiter' : 'Next slide';
@@ -58,7 +69,7 @@ const slides = [
   ...events.map((event) => ({
     kind: 'event' as const,
     image: event.data.coverImage || BRAND_IMAGE,
-    eyebrow: typeLabels[event.data.eventType] ?? event.data.eventType,
+    eyebrow: getTypeLabel(event),
     title: event.data.title,
     meta: `${formatDate(event.data.date)} · ${event.data.location}`,
     body: event.data.description,

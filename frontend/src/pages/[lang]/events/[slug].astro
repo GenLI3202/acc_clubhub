@@ -73,7 +73,12 @@ const eventTypeLabels: Record<string, Record<string, string>> = {
   'race':          { zh: '比赛', en: 'Race', de: 'Rennen' },
   'workshop':      { zh: '工作坊', en: 'Workshop', de: 'Workshop' },
 };
-const eventTypeLabel = entry.data.slug === 'hahntennjoch-epic-ride'
+const epicRideSlugs = new Set([
+  'hahntennjoch-epic-ride',
+  'acc-epic-ride-munich-linden-loop-2026-09-05',
+]);
+
+const eventTypeLabel = epicRideSlugs.has(entry.data.slug)
   ? (lang === 'zh' ? 'Epic Ride' : lang === 'de' ? 'Epic Ride' : 'Epic Ride')
   : ((eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType);
 

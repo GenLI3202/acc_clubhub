@@ -44,8 +44,6 @@ This is not a beginner spin. Please register only if you are comfortable riding 
 
 <iframe src="https://www.komoot.com/de-de/tour/3252837959/embed?profile=1&amp;share_token=a5OfvOBZxmooKxtM0OvC1yD53YDTDvL4bUn06h8zV459RqM2om" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
-> Note: the organizer confirmed this is a public Komoot tour. The published page will keep both the original route link and the embedded preview.
-
 ---
 
 ### Ride Notes

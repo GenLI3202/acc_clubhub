@@ -22,6 +22,17 @@ const typeLabels: Record<string, string> = {
         lang === "zh" ? "工作坊" : lang === "de" ? "Workshop" : "Workshop",
 };
 
+const epicRideSlugs = new Set([
+    "hahntennjoch-epic-ride",
+    "acc-epic-ride-munich-linden-loop-2026-09-05",
+]);
+
+function getTypeLabel(event: CollectionEntry<"events">): string {
+    return epicRideSlugs.has(event.data.slug)
+        ? "Epic Ride"
+        : (typeLabels[event.data.eventType] ?? event.data.eventType);
+}
+
 function formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString(
         lang === "zh" ? "zh-CN" : lang === "de" ? "de-DE" : "en-GB",
@@ -53,8 +64,7 @@ const slug = event?.data.slug ?? event?.id.split("/").pop();
                     </p>
                     {event.data.eventType && (
                         <span class="next-ride-badge">
-                            {typeLabels[event.data.eventType] ??
-                                event.data.eventType}
+                            {getTypeLabel(event)}
                         </span>
                     )}
                 </div>

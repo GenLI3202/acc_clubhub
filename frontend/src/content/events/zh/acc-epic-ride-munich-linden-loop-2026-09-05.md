@@ -44,8 +44,6 @@ routeKomootUrl: https://www.komoot.com/de-de/tour/3252837959?share_token=a5OfvOB
 
 <iframe src="https://www.komoot.com/de-de/tour/3252837959/embed?profile=1&amp;share_token=a5OfvOBZxmooKxtM0OvC1yD53YDTDvL4bUn06h8zV459RqM2om" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
-> 备注：路线已确认是公开 Komoot tour，发布页保留原始路线链接和内嵌预览。
-
 ---
 
 ### Ride Notes

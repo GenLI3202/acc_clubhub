@@ -44,8 +44,6 @@ Das ist keine reine Einsteiger-Runde. Bitte meldet euch nur an, wenn ihr mehr al
 
 <iframe src="https://www.komoot.com/de-de/tour/3252837959/embed?profile=1&amp;share_token=a5OfvOBZxmooKxtM0OvC1yD53YDTDvL4bUn06h8zV459RqM2om" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
 
-> Hinweis: Die Organisator:innen haben bestätigt, dass dies eine öffentliche Komoot-Tour ist. Die veröffentlichte Seite behält den ursprünglichen Routenlink und die eingebettete Vorschau.
-
 ---
 
 ### Ride Notes
