@@ -90,23 +90,41 @@ const phNote = t(lang, 'about.placeholderNote');
         </p>
       </div>
 
-      <ul class="roads-grid">
-        {CHAPTERS.map((c, i) => (
-          <li class="road" data-reveal style={`--i:${i}`}>
-            <button class="road-btn" type="button" data-open={i} aria-haspopup="dialog">
-              <img class="road-symbol" src={c.symbol} alt="" width="60" height="40" />
-              <span class="road-en">{c.en}</span>
-              <span class="road-idiom">{c.idiom}</span>
-              {c.gloss && <span class="road-gloss">{c.gloss}</span>}
-              <span class="road-more">
-                {t(lang, 'about.readMore')}
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </section>
+
+    {/* A film strip: the ridge line runs unbroken behind all three and
+        both layers drift, so the concepts read as one continuous reel
+        rather than three boxes. The track holds two passes of the set so
+        translating it exactly -50% loops seamlessly; the second pass is
+        hidden from assistive tech but stays clickable. */}
+    <div class="reel" data-reel>
+      <div class="reel-ridge" aria-hidden="true"></div>
+      <div class="reel-fade reel-fade--l" aria-hidden="true"></div>
+      <div class="reel-fade reel-fade--r" aria-hidden="true"></div>
+
+      <div class="reel-track" data-reel-track>
+        {[0, 1].map((pass) =>
+          CHAPTERS.map((c, i) => (
+            <button
+              class="concept"
+              type="button"
+              data-open={i}
+              aria-haspopup="dialog"
+              aria-hidden={pass === 1 ? 'true' : undefined}
+              tabindex={pass === 1 ? -1 : undefined}
+            >
+              <img class="concept-symbol" src={c.symbol} alt="" width="60" height="40" />
+              <span class="concept-en">{c.en}</span>
+              <span class="concept-idiom">{c.idiom}</span>
+              {c.gloss && <span class="concept-gloss">{c.gloss}</span>}
+              <span class="concept-cue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
               </span>
             </button>
-          </li>
-        ))}
-      </ul>
-    </section>
+          )),
+        )}
+      </div>
+    </div>
 
     {/* ============================================================
         3. CODA
@@ -614,46 +632,96 @@ const phNote = t(lang, 'about.placeholderNote');
     color: var(--color-accent);
   }
 
-  .roads-grid {
-    list-style: none;
-    margin: clamp(48px, 7vw, 88px) 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0;
+  /* ---------- The reel ---------- */
+  .reel {
+    position: relative;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: clamp(40px, 6vw, 72px) 0;
+    overflow: hidden;
   }
-  .road + .road { border-left: 1px solid var(--color-border); }
 
-  .road-btn {
-    width: 100%;
-    height: 100%;
+  /* Ridge line: one repeating band drifting slower than the concepts, so
+     the two layers part company slightly and the strip gains depth. */
+  .reel-ridge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 62%;
+    background-image: url('/images/about/ridge-line.svg');
+    background-repeat: repeat-x;
+    background-position: 0 bottom;
+    background-size: auto 100%;
+    opacity: 0.13;
+    pointer-events: none;
+    animation: ridgeDrift 96s linear infinite;
+  }
+  :global(:root.dark) .reel-ridge { opacity: 0.2; }
+
+  /* Feather both ends so concepts enter and leave instead of popping. */
+  .reel-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(60px, 12vw, 200px);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .reel-fade--l { left: 0; background: linear-gradient(to right, var(--color-bg-canvas), transparent); }
+  .reel-fade--r { right: 0; background: linear-gradient(to left, var(--color-bg-canvas), transparent); }
+
+  .reel-track {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: max-content;
+    animation: reelDrift 72s linear infinite;
+  }
+  .reel:hover .reel-track,
+  .reel:focus-within .reel-track,
+  .reel:hover .reel-ridge,
+  .reel:focus-within .reel-ridge {
+    animation-play-state: paused;
+  }
+
+  @keyframes reelDrift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes ridgeDrift {
+    from { background-position: 0 bottom; }
+    to   { background-position: -840px bottom; }
+  }
+
+  .concept {
+    flex: 0 0 auto;
+    width: clamp(260px, 26vw, 360px);
     background: none;
     border: none;
     cursor: pointer;
     font: inherit;
     color: inherit;
-    padding: clamp(24px, 3vw, 40px) clamp(16px, 2.5vw, 32px);
+    padding: clamp(20px, 2.5vw, 34px) clamp(16px, 2vw, 28px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
     text-align: center;
-    border-radius: var(--radius-aero);
-    transition: background 0.25s ease, transform 0.25s ease;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .road-btn:hover { background: var(--color-bg-secondary); transform: translateY(-3px); }
-  .road-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .concept:hover { transform: translateY(-6px); }
+  .concept:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; border-radius: var(--radius-aero); }
 
-  .road-symbol {
+  .concept-symbol {
     width: 56px;
     height: auto;
     display: block;
     margin-bottom: 1.4rem;
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
   }
-  .road-btn:hover .road-symbol { transform: scale(1.08); }
+  .concept:hover .concept-symbol { transform: scale(1.1); }
 
-  .road-en {
+  .concept-en {
     font-family: var(--font-heading);
     font-size: 0.78rem;
     font-weight: 700;
@@ -661,37 +729,48 @@ const phNote = t(lang, 'about.placeholderNote');
     letter-spacing: 0.2em;
     color: var(--color-accent);
   }
-  .road-idiom {
+  .concept-idiom {
     font-family: var(--font-heading);
-    font-size: clamp(1.6rem, 3.4vw, 2.35rem);
+    font-size: clamp(1.6rem, 3.2vw, 2.3rem);
     font-weight: 700;
     letter-spacing: 0.06em;
     line-height: 1.35;
     color: var(--color-text-main);
     margin-top: 0.85rem;
+    white-space: nowrap;
   }
-  .road-gloss {
+  .concept-gloss {
     font-family: var(--font-body);
     font-size: 0.85rem;
     line-height: 1.65;
     color: var(--color-text-muted);
     margin-top: 0.7rem;
-    max-width: 17rem;
   }
-  .road-more {
-    display: inline-flex;
+
+  /* The only affordance left: a quiet arrow that wakes on hover. */
+  .concept-cue {
+    display: flex;
     align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-heading);
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--color-text-secondary);
-    margin-top: 1.6rem;
-    transition: color 0.2s ease, gap 0.2s ease;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-muted);
+    margin-top: 1.5rem;
+    transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
   }
-  .road-btn:hover .road-more { color: var(--color-accent); gap: 0.65rem; }
+  .concept:hover .concept-cue {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reel-track, .reel-ridge { animation: none; }
+    .reel-track { justify-content: center; flex-wrap: wrap; width: 100%; }
+    .concept:hover { transform: none; }
+  }
 
   /* ---------- Coda ---------- */
   .coda {
@@ -878,8 +957,8 @@ const phNote = t(lang, 'about.placeholderNote');
 
   .sheet-panel {
     position: relative;
-    width: min(1000px, 100%);
-    max-height: 90vh;
+    width: min(1300px, 100%);
+    max-height: 92vh;
     overflow: auto;
     background: var(--color-bg-canvas);
     border: 1px solid var(--color-border);
@@ -890,7 +969,7 @@ const phNote = t(lang, 'about.placeholderNote');
     transition: opacity 0.26s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .sheet.open .sheet-panel { opacity: 1; transform: none; }
-  .sheet-panel--member { width: min(760px, 100%); }
+  .sheet-panel--member { width: min(990px, 100%); }
 
   .sheet-x {
     position: absolute;
@@ -930,15 +1009,19 @@ const phNote = t(lang, 'about.placeholderNote');
 
   /* The entering chapter settles a beat after the slide lands, so the
      three read as one story advancing rather than three separate cards. */
-  .sheet-slide .sheet-body > * {
+  .sheet-slide .sheet-body > *,
+  .sheet-slide .sheet-media {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
   }
-  .sheet-slide.is-active .sheet-body > * {
+  .sheet-slide.is-active .sheet-body > *,
+  .sheet-slide.is-active .sheet-media {
     opacity: 1;
     transform: none;
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  .sheet-slide.is-active .sheet-media { transition-delay: 0.1s; }
   .sheet-slide.is-active .sheet-body > *:nth-child(1) { transition-delay: 0.16s; }
   .sheet-slide.is-active .sheet-body > *:nth-child(2) { transition-delay: 0.22s; }
   .sheet-slide.is-active .sheet-body > *:nth-child(3) { transition-delay: 0.28s; }
@@ -1062,13 +1145,12 @@ const phNote = t(lang, 'about.placeholderNote');
 
   @media (prefers-reduced-motion: reduce) {
     .sheet-track { transition: none; }
-    .sheet-slide .sheet-body > * { opacity: 1; transform: none; transition: none; }
+    .sheet-slide .sheet-body > *,
+    .sheet-slide .sheet-media { opacity: 1; transform: none; transition: none; }
   }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
-    .roads-grid { grid-template-columns: 1fr; }
-    .road + .road { border-left: none; border-top: 1px solid var(--color-border); }
     .sheet-slide { grid-template-columns: 1fr; }
     .sheet-media { min-height: 200px; max-height: 38vh; }
   }
