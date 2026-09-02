@@ -83,10 +83,18 @@ const phNote = t(lang, 'about.placeholderNote');
            overlay below
        ============================================================ */}
     <section class="roads" aria-labelledby="roads-heading">
+      {/* The club's own name, split. Three unrelated idioms don't read as
+          one idea on their own — before this, the only thing tying them
+          together was the English on the cards, which is backwards on a
+          page written for Chinese readers. Splitting 穿越无疆 does that
+          work in Chinese, and it shows rather than explains: the name
+          comes apart here and closes back up in the calligraphy at the
+          foot of the page. ACROSS sits above it because naming the shared
+          word is the one thing the Chinese can't do for itself. */}
       <div class="roads-intro" data-reveal>
-        <p class="eyebrow">The name</p>
-        <p class="roads-line" id="roads-heading">
-          <b>Across</b> {t(lang, 'about.thesisLine')}
+        <p class="eyebrow">Across</p>
+        <p class="roads-name" id="roads-heading">
+          <span>穿</span><i aria-hidden="true">·</i><span>越</span><i aria-hidden="true">·</i><span>无疆</span>
         </p>
       </div>
 
@@ -621,20 +629,25 @@ const phNote = t(lang, 'about.placeholderNote');
     box-sizing: border-box;
   }
   .roads-intro { text-align: center; }
-  .roads-line {
+  .roads-intro .eyebrow { letter-spacing: 0.34em; text-indent: 0.34em; font-size: 0.85rem; }
+  .roads-name {
     font-family: var(--font-heading);
-    font-size: clamp(1.25rem, 2.6vw, 1.85rem);
-    font-weight: 500;
-    line-height: 1.75;
-    color: var(--color-text-main);
-    max-width: 40rem;
-    margin: 0.9rem auto 0;
-  }
-  .roads-line b {
+    font-size: clamp(2rem, 5vw, 3.4rem);
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    line-height: 1.3;
+    color: var(--color-text-main);
+    margin: 1rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.6rem, 1.8vw, 1.4rem);
+  }
+  .roads-name i {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.5em;
     color: var(--color-accent);
+    transform: translateY(-0.08em);
   }
 
   /* ---------- The reel ---------- */

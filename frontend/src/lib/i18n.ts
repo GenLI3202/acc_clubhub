@@ -101,7 +101,6 @@ export const ui = {
         // --- About Us v2 (phase-9 redesign) ---
         'about.heroLede': '慕尼黑的华人公路骑行俱乐部。我们组织穿越巴伐利亚与阿尔卑斯的骑行，也为成员搭建一个训练、交流、成长的平台。',
         'about.heroCta': '加入我们',
-        'about.thesisLine': '是这个名字里我们最在意的一个词。拆开是三段路。',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': '',
         'about.ch1Prose': '一个人骑，路上遇见另一个人，并到同一条线上，风声忽然小了，话就多了。从齿比聊到坡度，从坡度聊到晚饭吃什么。如两千年前的旅人在路上相遇，停下车，车盖倾在一起说话，后人叫它倾盖如故。如今车盖没了，傍晚的落日把影子拉长，并肩骑近一点，两道车影就叠在一起。',
@@ -286,7 +285,6 @@ export const ui = {
         // --- About Us v2 (phase-9 redesign) ---
         'about.heroLede': 'A Chinese road-cycling club in Munich. We ride across Bavaria and the Alps, and give our members somewhere to train, meet and grow.',
         'about.heroCta': 'Join us',
-        'about.thesisLine': 'is the word in our name we care about most. Take it apart and you get three roads.',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': 'Two travellers stop, tilt their carriage covers together, and part as old friends.',
         'about.ch1Prose': 'You set out alone. Somewhere on the road another rider falls in beside you, and once you are on the same line the wind drops and the talking starts — gear ratios, then gradients, then what to eat afterwards. Two thousand years ago travellers met the same way: they stopped their carriages, tilted the covers together, and talked. The carriages are gone. But ride close enough at dusk and the two shadows still overlap on the tarmac.',
@@ -471,7 +469,6 @@ export const ui = {
         // --- About Us v2 (phase-9 redesign) ---
         'about.heroLede': 'Ein chinesischer Rennradverein in München. Wir fahren durch Bayern und die Alpen und bieten unseren Mitgliedern einen Ort zum Trainieren, Austauschen und Wachsen.',
         'about.heroCta': 'Mitfahren',
-        'about.thesisLine': 'ist das Wort in unserem Namen, das uns am meisten bedeutet. Zerlegt man es, ergeben sich drei Wege.',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': 'Zwei Reisende halten an, neigen die Wagendächer zueinander — und trennen sich als alte Freunde.',
         'about.ch1Prose': 'Du fährst allein los. Irgendwo unterwegs reiht sich jemand neben dir ein, und sobald ihr auf derselben Linie fahrt, wird der Wind leiser und das Reden fängt an — erst Übersetzungen, dann Steigungen, dann was es abends zu essen gibt. Vor zweitausend Jahren begegneten sich Reisende genauso: Sie hielten an, neigten die Wagendächer zueinander und redeten. Die Wagen sind längst weg. Aber fahr am Abend nah genug nebeneinander, und die beiden Schatten liegen noch immer übereinander.',
