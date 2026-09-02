@@ -176,9 +176,10 @@ const phNote = t(lang, 'about.placeholderNote');
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
 
-      <div class="sheet-grid">
+      <div class="sheet-viewport">
+        <div class="sheet-track" data-track>
         {CHAPTERS.map((c, i) => (
-          <article class="sheet-slide" data-slide={i} hidden={i !== 0}>
+          <article class="sheet-slide" data-slide={i}>
             <div class:list={['sheet-media', phClass]} data-ph-note={phNote}>
               <img src={c.photo} alt="" />
             </div>
@@ -191,13 +192,20 @@ const phNote = t(lang, 'about.placeholderNote');
             </div>
           </article>
         ))}
+        </div>
       </div>
 
       <div class="sheet-nav">
         <button class="sheet-arrow" type="button" data-sheet-prev aria-label="Previous">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <span class="sheet-count" data-sheet-count>1 / 3</span>
+        <div class="sheet-steps" role="tablist" aria-label="Chapters">
+          {CHAPTERS.map((c, i) => (
+            <button class="sheet-step" type="button" data-step={i} role="tab" aria-label={c.en}>
+              <span class="sheet-step-fill"></span>
+            </button>
+          ))}
+        </div>
         <button class="sheet-arrow" type="button" data-sheet-next aria-label="Next">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -212,8 +220,8 @@ const phNote = t(lang, 'about.placeholderNote');
       <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
-      <div class="sheet-grid">
-        <article class="sheet-slide">
+      <div class="sheet-viewport">
+        <article class="sheet-slide sheet-slide--solo">
           <div class="sheet-media sheet-media--bike">
             <img data-member-photo alt="" />
           </div>
@@ -292,22 +300,44 @@ const phNote = t(lang, 'about.placeholderNote');
       // ---- chapter sheet ----
       const chapter = document.querySelector('[data-sheet="chapter"]');
       if (chapter) {
+        const track = chapter.querySelector('[data-track]');
         const slides = Array.from(chapter.querySelectorAll('[data-slide]'));
-        const count = chapter.querySelector('[data-sheet-count]');
+        const steps = Array.from(chapter.querySelectorAll('[data-step]'));
+        const dialog = chapter.querySelector('[role="dialog"]');
         let current = 0;
 
-        function show(i) {
+        function show(i, animate) {
           current = (i + total) % total;
-          slides.forEach((s, n) => { s.hidden = n !== current; });
-          if (count) count.textContent = (current + 1) + ' / ' + total;
+          if (track) {
+            track.style.transition = animate === false ? 'none' : '';
+            track.style.transform = 'translateX(' + (-current * 100) + '%)';
+          }
+          slides.forEach((s, n) => {
+            const off = n !== current;
+            // keep off-screen chapters out of the tab order and the
+            // accessibility tree without removing them from the DOM
+            s.classList.toggle('is-active', !off);
+            if (off) s.setAttribute('inert', ''); else s.removeAttribute('inert');
+            s.setAttribute('aria-hidden', off ? 'true' : 'false');
+          });
+          steps.forEach((b, n) => {
+            b.classList.toggle('on', n === current);
+            b.setAttribute('aria-selected', n === current ? 'true' : 'false');
+          });
+          const idiom = slides[current] && slides[current].querySelector('.sheet-idiom');
+          if (dialog && idiom) dialog.setAttribute('aria-label', idiom.textContent);
         }
 
         document.querySelectorAll('[data-open]').forEach((btn) => {
           btn.addEventListener('click', () => {
-            show(Number(btn.getAttribute('data-open')));
+            // jump to the chapter without animating in from chapter 1
+            show(Number(btn.getAttribute('data-open')), false);
             open(chapter);
+            // re-enable the slide transition once the sheet is up
+            window.setTimeout(() => { if (track) track.style.transition = ''; }, 60);
           });
         });
+        steps.forEach((b, n) => b.addEventListener('click', () => show(n)));
         const prev = chapter.querySelector('[data-sheet-prev]');
         const next = chapter.querySelector('[data-sheet-next]');
         if (prev) prev.addEventListener('click', () => show(current - 1));
@@ -318,6 +348,38 @@ const phNote = t(lang, 'about.placeholderNote');
           if (e.key === 'ArrowLeft') show(current - 1);
           if (e.key === 'ArrowRight') show(current + 1);
         });
+
+        // Swipe — the story should move under your thumb, not just jump.
+        let startX = null;
+        let dragging = false;
+        const vp = chapter.querySelector('.sheet-viewport');
+        if (vp) {
+          vp.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse') return;
+            startX = e.clientX;
+            dragging = true;
+            if (track) track.style.transition = 'none';
+          });
+          vp.addEventListener('pointermove', (e) => {
+            if (!dragging || startX === null || !track) return;
+            const dx = e.clientX - startX;
+            track.style.transform =
+              'translateX(calc(' + (-current * 100) + '% + ' + dx + 'px))';
+          });
+          const end = (e) => {
+            if (!dragging || startX === null) return;
+            const dx = e.clientX - startX;
+            dragging = false;
+            startX = null;
+            if (track) track.style.transition = '';
+            if (Math.abs(dx) > 60) show(current + (dx < 0 ? 1 : -1));
+            else show(current);
+          };
+          vp.addEventListener('pointerup', end);
+          vp.addEventListener('pointercancel', end);
+        }
+
+        show(0, false);
       }
 
       // ---- member sheet ----
@@ -849,11 +911,40 @@ const phNote = t(lang, 'about.placeholderNote');
   }
   .sheet-x:hover { background: rgba(0, 0, 0, 0.55); }
 
+  /* The three chapters live on one horizontal track: clipped viewport,
+     flex track, each slide exactly one viewport wide. */
+  .sheet-viewport { overflow: hidden; }
+  .sheet-track {
+    display: flex;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
   .sheet-slide {
+    flex: 0 0 100%;
+    min-width: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: stretch;
   }
+  .sheet-slide--solo { flex: none; }
+
+  /* The entering chapter settles a beat after the slide lands, so the
+     three read as one story advancing rather than three separate cards. */
+  .sheet-slide .sheet-body > * {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .sheet-slide.is-active .sheet-body > * {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sheet-slide.is-active .sheet-body > *:nth-child(1) { transition-delay: 0.16s; }
+  .sheet-slide.is-active .sheet-body > *:nth-child(2) { transition-delay: 0.22s; }
+  .sheet-slide.is-active .sheet-body > *:nth-child(3) { transition-delay: 0.28s; }
+  .sheet-slide.is-active .sheet-body > *:nth-child(4) { transition-delay: 0.34s; }
+  .sheet-slide.is-active .sheet-body > *:nth-child(5) { transition-delay: 0.40s; }
+  .sheet-slide--solo .sheet-body > * { opacity: 1; transform: none; }
   .sheet-media { position: relative; overflow: hidden; min-height: 260px; }
   .sheet-media img {
     width: 100%;
@@ -932,15 +1023,30 @@ const phNote = t(lang, 'about.placeholderNote');
     transition: border-color 0.2s ease, color 0.2s ease;
   }
   .sheet-arrow:hover { border-color: var(--color-accent); color: var(--color-accent); }
-  .sheet-count {
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--color-text-secondary);
-    min-width: 3.5rem;
-    text-align: center;
+  /* Segmented progress — reads as "chapter 2 of 3" at a glance and
+     doubles as a jump control. */
+  .sheet-steps { display: flex; align-items: center; gap: 8px; }
+  .sheet-step {
+    width: 34px;
+    height: 14px;
+    padding: 5px 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: block;
   }
+  .sheet-step-fill {
+    display: block;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-border-strong);
+    transition: background 0.35s ease, transform 0.35s ease;
+    transform-origin: left center;
+  }
+  .sheet-step.on .sheet-step-fill { background: var(--color-accent); }
+  .sheet-step:hover .sheet-step-fill { background: var(--color-text-secondary); }
+  .sheet-step.on:hover .sheet-step-fill { background: var(--color-accent); }
+  .sheet-step:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 3px; }
 
   /* ---------- Reveals ---------- */
   :global(html.reveal-ready) [data-reveal] {
@@ -952,6 +1058,11 @@ const phNote = t(lang, 'about.placeholderNote');
     transform: none;
     transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet-track { transition: none; }
+    .sheet-slide .sheet-body > * { opacity: 1; transform: none; transition: none; }
   }
 
   /* ---------- Responsive ---------- */
