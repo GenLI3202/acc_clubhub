@@ -722,10 +722,26 @@ const phNote = t(lang, 'about.placeholderNote');
     height: 191px;
     background-image: url('/images/about/ridge-line.svg');
     background-size: var(--tile) auto;
-    opacity: 0.34;
     animation: terrainDrift 34s linear infinite;
+
+    /* Atmospheric perspective: the near ridges at the foot of the band sit
+       solid against the dark coda below, the far ones dissolve into haze.
+       Solid ground starts on the golden section — 61.8% down, so the near
+       third carries the weight. Layer opacity is the ceiling the mask
+       scales, so it runs 0.50 at the foot down to 0.08 at the skyline. */
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.16) 0%,
+      rgba(0, 0, 0, 0.5) 38.2%,
+      rgba(0, 0, 0, 1) 61.8%,
+      rgba(0, 0, 0, 1) 100%);
+    mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.16) 0%,
+      rgba(0, 0, 0, 0.5) 38.2%,
+      rgba(0, 0, 0, 1) 61.8%,
+      rgba(0, 0, 0, 1) 100%);
   }
-  :global(:root.dark) .reel-ridge { opacity: 0.38; }
+  :global(:root.dark) .reel-ridge { opacity: 0.54; }
   
   /* Feather both ends so concepts enter and leave instead of popping. */
   .reel-fade {
