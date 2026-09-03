@@ -86,6 +86,9 @@ const phNote = t(lang, 'about.placeholderNote');
            overlay below
        ============================================================ */}
     <section class="roads" aria-labelledby="roads-heading">
+      <div class="roads-ridge roads-ridge--far" aria-hidden="true"></div>
+      <div class="roads-ridge roads-ridge--near" aria-hidden="true"></div>
+
       {/* The club's own name, split. Three unrelated idioms don't read as
           one idea on their own — before this, the only thing tying them
           together was the English on the cards, which is backwards on a
@@ -113,46 +116,44 @@ const phNote = t(lang, 'about.placeholderNote');
         </p>
       </div>
 
-    </section>
+      {/* A film strip: the ridge line runs unbroken behind all three and
+          both layers drift, so the concepts read as one continuous reel
+          rather than three boxes.
 
-    {/* A film strip: the ridge line runs unbroken behind all three and
-        both layers drift, so the concepts read as one continuous reel
-        rather than three boxes.
+          The track holds four passes and travels exactly one pass (-25%)
+          before looping, so it lands frame-perfect on the next copy. Four
+          is what keeps the strip full at the end of the travel: three
+          passes must still cover the viewport, which holds to ~3600px.
+          Pass 0 is the real one; the rest are hidden from assistive tech
+          and untabbable, but stay clickable. */}
+      <div class="reel" data-reel>
+        <div class="reel-fade reel-fade--l" aria-hidden="true"></div>
+        <div class="reel-fade reel-fade--r" aria-hidden="true"></div>
 
-        The track holds four passes and travels exactly one pass (-25%)
-        before looping, so it lands frame-perfect on the next copy. Four
-        is what keeps the strip full at the end of the travel: three
-        passes must still cover the viewport, which holds to ~3600px.
-        Pass 0 is the real one; the rest are hidden from assistive tech
-        and untabbable, but stay clickable. */}
-    <div class="reel" data-reel>
-      <div class="reel-ridge" aria-hidden="true"></div>
-      <div class="reel-fade reel-fade--l" aria-hidden="true"></div>
-      <div class="reel-fade reel-fade--r" aria-hidden="true"></div>
-
-      <div class="reel-track" data-reel-track>
-        {[0, 1, 2, 3].map((pass) =>
-          CHAPTERS.map((c, i) => (
-            <button
-              class="concept"
-              type="button"
-              data-open={i}
-              aria-haspopup="dialog"
-              aria-hidden={pass > 0 ? 'true' : undefined}
-              tabindex={pass > 0 ? -1 : undefined}
-            >
-              <img class="concept-symbol" src={c.symbol} alt="" width="60" height="40" />
-              <span class="concept-en">{c.short}</span>
-              <span class="concept-idiom">{c.idiom}</span>
-              {c.gloss && <span class="concept-gloss">{c.gloss}</span>}
-              <span class="concept-cue" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
-              </span>
-            </button>
-          )),
-        )}
+        <div class="reel-track" data-reel-track>
+          {[0, 1, 2, 3].map((pass) =>
+            CHAPTERS.map((c, i) => (
+              <button
+                class="concept"
+                type="button"
+                data-open={i}
+                aria-haspopup="dialog"
+                aria-hidden={pass > 0 ? 'true' : undefined}
+                tabindex={pass > 0 ? -1 : undefined}
+              >
+                <img class="concept-symbol" src={c.symbol} alt="" width="60" height="40" />
+                <span class="concept-en">{c.short}</span>
+                <span class="concept-idiom">{c.idiom}</span>
+                {c.gloss && <span class="concept-gloss">{c.gloss}</span>}
+                <span class="concept-cue" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
+                </span>
+              </button>
+            )),
+          )}
+        </div>
       </div>
-    </div>
+    </section>
 
     {/* ============================================================
         3. CODA
@@ -640,12 +641,20 @@ const phNote = t(lang, 'about.placeholderNote');
 
   /* ---------- The three roads ---------- */
   .roads {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: clamp(64px, 9vw, 120px) 2rem clamp(24px, 3.5vw, 44px);
+    position: relative;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: clamp(52px, 6.5vw, 90px) 0 0;
     box-sizing: border-box;
   }
-  .roads-intro { text-align: center; }
+  .roads-intro {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 2rem clamp(12px, 1.8vw, 22px);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
 
   /* The section argues about one word, so that word carries the weight;
      the split name sits under it as the Chinese reading of the same
@@ -696,52 +705,72 @@ const phNote = t(lang, 'about.placeholderNote');
   /* ---------- The reel ---------- */
   .reel {
     position: relative;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    padding: clamp(16px, 2.5vw, 32px) 0 clamp(28px, 4vw, 52px);
+    z-index: 1;
+    padding: clamp(8px, 1.2vw, 16px) 0 clamp(20px, 3vw, 40px);
     overflow: hidden;
   }
 
-  /* Ridge line: one repeating band drifting slower than the concepts, so
-     the two layers part company slightly and the strip gains depth. */
-  /* Both terrain layers pin background-size in px and travel exactly one
-     tile per cycle. Sizing by height instead left the tile width tied to
-     the layer's rendered height, so the shift was never a whole number of
-     tiles and the pattern jumped on every loop. */
-  .reel-ridge {
+  /* Ridge line: two layered alpine terrain bands scaled down by another 40%
+     (--tile: clamp(300px, 28vw, 400px)) for delicate, fine-line elegance:
+     1. roads-ridge--far: high-altitude summits reaching behind ACROSS logo,
+        softly dissolving before the card typography.
+     2. roads-ridge--near: grounded valley ridges anchoring the cards into
+        the dark coda below with rich base concentration. */
+  .roads-ridge {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0;
     background-repeat: repeat-x;
     background-position: 0 bottom;
     pointer-events: none;
-  }
-  .reel-ridge {
-    --tile: 300px;
-    height: 191px;
+    z-index: 0;
+    --tile: clamp(300px, 28vw, 400px);
+    height: calc(var(--tile) * 535 / 840);
     background-image: url('/images/about/ridge-line.svg');
     background-size: var(--tile) auto;
-    animation: terrainDrift 34s linear infinite;
-
-    /* Atmospheric perspective: the near ridges at the foot of the band sit
-       solid against the dark coda below, the far ones dissolve into haze.
-       Solid ground starts on the golden section — 61.8% down, so the near
-       third carries the weight. Layer opacity is the ceiling the mask
-       scales, so it runs 0.50 at the foot down to 0.08 at the skyline. */
-    opacity: 0.5;
-    -webkit-mask-image: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.16) 0%,
-      rgba(0, 0, 0, 0.5) 38.2%,
-      rgba(0, 0, 0, 1) 61.8%,
-      rgba(0, 0, 0, 1) 100%);
-    mask-image: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.16) 0%,
-      rgba(0, 0, 0, 0.5) 38.2%,
-      rgba(0, 0, 0, 1) 61.8%,
-      rgba(0, 0, 0, 1) 100%);
   }
-  :global(:root.dark) .reel-ridge { opacity: 0.54; }
+
+  .roads-ridge--far {
+    top: clamp(24px, 3.5vw, 48px);
+    animation: terrainDrift 52s linear infinite;
+    opacity: 0.40;
+    -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.04) 0%,
+      rgba(0, 0, 0, 0.22) 20%,
+      rgba(0, 0, 0, 0.45) 45%,
+      rgba(0, 0, 0, 0.15) 65%,
+      rgba(0, 0, 0, 0.00) 80%,
+      rgba(0, 0, 0, 0.00) 100%);
+    mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.04) 0%,
+      rgba(0, 0, 0, 0.22) 20%,
+      rgba(0, 0, 0, 0.45) 45%,
+      rgba(0, 0, 0, 0.15) 65%,
+      rgba(0, 0, 0, 0.00) 80%,
+      rgba(0, 0, 0, 0.00) 100%);
+  }
+  :global(:root.dark) .roads-ridge--far { opacity: 0.35; }
+
+  .roads-ridge--near {
+    bottom: 0;
+    animation: terrainDrift 34s linear infinite;
+    opacity: 0.88;
+    -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.00) 0%,
+      rgba(0, 0, 0, 0.00) 25%,
+      rgba(0, 0, 0, 0.16) 50%,
+      rgba(0, 0, 0, 0.60) 78%,
+      rgba(0, 0, 1.00) 95%,
+      rgba(0, 0, 1.00) 100%);
+    mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.00) 0%,
+      rgba(0, 0, 0, 0.00) 25%,
+      rgba(0, 0, 0, 0.16) 50%,
+      rgba(0, 0, 0, 0.60) 78%,
+      rgba(0, 0, 1.00) 95%,
+      rgba(0, 0, 1.00) 100%);
+  }
+  :global(:root.dark) .roads-ridge--near { opacity: 0.82; }
   
   /* Feather both ends so concepts enter and leave instead of popping. */
   .reel-fade {
@@ -764,8 +793,8 @@ const phNote = t(lang, 'about.placeholderNote');
   }
   .reel:hover .reel-track,
   .reel:focus-within .reel-track,
-  .reel:hover .reel-ridge,
-  .reel:focus-within .reel-ridge {
+  .roads:hover .roads-ridge,
+  .roads:focus-within .roads-ridge {
     animation-play-state: paused;
   }
 
@@ -852,7 +881,7 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reel-track, .reel-ridge { animation: none; }
+    .reel-track, .roads-ridge { animation: none; }
     .reel-track { justify-content: center; flex-wrap: wrap; width: 100%; }
     .concept:hover { transform: none; }
   }
@@ -1248,9 +1277,11 @@ const phNote = t(lang, 'about.placeholderNote');
     .sheet-media { min-height: 200px; max-height: 38vh; }
   }
   @media (max-width: 560px) {
-    .reel-ridge { --tile: 208px; height: 132px; animation-duration: 24s; }
+    .roads-ridge { --tile: 260px; }
+    .roads-ridge--far { animation-duration: 38s; }
+    .roads-ridge--near { animation-duration: 24s; }
     .about-hero-inner { padding: 2rem 1.25rem 2.5rem; }
-    .roads, .garage, .join { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .roads-intro, .garage, .join { padding-left: 1.25rem; padding-right: 1.25rem; }
     .join-actions { flex-direction: column; }
     .join-actions a { justify-content: center; }
   }
