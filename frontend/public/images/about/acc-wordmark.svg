@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 230" width="700" height="230" role="img" aria-labelledby="accTitle accDesc">
+  <title id="accTitle">ACC wordmark (redraw)</title>
+  <desc id="accDesc">Geometric ACC lettering redrawn by eye from the 2026 jersey sheet. Not the original vector artwork — verify against the source file before production use.</desc>
+  <g fill="#141412" fill-rule="evenodd" shape-rendering="geometricPrecision">
+    <!-- A — chopped apex, angular counter, split feet -->
+    <path d="M92 0 L148 0 L240 230 L178 230 L160 176 L74 176 L54 230 L0 230 Z
+             M92 138 L120 62 L146 138 Z"/>
+    <!-- C — blocky, 45° chamfers on the outer left corners -->
+    <path d="M314 0 L466 0 L466 54 L344 54 L322 76 L322 154 L344 176 L466 176 L466 230 L314 230 L266 184 L266 46 Z"/>
+    <path d="M548 0 L700 0 L700 54 L578 54 L556 76 L556 154 L578 176 L700 176 L700 230 L548 230 L500 184 L500 46 Z"/>
+  </g>
+</svg>

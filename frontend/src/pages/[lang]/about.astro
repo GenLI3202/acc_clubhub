@@ -1,8 +1,15 @@
 ---
 export const prerender = true;
 // src/pages/[lang]/about.astro
-// Editorial about page — hero, Across poem, stamp-wall garage marquee, contact.
-// Based on Phase 8 Claude Design output.
+// About page — phase 9 redesign.
+//
+// Built inside the site's own V4 "Rapha-Inspired Modern" system (see
+// styles/variables.css): photography-led, Jost headings, Inter body,
+// no ornament. The three ACROSS chapters read as a quiet triptych —
+// English title plus the Chinese idiom — and open into a detail
+// overlay that carries the full prose. The prose ships in the markup
+// (visually hidden, not injected) so crawlers and screen readers get
+// the whole page without interacting.
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
@@ -15,1184 +22,1741 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Locale };
 const pageTitle = t(lang, 'nav.about');
 
-// Split into two rows, preserving original order (i % 2).
-const row1 = MEMBERS.filter((_, i) => i % 2 === 0);
-const row2 = MEMBERS.filter((_, i) => i % 2 === 1);
+// Every ride photo on this page is a stand-in. Flip to false once real
+// photography lands — it drops the stripe overlay and the corner badge.
+const PHOTOS_ARE_PLACEHOLDER = false;
+
+const CHAPTERS = [
+  {
+    id: 'paths',
+    en: 'Across paths',
+    symbol: '/images/about/symbols/parallel.svg',
+    photo: '/images/about/paths.webp',
+    idiom: t(lang, 'about.ch1Idiom'),
+    gloss: t(lang, 'about.ch1Gloss'),
+    prose: t(lang, 'about.ch1Prose'),
+  },
+  {
+    id: 'mountains',
+    en: 'Across mountains',
+    symbol: '/images/about/symbols/mountain-rider.svg',
+    photo: '/images/about/mountains.webp',
+    idiom: t(lang, 'about.ch2Idiom'),
+    gloss: t(lang, 'about.ch2Gloss'),
+    prose: t(lang, 'about.ch2Prose'),
+  },
+  {
+    id: 'borders',
+    en: 'Across borders',
+    symbol: '/images/about/symbols/bridge.svg',
+    photo: '/images/about/borders.webp',
+    idiom: t(lang, 'about.ch3Idiom'),
+    gloss: t(lang, 'about.ch3Gloss'),
+    prose: t(lang, 'about.ch3Prose'),
+  },
+] as const;
+
+const phClass = PHOTOS_ARE_PLACEHOLDER ? 'is-placeholder' : '';
+const phNote = t(lang, 'about.placeholderNote');
 ---
 
 <BaseLayout title={pageTitle} lang={lang}>
-  <article class="about-page">
-    {/* ============================================================
-        1. TITLE BLOCK
-       ============================================================ */}
-    <div class="about-title-block">
-      <div class="about-eyebrow">{t(lang, 'about.eyebrow')}</div>
-      <h1 class="about-h1">{t(lang, 'about.h1')}</h1>
-      <div class="about-subtitle">{t(lang, 'about.subtitle')}</div>
+  {/* Hero rides BaseLayout's named slot so it sits outside <main>'s
+      max-width box — the same escape HomeHero uses on the homepage. */}
+  <section slot="hero" class:list={['about-hero', phClass]} data-ph-note={phNote}>
+    <img class="about-hero-img" src="/images/about/hero.webp" alt="" />
+    <div class="about-hero-scrim"></div>
+
+    <div class="about-hero-inner">
+      <img class="about-hero-mark" src="/images/about/acc-wordmark.svg" alt="ACC" width="700" height="230" />
+      <p class="about-hero-eyebrow">{t(lang, 'about.eyebrow')}</p>
+      <h1 class="about-hero-title">Across Cycling Club</h1>
+      <p class="about-hero-meta">München · founded 2023</p>
+      <p class="about-hero-lede">{t(lang, 'about.heroLede')}</p>
+      <a class="btn-solid" href="#join">{t(lang, 'about.heroCta')}</a>
     </div>
+  </section>
 
+  <article class="about">
     {/* ============================================================
-        2. INTRO LEDE
+        2. THE THREE ROADS — quiet by default, prose lives in the
+           overlay below
        ============================================================ */}
-    <div class="about-intro">
-      <p>{t(lang, 'about.intro1')}</p>
-      <p>
-        {t(lang, 'about.intro2Prefix')}
-        <em> {t(lang, 'about.intro2Em')}</em>
-      </p>
-    </div>
+    <section class="roads" aria-labelledby="roads-heading">
+      <div class="roads-ridge roads-ridge--far" aria-hidden="true"></div>
+      <div class="roads-ridge roads-ridge--near" aria-hidden="true"></div>
 
-    <span class="intro-to-poem-divider" aria-hidden="true"></span>
-
-    {/* ============================================================
-        3. ACROSS — three-beat poem
-       ============================================================ */}
-    <section class="across-poem" aria-label="The meaning of across" data-poem>
-      <div class="across-stanzas">
-        <div class="across-stanza" data-order="1">
-          <div class="across-glyph-bg">
-            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
-              <polyline points="10,160 100,70 190,120 300,20 400,96 500,50 590,150"/>
-            </svg>
-          </div>
-          <div class="across-text">
-            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord1')}</div>
-            <div class="across-gloss">{t(lang, 'about.poemGloss1')}</div>
-          </div>
-        </div>
-        <div class="across-stanza" data-order="2">
-          <div class="across-glyph-bg">
-            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
-              <path d="M20,30 C180,40 260,150 580,160"/>
-              <path d="M20,160 C180,150 260,40 580,30"/>
-            </svg>
-          </div>
-          <div class="across-text">
-            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord2')}</div>
-            <div class="across-gloss">{t(lang, 'about.poemGloss2')}</div>
-          </div>
-        </div>
-        <div class="across-stanza" data-order="3">
-          <div class="across-glyph-bg">
-            <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
-              <path d="M 230,90 m -100,0 a 100,70 0 1,0 200,0 a 100,70 0 1,0 -200,0"/>
-              <path d="M 370,90 m -100,0 a 100,70 0 1,0 200,0 a 100,70 0 1,0 -200,0"/>
-              <path class="dashed" d="M 295,90 L 305,90"/>
-            </svg>
-          </div>
-          <div class="across-text">
-            <div class="across-word"><span class="across-key">Across</span> {t(lang, 'about.poemWord3')}</div>
-            <div class="across-gloss">{t(lang, 'about.poemGloss3')}</div>
-          </div>
-        </div>
+      {/* The club's own name, split. Three unrelated idioms don't read as
+          one idea on their own — before this, the only thing tying them
+          together was the English on the cards, which is backwards on a
+          page written for Chinese readers. Splitting 穿越无疆 does that
+          work in Chinese, and it shows rather than explains: the name
+          comes apart here and closes back up in the calligraphy at the
+          foot of the page. ACROSS sits above it because naming the shared
+          word is the one thing the Chinese can't do for itself. */}
+      <div class="roads-intro" data-reveal>
+        {/* Speed-ghost wordmark. Redrawn as vectors from the logo study —
+            same letterform construction as the ACC mark in the hero, so the
+            two agree. Inline rather than an <img> so currentColor follows
+            the theme; the echoes stay vermilion in both. */}
+        <h2 class="roads-word" id="roads-heading">
+          <span class="sr-only">Across</span>
+          <svg class="roads-mark" viewBox="0 0 1523 230" aria-hidden="true" focusable="false">
+          <path d="M 453.0 8.0 Q 453.0 0.0 445.0 0.0 L 383.0 0.0 Q 375.0 0.0 369.2 5.5 L 332.8 40.5 Q 327.0 46.0 327.0 54.0 L 327.0 176.0 Q 327.0 184.0 332.8 189.5 L 369.2 224.5 Q 375.0 230.0 383.0 230.0 L 445.0 230.0 Q 453.0 230.0 453.0 222.0 L 453.0 212.0 Q 453.0 204.0 445.0 204.0 L 395.0 204.0 Q 387.0 204.0 381.2 198.5 L 358.8 177.5 Q 353.0 172.0 353.0 164.0 L 353.0 66.0 Q 353.0 58.0 358.8 52.5 L 381.2 31.5 Q 387.0 26.0 395.0 26.0 L 445.0 26.0 Q 453.0 26.0 453.0 18.0 Z" fill="#C62828" opacity="0.18" fill-rule="evenodd"/>
+          <path d="M 495.0 8.0 Q 495.0 0.0 487.0 0.0 L 425.0 0.0 Q 417.0 0.0 411.2 5.5 L 374.8 40.5 Q 369.0 46.0 369.0 54.0 L 369.0 176.0 Q 369.0 184.0 374.8 189.5 L 411.2 224.5 Q 417.0 230.0 425.0 230.0 L 487.0 230.0 Q 495.0 230.0 495.0 222.0 L 495.0 212.0 Q 495.0 204.0 487.0 204.0 L 437.0 204.0 Q 429.0 204.0 423.2 198.5 L 400.8 177.5 Q 395.0 172.0 395.0 164.0 L 395.0 66.0 Q 395.0 58.0 400.8 52.5 L 423.2 31.5 Q 429.0 26.0 437.0 26.0 L 487.0 26.0 Q 495.0 26.0 495.0 18.0 Z" fill="#C62828" opacity="0.34" fill-rule="evenodd"/>
+          <path d="M 537.0 8.0 Q 537.0 0.0 529.0 0.0 L 467.0 0.0 Q 459.0 0.0 453.2 5.5 L 416.8 40.5 Q 411.0 46.0 411.0 54.0 L 411.0 176.0 Q 411.0 184.0 416.8 189.5 L 453.2 224.5 Q 459.0 230.0 467.0 230.0 L 529.0 230.0 Q 537.0 230.0 537.0 222.0 L 537.0 212.0 Q 537.0 204.0 529.0 204.0 L 479.0 204.0 Q 471.0 204.0 465.2 198.5 L 442.8 177.5 Q 437.0 172.0 437.0 164.0 L 437.0 66.0 Q 437.0 58.0 442.8 52.5 L 465.2 31.5 Q 471.0 26.0 479.0 26.0 L 529.0 26.0 Q 537.0 26.0 537.0 18.0 Z" fill="#C62828" opacity="0.58" fill-rule="evenodd"/>
+          <path d="M 8.0 230.0 Q 0.0 230.0 5.4 224.1 L 201.6 5.9 Q 207.0 0.0 215.0 0.0 L 297.0 0.0 Q 305.0 0.0 305.0 8.0 L 305.0 222.0 Q 305.0 230.0 297.0 230.0 L 158.0 230.0 Q 150.0 230.0 147.3 222.5 L 133.7 185.5 Q 131.0 178.0 128.3 185.5 L 114.7 222.5 Q 112.0 230.0 104.0 230.0 Z M 221.9 68.2 Q 227.0 62.0 227.0 70.0 L 227.0 170.0 Q 227.0 178.0 219.0 178.0 L 139.0 178.0 Q 131.0 178.0 136.1 171.8 Z M 495.2 5.5 Q 501.0 0.0 509.0 0.0 L 645.0 0.0 Q 653.0 0.0 653.0 8.0 L 653.0 46.0 Q 653.0 54.0 645.0 54.0 L 539.0 54.0 Q 531.0 54.0 525.3 59.7 L 514.7 70.3 Q 509.0 76.0 509.0 84.0 L 509.0 146.0 Q 509.0 154.0 514.7 159.7 L 525.3 170.3 Q 531.0 176.0 539.0 176.0 L 645.0 176.0 Q 653.0 176.0 653.0 184.0 L 653.0 222.0 Q 653.0 230.0 645.0 230.0 L 509.0 230.0 Q 501.0 230.0 495.2 224.5 L 458.8 189.5 Q 453.0 184.0 453.0 176.0 L 453.0 54.0 Q 453.0 46.0 458.8 40.5 Z M 675.0 8.0 Q 675.0 0.0 683.0 0.0 L 817.0 0.0 Q 825.0 0.0 830.9 5.4 L 869.1 40.6 Q 875.0 46.0 875.0 54.0 L 875.0 96.0 Q 875.0 104.0 869.2 109.5 L 850.8 126.5 Q 845.0 132.0 847.5 139.6 L 874.5 222.4 Q 877.0 230.0 869.0 230.0 L 825.0 230.0 Q 817.0 230.0 814.7 222.3 L 793.3 149.7 Q 791.0 142.0 783.0 142.0 L 739.0 142.0 Q 731.0 142.0 731.0 150.0 L 731.0 222.0 Q 731.0 230.0 723.0 230.0 L 683.0 230.0 Q 675.0 230.0 675.0 222.0 Z M 731.0 62.0 Q 731.0 54.0 739.0 54.0 L 812.5 54.0 Q 815.0 54.0 816.8 55.8 L 817.2 56.2 Q 819.0 58.0 819.0 60.5 L 819.0 81.5 Q 819.0 84.0 817.2 85.8 L 816.8 86.2 Q 815.0 88.0 812.5 88.0 L 739.0 88.0 Q 731.0 88.0 731.0 80.0 Z M 941.2 5.5 Q 947.0 0.0 955.0 0.0 L 1043.0 0.0 Q 1051.0 0.0 1056.8 5.5 L 1093.2 40.5 Q 1099.0 46.0 1099.0 54.0 L 1099.0 176.0 Q 1099.0 184.0 1093.2 189.5 L 1056.8 224.5 Q 1051.0 230.0 1043.0 230.0 L 955.0 230.0 Q 947.0 230.0 941.2 224.5 L 904.8 189.5 Q 899.0 184.0 899.0 176.0 L 899.0 54.0 Q 899.0 46.0 904.8 40.5 Z M 971.3 59.7 Q 977.0 54.0 985.0 54.0 L 1013.0 54.0 Q 1021.0 54.0 1026.7 59.7 L 1037.3 70.3 Q 1043.0 76.0 1043.0 84.0 L 1043.0 146.0 Q 1043.0 154.0 1037.3 159.7 L 1026.7 170.3 Q 1021.0 176.0 1013.0 176.0 L 985.0 176.0 Q 977.0 176.0 971.3 170.3 L 960.7 159.7 Q 955.0 154.0 955.0 146.0 L 955.0 84.0 Q 955.0 76.0 960.7 70.3 Z M 1159.2 5.5 Q 1165.0 0.0 1173.0 0.0 L 1303.0 0.0 Q 1311.0 0.0 1311.0 8.0 L 1311.0 46.0 Q 1311.0 54.0 1303.0 54.0 L 1199.0 54.0 Q 1191.0 54.0 1185.3 59.7 L 1182.7 62.3 Q 1177.0 68.0 1177.0 76.0 L 1177.0 82.0 Q 1177.0 90.0 1182.7 95.7 L 1185.3 98.3 Q 1191.0 104.0 1199.0 104.0 L 1261.0 104.0 Q 1269.0 104.0 1274.7 109.7 L 1305.3 140.3 Q 1311.0 146.0 1311.0 154.0 L 1311.0 180.0 Q 1311.0 188.0 1305.2 193.5 L 1272.8 224.5 Q 1267.0 230.0 1259.0 230.0 L 1129.0 230.0 Q 1121.0 230.0 1121.0 222.0 L 1121.0 184.0 Q 1121.0 176.0 1129.0 176.0 L 1233.0 176.0 Q 1241.0 176.0 1246.7 170.3 L 1249.3 167.7 Q 1255.0 162.0 1255.0 154.0 L 1255.0 148.0 Q 1255.0 140.0 1249.3 134.3 L 1246.7 131.7 Q 1241.0 126.0 1233.0 126.0 L 1171.0 126.0 Q 1163.0 126.0 1157.3 120.3 L 1126.7 89.7 Q 1121.0 84.0 1121.0 76.0 L 1121.0 50.0 Q 1121.0 42.0 1126.8 36.5 Z M 1371.2 5.5 Q 1377.0 0.0 1385.0 0.0 L 1515.0 0.0 Q 1523.0 0.0 1523.0 8.0 L 1523.0 46.0 Q 1523.0 54.0 1515.0 54.0 L 1411.0 54.0 Q 1403.0 54.0 1397.3 59.7 L 1394.7 62.3 Q 1389.0 68.0 1389.0 76.0 L 1389.0 82.0 Q 1389.0 90.0 1394.7 95.7 L 1397.3 98.3 Q 1403.0 104.0 1411.0 104.0 L 1473.0 104.0 Q 1481.0 104.0 1486.7 109.7 L 1517.3 140.3 Q 1523.0 146.0 1523.0 154.0 L 1523.0 180.0 Q 1523.0 188.0 1517.2 193.5 L 1484.8 224.5 Q 1479.0 230.0 1471.0 230.0 L 1341.0 230.0 Q 1333.0 230.0 1333.0 222.0 L 1333.0 184.0 Q 1333.0 176.0 1341.0 176.0 L 1445.0 176.0 Q 1453.0 176.0 1458.7 170.3 L 1461.3 167.7 Q 1467.0 162.0 1467.0 154.0 L 1467.0 148.0 Q 1467.0 140.0 1461.3 134.3 L 1458.7 131.7 Q 1453.0 126.0 1445.0 126.0 L 1383.0 126.0 Q 1375.0 126.0 1369.3 120.3 L 1338.7 89.7 Q 1333.0 84.0 1333.0 76.0 L 1333.0 50.0 Q 1333.0 42.0 1338.8 36.5 Z" fill="currentColor" fill-rule="evenodd"/>
+          </svg>
+        </h2>
+        <p class="roads-name">
+          <span>穿</span><i aria-hidden="true">·</i><span>越</span><i aria-hidden="true">·</i><span>无疆</span>
+        </p>
       </div>
 
-      <div class="across-signature" data-signature>
-        <span class="across-signature-rule"></span>
-        <div class="across-signature-text">
-          <b>Across</b> {t(lang, 'about.signatureClub')}
+      {/* A film strip: the ridge line runs unbroken behind all three and
+          both layers drift, so the concepts read as one continuous reel
+          rather than three boxes.
+
+          The track holds four passes and travels exactly one pass (-25%)
+          before looping, so it lands frame-perfect on the next copy. Four
+          is what keeps the strip full at the end of the travel: three
+          passes must still cover the viewport, which holds to ~3600px.
+          Pass 0 is the real one; the rest are hidden from assistive tech
+          and untabbable, but stay clickable. */}
+      <div class="reel" data-reel>
+        <div class="reel-fade reel-fade--l" aria-hidden="true"></div>
+        <div class="reel-fade reel-fade--r" aria-hidden="true"></div>
+
+        <div class="reel-track" data-reel-track>
+          {[0, 1, 2, 3].map((pass) =>
+            CHAPTERS.map((c, i) => (
+              <button
+                class="concept"
+                type="button"
+                data-open={i}
+                aria-haspopup="dialog"
+                aria-hidden={pass > 0 ? 'true' : undefined}
+                tabindex={pass > 0 ? -1 : undefined}
+              >
+                <img class="concept-symbol" src={c.symbol} alt="" width="60" height="40" />
+                <span class="concept-en">{c.en}</span>
+                <span class="concept-idiom">{c.idiom}</span>
+                {c.gloss && <span class="concept-gloss">{c.gloss}</span>}
+                <span class="concept-cue" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
+                </span>
+              </button>
+            )),
+          )}
         </div>
       </div>
     </section>
 
     {/* ============================================================
-        4. OUR GARAGE — stamp-wall marquee
+        3. CODA
        ============================================================ */}
-    <div class="section-rule">{t(lang, 'about.sectionRuleGarage')}</div>
+    <section class="coda bleed" data-reveal>
+      <p class="coda-lead">{t(lang, 'about.codaLead')}</p>
+      <img class="coda-mark" src="/images/about/chuanyue-wujiang.png" alt="穿越无疆" />
+      <p class="coda-sub">Across · Paths · Mountains · Borders</p>
+    </section>
 
-    <section class="garage-section">
-      <h2 class="garage-h2">{t(lang, 'about.garageH2Prefix')}</h2>
-      <p class="garage-lede">{t(lang, 'about.garageLede')}</p>
-      <p class="garage-desc">{t(lang, 'about.garageDesc')}</p>
-
-      <div class="garage-stamp-wall" data-stamp-wall>
-        <div class="stamp-rows">
-          {[row1, row2].map((row) => {
-            // Single continuous strip: 6 originals + 3 cloned head tiles so a
-            // 2-tile step can scroll through all 6 and wrap seamlessly back to
-            // the start after the clone slot.
-            const tiles = [...row, ...row.slice(0, 3)];
-            return (
-              <div class="stamp-row-clip">
-                <div class="stamp-track" data-track>
-                  {tiles.map((m, idx) => (
-                    <button
-                      class="stamp-tile"
-                      type="button"
-                      data-member-id={m.id}
-                      aria-hidden={idx >= 6 ? 'true' : undefined}
-                      tabindex={idx >= 6 ? -1 : undefined}
-                    >
-                      <img
-                        class="stamp-ring stamp-ring-light"
-                        src="/images/about/logo-stamp-red-transparent.png"
-                        alt=""
-                        draggable="false"
-                        loading="lazy"
-                      />
-                      <img
-                        class="stamp-ring stamp-ring-dark"
-                        src="/images/about/logo-stamp-white-transparent.png"
-                        alt=""
-                        draggable="false"
-                        loading="lazy"
-                      />
-                      <div class="stamp-bike-wrap">
-                        <img class="stamp-bike" src={m.photo} alt="" draggable="false" loading="lazy"/>
-                      </div>
-                      <div class="stamp-caption">
-                        {m.name}
-                        <div class="stamp-subcaption">{m.bike} · {m.joined}</div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <button class="stamp-arrow stamp-arrow--prev" type="button" data-stamp-prev aria-label="Previous page">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="stamp-arrow stamp-arrow--next" type="button" data-stamp-next aria-label="Next page">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-
-        <div class="stamp-dots" data-stamp-dots>
-          <button class="stamp-dot active" type="button" data-stamp-dot="0" aria-label="Page 1"></button>
-          <button class="stamp-dot" type="button" data-stamp-dot="1" aria-label="Page 2"></button>
-          <button class="stamp-dot" type="button" data-stamp-dot="2" aria-label="Page 3"></button>
-        </div>
+    {/* ============================================================
+        4. OUR GARAGE
+       ============================================================ */}
+    <section class="garage">
+      <div class="garage-head" data-reveal>
+        <p class="eyebrow">{t(lang, 'about.sectionRuleGarage')}</p>
+        <h2 class="garage-h2">{t(lang, 'about.garageH2Prefix')}</h2>
+        <p class="garage-lede">{t(lang, 'about.garageDesc')}</p>
       </div>
+
+      <ul class="garage-grid">
+        {MEMBERS.map((m) => (
+          <li class="bike-card" data-reveal>
+            <button class="bike-btn" type="button" data-member={m.id} aria-haspopup="dialog">
+              <span class="bike-stage">
+                <img class="bike-ring" src="/images/about/logo-stamp-red-transparent.png" alt="" />
+                <img class="bike-photo" src={m.photo} alt="" loading="lazy" />
+              </span>
+              <span class="bike-name">{m.name}</span>
+              <span class="bike-meta">{m.bike} · {m.joined}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
 
     {/* ============================================================
         5. CONTACT
        ============================================================ */}
-    <div class="section-rule">{t(lang, 'about.sectionRuleJoin')}</div>
-
-    <section class="contact-section">
-      <div class="contact-eyebrow">{t(lang, 'about.contactEyebrow')}</div>
-      <h2 class="contact-h2">{t(lang, 'about.contactH2')}</h2>
-      <p class="contact-lede">{t(lang, 'about.contactLede')}</p>
-      <div class="contact-channels">
-        <a class="channel-btn primary" href={`mailto:${t(lang, 'about.contactEmail')}`}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>
-          </svg>
-          {t(lang, 'about.contactEmail')}
-        </a>
-        <a class="channel-btn ghost" href="https://www.strava.com/clubs/accmunich" target="_blank" rel="noopener">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
-          </svg>
-          {t(lang, 'about.contactStrava')}
-        </a>
+    <section class="join bleed" id="join">
+      <div class="join-inner" data-reveal>
+        <p class="eyebrow">{t(lang, 'about.sectionRuleJoin')}</p>
+        <h2 class="join-h2">Ride Across</h2>
+        <p class="join-line">{t(lang, 'about.contactHeadline')}</p>
+        <p class="join-body">{t(lang, 'about.contactBody')}</p>
+        <div class="join-actions">
+          <a class="btn-solid" href={`mailto:${t(lang, 'about.contactEmail')}`}>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+            {t(lang, 'about.contactCta')}
+          </a>
+          <a class="btn-outline" href="https://www.strava.com/clubs/accmunich" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+            {t(lang, 'about.contactStrava')}
+          </a>
+        </div>
       </div>
     </section>
   </article>
 
-  {/* Member card overlay — shown when user clicks a stamp */}
-  <div class="member-card-backdrop" data-member-card aria-hidden="true">
-    <div class="member-card" role="dialog" aria-modal="true" aria-labelledby="member-card-name">
-      {/* Top 2/3 — large bike photo */}
-      <div class="member-card-bike">
-        <img data-member-card-photo alt=""/>
-      </div>
-      {/* Bottom 1/3 — avatar (1/4) + text (3/4) */}
-      <div class="member-card-footer">
-        <div class="member-card-avatar">
-          <div class="member-card-initials" data-member-card-avatar></div>
-        </div>
-        <div class="member-card-body">
-          <div class="member-card-role" data-member-card-role></div>
-          <div class="member-card-name" id="member-card-name" data-member-card-name></div>
-          <p class="member-card-bio" data-member-card-bio></p>
-          <div class="member-card-meta" data-member-card-meta></div>
-        </div>
-      </div>
-      <button class="member-card-close" type="button" aria-label="Close" data-member-card-close>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M6 6l12 12M18 6L6 18"/>
-        </svg>
+  {/* SVG filter for organic Chinese ink wash / colored pencil sketch texture */}
+  <svg style="position:absolute;width:0;height:0;pointer-events:none;" aria-hidden="true">
+    <defs>
+      <filter id="acc-ink-wash" x="-25%" y="-25%" width="150%" height="150%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.075" numOctaves="3" result="grain" />
+        <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="inkEdge" />
+        <feComposite in="inkEdge" in2="SourceGraphic" operator="over" />
+      </filter>
+    </defs>
+  </svg>
+
+  {/* ==============================================================
+      Chapter overlay — the "interactive view". Prose is rendered
+      here in the markup, so it is indexable and reachable without JS.
+     ============================================================== */}
+  <div class="sheet" data-sheet="chapter" hidden>
+    <div class="sheet-backdrop" data-sheet-close></div>
+    <div class="sheet-birds" aria-hidden="true"></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-idiom">
+      <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
+
+      {/* A fanned deck: the open chapter takes the room, the rest stay as
+          overlapping spines you can read edge-on and click straight to.
+          Every chapter's prose is in the markup whatever is open, so the
+          page stays complete without JS and for crawlers. */}
+      <div class="deck" data-deck>
+        {CHAPTERS.map((c, i) => (
+          <article class:list={['card', { 'is-open': i === 0 }]} data-card={i} style={`--i:${i}`}>
+            <button
+              class="card-spine"
+              type="button"
+              data-card-open={i}
+              aria-expanded={i === 0 ? 'true' : 'false'}
+            >
+              <img class="card-mark" src={c.symbol} alt="" aria-hidden="true" width="60" height="40" />
+              <span class="card-edge">{c.idiom}</span>
+            </button>
+
+            <div class="card-body">
+              <div class="card-text">
+                <p class="card-en">{c.en}</p>
+                <h3 class="card-idiom" id={i === 0 ? 'sheet-idiom' : undefined}>{c.idiom}</h3>
+                {c.gloss && <p class="card-gloss">{c.gloss}</p>}
+                <p class="card-prose">{c.prose}</p>
+              </div>
+              <div class:list={['card-media', phClass]} data-ph-note={phNote}>
+                <img src={c.photo} alt="" decoding="async" />
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   </div>
 
-  <script is:inline define:vars={{ members: MEMBERS }}>
-  // ------------------------------------------------------------------
-  // Across poem — sequential reveal via IntersectionObserver + timers
-  // ------------------------------------------------------------------
-  (function initPoem() {
-    const poem = document.querySelector('[data-poem]');
-    if (!poem) return;
-    const stanzas = poem.querySelectorAll('.across-stanza');
-    const signature = poem.querySelector('[data-signature]');
-    let started = false;
+  {/* Member card overlay — same sheet chrome, bike detail */}
+  <div class="sheet" data-sheet="member" hidden>
+    <div class="sheet-backdrop" data-sheet-close></div>
+    <div class="sheet-panel sheet-panel--member" role="dialog" aria-modal="true" aria-labelledby="member-name">
+      <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="deck deck--solo">
+        <article class="card is-open">
+          <div class="card-body">
+            <div class="card-media card-media--bike">
+              <img data-member-photo alt="" />
+            </div>
+            <div class="card-text">
+              <p class="card-en" data-member-role></p>
+              <h2 class="card-idiom" id="member-name" data-member-name></h2>
+              <p class="card-prose" data-member-bio></p>
+              <p class="card-gloss" data-member-meta></p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
 
-    const io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting || started) continue;
-        started = true;
-        io.disconnect();
-        stanzas.forEach((s, i) => {
-          setTimeout(() => s.classList.add('in'), i * 1400);
-        });
-        if (signature) {
-          setTimeout(() => signature.classList.add('in'), stanzas.length * 1400);
+  <script is:inline define:vars={{ members: MEMBERS, total: CHAPTERS.length }}>
+    // ---------------------------------------------------------------
+    // Scroll reveals — content is visible by default and only hidden
+    // once JS confirms it can animate, so a failed script never leaves
+    // the page blank.
+    // ---------------------------------------------------------------
+    (function initReveal() {
+      const nodes = Array.from(document.querySelectorAll('[data-reveal]'));
+      if (!nodes.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      document.documentElement.classList.add('reveal-ready');
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
         }
-      }
-    }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
-    io.observe(poem);
-  })();
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      nodes.forEach((n) => io.observe(n));
+    })();
 
-  // ------------------------------------------------------------------
-  // Stamp wall — single continuous strip, 3 tiles visible, 2-tile step.
-  // Each row renders 6 originals + 3 cloned head tiles so we can step
-  // through 3 logical positions (0, 2, 4 tiles) and wrap seamlessly:
-  // advancing past step 2 slides onto the clone head, then we snap back
-  // to step 0 without transition. Tile pitch is measured from the DOM so
-  // the same math works across responsive widths.
-  // ------------------------------------------------------------------
-  (function initStampWall() {
-    const wall = document.querySelector('[data-stamp-wall]');
-    if (!wall) return;
-    const tracks = Array.from(wall.querySelectorAll('[data-track]'));
-    if (!tracks.length) return;
-    const dots = Array.from(wall.querySelectorAll('[data-stamp-dot]'));
+    // ---------------------------------------------------------------
+    // Sheets — one open/close/focus implementation for both overlays.
+    // ---------------------------------------------------------------
+    (function initSheets() {
+      const sheets = Array.from(document.querySelectorAll('[data-sheet]'));
+      if (!sheets.length) return;
+      let lastFocus = null;
 
-    const TOTAL_STEPS = 3;          // 3 logical stops → 3 dots
-    const TILES_PER_STEP = 2;       // shift 2 tiles per row per step (4 bikes total)
-    const SLIDE_MS = 700;
-    const DWELL_MS = 4500;
+      // Chinese ink wash & colored pencil sketch bird vectors (写意水墨/彩铅素描风)
+      const BIRD_SVGS = [
+        // 1. Soaring Falcon / Raptor (水墨大鹏滑翔 — 浓淡写意羽羽生辉)
+        '<svg viewBox="0 0 54 36" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M27 15 C19 8, 10 7, 2 13 C9 15, 17 18, 23 20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M27 15 C35 8, 44 7, 52 13 C45 15, 37 18, 31 20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M5 14 C12 18, 19 22, 25 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M49 14 C42 18, 35 22, 29 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M9 17 C16 21, 21 24, 26 26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.65" />' +
+          '<path d="M45 17 C38 21, 33 24, 28 26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.65" />' +
+          '<path d="M27 12 C25 15, 24 20, 27 25 C30 20, 29 15, 27 12 Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.2" />' +
+          '<circle cx="27" cy="11" r="1.6" fill="currentColor" />' +
+          '<path d="M26 25 L23 34" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />' +
+          '<path d="M28 25 L31 34" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />' +
+          '<path d="M27 25 L27 31" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.75" />' +
+          '<path d="M2 13 C12 11, 22 13, 27 15 C32 13, 42 11, 52 13 C44 19, 36 24, 27 26 C18 24, 10 19, 2 13 Z" fill="currentColor" fill-opacity="0.12" />' +
+        '</svg>',
 
-    let current = 0;                // 0..TOTAL_STEPS (TOTAL_STEPS = wrap slot)
-    let unit = 0;                   // px: tile-width + gap
-    let timerId = null;
-    let paused = false;
-    let animating = false;
+        // 2. Wheeling Swift / Swallow (写意双燕回旋 — 枯笔飞白分叉剪尾)
+        '<svg viewBox="0 0 50 40" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M23 18 C15 9, 7 3, 2 2 C8 11, 15 19, 21 24" stroke="currentColor" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M5 6 C12 14, 17 21, 22 26" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M25 18 C33 13, 41 10, 48 11 C41 16, 34 22, 28 26" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M44 13 C38 18, 32 23, 27 27" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.75" />' +
+          '<path d="M22 17 C21 20, 22 24, 25 27 C26 24, 26 19, 24 17 Z" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.4" />' +
+          '<circle cx="22.5" cy="15.5" r="1.8" fill="currentColor" />' +
+          '<path d="M24 27 C22 31, 19 36, 15 39" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />' +
+          '<path d="M25 27 C26 31, 28 35, 30 38" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M2 2 C12 8, 18 14, 24 18 C33 13, 41 11, 48 11 C38 18, 30 25, 25 28 C19 23, 11 14, 2 2 Z" fill="currentColor" fill-opacity="0.12" />' +
+        '</svg>',
 
-    function measureUnit() {
-      const sample = tracks[0].querySelectorAll('.stamp-tile');
-      if (sample.length < 2) return;
-      const r0 = sample[0].getBoundingClientRect();
-      const r1 = sample[1].getBoundingClientRect();
-      const u = r1.left - r0.left;
-      if (u > 0) unit = u;
-    }
+        // 3. Gliding Crane / Dove (素描滑翔白鹤 — 舒展双翼工写兼备)
+        '<svg viewBox="0 0 52 30" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M26 13 C17 3, 9 2, 2 9 C11 11, 19 15, 25 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />' +
+          '<path d="M26 13 C35 3, 43 2, 50 9 C41 11, 33 15, 27 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />' +
+          '<path d="M6 9 C13 14, 20 18, 25 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M46 9 C39 14, 32 18, 27 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M11 12 C18 17, 22 20, 26 22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />' +
+          '<path d="M41 12 C34 17, 30 20, 26 22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />' +
+          '<path d="M26 12 C24 15, 24 19, 26 23 C28 19, 28 15, 26 12 Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.3" />' +
+          '<circle cx="26" cy="10" r="1.5" fill="currentColor" />' +
+          '<path d="M24 23 L22 29" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />' +
+          '<path d="M26 23 L26 30" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" />' +
+          '<path d="M28 23 L30 29" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />' +
+          '<path d="M2 9 C11 5, 20 7, 26 13 C32 7, 41 5, 50 9 C42 16, 34 21, 26 23 C18 21, 10 16, 2 9 Z" fill="currentColor" fill-opacity="0.13" />' +
+        '</svg>',
 
-    function applyTransform(stepIdx, animated) {
-      const x = -stepIdx * TILES_PER_STEP * unit;
-      tracks.forEach((track) => {
-        track.style.transition = animated
-          ? 'transform ' + SLIDE_MS + 'ms cubic-bezier(0.2, 0.8, 0.2, 1)'
-          : 'none';
-        track.style.transform = 'translate3d(' + x + 'px, 0, 0)';
-      });
-    }
+        // 4. Banking Alpine Chough (高山悬崖翻飞 — 昂首掠影灵动)
+        '<svg viewBox="0 0 46 42" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M19 22 C13 13, 8 5, 5 1 C10 8, 15 16, 19 25" stroke="currentColor" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M8 4 C13 11, 17 18, 20 27" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M22 24 C28 22, 36 21, 43 23 C36 27, 29 30, 24 33" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M39 24 C33 28, 28 31, 23 34" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.75" />' +
+          '<path d="M19 20 C18 18, 19 16, 21 16 C23 16, 23 18, 22 21 Z" fill="currentColor" fill-opacity="0.3" stroke="currentColor" stroke-width="1.4" />' +
+          '<path d="M22 17 L25 16" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" />' +
+          '<path d="M21 32 C19 36, 16 39, 13 41" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />' +
+          '<path d="M22 32 C22 36, 22 39, 21 42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M5 1 C11 7, 16 14, 20 22 C27 21, 35 21, 43 23 C34 28, 27 33, 22 33 C17 29, 11 18, 5 1 Z" fill="currentColor" fill-opacity="0.13" />' +
+        '</svg>'
+      ];
 
-    function setActiveDot(visibleIdx) {
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === visibleIdx));
-    }
+      // Palette strictly sampled from the alpine ridge contours (深灰、绿、红、蓝)
+      const BIRD_PALETTE_LIGHT = [
+        '#2D312E', '#1B7A43', '#C92A2A', '#0084B4',
+        '#454B46', '#22864C', '#DC2626', '#0284C7'
+      ];
+      const BIRD_PALETTE_DARK = [
+        '#E4E8E5', '#4ADE80', '#F87171', '#38BDF8',
+        '#F2F5F3', '#22C55E', '#EF4444', '#60A5FA'
+      ];
 
-    function advance() {
-      if (animating || unit === 0) return;
-      animating = true;
-      const target = current + 1;
-      applyTransform(target, true);
-      setActiveDot(target % TOTAL_STEPS);
-      current = target;
-
-      window.setTimeout(() => {
-        if (current >= TOTAL_STEPS) {
-          applyTransform(0, false);
-          void tracks[0].offsetWidth;
-          current = 0;
+      function setupBirdsContainer(container) {
+        const roads = document.querySelector('.roads');
+        if (!roads || !container) {
+          return {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            isPortrait: window.innerHeight > window.innerWidth
+          };
         }
-        animating = false;
-      }, SLIDE_MS + 30);
-    }
+        const rect = roads.getBoundingClientRect();
+        const top = Math.max(0, rect.top);
+        const bottom = Math.min(window.innerHeight, rect.bottom);
+        const height = Math.max(260, bottom - top);
 
-    function jumpTo(stepIdx) {
-      if (animating || unit === 0) return;
-      const visible = current % TOTAL_STEPS;
-      if (stepIdx === visible) return;
-      animating = true;
-      applyTransform(stepIdx, true);
-      setActiveDot(stepIdx);
-      current = stepIdx;
-      window.setTimeout(() => { animating = false; }, SLIDE_MS + 30);
-    }
+        // Constrain the bird flock layer strictly to the visible .roads mountain section
+        container.style.position = 'fixed';
+        container.style.top = `${top}px`;
+        container.style.left = '0px';
+        container.style.width = '100vw';
+        container.style.height = `${height}px`;
+        container.style.overflow = 'hidden';
+        container.style.pointerEvents = 'none';
 
-    function userStep(delta) {
-      if (animating || unit === 0) return;
-      const visible = current % TOTAL_STEPS;
-      if (delta > 0 && visible === TOTAL_STEPS - 1) {
-        advance();
-      } else if (delta < 0 && visible === 0) {
-        // backward wrap: silently jump to clone slot, then animate to last step
-        animating = true;
-        applyTransform(TOTAL_STEPS, false);
-        void tracks[0].offsetWidth;
-        current = TOTAL_STEPS;
-        requestAnimationFrame(() => {
-          applyTransform(TOTAL_STEPS - 1, true);
-          setActiveDot(TOTAL_STEPS - 1);
-          current = TOTAL_STEPS - 1;
-          window.setTimeout(() => { animating = false; }, SLIDE_MS + 30);
+        return {
+          width: window.innerWidth,
+          height: height,
+          isPortrait: window.innerHeight > window.innerWidth
+        };
+      }
+
+      function spawnBirdsAssemble(container) {
+        container.innerHTML = '';
+        const b = setupBirdsContainer(container);
+        const isDark = document.documentElement.classList.contains('dark');
+        const palette = isDark ? BIRD_PALETTE_DARK : BIRD_PALETTE_LIGHT;
+        const fragment = document.createDocumentFragment();
+
+        // Enlarged +50% art bird size: 78px - 110px desktop, 60px - 82px portrait
+        const baseSize = b.isPortrait ? 60 : 78;
+        const sizeRange = b.isPortrait ? 22 : 32;
+
+        // 5 Cohesive Formations (Total 54 birds):
+        // 1. Top-Left High Alpine (11)
+        // 2. Top-Right High Alpine (11)
+        // 3. Left Mountain Slope (12)
+        // 4. Right Mountain Slope (12)
+        // 5. Upper ACROSS Sky (8)
+        const formations = [
+          { count: 11, type: 'top-left' },
+          { count: 11, type: 'top-right' },
+          { count: 12, type: 'left' },
+          { count: 12, type: 'right' },
+          { count: 8, type: 'top' }
+        ];
+
+        let birdIndex = 0;
+        formations.forEach((f) => {
+          for (let i = 0; i < f.count; i++) {
+            const bird = document.createElement('span');
+            bird.className = 'bird-particle bird-converge';
+
+            let sx, sy, tx, ty, sRot;
+
+            if (f.type === 'top-left') {
+              // Diagonal swoop from top-left high sky to top-left area of card
+              sx = -(b.width * 0.35) - (i * 22) - Math.random() * 25;
+              sy = -(b.height * 0.36) - (i * 8) - Math.random() * 15;
+              tx = -(b.isPortrait ? 80 : 160) + (Math.random() - 0.5) * 120;
+              ty = -(b.isPortrait ? 60 : 90) + (Math.random() - 0.5) * 80;
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else if (f.type === 'top-right') {
+              // Diagonal swoop from top-right high sky to top-right area of card
+              sx = (b.width * 0.35) + (i * 22) + Math.random() * 25;
+              sy = -(b.height * 0.36) - (i * 8) - Math.random() * 15;
+              tx = (b.isPortrait ? 80 : 160) + (Math.random() - 0.5) * 120;
+              ty = -(b.isPortrait ? 60 : 90) + (Math.random() - 0.5) * 80;
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else if (f.type === 'left') {
+              // Left mid-mountain slope echelon to left wing of card
+              const streamOffset = (i - f.count / 2) * 18;
+              sx = -(b.width * 0.40) - (i * 24) - Math.random() * 30;
+              sy = streamOffset + (Math.random() - 0.5) * 20;
+              tx = -(b.isPortrait ? 90 : 180) + (Math.random() - 0.5) * 100;
+              ty = (Math.random() - 0.5) * (b.isPortrait ? 120 : 180);
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else if (f.type === 'right') {
+              // Right mid-mountain slope echelon to right wing of card
+              const streamOffset = (i - f.count / 2) * 18;
+              sx = (b.width * 0.40) + (i * 24) + Math.random() * 30;
+              sy = streamOffset + (Math.random() - 0.5) * 20;
+              tx = (b.isPortrait ? 90 : 180) + (Math.random() - 0.5) * 100;
+              ty = (Math.random() - 0.5) * (b.isPortrait ? 120 : 180);
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else {
+              // Upper ACROSS sky echelon to card center-top
+              sx = (i - f.count / 2) * 44 + (Math.random() - 0.5) * 20;
+              sy = -(b.height * 0.40) - Math.random() * 15;
+              tx = (Math.random() - 0.5) * (b.isPortrait ? 140 : 260);
+              ty = (Math.random() - 0.5) * 100;
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 8;
+            }
+
+            const tRot = sRot + (Math.random() - 0.5) * 10;
+            const size = baseSize + (i % 4) * (sizeRange / 4) + Math.random() * 4;
+            const dur = 0.68 + (i * 0.018) + Math.random() * 0.06;
+            const delay = i * 0.028; // clean echelon sequence
+            const wingDur = 0.36 + Math.random() * 0.08;
+            const svgTemplate = BIRD_SVGS[birdIndex % BIRD_SVGS.length];
+            const color = palette[birdIndex % palette.length];
+            birdIndex++;
+
+            bird.style.cssText = `
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              width: ${size.toFixed(1)}px;
+              height: ${(size * 0.62).toFixed(1)}px;
+              margin-left: -${(size * 0.5).toFixed(1)}px;
+              margin-top: -${(size * 0.31).toFixed(1)}px;
+              color: ${color};
+              display: block;
+              pointer-events: none;
+              will-change: transform, opacity;
+              --sx: ${sx.toFixed(1)}px;
+              --sy: ${sy.toFixed(1)}px;
+              --tx: ${tx.toFixed(1)}px;
+              --ty: ${ty.toFixed(1)}px;
+              --s-rot: ${sRot.toFixed(1)}deg;
+              --t-rot: ${tRot.toFixed(1)}deg;
+              --b-size: ${size.toFixed(1)}px;
+              --fly-dur: ${dur.toFixed(2)}s;
+              --fly-delay: ${delay.toFixed(2)}s;
+              --wing-dur: ${wingDur.toFixed(2)}s;
+              --b-color: ${color};
+            `;
+            bird.innerHTML = svgTemplate;
+            fragment.appendChild(bird);
+          }
         });
-      } else {
-        jumpTo((visible + delta + TOTAL_STEPS) % TOTAL_STEPS);
+        container.appendChild(fragment);
       }
-      stopTimer();
-      window.setTimeout(startTimer, DWELL_MS);
-    }
 
-    function startTimer() {
-      stopTimer();
-      timerId = window.setInterval(() => {
-        if (!paused) advance();
-      }, DWELL_MS);
-    }
-    function stopTimer() {
-      if (timerId !== null) {
-        window.clearInterval(timerId);
-        timerId = null;
+      function spawnBirdsScatter(container) {
+        container.innerHTML = '';
+        const b = setupBirdsContainer(container);
+        const isDark = document.documentElement.classList.contains('dark');
+        const palette = isDark ? BIRD_PALETTE_DARK : BIRD_PALETTE_LIGHT;
+        const fragment = document.createDocumentFragment();
+
+        const baseSize = b.isPortrait ? 60 : 78;
+        const sizeRange = b.isPortrait ? 22 : 32;
+
+        // 3 Downward Streams into Mountain Forest (Total 54 birds):
+        // Left Ridge Stream (18), Right Ridge Stream (18), Center Valley Stream (18)
+        const streams = [
+          { count: 18, dir: 'left' },
+          { count: 18, dir: 'right' },
+          { count: 18, dir: 'center' }
+        ];
+
+        let birdIndex = 0;
+        streams.forEach((s) => {
+          for (let i = 0; i < s.count; i++) {
+            const bird = document.createElement('span');
+            bird.className = 'bird-particle bird-scatter';
+
+            // Start across the card body
+            const cx = (Math.random() - 0.5) * (b.isPortrait ? 260 : 440);
+            const cy = (Math.random() - 0.5) * 140;
+
+            let dx, dy, dRot;
+            // The mountain ridges live at dy = +b.height * 0.24 ~ +b.height * 0.38
+            // Strictly staying above the bottom edge of .roads!
+            const targetRidgeY = (b.height * 0.24) + (Math.random() * (b.height * 0.14));
+
+            if (s.dir === 'left') {
+              // Swoop into left mountain ridge
+              dx = -(b.width * 0.16) - (i * 15) - Math.random() * 25;
+              dy = targetRidgeY;
+              dRot = (Math.atan2(dy - cy, dx - cx) * 180 / Math.PI) + (Math.random() - 0.5) * 8;
+            } else if (s.dir === 'right') {
+              // Swoop into right mountain ridge
+              dx = (b.width * 0.16) + (i * 15) + Math.random() * 25;
+              dy = targetRidgeY;
+              dRot = (Math.atan2(dy - cy, dx - cx) * 180 / Math.PI) + (Math.random() - 0.5) * 8;
+            } else {
+              // Swoop straight down into center mountain valley
+              dx = (i - s.count / 2) * 32 + (Math.random() - 0.5) * 20;
+              dy = targetRidgeY + 15;
+              dRot = (Math.atan2(dy - cy, dx - cx) * 180 / Math.PI) + (Math.random() - 0.5) * 10;
+            }
+
+            const sRot = dRot - 10 + (Math.random() - 0.5) * 14;
+            const size = baseSize + (i % 4) * (sizeRange / 4) + Math.random() * 4;
+            const dur = 0.72 + (i * 0.015) + Math.random() * 0.06;
+            const delay = i * 0.022;
+            const wingDur = 0.34 + Math.random() * 0.08;
+            const svgTemplate = BIRD_SVGS[birdIndex % BIRD_SVGS.length];
+            const color = palette[birdIndex % palette.length];
+            birdIndex++;
+
+            bird.style.cssText = `
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              width: ${size.toFixed(1)}px;
+              height: ${(size * 0.62).toFixed(1)}px;
+              margin-left: -${(size * 0.5).toFixed(1)}px;
+              margin-top: -${(size * 0.31).toFixed(1)}px;
+              color: ${color};
+              display: block;
+              pointer-events: none;
+              will-change: transform, opacity;
+              --cx: ${cx.toFixed(1)}px;
+              --cy: ${cy.toFixed(1)}px;
+              --dx: ${dx.toFixed(1)}px;
+              --dy: ${dy.toFixed(1)}px;
+              --s-rot: ${sRot.toFixed(1)}deg;
+              --d-rot: ${dRot.toFixed(1)}deg;
+              --b-size: ${size.toFixed(1)}px;
+              --fly-dur: ${dur.toFixed(2)}s;
+              --fly-delay: ${delay.toFixed(2)}s;
+              --wing-dur: ${wingDur.toFixed(2)}s;
+              --b-color: ${color};
+            `;
+            bird.innerHTML = svgTemplate;
+            fragment.appendChild(bird);
+          }
+        });
+        container.appendChild(fragment);
       }
-    }
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        jumpTo(i);
-        stopTimer();
-        window.setTimeout(startTimer, DWELL_MS);
+      function open(sheet) {
+        lastFocus = document.activeElement;
+        sheet.hidden = false;
+        void sheet.offsetWidth;
+        document.body.style.overflow = 'hidden';
+
+        const birds = sheet.querySelector('.sheet-birds');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (birds && !prefersReduced) {
+          sheet.classList.remove('assembled', 'scattering');
+          sheet.classList.add('open', 'assembling');
+          spawnBirdsAssemble(birds);
+
+          window.setTimeout(() => {
+            sheet.classList.add('assembled');
+            sheet.classList.remove('assembling');
+          }, 360);
+
+          window.setTimeout(() => {
+            birds.innerHTML = '';
+          }, 900);
+        } else {
+          sheet.classList.add('open');
+        }
+
+        const x = sheet.querySelector('.sheet-x');
+        if (x) x.focus();
+      }
+
+      function close(sheet) {
+        document.body.style.overflow = '';
+        const birds = sheet.querySelector('.sheet-birds');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (birds && !prefersReduced) {
+          sheet.classList.remove('open', 'assembling', 'assembled');
+          sheet.classList.add('scattering');
+          spawnBirdsScatter(birds);
+
+          window.setTimeout(() => {
+            sheet.hidden = true;
+            sheet.classList.remove('scattering');
+            birds.innerHTML = '';
+          }, 900);
+        } else {
+          sheet.classList.remove('open');
+          window.setTimeout(() => { sheet.hidden = true; }, 240);
+        }
+
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      function openSheet() { return sheets.find((s) => !s.hidden); }
+
+      sheets.forEach((sheet) => {
+        sheet.querySelectorAll('[data-sheet-close]').forEach((el) => {
+          el.addEventListener('click', () => close(sheet));
+        });
       });
-    });
-
-    const prevBtn = wall.querySelector('[data-stamp-prev]');
-    const nextBtn = wall.querySelector('[data-stamp-next]');
-    if (prevBtn) prevBtn.addEventListener('click', () => userStep(-1));
-    if (nextBtn) nextBtn.addEventListener('click', () => userStep(1));
-
-    wall.addEventListener('mouseenter', () => { paused = true; });
-    wall.addEventListener('mouseleave', () => { paused = false; });
-
-    // Initial measure + re-measure on resize (keep current step position)
-    measureUnit();
-    applyTransform(0, false);
-    setActiveDot(0);
-
-    const ro = new ResizeObserver(() => {
-      measureUnit();
-      if (!animating) applyTransform(current, false);
-    });
-    ro.observe(tracks[0]);
-
-    startTimer();
-  })();
-
-  // ------------------------------------------------------------------
-  // Stamp tile click → wobble + member card overlay
-  // ------------------------------------------------------------------
-  (function initStampClicks() {
-    const backdrop = document.querySelector('[data-member-card]');
-    if (!backdrop) return;
-    const closeBtn = backdrop.querySelector('[data-member-card-close]');
-    const elPhoto = backdrop.querySelector('[data-member-card-photo]');
-    const elAvatar = backdrop.querySelector('[data-member-card-avatar]');
-    const elRole = backdrop.querySelector('[data-member-card-role]');
-    const elName = backdrop.querySelector('[data-member-card-name]');
-    const elBio = backdrop.querySelector('[data-member-card-bio]');
-    const elMeta = backdrop.querySelector('[data-member-card-meta]');
-
-    const byId = Object.fromEntries(members.map((m) => [m.id, m]));
-
-    function initials(name) {
-      return name.trim().split(/\s+/).map((w) => w[0].toUpperCase()).join('');
-    }
-
-    function open(id) {
-      const m = byId[id];
-      if (!m) return;
-      elPhoto.src = m.photo;
-      elAvatar.textContent = initials(m.name);
-      elRole.textContent = `${m.role} · ${m.tenure}`;
-      elName.textContent = m.name;
-      elBio.textContent = m.bio;
-      elMeta.textContent = `${m.bike} · ${m.joined}`;
-      backdrop.setAttribute('aria-hidden', 'false');
-      backdrop.classList.add('open');
-    }
-    function close() {
-      backdrop.classList.remove('open');
-      backdrop.setAttribute('aria-hidden', 'true');
-    }
-
-    document.querySelectorAll('.stamp-tile').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-member-id');
-        btn.classList.remove('wobble');
-        void btn.offsetWidth;
-        btn.classList.add('wobble');
-        setTimeout(() => open(id), 420);
+      document.addEventListener('keydown', (e) => {
+        const sheet = openSheet();
+        if (!sheet) return;
+        if (e.key === 'Escape') close(sheet);
       });
-    });
-    closeBtn.addEventListener('click', close);
-    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
-    });
-  })();
 
+      // ---- chapter sheet ----
+      const chapter = document.querySelector('[data-sheet="chapter"]');
+      if (chapter) {
+        const cards = Array.from(chapter.querySelectorAll('[data-card]'));
+      const dialog = chapter.querySelector('[role="dialog"]');
+      let current = 0;
+
+      function show(i) {
+        current = (i + total) % total;
+        cards.forEach((card, n) => {
+          const open = n === current;
+          card.classList.toggle('is-open', open);
+          // Closed chapters stay in the DOM but out of the tab order and
+          // the accessibility tree; only their spine remains reachable.
+          const body = card.querySelector('.card-body');
+          if (body) {
+            if (open) body.removeAttribute('inert');
+            else body.setAttribute('inert', '');
+            body.setAttribute('aria-hidden', open ? 'false' : 'true');
+          }
+          const spine = card.querySelector('.card-spine');
+          if (spine) spine.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        const idiom = cards[current] && cards[current].querySelector('.card-idiom');
+        if (dialog && idiom) dialog.setAttribute('aria-label', idiom.textContent);
+      }
+
+      document.querySelectorAll('[data-open]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          show(Number(btn.getAttribute('data-open')));
+          open(chapter);
+        });
+      });
+      chapter.querySelectorAll('[data-card-open]').forEach((btn) => {
+        btn.addEventListener('click', () =>
+          show(Number(btn.getAttribute('data-card-open'))));
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (chapter.hidden) return;
+        if (e.key === 'ArrowLeft') show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+      });
+
+        show(0);
+      }
+
+      // ---- member sheet ----
+      const member = document.querySelector('[data-sheet="member"]');
+      if (member) {
+        const byId = Object.fromEntries(members.map((m) => [m.id, m]));
+        const elPhoto = member.querySelector('[data-member-photo]');
+        const elRole = member.querySelector('[data-member-role]');
+        const elName = member.querySelector('[data-member-name]');
+        const elBio = member.querySelector('[data-member-bio]');
+        const elMeta = member.querySelector('[data-member-meta]');
+
+        document.querySelectorAll('[data-member]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const m = byId[btn.getAttribute('data-member')];
+            if (!m) return;
+            elPhoto.src = m.photo;
+            elRole.textContent = m.role;
+            elName.textContent = m.name;
+            elBio.textContent = m.bio;
+            elMeta.textContent = m.bike + ' · ' + m.tenure;
+            open(member);
+          });
+        });
+      }
+    })();
   </script>
 </BaseLayout>
 
 <style>
-  .about-page {
+  .about {
     max-width: none;
-    padding: 64px 24px 0;
+    padding: 0;
   }
 
-  /* ---------- Title ---------- */
-  .about-title-block {
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: center;
+  /* Escape <main>'s centred max-width box for full-width bands.
+     Padding mirrors the negative margin so inner content stays put. */
+  .bleed {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: calc(50vw - 50%);
+    padding-right: calc(50vw - 50%);
   }
-  .about-eyebrow {
+
+  :global(main:has(.about)) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  /* .bleed spans 100vw, which counts the scrollbar and so overhangs the
+     client box by a few px each side. Clip it on this page only — `clip`
+     rather than `hidden` so no new scroll container is created (that
+     would break position: sticky elsewhere in the layout). */
+  :global(body:has(.about)) {
+    overflow-x: clip;
+  }
+
+  .eyebrow {
     font-family: var(--font-heading);
-    font-size: 11px;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
     text-transform: uppercase;
+    letter-spacing: 0.15em;
     color: var(--color-accent);
-    margin-bottom: 14px;
-  }
-  .about-h1 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(40px, 5.5vw, 64px);
-    letter-spacing: -0.025em;
-    line-height: 1.05;
-    color: var(--color-text-main);
     margin: 0;
   }
-  .about-h1::after {
-    content: '';
-    display: block;
-    width: 48px;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--color-accent);
-    margin: 18px auto 0;
-  }
-  .about-subtitle {
-    font-family: var(--font-heading);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 17px;
-    color: var(--color-text-secondary);
-    margin-top: 14px;
-    letter-spacing: 0.01em;
-  }
 
-  /* ---------- Intro ---------- */
-  .about-intro {
-    max-width: 860px;
-    margin: 48px auto 0;
-    text-align: center;
-    padding: 0 24px;
-  }
-  .about-intro p {
-    font-family: var(--font-body);
-    font-size: 20px;
-    line-height: 1.7;
-    font-weight: 400;
-    color: var(--color-text-main);
-    margin: 0;
-    letter-spacing: -0.005em;
-  }
-  .about-intro p + p {
-    margin-top: 18px;
-    font-size: 17.5px;
-    color: var(--color-text-secondary);
-  }
-  .about-intro em {
-    font-style: italic;
-    color: var(--color-text-main);
-  }
-
-  .intro-to-poem-divider {
-    display: block;
-    width: 1px;
-    height: 48px;
-    background: var(--color-text-secondary);
-    margin: 72px auto 0;
-    opacity: 0.55;
-  }
-
-  /* ---------- Section rule ---------- */
-  .section-rule {
-    max-width: 700px;
-    margin: 96px auto 0;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-family: var(--font-heading);
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--color-text-secondary);
-  }
-  .section-rule::before,
-  .section-rule::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--color-border-strong);
-  }
-
-  /* ---------- Across poem ---------- */
-  .across-poem {
-    max-width: 900px;
-    margin: 56px auto 0;
-    padding: 0 24px;
-  }
-  .across-stanzas {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .across-stanza {
-    position: relative;
-    min-height: 18vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 800ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .across-stanza.in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .across-glyph-bg {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: clamp(200px, 38%, 340px);
-    height: 52%;
-    z-index: 0;
-    color: var(--color-accent);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 600ms ease 180ms;
-  }
-  .across-stanza.in .across-glyph-bg { opacity: 0.22; }
-  :global(:root.dark) .across-stanza.in .across-glyph-bg { opacity: 0.32; }
-  .across-glyph-bg svg {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-  .across-glyph-bg :global(path),
-  .across-glyph-bg :global(line),
-  .across-glyph-bg :global(polyline) {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 900;
-    stroke-dashoffset: 900;
-    transition: stroke-dashoffset 1400ms cubic-bezier(0.55, 0, 0.25, 1) 260ms;
-  }
-  .across-stanza.in .across-glyph-bg :global(path),
-  .across-stanza.in .across-glyph-bg :global(line),
-  .across-stanza.in .across-glyph-bg :global(polyline) {
-    stroke-dashoffset: 0;
-  }
-  .across-glyph-bg :global(.dashed) {
-    stroke-dasharray: 6 8;
-    stroke-dashoffset: 0;
-    opacity: 0;
-    transition: opacity 600ms ease 900ms;
-  }
-  .across-stanza.in .across-glyph-bg :global(.dashed) { opacity: 0.9; }
-
-  .across-text {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-  }
-  .across-word {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-style: italic;
-    font-size: clamp(34px, 4.8vw, 54px);
-    letter-spacing: -0.03em;
-    line-height: 1;
-    color: var(--color-text-main);
-  }
-  .across-word .across-key {
-    color: var(--color-accent);
-    font-style: italic;
-  }
-  .across-gloss {
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.5;
-    color: var(--color-text-secondary);
-    font-style: italic;
-    margin: 12px auto 0;
-    max-width: 520px;
-  }
-
-  .across-signature {
-    margin-top: 72px;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 900ms ease 200ms, transform 900ms ease 200ms;
-  }
-  .across-signature.in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .across-signature-rule {
-    display: block;
-    width: 36px;
-    height: 1px;
-    background: var(--color-border-strong);
-    margin: 0 auto 18px;
-  }
-  .across-signature-text {
-    font-family: var(--font-heading);
-    font-style: italic;
-    font-size: 17px;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--color-text-secondary);
-  }
-  .across-signature-text b {
-    font-weight: 700;
-    font-style: italic;
-    color: var(--color-text-main);
-  }
-
-  @media (max-width: 640px) {
-    .across-stanza { min-height: 22vh; }
-    .across-gloss { font-size: 14.5px; }
-  }
-
-  /* ---------- Garage ---------- */
-  .garage-section {
-    max-width: 1200px;
-    margin: 28px auto 0;
-    padding: 0 24px;
-    text-align: center;
-  }
-  .garage-h2 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(30px, 3.8vw, 44px);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--color-text-main);
-    max-width: 720px;
-    margin: 0 auto;
-    font-style: italic;
-  }
-  .garage-lede {
-    font-family: var(--font-body);
-    font-size: clamp(14px, 1.2vw, 16px);
-    line-height: 1.6;
-    color: var(--color-text-muted);
-    max-width: 640px;
-    margin: 14px auto 0;
-  }
-  .garage-desc {
-    font-family: var(--font-body);
-    font-size: clamp(13px, 1.05vw, 14.5px);
-    line-height: 1.75;
-    color: var(--color-text-secondary);
-    max-width: 620px;
-    margin: 18px auto 0;
-    font-style: italic;
-    text-align: center;
-  }
-
-  .garage-stamp-wall {
-    position: relative;
-    margin-top: 44px;
-    border-top: 1px solid var(--color-border-strong);
-    border-bottom: 1px solid var(--color-border-strong);
-    overflow: hidden;
-    background: var(--color-bg-canvas);
-  }
-  :global(:root.dark) .garage-stamp-wall {
-    background: #0d0d0d;
-  }
-  .garage-stamp-wall::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.07), transparent 60%);
-    pointer-events: none;
-  }
-  :global(:root.dark) .garage-stamp-wall::before {
-    background: radial-gradient(ellipse at 50% 140%, rgba(198, 40, 40, 0.14), transparent 60%);
-  }
-
-  .stamp-rows {
-    --stamp-gap: clamp(20px, 3vw, 56px);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    padding: 40px clamp(48px, 6vw, 96px) 24px;
-    justify-content: center;
-    max-width: 1240px;
-    margin: 0 auto;
-  }
-  .stamp-row-clip {
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-    width: 100%;
-  }
-  .stamp-track {
-    display: flex;
-    flex-direction: row;
-    gap: var(--stamp-gap);
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-  }
-
-  .stamp-tile {
-    container-type: inline-size;
-    flex: 0 0 calc((100% - 2 * var(--stamp-gap)) / 3);
-    width: calc((100% - 2 * var(--stamp-gap)) / 3);
-    aspect-ratio: 240 / 280;
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    position: relative;
-    font: inherit;
-    color: inherit;
-  }
-  .stamp-tile.wobble { animation: stampPulse 800ms cubic-bezier(0.36, 0, 0.2, 1); }
-
-  @media (max-width: 640px) {
-    .stamp-tile {
-      flex: 0 0 calc((100% - var(--stamp-gap)) / 2);
-      width: calc((100% - var(--stamp-gap)) / 2);
-    }
-    .stamp-rows {
-      padding-left: clamp(28px, 4vw, 48px);
-      padding-right: clamp(28px, 4vw, 48px);
-    }
-  }
-
-  .stamp-ring {
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    width: 90%;
-    aspect-ratio: 1;
-    height: auto;
-    object-fit: contain;
-    pointer-events: none;
-    user-select: none;
-  }
-  .stamp-ring-light { opacity: 0.22; display: block; }
-  .stamp-ring-dark  { opacity: 0.18; display: none; }
-  :global(:root.dark) .stamp-ring-light { display: none; }
-  :global(:root.dark) .stamp-ring-dark  { display: block; }
-
-  .stamp-bike-wrap {
-    position: absolute;
-    inset: 26% 14% calc(40px + 22cqw) 14%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform-origin: 50% 100%;
-  }
-  .stamp-tile.wobble .stamp-bike-wrap {
-    animation: bikeWobbleTight 800ms cubic-bezier(0.36, 0, 0.2, 1);
-  }
-  .stamp-bike {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22));
-    pointer-events: none;
-    user-select: none;
-  }
-  :global(:root.dark) .stamp-bike {
-    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
-  }
-
-  .stamp-caption {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-text-main);
-    line-height: 1.45;
-  }
-  .stamp-subcaption {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--color-accent);
-    margin-top: 2px;
-    letter-spacing: 0.12em;
-  }
-
-  .stamp-dots {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    padding: 6px 0 26px;
-    position: relative;
-    z-index: 2;
-  }
-  .stamp-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1.5px solid rgba(0, 0, 0, 0.28);
-    cursor: pointer;
-    padding: 0;
-    transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
-                background-color 320ms ease,
-                border-color 320ms ease;
-  }
-  .stamp-dot:hover { border-color: var(--color-accent); }
-  .stamp-dot.active {
-    width: 26px;
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-  :global(:root.dark) .stamp-dot { border-color: rgba(255, 255, 255, 0.32); }
-  :global(:root.dark) .stamp-dot.active {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-
-  .stamp-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 4;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: var(--color-accent);
-    opacity: 0.78;
-    transition: opacity 200ms ease, transform 200ms ease;
-  }
-  .stamp-arrow:hover { opacity: 1; }
-  .stamp-arrow--prev { left: clamp(8px, 2.5vw, 28px); }
-  .stamp-arrow--next { right: clamp(8px, 2.5vw, 28px); }
-  .stamp-arrow--prev:hover { transform: translateY(-50%) translateX(-3px); }
-  .stamp-arrow--next:hover { transform: translateY(-50%) translateX(3px); }
-  .stamp-arrow:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; border-radius: 4px; }
-
-  @keyframes stampPulse {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.06); }
-    55% { transform: scale(0.97); }
-    80% { transform: scale(1.02); }
-  }
-  @keyframes bikeWobbleTight {
-    0%, 100% { transform: rotate(0); }
-    20% { transform: rotate(-9deg); }
-    40% { transform: rotate(7deg); }
-    60% { transform: rotate(-4deg); }
-    80% { transform: rotate(2deg); }
-  }
-
-  /* ---------- Contact ---------- */
-  .contact-section {
-    max-width: 700px;
-    margin: 96px auto 0;
-    padding: 0 24px 88px;
-    text-align: center;
-  }
-  .contact-eyebrow {
-    font-family: var(--font-heading);
-    font-size: 10.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-accent);
-  }
-  .contact-h2 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(30px, 3.8vw, 40px);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--color-text-main);
-    margin-top: 10px;
-  }
-  .contact-lede {
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.65;
-    color: var(--color-text-secondary);
-    margin: 16px auto 0;
-    max-width: 520px;
-  }
-  .contact-channels {
-    margin-top: 36px;
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .channel-btn {
+  /* Buttons — same anatomy as the site's .btn set */
+  .btn-solid,
+  .btn-outline {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.55rem;
     font-family: var(--font-heading);
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: 0.9rem;
+    font-weight: 600;
     text-transform: uppercase;
-    padding: 14px 22px;
+    letter-spacing: 0.06em;
+    padding: 0.85rem 1.6rem;
     border-radius: var(--radius-btn);
-    transition: all 250ms ease;
-    cursor: pointer;
-    border: none;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
   }
-  .channel-btn.primary {
+  .btn-solid {
     background: var(--color-accent);
     color: #fff;
     box-shadow: var(--shadow-sm);
   }
-  .channel-btn.primary:hover {
-    background: var(--color-accent-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
-  .channel-btn.ghost {
+  .btn-solid:hover { background: var(--color-accent-dark); transform: translateY(-1px); }
+  .btn-outline {
     background: transparent;
     color: var(--color-text-main);
     border: 1.5px solid var(--color-border-strong);
   }
-  .channel-btn.ghost:hover {
-    background: var(--color-text-main);
-    color: var(--color-bg-canvas);
-    border-color: var(--color-text-main);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
+  .btn-outline:hover { border-color: var(--color-text-main); transform: translateY(-1px); }
 
-  /* ---------- Member card overlay ---------- */
-  .member-card-backdrop {
-    position: fixed;
+  /* ---------- Placeholder photography ---------- */
+  .is-placeholder { position: relative; }
+  .is-placeholder::before {
+    content: '';
+    position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    z-index: 60;
+    z-index: 1;
     pointer-events: none;
-    transition: background 220ms ease;
+    background: repeating-linear-gradient(45deg,
+      rgba(198, 40, 40, 0.17) 0 14px, rgba(198, 40, 40, 0) 14px 36px);
   }
-  .member-card-backdrop.open {
-    background: rgba(0, 0, 0, 0.38);
-    pointer-events: auto;
-  }
-  :global(:root.dark) .member-card-backdrop.open {
-    background: rgba(0, 0, 0, 0.62);
-  }
-
-  /* Card — column layout, 2/3 bike + 1/3 footer */
-  .member-card {
-    position: relative;
-    width: min(720px, 94vw);
-    max-height: min(82vh, 580px);
-    background: var(--color-bg-canvas);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-xl);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transform: translateY(20px) scale(0.97);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .member-card-backdrop.open .member-card {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-  }
-
-  /* Top 2/3 — large bike photo */
-  .member-card-bike {
-    flex: 2;
-    min-height: 0;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  :global(:root.dark) .member-card-bike {
-    background: #111;
-  }
-  .member-card-bike img {
-    max-width: 68%;
-    max-height: 88%;
-    object-fit: contain;
-    filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.18));
-    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  :global(:root.dark) .member-card-bike img {
-    filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.6));
-  }
-  .member-card-backdrop.open .member-card-bike img {
-    transform: scale(1.03);
-  }
-
-  /* Bottom 1/3 — avatar (1/4) + text (3/4) */
-  .member-card-footer {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: row;
-    border-top: 1px solid var(--color-border);
-  }
-
-  /* Avatar column — 1/4 width */
-  .member-card-avatar {
-    flex: 0 0 25%;
-    border-right: 1px solid var(--color-border);
-    background: #f5f5f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px;
-    overflow: hidden;
-  }
-  :global(:root.dark) .member-card-avatar {
-    background: #181818;
-  }
-
-  /* Initials badge */
-  .member-card-initials {
-    width: clamp(52px, 9cqw, 72px);
-    height: clamp(52px, 9cqw, 72px);
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: #fff;
+  .is-placeholder::after {
+    content: attr(data-ph-note);
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 5;
     font-family: var(--font-heading);
+    font-size: 0.625rem;
     font-weight: 700;
-    font-size: clamp(16px, 2.8cqw, 24px);
-    letter-spacing: 0.06em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    flex-shrink: 0;
-  }
-  :global(:root.dark) .member-card-initials {
-    background: var(--color-accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: #fff;
-    box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.25);
+    background: var(--color-accent);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   }
 
-  /* Text column — 3/4 width */
-  .member-card-body {
-    flex: 1;
-    min-width: 0;
-    padding: 16px 20px;
+  /* ---------- Hero ---------- */
+  .about-hero {
+    position: relative;
+    height: 78vh;
+    min-height: 460px;
+    max-height: 720px;
+    overflow: hidden;
+    background: var(--color-primary);
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+    align-items: flex-end;
   }
-  .member-card-role {
+  .about-hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    animation: heroDrift 26s ease-in-out infinite alternate;
+  }
+  @keyframes heroDrift {
+    from { transform: scale(1); }
+    to   { transform: scale(1.07); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about-hero-img { animation: none; }
+  }
+  .about-hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0) 75%),
+      linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 100%);
+  }
+  .about-hero-inner {
+    position: relative;
+    z-index: 3;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+    padding: 3rem 2rem 4rem;
+    box-sizing: border-box;
+  }
+  .about-hero-mark {
+    width: 128px;
+    height: auto;
+    display: block;
+    margin-bottom: 1.35rem;
+    filter: brightness(0) invert(1);
+  }
+  .about-hero-eyebrow {
     font-family: var(--font-heading);
-    font-size: 10px;
+    font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--color-accent);
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 0.5rem;
   }
-  .member-card-name {
+  .about-hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(20px, 2.8vw, 26px);
+    font-size: clamp(2.1rem, 5vw, 3.6rem);
+    max-width: 12em;
     font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--color-text-main);
-    line-height: 1.15;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.9rem;
   }
-  .member-card-bio {
+  .about-hero-meta {
     font-family: var(--font-body);
-    font-size: 13.5px;
-    line-height: 1.55;
-    color: var(--color-text-main);
-    margin: 2px 0 0;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.04em;
+    margin: 0 0 0.9rem;
   }
-  .member-card-meta {
+  .about-hero-lede {
     font-family: var(--font-body);
-    font-size: 11.5px;
-    color: var(--color-text-secondary);
-    margin-top: 4px;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.65;
+    max-width: 34rem;
+    margin: 0 0 2rem;
   }
 
-  /* Close button — floats over bike photo */
-  .member-card-close {
+  /* ---------- The three roads ---------- */
+  .roads {
+    position: relative;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: clamp(52px, 6.5vw, 90px) 0 0;
+    box-sizing: border-box;
+  }
+  .roads-intro {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 2rem clamp(12px, 1.8vw, 22px);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The section argues about one word, so that word carries the weight;
+     the split name sits under it as the Chinese reading of the same
+     idea, not as a competing headline. */
+  .roads-word {
+    margin: 0;
+    color: var(--color-text-main);
+    line-height: 0;
+  }
+  .roads-mark {
+    display: block;
+    width: clamp(260px, 36vw, 470px);
+    height: auto;
+    margin: 0 auto;
+  }
+  .sr-only {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 9999px;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .roads-name {
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    margin: 1.1rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.2vw, 0.95rem);
+  }
+  .roads-name i {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.72em;
+    color: var(--color-accent);
+    transform: translateY(-0.06em);
+  }
+
+  /* ---------- The reel ---------- */
+  .reel {
+    position: relative;
+    z-index: 1;
+    padding: clamp(8px, 1.2vw, 16px) 0 clamp(20px, 3vw, 40px);
+    overflow: hidden;
+  }
+
+  /* Ridge line: two layered alpine terrain bands scaled down by another 40%
+     (--tile: clamp(300px, 28vw, 400px)) for delicate, fine-line elegance:
+     1. roads-ridge--far: high-altitude summits reaching behind ACROSS logo,
+        softly dissolving before the card typography.
+     2. roads-ridge--near: grounded valley ridges anchoring the cards into
+        the dark coda below with rich base concentration. */
+  .roads-ridge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background-repeat: repeat-x;
+    background-position: 0 bottom;
+    pointer-events: none;
+    z-index: 0;
+    --tile: clamp(300px, 28vw, 400px);
+    height: calc(var(--tile) * 535 / 840);
+    background-image: url('/images/about/ridge-line.svg');
+    background-size: var(--tile) auto;
+  }
+
+  .roads-ridge--far {
+    top: clamp(24px, 3.5vw, 48px);
+    animation: terrainDrift 52s linear infinite;
+    opacity: 0.40;
+    -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.04) 0%,
+      rgba(0, 0, 0, 0.22) 20%,
+      rgba(0, 0, 0, 0.45) 45%,
+      rgba(0, 0, 0, 0.15) 65%,
+      rgba(0, 0, 0, 0.00) 80%,
+      rgba(0, 0, 0, 0.00) 100%);
+    mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.04) 0%,
+      rgba(0, 0, 0, 0.22) 20%,
+      rgba(0, 0, 0, 0.45) 45%,
+      rgba(0, 0, 0, 0.15) 65%,
+      rgba(0, 0, 0, 0.00) 80%,
+      rgba(0, 0, 0, 0.00) 100%);
+  }
+  :global(:root.dark) .roads-ridge--far { opacity: 0.35; }
+
+  .roads-ridge--near {
+    bottom: 0;
+    animation: terrainDrift 34s linear infinite;
+    opacity: 0.88;
+    -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.00) 0%,
+      rgba(0, 0, 0, 0.00) 25%,
+      rgba(0, 0, 0, 0.16) 50%,
+      rgba(0, 0, 0, 0.60) 78%,
+      rgba(0, 0, 1.00) 95%,
+      rgba(0, 0, 1.00) 100%);
+    mask-image: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.00) 0%,
+      rgba(0, 0, 0, 0.00) 25%,
+      rgba(0, 0, 0, 0.16) 50%,
+      rgba(0, 0, 0, 0.60) 78%,
+      rgba(0, 0, 1.00) 95%,
+      rgba(0, 0, 1.00) 100%);
+  }
+  :global(:root.dark) .roads-ridge--near { opacity: 0.82; }
+  
+  /* Feather both ends so concepts enter and leave instead of popping. */
+  .reel-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(60px, 12vw, 200px);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .reel-fade--l { left: 0; background: linear-gradient(to right, var(--color-bg-canvas), transparent); }
+  .reel-fade--r { right: 0; background: linear-gradient(to left, var(--color-bg-canvas), transparent); }
+
+  .reel-track {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: max-content;
+    animation: reelDrift 72s linear infinite;
+  }
+  .reel:hover .reel-track,
+  .reel:focus-within .reel-track,
+  .roads:hover .roads-ridge,
+  .roads:focus-within .roads-ridge {
+    animation-play-state: paused;
+  }
+
+  @keyframes reelDrift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-25%); }
+  }
+  /* One tile per cycle, whatever the breakpoint set --tile to. */
+  @keyframes terrainDrift {
+    from { background-position: 0 bottom; }
+    to   { background-position: calc(-1 * var(--tile)) bottom; }
+  }
+
+  .concept {
+    flex: 0 0 auto;
+    width: clamp(260px, 27vw, 400px);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    padding: clamp(20px, 2.5vw, 34px) clamp(16px, 2vw, 28px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .concept:hover { transform: translateY(-6px); }
+  .concept:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; border-radius: var(--radius-aero); }
+
+  .concept-symbol {
+    width: 56px;
+    height: auto;
+    display: block;
+    margin-bottom: 1.4rem;
+    transition: transform 0.35s ease;
+  }
+  .concept:hover .concept-symbol { transform: scale(1.1); }
+
+  .concept-en {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-accent);
+  }
+  .concept-idiom {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    color: var(--color-text-main);
+    margin-top: 0.85rem;
+    white-space: nowrap;
+  }
+  .concept-gloss {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin-top: 0.7rem;
+  }
+
+  /* The only affordance left: a quiet arrow that wakes on hover. */
+  .concept-cue {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-muted);
+    margin-top: 1.5rem;
+    transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  }
+  .concept:hover .concept-cue {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reel-track, .roads-ridge { animation: none; }
+    .reel-track { justify-content: center; flex-wrap: wrap; width: 100%; }
+    .concept:hover { transform: none; }
+  }
+
+  /* ---------- Coda ---------- */
+  .coda {
+    background: var(--color-primary);
+    padding: clamp(60px, 8vw, 96px) 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .coda-lead {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0;
+  }
+  .coda-mark {
+    width: min(400px, 72vw);
+    height: auto;
+    display: block;
+    margin-top: 1.5rem;
+    filter: invert(1);
+  }
+  .coda-sub {
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 1.75rem 0 0;
+    text-align: center;
+  }
+
+  /* ---------- Garage ---------- */
+  .garage {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: clamp(64px, 9vw, 104px) 2rem;
+    box-sizing: border-box;
+  }
+  .garage-head { text-align: center; }
+  .garage-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-text-main);
+    margin: 0.85rem 0 0;
+  }
+  .garage-lede {
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    max-width: 38rem;
+    margin: 0.85rem auto 0;
+  }
+  .garage-grid {
+    list-style: none;
+    margin: clamp(32px, 5vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+  }
+  .bike-btn {
+    width: 100%;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    padding: 1.1rem 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .bike-btn:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+  .bike-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .bike-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bike-ring {
+    position: absolute;
+    width: 78%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    opacity: 0.16;
+  }
+  .bike-photo {
+    position: relative;
+    max-width: 90%;
+    max-height: 86%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  .bike-btn:hover .bike-photo { transform: scale(1.05); }
+  .bike-name {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin-top: 0.7rem;
+  }
+  .bike-meta {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    letter-spacing: 0.05em;
+    margin-top: 0.2rem;
+  }
+
+  /* ---------- Join ---------- */
+  .join {
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
+    padding: clamp(64px, 9vw, 104px) 2rem;
+  }
+  .join-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .join-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+    color: var(--color-text-main);
+    margin: 0.85rem 0 0;
+  }
+  .join-line {
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    margin: 0.9rem 0 0;
+  }
+  .join-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--color-text-secondary);
+    margin: 1rem 0 0;
+  }
+  .join-actions {
+    display: flex;
+    gap: 0.9rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  /* ---------- Sheet (both overlays) ---------- */
+  .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 4vw, 48px);
+  }
+  .sheet[hidden] { display: none; }
+  .sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .sheet.open .sheet-backdrop { opacity: 1; }
+  :global(:root.dark) .sheet-backdrop {
+    background: rgba(10, 14, 12, 0.45);
+  }
+
+  /* Bird flock interactive layer (飞鸟聚散系统 — 严格限定在山脉天际视界) */
+  .sheet-birds {
+    position: fixed;
+    pointer-events: none;
+    z-index: 85;
+    overflow: hidden;
+  }
+  :global(.bird-particle) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    will-change: transform, opacity;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  :global(:root.dark) :global(.bird-particle) {
+    mix-blend-mode: screen;
+  }
+  :global(.bird-particle svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    transform-origin: center center;
+    animation: birdWingBeat var(--wing-dur, 0.36s) ease-in-out infinite alternate;
+  }
+  @keyframes birdWingBeat {
+    0% { transform: scaleY(1) translateY(0); }
+    50% { transform: scaleY(0.42) translateY(-2px) skewX(3deg); }
+    100% { transform: scaleY(0.95) translateY(1px); }
+  }
+
+  /* Birds Converge Animation (细线飞鸟聚成故事卡片) */
+  :global(.bird-converge) {
+    animation: birdConverge var(--fly-dur, 0.72s) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--fly-delay, 0s);
+  }
+  @keyframes birdConverge {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--sx), var(--sy), 0) rotate(var(--s-rot)) scale(0.95);
+    }
+    15% {
+      opacity: 0.95;
+    }
+    70% {
+      opacity: 0.95;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) rotate(var(--t-rot, 0deg)) scale(0.48);
+    }
+  }
+
+  /* Birds Scatter Down Animation (多向飞鸟散落入下方山林) */
+  :global(.bird-scatter) {
+    animation: birdScatterDown var(--fly-dur, 0.76s) cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation-delay: var(--fly-delay, 0s);
+  }
+  @keyframes birdScatterDown {
+    0% {
+      opacity: 0.95;
+      transform: translate3d(var(--cx, 0px), var(--cy, 0px), 0) rotate(var(--s-rot, 0deg)) scale(1);
+    }
+    15% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--d-rot)) scale(0.5);
+    }
+  }
+
+  /* Story card modal panel (大画幅，扇形微倾，柔和环境影) */
+  .sheet-panel {
+    position: relative;
+    width: min(1140px, 88vw);
+    max-height: 86vh;
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: clamp(16px, 1.8vw, 24px);
+    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.22), 0 0 30px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  }
+  :global(:root.dark) .sheet-panel {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 70px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.4);
+  }
+  .sheet.open .sheet-panel {
+    opacity: 1;
+    transform: rotate(var(--sheet-tilt, -2deg));
+  }
+  .sheet-panel--member {
+    width: min(990px, 100%);
+    transform: none !important;
+  }
+
+  /* Assembly & Scatter motion states */
+  .sheet[data-sheet="chapter"].assembling .sheet-panel {
+    opacity: 0;
+    transform: scale(0.85) rotate(-3.5deg);
+    filter: blur(8px);
+    pointer-events: none;
+  }
+  .sheet[data-sheet="chapter"].assembled .sheet-panel {
+    opacity: 1;
+    transform: scale(1) rotate(var(--sheet-tilt, -2deg));
+    filter: blur(0);
+    pointer-events: auto;
+  }
+  .sheet[data-sheet="chapter"].scattering .sheet-panel {
+    opacity: 0;
+    transform: scale(0.92) rotate(-1deg) translateY(24px);
+    filter: blur(6px);
+    transition: opacity 0.24s ease-in, transform 0.28s ease-in, filter 0.24s ease-in;
+  }
+  .sheet[data-sheet="chapter"].scattering .sheet-backdrop {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .sheet-x {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
     border: 1px solid rgba(255, 255, 255, 0.35);
-    background: rgba(0, 0, 0, 0.28);
+    background: rgba(0, 0, 0, 0.35);
     color: #fff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 180ms ease;
-    z-index: 2;
+    transition: background 0.2s ease, transform 0.2s ease;
   }
-  .member-card-close:hover {
-    background: rgba(0, 0, 0, 0.52);
+  .sheet-x:hover {
+    background: rgba(0, 0, 0, 0.65);
+    transform: scale(1.06);
   }
 
-  @media (max-width: 500px) {
-    .member-card { max-height: 90vh; }
-    .member-card-body { padding: 12px 14px; }
-    .member-card-avatar { padding: 10px; }
+  /* A fanned deck. Sized to 580px for spacious storytelling with room for landscape. */
+  .deck {
+    display: flex;
+    align-items: stretch;
+    height: min(72vh, 580px);
+    background: var(--color-bg-secondary);
+  }
+  .card {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    flex: 0 0 clamp(62px, 7vw, 92px);
+    min-width: 0;
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+    z-index: calc(var(--i) + 1);
+    transition: flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                flex-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* Casual fanned stack angles for inactive cards */
+  .card[data-card="0"]:not(.is-open) {
+    transform: rotate(-3.5deg) translateY(4px);
+  }
+  .card[data-card="1"]:not(.is-open) {
+    transform: rotate(1.5deg) translateY(2px);
+  }
+  .card[data-card="2"]:not(.is-open) {
+    transform: rotate(4.5deg) translateY(-2px);
+  }
+  .card.is-open {
+    flex: 1 1 auto;
+    z-index: 10;
+    transform: none;
+  }
+  .card + .card {
+    margin-left: -16px;
+    border-radius: var(--radius-aero) 0 0 var(--radius-aero);
+    box-shadow: -18px 0 38px rgba(0, 0, 0, 0.16);
+  }
+  :global(:root.dark) .card + .card {
+    box-shadow: -18px 0 38px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Spine — the card's readable edge, and the control that opens it. */
+  .card-spine {
+    flex: 0 0 clamp(62px, 7vw, 92px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.6rem 0;
+    background: none;
+    border: none;
+    border-right: 1px solid var(--color-border);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: background 0.3s ease;
+  }
+  .card:not(.is-open) .card-spine:hover { background: var(--color-bg-tint); }
+  .card-spine:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -3px; }
+
+  /* The chapter's own symbol stands in for a number */
+  .card-mark {
+    width: clamp(32px, 3.6vw, 46px);
+    height: auto;
+    display: block;
+    opacity: 0.32;
+    filter: grayscale(1);
+    transition: opacity 0.35s ease, filter 0.35s ease;
+  }
+  .card:not(.is-open) .card-spine:hover .card-mark { opacity: 0.55; }
+  .card.is-open .card-mark { opacity: 1; filter: none; }
+
+  .card-edge {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: var(--color-text-muted);
+    writing-mode: vertical-rl;
+    transition: color 0.3s ease;
+  }
+  .card:not(.is-open) .card-spine:hover .card-edge { color: var(--color-text-secondary); }
+  .card.is-open .card-edge { color: var(--color-text-secondary); }
+
+  /* Body — open card expands with generous typography and photo layout */
+  .card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .card.is-open .card-body {
+    opacity: 1;
+    transition: opacity 0.5s ease 0.18s;
+  }
+
+  .card-text {
+    padding: clamp(32px, 4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    overflow-y: auto;
+  }
+  .card-en {
+    font-family: var(--font-heading);
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-accent);
+    margin: 0;
+  }
+  .card-idiom {
+    font-family: var(--font-heading);
+    font-size: clamp(1.85rem, 3vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-main);
+    margin: 0.65rem 0 0;
+  }
+  .card-gloss {
+    font-family: var(--font-body);
+    font-size: 0.96rem;
+    line-height: 1.8;
+    color: var(--color-text-muted);
+    margin: 0.75rem 0 0;
+  }
+  .card-prose {
+    font-family: var(--font-body);
+    font-size: clamp(1.02rem, 1.15vw, 1.12rem);
+    line-height: 2.1;
+    color: var(--color-text-main);
+    margin: 1.35rem 0 0;
+    text-align: justify;
+    text-justify: inter-ideograph;
+  }
+  .deck--solo { height: min(52vh, 400px); }
+  .deck--solo .card { flex: 1 1 auto; }
+  .card-media { position: relative; overflow: hidden; }
+  .card-media--bike {
+    background: var(--color-bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .card-media--bike img { object-fit: contain; }
+  .card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ---------- Reveals ---------- */
+  :global(html.reveal-ready) [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  :global(html.reveal-ready) [data-reveal].in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card-body { transition: none; }
+    .bird-particle { display: none !important; }
+    .sheet-panel { transform: none !important; transition-duration: 0.15s !important; filter: none !important; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px) {
+    .sheet-panel {
+      width: 100%;
+      transform: none !important;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+    .card[data-card]:not(.is-open) { transform: none; }
+    .card.is-open { transform: none; }
+
+    /* No room to fan three cards on a phone: the deck stacks and the
+       spines turn into horizontal bars. */
+    .deck, .deck--solo { flex-direction: column; height: auto; }
+    .card { flex: 0 0 auto; }
+    .card + .card {
+      margin-left: 0;
+      margin-top: -12px;
+      border-radius: var(--radius-aero) var(--radius-aero) 0 0;
+      box-shadow: 0 -12px 26px rgba(0, 0, 0, 0.12);
+    }
+    .card, .card.is-open { display: block; }
+    .card-spine {
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 1rem;
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .card-edge { writing-mode: horizontal-tb; letter-spacing: 0.16em; }
+    .card-mark { width: 26px; }
+    .card-body { grid-template-columns: 1fr; }
+    .card:not(.is-open) .card-body { display: none; }
+    .card-media { min-height: 190px; max-height: 34vh; }
+  }
+  @media (max-width: 560px) {
+    .roads-ridge { --tile: 260px; }
+    .roads-ridge--far { animation-duration: 38s; }
+    .roads-ridge--near { animation-duration: 24s; }
+    .about-hero-inner { padding: 2rem 1.25rem 2.5rem; }
+    .roads-intro, .garage, .join { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .join-actions { flex-direction: column; }
+    .join-actions a { justify-content: center; }
   }
 </style>
-
