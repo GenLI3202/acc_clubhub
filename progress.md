@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **About Page Mountain Ridge Background Optimization** (2026-09-03) — branch `phase-9/about-redesign`
+  - [X] Re-nested the mountain ridges into a unified `<section class="roads">` container spanning edge-to-edge behind both the ACROSS logo and cards reel.
+  - [X] Built a dual-layer alpine terrain system (`roads-ridge--far` and `roads-ridge--near`) sized at `--tile: clamp(300px, 28vw, 400px)`, scaling strokes down by 40% for delicate, fine-line elegance.
+  - [X] Anchored the far skyline at the top (`top: clamp(24px, 3.5vw, 48px)`) drifting at 52s, floating misty blue/grey summits behind the ACROSS logo and dissolving before the cards.
+  - [X] Anchored the near valley ridges at `bottom: 0` drifting at 34s, keeping text background clear while delivering full concentration (0.88) at the bottom edge.
+  - [X] Verified `npx astro check` (0 errors), Vitest (54 passed), and `npm run build` (141 pages generated).
+
 - [X] **Event Cancellation Notifications** (2026-08-25) — branch `phase-4/event-cancellation`
   - [X] Added an Admin Events action with a required cancellation reason and a recipient-count confirmation dialog.
   - [X] Persisted event-wide cancellation state separately from RSVP status and blocked both public registration endpoints after cancellation.
