@@ -99,7 +99,7 @@ export const ui = {
         // About page
         'about.eyebrow': '关于俱乐部',
         // --- About Us v2 (phase-9 redesign) ---
-        'about.heroLede': '起源于慕尼黑华人骑行圈的公路车俱乐部，欢迎所有骑友。我们组织穿越巴伐利亚与阿尔卑斯的骑行，也为成员搭建训练、交流、成长的平台。',
+        'about.heroLede': '起源于慕尼黑华人骑行圈的公路车俱乐部，欢迎来自五湖四海的骑行爱好者。我们组织穿越巴伐利亚与阿尔卑斯的骑行，也为成员搭建训练、交流、成长的平台。',
         'about.heroCta': '加入我们',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': '',
@@ -282,7 +282,7 @@ export const ui = {
         // About page
         'about.eyebrow': 'About the Club',
         // --- About Us v2 (phase-9 redesign) ---
-        'about.heroLede': 'A road-cycling club in Munich — born from the Chinese cycling community, open to every rider. We ride across Bavaria and the Alps, and give our members somewhere to train, meet and grow.',
+        'about.heroLede': 'A road-cycling club in Munich — born from the Chinese cycling community, welcoming cycling enthusiasts from all over the world. We ride across Bavaria and the Alps, and give our members somewhere to train, meet and grow.',
         'about.heroCta': 'Join us',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': 'Two travellers stop, tilt their carriage covers together, and part as old friends.',
@@ -465,7 +465,7 @@ export const ui = {
         // About page
         'about.eyebrow': 'Über den Club',
         // --- About Us v2 (phase-9 redesign) ---
-        'about.heroLede': 'Ein Rennradverein in München — entstanden aus der chinesischen Cycling-Community, offen für alle Fahrer. Wir fahren durch Bayern und die Alpen und bieten einen Ort zum Trainieren, Austauschen und Wachsen.',
+        'about.heroLede': 'Ein Rennradverein in München — entstanden aus der chinesischen Cycling-Community, offen für Radbegeisterte aus aller Welt. Wir fahren durch Bayern und die Alpen und bieten einen Ort zum Trainieren, Austauschen und Wachsen.',
         'about.heroCta': 'Mitfahren',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': 'Zwei Reisende halten an, neigen die Wagendächer zueinander — und trennen sich als alte Freunde.',
