@@ -12,6 +12,10 @@
 ## Recent Updates
 
 - [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
+  - [X] Fixed mobile chapter modal close button `X` visibility and tap targets by raising `z-index` to 99 above open cards.
+  - [X] Redesigned mobile chapter view into top segmented navigation tabs (`倾盖如故`, `翻山越岭`, `天涯比邻`), smooth internal vertical scrolling (`overflow-y: auto`), and touch swipe navigation.
+  - [X] Added interactive touch and mouse drag to the story reel filmstrip so users can freely pan and select stories without waiting for auto-scroll.
+  - [X] AI background removal and canvas standardization (1582x1130 transparent) for `dark_blue_canyon.png`.
   - [X] Applied subtle aerodynamic 8px quadratic Bézier rounded corners across all ACROSS wordmark letterforms and echo layers.
   - [X] Realigned club identity copy across zh/en/de (`about.heroLede`, `about.intro1`) to highlight welcoming riders from all corners of the world while celebrating Chinese community roots.
   - [X] Integrated official high-resolution ACC club photography into `public/images/about/` (`hero.webp`, `paths.webp`, `mountains.webp`, `borders.webp`) replacing placeholders.
