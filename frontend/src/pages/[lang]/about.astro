@@ -127,7 +127,6 @@ const phNote = t(lang, 'about.placeholderNote');
         and untabbable, but stay clickable. */}
     <div class="reel" data-reel>
       <div class="reel-ridge" aria-hidden="true"></div>
-      <div class="reel-road" aria-hidden="true"></div>
       <div class="reel-fade reel-fade--l" aria-hidden="true"></div>
       <div class="reel-fade reel-fade--r" aria-hidden="true"></div>
 
@@ -696,12 +695,10 @@ const phNote = t(lang, 'about.placeholderNote');
 
   /* ---------- The reel ---------- */
   .reel {
-    --road: clamp(300px, 36vw, 520px);
-    --clearing: calc(var(--road) * 1.16);
     position: relative;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-    padding: clamp(16px, 2.5vw, 32px) 0 clamp(80px, 10vw, 132px);
+    padding: clamp(16px, 2.5vw, 32px) 0 clamp(28px, 4vw, 52px);
     overflow: hidden;
   }
 
@@ -711,8 +708,7 @@ const phNote = t(lang, 'about.placeholderNote');
      tile per cycle. Sizing by height instead left the tile width tied to
      the layer's rendered height, so the shift was never a whole number of
      tiles and the pattern jumped on every loop. */
-  .reel-ridge,
-  .reel-road {
+  .reel-ridge {
     position: absolute;
     left: 0;
     right: 0;
@@ -723,45 +719,14 @@ const phNote = t(lang, 'about.placeholderNote');
   }
   .reel-ridge {
     --tile: 300px;
-    height: 268px;
+    height: 191px;
     background-image: url('/images/about/ridge-line.svg');
     background-size: var(--tile) auto;
     opacity: 0.34;
     animation: terrainDrift 34s linear infinite;
-
-    /* Subtract the road's footprint from the ridges so the two occupy the
-       same ground instead of sitting on top of each other. The mask is the
-       road silhouette blurred and pushed to full alpha, sized larger than
-       the road itself so the clearing has a margin, and it does not drift
-       with the pattern — the valley is a fixed feature the ridges pass
-       behind. */
-    -webkit-mask-image: url('/images/about/road-mask.svg'), linear-gradient(#000, #000);
-    -webkit-mask-repeat: no-repeat, repeat;
-    -webkit-mask-position: center bottom, 0 0;
-    -webkit-mask-size: var(--clearing) auto, auto;
-    -webkit-mask-composite: xor;
-    mask-image: url('/images/about/road-mask.svg'), linear-gradient(#000, #000);
-    mask-repeat: no-repeat, repeat;
-    mask-position: center bottom, 0 0;
-    mask-size: var(--clearing) auto, auto;
-    mask-composite: exclude;
-  }
-  /* One road, centred and still. The reel drifts past it; the road is the
-     ground the reel is crossing, so it holds position. Its far end fades
-     out rather than being cut off by the top of the layer. */
-  .reel-road {
-    height: 100%;
-    background-image: url('/images/about/road-line.svg');
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: var(--road) auto;
-    opacity: 0.24;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 100%);
   }
   :global(:root.dark) .reel-ridge { opacity: 0.38; }
-  :global(:root.dark) .reel-road { opacity: 0.28; }
-
+  
   /* Feather both ends so concepts enter and leave instead of popping. */
   .reel-fade {
     position: absolute;
@@ -784,9 +749,7 @@ const phNote = t(lang, 'about.placeholderNote');
   .reel:hover .reel-track,
   .reel:focus-within .reel-track,
   .reel:hover .reel-ridge,
-  .reel:focus-within .reel-ridge,
-  .reel:hover .reel-road,
-  .reel:focus-within .reel-road {
+  .reel:focus-within .reel-ridge {
     animation-play-state: paused;
   }
 
@@ -873,7 +836,7 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reel-track, .reel-ridge, .reel-road { animation: none; }
+    .reel-track, .reel-ridge { animation: none; }
     .reel-track { justify-content: center; flex-wrap: wrap; width: 100%; }
     .concept:hover { transform: none; }
   }
@@ -1269,7 +1232,7 @@ const phNote = t(lang, 'about.placeholderNote');
     .sheet-media { min-height: 200px; max-height: 38vh; }
   }
   @media (max-width: 560px) {
-    .reel-ridge { --tile: 208px; height: 190px; animation-duration: 24s; }
+    .reel-ridge { --tile: 208px; height: 132px; animation-duration: 24s; }
     .about-hero-inner { padding: 2rem 1.25rem 2.5rem; }
     .roads, .garage, .join { padding-left: 1.25rem; padding-right: 1.25rem; }
     .join-actions { flex-direction: column; }
