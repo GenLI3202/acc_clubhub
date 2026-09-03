@@ -707,8 +707,12 @@ const phNote = t(lang, 'about.placeholderNote');
           // the accessibility tree; only their spine remains reachable.
           const body = card.querySelector('.card-body');
           if (body) {
-            if (open) body.removeAttribute('inert');
-            else body.setAttribute('inert', '');
+            if (open) {
+              body.removeAttribute('inert');
+              body.scrollTop = 0;
+            } else {
+              body.setAttribute('inert', '');
+            }
             body.setAttribute('aria-hidden', open ? 'false' : 'true');
           }
           const spine = card.querySelector('.card-spine');
@@ -735,8 +739,110 @@ const phNote = t(lang, 'about.placeholderNote');
         if (e.key === 'ArrowRight') show(current + 1);
       });
 
-        show(0);
+      // Touch swipe between chapters on mobile
+      let touchStartX = 0;
+      let touchStartY = 0;
+      chapter.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+      chapter.addEventListener('touchend', (e) => {
+        if (chapter.hidden || !e.changedTouches.length) return;
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        // Trigger if horizontal movement is dominant and > 45px
+        if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+          if (deltaX < 0) show(current + 1);
+          else show(current - 1);
+        }
+      }, { passive: true });
+
+      show(0);
+    }
+
+    // ---- interactive touch & drag controller for the reel ----
+    const reel = document.querySelector('[data-reel]');
+    const reelTrack = document.querySelector('[data-reel-track]');
+    if (reel && reelTrack) {
+      let isDown = false;
+      let startX = 0;
+      let dragDistance = 0;
+      let currentX = 0;
+      let isHovered = false;
+      let lastTime = null;
+      const speed = 32; // px per second (~75s per pass)
+
+      // Use JS animation loop so touch drag directly offsets position smoothly
+      reelTrack.style.animation = 'none';
+
+      reel.addEventListener('mouseenter', () => { isHovered = true; });
+      reel.addEventListener('mouseleave', () => { isHovered = false; });
+
+      function getPassWidth() {
+        return (reelTrack.scrollWidth / 4) || 1000;
       }
+
+      function step(time) {
+        if (!lastTime) lastTime = time;
+        const dt = Math.min((time - lastTime) / 1000, 0.1);
+        lastTime = time;
+
+        if (!isDown && !isHovered) {
+          currentX -= speed * dt;
+          const passWidth = getPassWidth();
+          while (currentX < -passWidth) currentX += passWidth;
+          while (currentX > 0) currentX -= passWidth;
+          reelTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
+        }
+
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+
+      function onTouchStart(e) {
+        isDown = true;
+        dragDistance = 0;
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
+      }
+
+      function onTouchMove(e) {
+        if (!isDown) return;
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const delta = x - startX;
+        startX = x;
+        dragDistance += Math.abs(delta);
+
+        currentX += delta;
+        const passWidth = getPassWidth();
+        while (currentX < -passWidth) currentX += passWidth;
+        while (currentX > 0) currentX -= passWidth;
+        reelTrack.style.transform = `translate3d(${currentX}px, 0, 0)`;
+      }
+
+      function onTouchEnd() {
+        if (!isDown) return;
+        isDown = false;
+        // Suppress accidental click on child buttons if user dragged > 10px
+        if (dragDistance > 10) {
+          const captureClick = (ev) => {
+            ev.stopPropagation();
+            ev.preventDefault();
+          };
+          reel.addEventListener('click', captureClick, { capture: true, once: true });
+        }
+      }
+
+      reel.addEventListener('touchstart', onTouchStart, { passive: true });
+      reel.addEventListener('touchmove', onTouchMove, { passive: true });
+      reel.addEventListener('touchend', onTouchEnd, { passive: true });
+      reel.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+      reel.addEventListener('mousedown', onTouchStart);
+      window.addEventListener('mousemove', onTouchMove);
+      window.addEventListener('mouseup', onTouchEnd);
+    }
 
       // ---- member sheet ----
       const member = document.querySelector('[data-sheet="member"]');
@@ -1519,12 +1625,12 @@ const phNote = t(lang, 'about.placeholderNote');
     position: absolute;
     top: 16px;
     right: 16px;
-    z-index: 5;
+    z-index: 90;
     width: 38px;
     height: 38px;
     border-radius: var(--radius-full);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.55);
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -1533,7 +1639,7 @@ const phNote = t(lang, 'about.placeholderNote');
     transition: background 0.2s ease, transform 0.2s ease;
   }
   .sheet-x:hover {
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.8);
     transform: scale(1.06);
   }
 
@@ -1716,39 +1822,135 @@ const phNote = t(lang, 'about.placeholderNote');
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
     .sheet-panel {
-      width: 100%;
+      width: min(94vw, 560px);
+      max-height: 90vh;
       transform: none !important;
       mask-image: none;
       -webkit-mask-image: none;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+    .sheet-x {
+      top: 10px;
+      right: 10px;
+      z-index: 99;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.45);
     }
     .card[data-card]:not(.is-open) { transform: none; }
     .card.is-open { transform: none; }
 
-    /* No room to fan three cards on a phone: the deck stacks and the
-       spines turn into horizontal bars. */
-    .deck, .deck--solo { flex-direction: column; height: auto; }
-    .card { flex: 0 0 auto; }
-    .card + .card {
-      margin-left: 0;
-      margin-top: -12px;
-      border-radius: var(--radius-aero) var(--radius-aero) 0 0;
-      box-shadow: 0 -12px 26px rgba(0, 0, 0, 0.12);
+    /* Chapter Deck: Top segmented tab bar + smooth scrollable story body */
+    [data-sheet="chapter"] .deck {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto 1fr;
+      height: 100%;
+      max-height: 90vh;
+      padding-top: 48px;
+      background: var(--color-bg-canvas);
+      overflow: hidden;
     }
-    .card, .card.is-open { display: block; }
-    .card-spine {
-      flex-direction: row;
-      justify-content: flex-start;
-      gap: 1rem;
+    [data-sheet="chapter"] .card {
+      display: contents;
+    }
+    [data-sheet="chapter"] .card-spine {
+      grid-row: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.75rem 0.25rem 0.65rem;
+      border: none;
+      border-bottom: 2px solid var(--color-border);
+      background: var(--color-bg-secondary);
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: all 0.2s ease;
+      min-width: 0;
+    }
+    [data-sheet="chapter"] .card[data-card="0"] .card-spine { grid-column: 1; }
+    [data-sheet="chapter"] .card[data-card="1"] .card-spine { grid-column: 2; }
+    [data-sheet="chapter"] .card[data-card="2"] .card-spine { grid-column: 3; }
+
+    [data-sheet="chapter"] .card.is-open .card-spine {
+      background: var(--color-bg-canvas);
+      color: var(--color-text-main);
+      border-bottom: 2px solid var(--color-accent);
+      font-weight: 700;
+    }
+    [data-sheet="chapter"] .card-edge {
+      writing-mode: horizontal-tb;
+      font-size: 0.88rem;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    [data-sheet="chapter"] .card-mark {
+      width: 26px;
+      height: auto;
+    }
+    [data-sheet="chapter"] .card.is-open .card-mark {
+      opacity: 1;
+      filter: none;
+    }
+    [data-sheet="chapter"] .card:not(.is-open) .card-mark {
+      opacity: 0.35;
+      filter: grayscale(1);
+    }
+    [data-sheet="chapter"] .card-body {
+      grid-row: 2;
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: calc(90vh - 125px);
+      padding-bottom: 1.5rem;
+    }
+    [data-sheet="chapter"] .card:not(.is-open) .card-body {
+      display: none;
+    }
+    [data-sheet="chapter"] .card-text {
+      padding: 1.25rem 1.25rem 0.75rem;
+      overflow: visible;
+    }
+    [data-sheet="chapter"] .card-idiom {
+      font-size: 1.75rem;
+      margin-top: 0.4rem;
+    }
+    [data-sheet="chapter"] .card-prose {
+      font-size: 0.98rem;
+      line-height: 1.95;
+      margin-top: 1rem;
+    }
+    [data-sheet="chapter"] .card-media {
+      min-height: 220px;
+      max-height: 38vh;
+      margin: 0.5rem 1.25rem 1rem;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    [data-sheet="chapter"] .card-media img {
       width: 100%;
-      padding: 1rem 1.25rem;
-      border-right: none;
-      border-bottom: 1px solid var(--color-border);
+      height: 100%;
+      object-fit: cover;
     }
-    .card-edge { writing-mode: horizontal-tb; letter-spacing: 0.16em; }
-    .card-mark { width: 26px; }
-    .card-body { grid-template-columns: 1fr; }
-    .card:not(.is-open) .card-body { display: none; }
-    .card-media { min-height: 190px; max-height: 34vh; }
+
+    /* Solo member deck stays single column */
+    .deck--solo {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .deck--solo .card-media { min-height: 190px; max-height: 34vh; }
   }
   @media (max-width: 560px) {
     .roads-ridge { --tile: 260px; }
