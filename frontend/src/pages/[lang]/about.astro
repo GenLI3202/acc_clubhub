@@ -30,7 +30,6 @@ const CHAPTERS = [
   {
     id: 'paths',
     en: 'Across paths',
-    short: 'Paths',
     symbol: '/images/about/symbols/parallel.svg',
     photo: '/images/about/placeholder/paths.jpg',
     idiom: t(lang, 'about.ch1Idiom'),
@@ -40,7 +39,6 @@ const CHAPTERS = [
   {
     id: 'mountains',
     en: 'Across mountains',
-    short: 'Mountains',
     symbol: '/images/about/symbols/mountain-rider.svg',
     photo: '/images/about/placeholder/mountains.jpg',
     idiom: t(lang, 'about.ch2Idiom'),
@@ -50,7 +48,6 @@ const CHAPTERS = [
   {
     id: 'borders',
     en: 'Across borders',
-    short: 'Borders',
     symbol: '/images/about/symbols/bridge.svg',
     photo: '/images/about/placeholder/borders.jpg',
     idiom: t(lang, 'about.ch3Idiom'),
@@ -142,7 +139,7 @@ const phNote = t(lang, 'about.placeholderNote');
                 tabindex={pass > 0 ? -1 : undefined}
               >
                 <img class="concept-symbol" src={c.symbol} alt="" width="60" height="40" />
-                <span class="concept-en">{c.short}</span>
+                <span class="concept-en">{c.en}</span>
                 <span class="concept-idiom">{c.idiom}</span>
                 {c.gloss && <span class="concept-gloss">{c.gloss}</span>}
                 <span class="concept-cue" aria-hidden="true">
@@ -224,39 +221,37 @@ const phNote = t(lang, 'about.placeholderNote');
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
 
-      <div class="sheet-viewport">
-        <div class="sheet-track" data-track>
+      {/* A fanned deck: the open chapter takes the room, the rest stay as
+          overlapping spines you can read edge-on and click straight to.
+          Every chapter's prose is in the markup whatever is open, so the
+          page stays complete without JS and for crawlers. */}
+      <div class="deck" data-deck>
         {CHAPTERS.map((c, i) => (
-          <article class="sheet-slide" data-slide={i}>
-            <div class:list={['sheet-media', phClass]} data-ph-note={phNote}>
-              <img src={c.photo} alt="" />
-            </div>
-            <div class="sheet-body">
-              <img class="sheet-symbol" src={c.symbol} alt="" width="60" height="40" />
-              <p class="sheet-en">{c.en}</p>
-              <h2 class="sheet-idiom" id={i === 0 ? 'sheet-idiom' : undefined}>{c.idiom}</h2>
-              {c.gloss && <p class="sheet-gloss">{c.gloss}</p>}
-              <p class="sheet-prose">{c.prose}</p>
+          <article class:list={['card', { 'is-open': i === 0 }]} data-card={i} style={`--i:${i}`}>
+            <button
+              class="card-spine"
+              type="button"
+              data-card-open={i}
+              aria-expanded={i === 0 ? 'true' : 'false'}
+            >
+              <span class="card-num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="card-edge">{c.idiom}</span>
+            </button>
+
+            <div class="card-body">
+              <div class="card-text">
+                <img class="card-symbol" src={c.symbol} alt="" width="60" height="40" />
+                <p class="card-en">{c.en}</p>
+                <h3 class="card-idiom" id={i === 0 ? 'sheet-idiom' : undefined}>{c.idiom}</h3>
+                {c.gloss && <p class="card-gloss">{c.gloss}</p>}
+                <p class="card-prose">{c.prose}</p>
+              </div>
+              <div class:list={['card-media', phClass]} data-ph-note={phNote}>
+                <img src={c.photo} alt="" decoding="async" />
+              </div>
             </div>
           </article>
         ))}
-        </div>
-      </div>
-
-      <div class="sheet-nav">
-        <button class="sheet-arrow" type="button" data-sheet-prev aria-label="Previous">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div class="sheet-steps" role="tablist" aria-label="Chapters">
-          {CHAPTERS.map((c, i) => (
-            <button class="sheet-step" type="button" data-step={i} role="tab" aria-label={c.short}>
-              <span class="sheet-step-fill"></span>
-            </button>
-          ))}
-        </div>
-        <button class="sheet-arrow" type="button" data-sheet-next aria-label="Next">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
       </div>
     </div>
   </div>
@@ -268,16 +263,18 @@ const phNote = t(lang, 'about.placeholderNote');
       <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
-      <div class="sheet-viewport">
-        <article class="sheet-slide sheet-slide--solo">
-          <div class="sheet-media sheet-media--bike">
-            <img data-member-photo alt="" />
-          </div>
-          <div class="sheet-body">
-            <p class="sheet-en" data-member-role></p>
-            <h2 class="sheet-idiom" id="member-name" data-member-name></h2>
-            <p class="sheet-prose" data-member-bio></p>
-            <p class="sheet-gloss" data-member-meta></p>
+      <div class="deck deck--solo">
+        <article class="card is-open">
+          <div class="card-body">
+            <div class="card-media card-media--bike">
+              <img data-member-photo alt="" />
+            </div>
+            <div class="card-text">
+              <p class="card-en" data-member-role></p>
+              <h2 class="card-idiom" id="member-name" data-member-name></h2>
+              <p class="card-prose" data-member-bio></p>
+              <p class="card-gloss" data-member-meta></p>
+            </div>
           </div>
         </article>
       </div>
@@ -348,86 +345,48 @@ const phNote = t(lang, 'about.placeholderNote');
       // ---- chapter sheet ----
       const chapter = document.querySelector('[data-sheet="chapter"]');
       if (chapter) {
-        const track = chapter.querySelector('[data-track]');
-        const slides = Array.from(chapter.querySelectorAll('[data-slide]'));
-        const steps = Array.from(chapter.querySelectorAll('[data-step]'));
-        const dialog = chapter.querySelector('[role="dialog"]');
-        let current = 0;
+        const cards = Array.from(chapter.querySelectorAll('[data-card]'));
+      const dialog = chapter.querySelector('[role="dialog"]');
+      let current = 0;
 
-        function show(i, animate) {
-          current = (i + total) % total;
-          if (track) {
-            track.style.transition = animate === false ? 'none' : '';
-            track.style.transform = 'translateX(' + (-current * 100) + '%)';
+      function show(i) {
+        current = (i + total) % total;
+        cards.forEach((card, n) => {
+          const open = n === current;
+          card.classList.toggle('is-open', open);
+          // Closed chapters stay in the DOM but out of the tab order and
+          // the accessibility tree; only their spine remains reachable.
+          const body = card.querySelector('.card-body');
+          if (body) {
+            if (open) body.removeAttribute('inert');
+            else body.setAttribute('inert', '');
+            body.setAttribute('aria-hidden', open ? 'false' : 'true');
           }
-          slides.forEach((s, n) => {
-            const off = n !== current;
-            // keep off-screen chapters out of the tab order and the
-            // accessibility tree without removing them from the DOM
-            s.classList.toggle('is-active', !off);
-            if (off) s.setAttribute('inert', ''); else s.removeAttribute('inert');
-            s.setAttribute('aria-hidden', off ? 'true' : 'false');
-          });
-          steps.forEach((b, n) => {
-            b.classList.toggle('on', n === current);
-            b.setAttribute('aria-selected', n === current ? 'true' : 'false');
-          });
-          const idiom = slides[current] && slides[current].querySelector('.sheet-idiom');
-          if (dialog && idiom) dialog.setAttribute('aria-label', idiom.textContent);
-        }
-
-        document.querySelectorAll('[data-open]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            // jump to the chapter without animating in from chapter 1
-            show(Number(btn.getAttribute('data-open')), false);
-            open(chapter);
-            // re-enable the slide transition once the sheet is up
-            window.setTimeout(() => { if (track) track.style.transition = ''; }, 60);
-          });
+          const spine = card.querySelector('.card-spine');
+          if (spine) spine.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
-        steps.forEach((b, n) => b.addEventListener('click', () => show(n)));
-        const prev = chapter.querySelector('[data-sheet-prev]');
-        const next = chapter.querySelector('[data-sheet-next]');
-        if (prev) prev.addEventListener('click', () => show(current - 1));
-        if (next) next.addEventListener('click', () => show(current + 1));
+        const idiom = cards[current] && cards[current].querySelector('.card-idiom');
+        if (dialog && idiom) dialog.setAttribute('aria-label', idiom.textContent);
+      }
 
-        document.addEventListener('keydown', (e) => {
-          if (chapter.hidden) return;
-          if (e.key === 'ArrowLeft') show(current - 1);
-          if (e.key === 'ArrowRight') show(current + 1);
+      document.querySelectorAll('[data-open]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          show(Number(btn.getAttribute('data-open')));
+          open(chapter);
         });
+      });
+      chapter.querySelectorAll('[data-card-open]').forEach((btn) => {
+        btn.addEventListener('click', () =>
+          show(Number(btn.getAttribute('data-card-open'))));
+      });
 
-        // Swipe — the story should move under your thumb, not just jump.
-        let startX = null;
-        let dragging = false;
-        const vp = chapter.querySelector('.sheet-viewport');
-        if (vp) {
-          vp.addEventListener('pointerdown', (e) => {
-            if (e.pointerType === 'mouse') return;
-            startX = e.clientX;
-            dragging = true;
-            if (track) track.style.transition = 'none';
-          });
-          vp.addEventListener('pointermove', (e) => {
-            if (!dragging || startX === null || !track) return;
-            const dx = e.clientX - startX;
-            track.style.transform =
-              'translateX(calc(' + (-current * 100) + '% + ' + dx + 'px))';
-          });
-          const end = (e) => {
-            if (!dragging || startX === null) return;
-            const dx = e.clientX - startX;
-            dragging = false;
-            startX = null;
-            if (track) track.style.transition = '';
-            if (Math.abs(dx) > 60) show(current + (dx < 0 ? 1 : -1));
-            else show(current);
-          };
-          vp.addEventListener('pointerup', end);
-          vp.addEventListener('pointercancel', end);
-        }
+      document.addEventListener('keydown', (e) => {
+        if (chapter.hidden) return;
+        if (e.key === 'ArrowLeft') show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+      });
 
-        show(0, false);
+        show(0);
       }
 
       // ---- member sheet ----
@@ -1112,68 +1071,109 @@ const phNote = t(lang, 'about.placeholderNote');
   }
   .sheet-x:hover { background: rgba(0, 0, 0, 0.55); }
 
-  /* The three chapters live on one horizontal track: clipped viewport,
-     flex track, each slide exactly one viewport wide. */
-  .sheet-viewport { overflow: hidden; }
-  .sheet-track {
+  /* A fanned deck. Cards overlap by their left edge with a shadow cast
+     back onto the one behind, so the row reads as a held hand rather than
+     three tabs. The open card takes the remaining room; the rest collapse
+     to their spine. Transitioning flex-basis keeps the row's total width
+     fixed, so nothing outside the deck moves. */
+  .deck {
     display: flex;
-    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
+    align-items: stretch;
+    height: min(62vh, 460px);
+    background: var(--color-bg-secondary);
   }
-  .sheet-slide {
-    flex: 0 0 100%;
+  .card {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    flex: 0 0 clamp(58px, 7vw, 84px);
+    min-width: 0;
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+    z-index: calc(var(--i) + 1);
+    transition: flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                flex-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card + .card {
+    margin-left: -16px;
+    border-radius: var(--radius-aero) 0 0 var(--radius-aero);
+    box-shadow: -16px 0 34px rgba(0, 0, 0, 0.13);
+  }
+  :global(:root.dark) .card + .card {
+    box-shadow: -16px 0 34px rgba(0, 0, 0, 0.5);
+  }
+  .card.is-open {
+    flex: 1 1 auto;
+    z-index: 10;
+  }
+
+  /* Spine — the card's readable edge, and the control that opens it. */
+  .card-spine {
+    flex: 0 0 clamp(58px, 7vw, 84px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.4rem 0;
+    background: none;
+    border: none;
+    border-right: 1px solid var(--color-border);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: background 0.3s ease;
+  }
+  .card:not(.is-open) .card-spine:hover { background: var(--color-bg-tint); }
+  .card-spine:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -3px; }
+
+  .card-num {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 500;
+    color: var(--color-border-strong);
+    transition: color 0.3s ease;
+  }
+  .card.is-open .card-num { color: var(--color-accent); }
+
+  .card-edge {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: var(--color-text-muted);
+    writing-mode: vertical-rl;
+    transition: color 0.3s ease;
+  }
+  .card:not(.is-open) .card-spine:hover .card-edge { color: var(--color-text-secondary); }
+  .card.is-open .card-edge { color: var(--color-text-secondary); }
+
+  /* Body — only the open card gives it room, and it fades in behind the
+     width change so text never reflows in view. */
+  .card-body {
+    flex: 1 1 auto;
     min-width: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: stretch;
-  }
-  .sheet-slide--solo { flex: none; }
-
-  /* The entering chapter settles a beat after the slide lands, so the
-     three read as one story advancing rather than three separate cards. */
-  .sheet-slide .sheet-body > *,
-  .sheet-slide .sheet-media {
     opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
+    transition: opacity 0.3s ease;
   }
-  .sheet-slide.is-active .sheet-body > *,
-  .sheet-slide.is-active .sheet-media {
+  .card.is-open .card-body {
     opacity: 1;
-    transform: none;
-    transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.5s ease 0.18s;
   }
-  .sheet-slide.is-active .sheet-media { transition-delay: 0.1s; }
-  .sheet-slide.is-active .sheet-body > *:nth-child(1) { transition-delay: 0.16s; }
-  .sheet-slide.is-active .sheet-body > *:nth-child(2) { transition-delay: 0.22s; }
-  .sheet-slide.is-active .sheet-body > *:nth-child(3) { transition-delay: 0.28s; }
-  .sheet-slide.is-active .sheet-body > *:nth-child(4) { transition-delay: 0.34s; }
-  .sheet-slide.is-active .sheet-body > *:nth-child(5) { transition-delay: 0.40s; }
-  .sheet-slide--solo .sheet-body > * { opacity: 1; transform: none; }
-  .sheet-media { position: relative; overflow: hidden; min-height: 260px; }
-  .sheet-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .sheet-media--bike {
-    background: var(--color-bg-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-  .sheet-media--bike img { object-fit: contain; }
 
-  .sheet-body {
-    padding: clamp(28px, 3.5vw, 48px);
+  .card-text {
+    padding: clamp(26px, 3vw, 44px);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-width: 0;
+    overflow-y: auto;
   }
-  .sheet-symbol { width: 52px; height: auto; display: block; margin-bottom: 1.2rem; }
-  .sheet-en {
+  .card-symbol { width: 48px; height: auto; display: block; margin-bottom: 1.1rem; }
+  .card-en {
     font-family: var(--font-heading);
     font-size: 0.75rem;
     font-weight: 700;
@@ -1182,76 +1182,42 @@ const phNote = t(lang, 'about.placeholderNote');
     color: var(--color-accent);
     margin: 0;
   }
-  .sheet-idiom {
+  .card-idiom {
     font-family: var(--font-heading);
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
     font-weight: 700;
     letter-spacing: 0.05em;
     color: var(--color-text-main);
-    margin: 0.6rem 0 0;
+    margin: 0.55rem 0 0;
   }
-  .sheet-gloss {
+  .card-gloss {
     font-family: var(--font-body);
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     line-height: 1.7;
     color: var(--color-text-muted);
-    margin: 0.7rem 0 0;
+    margin: 0.65rem 0 0;
   }
-  .sheet-prose {
+  .card-prose {
     font-family: var(--font-body);
-    font-size: 0.98rem;
+    font-size: 0.95rem;
     line-height: 1.95;
     color: var(--color-text-main);
-    margin: 1.4rem 0 0;
+    margin: 1.2rem 0 0;
     text-align: justify;
     text-justify: inter-ideograph;
   }
-
-  .sheet-nav {
+  .deck--solo { height: min(52vh, 400px); }
+  .deck--solo .card { flex: 1 1 auto; }
+  .card-media { position: relative; overflow: hidden; }
+  .card-media--bike {
+    background: var(--color-bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1.25rem;
-    padding: 0 0 1.4rem;
+    padding: 2rem;
   }
-  .sheet-arrow {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--color-border-strong);
-    background: transparent;
-    color: var(--color-text-main);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s ease, color 0.2s ease;
-  }
-  .sheet-arrow:hover { border-color: var(--color-accent); color: var(--color-accent); }
-  /* Segmented progress — reads as "chapter 2 of 3" at a glance and
-     doubles as a jump control. */
-  .sheet-steps { display: flex; align-items: center; gap: 8px; }
-  .sheet-step {
-    width: 34px;
-    height: 14px;
-    padding: 5px 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-    display: block;
-  }
-  .sheet-step-fill {
-    display: block;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--color-border-strong);
-    transition: background 0.35s ease, transform 0.35s ease;
-    transform-origin: left center;
-  }
-  .sheet-step.on .sheet-step-fill { background: var(--color-accent); }
-  .sheet-step:hover .sheet-step-fill { background: var(--color-text-secondary); }
-  .sheet-step.on:hover .sheet-step-fill { background: var(--color-accent); }
-  .sheet-step:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 3px; }
+  .card-media--bike img { object-fit: contain; }
+  .card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ---------- Reveals ---------- */
   :global(html.reveal-ready) [data-reveal] {
@@ -1266,15 +1232,36 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sheet-track { transition: none; }
-    .sheet-slide .sheet-body > *,
-    .sheet-slide .sheet-media { opacity: 1; transform: none; transition: none; }
+    .card, .card-body { transition: none; }
   }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
-    .sheet-slide { grid-template-columns: 1fr; }
-    .sheet-media { min-height: 200px; max-height: 38vh; }
+    /* No room to fan three cards on a phone: the deck stacks and the
+       spines turn into horizontal bars. */
+    .deck, .deck--solo { flex-direction: column; height: auto; }
+    .card { flex: 0 0 auto; }
+    .card + .card {
+      margin-left: 0;
+      margin-top: -12px;
+      border-radius: var(--radius-aero) var(--radius-aero) 0 0;
+      box-shadow: 0 -12px 26px rgba(0, 0, 0, 0.12);
+    }
+    .card, .card.is-open { display: block; }
+    .card-spine {
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 1rem;
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .card-edge { writing-mode: horizontal-tb; letter-spacing: 0.16em; }
+    .card-num { font-size: 1.25rem; }
+    .card-body { grid-template-columns: 1fr; }
+    .card:not(.is-open) .card-body { display: none; }
+    .card-media { min-height: 190px; max-height: 34vh; }
   }
   @media (max-width: 560px) {
     .roads-ridge { --tile: 260px; }
