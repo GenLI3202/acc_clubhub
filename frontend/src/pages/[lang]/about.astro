@@ -30,6 +30,7 @@ const CHAPTERS = [
   {
     id: 'paths',
     en: 'Across paths',
+    short: 'Paths',
     symbol: '/images/about/symbols/parallel.svg',
     photo: '/images/about/placeholder/paths.jpg',
     idiom: t(lang, 'about.ch1Idiom'),
@@ -39,6 +40,7 @@ const CHAPTERS = [
   {
     id: 'mountains',
     en: 'Across mountains',
+    short: 'Mountains',
     symbol: '/images/about/symbols/mountain-rider.svg',
     photo: '/images/about/placeholder/mountains.jpg',
     idiom: t(lang, 'about.ch2Idiom'),
@@ -48,6 +50,7 @@ const CHAPTERS = [
   {
     id: 'borders',
     en: 'Across borders',
+    short: 'Borders',
     symbol: '/images/about/symbols/bridge.svg',
     photo: '/images/about/placeholder/borders.jpg',
     idiom: t(lang, 'about.ch3Idiom'),
@@ -70,8 +73,8 @@ const phNote = t(lang, 'about.placeholderNote');
     <div class="about-hero-inner">
       <img class="about-hero-mark" src="/images/about/acc-wordmark.svg" alt="ACC" width="700" height="230" />
       <p class="about-hero-eyebrow">{t(lang, 'about.eyebrow')}</p>
-      <h1 class="about-hero-title">Across</h1>
-      <p class="about-hero-meta">Across Cycling Club · München · 2023</p>
+      <h1 class="about-hero-title">Across Cycling Club</h1>
+      <p class="about-hero-meta">München · founded 2023</p>
       <p class="about-hero-lede">{t(lang, 'about.heroLede')}</p>
       <a class="btn-solid" href="#join">{t(lang, 'about.heroCta')}</a>
     </div>
@@ -139,7 +142,7 @@ const phNote = t(lang, 'about.placeholderNote');
               tabindex={pass > 0 ? -1 : undefined}
             >
               <img class="concept-symbol" src={c.symbol} alt="" width="60" height="40" />
-              <span class="concept-en">{c.en}</span>
+              <span class="concept-en">{c.short}</span>
               <span class="concept-idiom">{c.idiom}</span>
               {c.gloss && <span class="concept-gloss">{c.gloss}</span>}
               <span class="concept-cue" aria-hidden="true">
@@ -245,7 +248,7 @@ const phNote = t(lang, 'about.placeholderNote');
         </button>
         <div class="sheet-steps" role="tablist" aria-label="Chapters">
           {CHAPTERS.map((c, i) => (
-            <button class="sheet-step" type="button" data-step={i} role="tab" aria-label={c.en}>
+            <button class="sheet-step" type="button" data-step={i} role="tab" aria-label={c.short}>
               <span class="sheet-step-fill"></span>
             </button>
           ))}
@@ -610,7 +613,8 @@ const phNote = t(lang, 'about.placeholderNote');
   }
   .about-hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-size: clamp(2.1rem, 5vw, 3.6rem);
+    max-width: 12em;
     font-weight: 700;
     text-transform: uppercase;
     color: #fff;
