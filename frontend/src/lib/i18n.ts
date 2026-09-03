@@ -99,7 +99,7 @@ export const ui = {
         // About page
         'about.eyebrow': '关于俱乐部',
         // --- About Us v2 (phase-9 redesign) ---
-        'about.heroLede': '慕尼黑的华人公路骑行俱乐部。我们组织穿越巴伐利亚与阿尔卑斯的骑行，也为成员搭建一个训练、交流、成长的平台。',
+        'about.heroLede': '起源于慕尼黑华人骑行圈的公路车俱乐部，欢迎所有骑友。我们组织穿越巴伐利亚与阿尔卑斯的骑行，也为成员搭建训练、交流、成长的平台。',
         'about.heroCta': '加入我们',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': '',
@@ -118,7 +118,7 @@ export const ui = {
         'about.placeholderNote': '占位图 · 待替换',
         'about.h1': 'Across Cycling Club',
         'about.subtitle': '慕尼黑 · 创立于 2023',
-        'about.intro1': 'ACC 是一家位于慕尼黑的华人公路骑行俱乐部。我们推广公路骑行，组织穿越巴伐利亚与阿尔卑斯的骑行活动，为成员搭建一个可以训练、交流、成长的平台。',
+        'about.intro1': 'ACC 是一家扎根慕尼黑的公路骑行俱乐部，起源于华人群体，欢迎来自五湖四海的骑行爱好者们。我们组织穿越巴伐利亚与阿尔卑斯的骑行活动，为每位骑友搭建训练、交流、成长的平台。',
         'about.intro2Prefix': '无论你是在追 KOM，还是只为了那杯山顶的咖啡 —',
         'about.intro2Em': '你都能在这里找到自己的同路人。',
         'about.poemWord1': 'mountains.',
@@ -282,7 +282,7 @@ export const ui = {
         // About page
         'about.eyebrow': 'About the Club',
         // --- About Us v2 (phase-9 redesign) ---
-        'about.heroLede': 'A Chinese road-cycling club in Munich. We ride across Bavaria and the Alps, and give our members somewhere to train, meet and grow.',
+        'about.heroLede': 'A road-cycling club in Munich — born from the Chinese cycling community, open to every rider. We ride across Bavaria and the Alps, and give our members somewhere to train, meet and grow.',
         'about.heroCta': 'Join us',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': 'Two travellers stop, tilt their carriage covers together, and part as old friends.',
@@ -301,7 +301,7 @@ export const ui = {
         'about.placeholderNote': 'Placeholder · to be replaced',
         'about.h1': 'Across Cycling Club',
         'about.subtitle': 'München · founded 2023',
-        'about.intro1': 'ACC is a Chinese cycling club based in Munich. We promote road cycling, organize rides across Bavaria and the Alps, and provide a platform for our members to connect, train, and grow on two wheels.',
+        'about.intro1': 'ACC is a road-cycling club rooted in Munich — born from the Chinese community and welcoming cycling enthusiasts from all over the world. We organize rides across Bavaria and the Alps, providing a platform for every cyclist to train, connect, and grow.',
         'about.intro2Prefix': "Whether you're chasing KOMs or just in it for the coffee stop —",
         'about.intro2Em': "you'll find your people here.",
         'about.poemWord1': 'mountains.',
@@ -465,7 +465,7 @@ export const ui = {
         // About page
         'about.eyebrow': 'Über den Club',
         // --- About Us v2 (phase-9 redesign) ---
-        'about.heroLede': 'Ein chinesischer Rennradverein in München. Wir fahren durch Bayern und die Alpen und bieten unseren Mitgliedern einen Ort zum Trainieren, Austauschen und Wachsen.',
+        'about.heroLede': 'Ein Rennradverein in München — entstanden aus der chinesischen Cycling-Community, offen für alle Fahrer. Wir fahren durch Bayern und die Alpen und bieten einen Ort zum Trainieren, Austauschen und Wachsen.',
         'about.heroCta': 'Mitfahren',
         'about.ch1Idiom': '倾盖如故',
         'about.ch1Gloss': 'Zwei Reisende halten an, neigen die Wagendächer zueinander — und trennen sich als alte Freunde.',
@@ -484,7 +484,7 @@ export const ui = {
         'about.placeholderNote': 'Platzhalter · wird ersetzt',
         'about.h1': 'Across Cycling Club',
         'about.subtitle': 'München · gegründet 2023',
-        'about.intro1': 'ACC ist ein chinesischer Rennradverein in München. Wir fördern den Rennradsport, organisieren Ausfahrten durch Bayern und die Alpen und bieten unseren Mitgliedern eine Plattform zum Trainieren, Austauschen und Wachsen auf zwei Rädern.',
+        'about.intro1': 'ACC ist ein in München verwurzelter Rennradverein — entstanden in der chinesischen Community und offen für Radbegeisterte aus aller Welt. Wir organisieren Ausfahrten durch Bayern und die Alpen und bieten jedem Fahrer eine Plattform zum Trainieren, Austauschen und Wachsen.',
         'about.intro2Prefix': 'Egal ob du KOMs jagst oder nur für den Kaffeestopp fährst —',
         'about.intro2Em': 'hier findest du deine Leute.',
         'about.poemWord1': 'mountains.',
