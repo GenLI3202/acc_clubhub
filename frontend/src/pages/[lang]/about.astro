@@ -24,7 +24,7 @@ const pageTitle = t(lang, 'nav.about');
 
 // Every ride photo on this page is a stand-in. Flip to false once real
 // photography lands — it drops the stripe overlay and the corner badge.
-const PHOTOS_ARE_PLACEHOLDER = true;
+const PHOTOS_ARE_PLACEHOLDER = false;
 
 const CHAPTERS = [
   {
@@ -102,10 +102,10 @@ const phNote = t(lang, 'about.placeholderNote');
         <h2 class="roads-word" id="roads-heading">
           <span class="sr-only">Across</span>
           <svg class="roads-mark" viewBox="0 0 1523 230" aria-hidden="true" focusable="false">
-          <path d="M 453 0 L 375 0 L 327 46 L 327 184 L 375 230 L 453 230 L 453 204 L 387 204 L 353 172 L 353 58 L 387 26 L 453 26 Z" fill="#C62828" opacity="0.18" fill-rule="evenodd"/>
-          <path d="M 495 0 L 417 0 L 369 46 L 369 184 L 417 230 L 495 230 L 495 204 L 429 204 L 395 172 L 395 58 L 429 26 L 495 26 Z" fill="#C62828" opacity="0.34" fill-rule="evenodd"/>
-          <path d="M 537 0 L 459 0 L 411 46 L 411 184 L 459 230 L 537 230 L 537 204 L 471 204 L 437 172 L 437 58 L 471 26 L 537 26 Z" fill="#C62828" opacity="0.58" fill-rule="evenodd"/>
-          <path d="M 0 230 L 207 0 L 305 0 L 305 230 L 150 230 L 131 178 L 112 230 Z M 227 62 L 227 178 L 131 178 Z M 501 0 L 653 0 L 653 54 L 531 54 L 509 76 L 509 154 L 531 176 L 653 176 L 653 230 L 501 230 L 453 184 L 453 46 Z M 675 0 L 825 0 L 875 46 L 875 104 L 845 132 L 877 230 L 817 230 L 791 142 L 731 142 L 731 230 L 675 230 Z M 731 54 L 815 54 L 819 58 L 819 84 L 815 88 L 731 88 Z M 947 0 L 1051 0 L 1099 46 L 1099 184 L 1051 230 L 947 230 L 899 184 L 899 46 Z M 977 54 L 1021 54 L 1043 76 L 1043 154 L 1021 176 L 977 176 L 955 154 L 955 76 Z M 1165 0 L 1311 0 L 1311 54 L 1191 54 L 1177 68 L 1177 90 L 1191 104 L 1269 104 L 1311 146 L 1311 188 L 1267 230 L 1121 230 L 1121 176 L 1241 176 L 1255 162 L 1255 140 L 1241 126 L 1163 126 L 1121 84 L 1121 42 Z M 1377 0 L 1523 0 L 1523 54 L 1403 54 L 1389 68 L 1389 90 L 1403 104 L 1481 104 L 1523 146 L 1523 188 L 1479 230 L 1333 230 L 1333 176 L 1453 176 L 1467 162 L 1467 140 L 1453 126 L 1375 126 L 1333 84 L 1333 42 Z" fill="currentColor" fill-rule="evenodd"/>
+          <path d="M 453.0 8.0 Q 453.0 0.0 445.0 0.0 L 383.0 0.0 Q 375.0 0.0 369.2 5.5 L 332.8 40.5 Q 327.0 46.0 327.0 54.0 L 327.0 176.0 Q 327.0 184.0 332.8 189.5 L 369.2 224.5 Q 375.0 230.0 383.0 230.0 L 445.0 230.0 Q 453.0 230.0 453.0 222.0 L 453.0 212.0 Q 453.0 204.0 445.0 204.0 L 395.0 204.0 Q 387.0 204.0 381.2 198.5 L 358.8 177.5 Q 353.0 172.0 353.0 164.0 L 353.0 66.0 Q 353.0 58.0 358.8 52.5 L 381.2 31.5 Q 387.0 26.0 395.0 26.0 L 445.0 26.0 Q 453.0 26.0 453.0 18.0 Z" fill="#C62828" opacity="0.18" fill-rule="evenodd"/>
+          <path d="M 495.0 8.0 Q 495.0 0.0 487.0 0.0 L 425.0 0.0 Q 417.0 0.0 411.2 5.5 L 374.8 40.5 Q 369.0 46.0 369.0 54.0 L 369.0 176.0 Q 369.0 184.0 374.8 189.5 L 411.2 224.5 Q 417.0 230.0 425.0 230.0 L 487.0 230.0 Q 495.0 230.0 495.0 222.0 L 495.0 212.0 Q 495.0 204.0 487.0 204.0 L 437.0 204.0 Q 429.0 204.0 423.2 198.5 L 400.8 177.5 Q 395.0 172.0 395.0 164.0 L 395.0 66.0 Q 395.0 58.0 400.8 52.5 L 423.2 31.5 Q 429.0 26.0 437.0 26.0 L 487.0 26.0 Q 495.0 26.0 495.0 18.0 Z" fill="#C62828" opacity="0.34" fill-rule="evenodd"/>
+          <path d="M 537.0 8.0 Q 537.0 0.0 529.0 0.0 L 467.0 0.0 Q 459.0 0.0 453.2 5.5 L 416.8 40.5 Q 411.0 46.0 411.0 54.0 L 411.0 176.0 Q 411.0 184.0 416.8 189.5 L 453.2 224.5 Q 459.0 230.0 467.0 230.0 L 529.0 230.0 Q 537.0 230.0 537.0 222.0 L 537.0 212.0 Q 537.0 204.0 529.0 204.0 L 479.0 204.0 Q 471.0 204.0 465.2 198.5 L 442.8 177.5 Q 437.0 172.0 437.0 164.0 L 437.0 66.0 Q 437.0 58.0 442.8 52.5 L 465.2 31.5 Q 471.0 26.0 479.0 26.0 L 529.0 26.0 Q 537.0 26.0 537.0 18.0 Z" fill="#C62828" opacity="0.58" fill-rule="evenodd"/>
+          <path d="M 8.0 230.0 Q 0.0 230.0 5.4 224.1 L 201.6 5.9 Q 207.0 0.0 215.0 0.0 L 297.0 0.0 Q 305.0 0.0 305.0 8.0 L 305.0 222.0 Q 305.0 230.0 297.0 230.0 L 158.0 230.0 Q 150.0 230.0 147.3 222.5 L 133.7 185.5 Q 131.0 178.0 128.3 185.5 L 114.7 222.5 Q 112.0 230.0 104.0 230.0 Z M 221.9 68.2 Q 227.0 62.0 227.0 70.0 L 227.0 170.0 Q 227.0 178.0 219.0 178.0 L 139.0 178.0 Q 131.0 178.0 136.1 171.8 Z M 495.2 5.5 Q 501.0 0.0 509.0 0.0 L 645.0 0.0 Q 653.0 0.0 653.0 8.0 L 653.0 46.0 Q 653.0 54.0 645.0 54.0 L 539.0 54.0 Q 531.0 54.0 525.3 59.7 L 514.7 70.3 Q 509.0 76.0 509.0 84.0 L 509.0 146.0 Q 509.0 154.0 514.7 159.7 L 525.3 170.3 Q 531.0 176.0 539.0 176.0 L 645.0 176.0 Q 653.0 176.0 653.0 184.0 L 653.0 222.0 Q 653.0 230.0 645.0 230.0 L 509.0 230.0 Q 501.0 230.0 495.2 224.5 L 458.8 189.5 Q 453.0 184.0 453.0 176.0 L 453.0 54.0 Q 453.0 46.0 458.8 40.5 Z M 675.0 8.0 Q 675.0 0.0 683.0 0.0 L 817.0 0.0 Q 825.0 0.0 830.9 5.4 L 869.1 40.6 Q 875.0 46.0 875.0 54.0 L 875.0 96.0 Q 875.0 104.0 869.2 109.5 L 850.8 126.5 Q 845.0 132.0 847.5 139.6 L 874.5 222.4 Q 877.0 230.0 869.0 230.0 L 825.0 230.0 Q 817.0 230.0 814.7 222.3 L 793.3 149.7 Q 791.0 142.0 783.0 142.0 L 739.0 142.0 Q 731.0 142.0 731.0 150.0 L 731.0 222.0 Q 731.0 230.0 723.0 230.0 L 683.0 230.0 Q 675.0 230.0 675.0 222.0 Z M 731.0 62.0 Q 731.0 54.0 739.0 54.0 L 812.5 54.0 Q 815.0 54.0 816.8 55.8 L 817.2 56.2 Q 819.0 58.0 819.0 60.5 L 819.0 81.5 Q 819.0 84.0 817.2 85.8 L 816.8 86.2 Q 815.0 88.0 812.5 88.0 L 739.0 88.0 Q 731.0 88.0 731.0 80.0 Z M 941.2 5.5 Q 947.0 0.0 955.0 0.0 L 1043.0 0.0 Q 1051.0 0.0 1056.8 5.5 L 1093.2 40.5 Q 1099.0 46.0 1099.0 54.0 L 1099.0 176.0 Q 1099.0 184.0 1093.2 189.5 L 1056.8 224.5 Q 1051.0 230.0 1043.0 230.0 L 955.0 230.0 Q 947.0 230.0 941.2 224.5 L 904.8 189.5 Q 899.0 184.0 899.0 176.0 L 899.0 54.0 Q 899.0 46.0 904.8 40.5 Z M 971.3 59.7 Q 977.0 54.0 985.0 54.0 L 1013.0 54.0 Q 1021.0 54.0 1026.7 59.7 L 1037.3 70.3 Q 1043.0 76.0 1043.0 84.0 L 1043.0 146.0 Q 1043.0 154.0 1037.3 159.7 L 1026.7 170.3 Q 1021.0 176.0 1013.0 176.0 L 985.0 176.0 Q 977.0 176.0 971.3 170.3 L 960.7 159.7 Q 955.0 154.0 955.0 146.0 L 955.0 84.0 Q 955.0 76.0 960.7 70.3 Z M 1159.2 5.5 Q 1165.0 0.0 1173.0 0.0 L 1303.0 0.0 Q 1311.0 0.0 1311.0 8.0 L 1311.0 46.0 Q 1311.0 54.0 1303.0 54.0 L 1199.0 54.0 Q 1191.0 54.0 1185.3 59.7 L 1182.7 62.3 Q 1177.0 68.0 1177.0 76.0 L 1177.0 82.0 Q 1177.0 90.0 1182.7 95.7 L 1185.3 98.3 Q 1191.0 104.0 1199.0 104.0 L 1261.0 104.0 Q 1269.0 104.0 1274.7 109.7 L 1305.3 140.3 Q 1311.0 146.0 1311.0 154.0 L 1311.0 180.0 Q 1311.0 188.0 1305.2 193.5 L 1272.8 224.5 Q 1267.0 230.0 1259.0 230.0 L 1129.0 230.0 Q 1121.0 230.0 1121.0 222.0 L 1121.0 184.0 Q 1121.0 176.0 1129.0 176.0 L 1233.0 176.0 Q 1241.0 176.0 1246.7 170.3 L 1249.3 167.7 Q 1255.0 162.0 1255.0 154.0 L 1255.0 148.0 Q 1255.0 140.0 1249.3 134.3 L 1246.7 131.7 Q 1241.0 126.0 1233.0 126.0 L 1171.0 126.0 Q 1163.0 126.0 1157.3 120.3 L 1126.7 89.7 Q 1121.0 84.0 1121.0 76.0 L 1121.0 50.0 Q 1121.0 42.0 1126.8 36.5 Z M 1371.2 5.5 Q 1377.0 0.0 1385.0 0.0 L 1515.0 0.0 Q 1523.0 0.0 1523.0 8.0 L 1523.0 46.0 Q 1523.0 54.0 1515.0 54.0 L 1411.0 54.0 Q 1403.0 54.0 1397.3 59.7 L 1394.7 62.3 Q 1389.0 68.0 1389.0 76.0 L 1389.0 82.0 Q 1389.0 90.0 1394.7 95.7 L 1397.3 98.3 Q 1403.0 104.0 1411.0 104.0 L 1473.0 104.0 Q 1481.0 104.0 1486.7 109.7 L 1517.3 140.3 Q 1523.0 146.0 1523.0 154.0 L 1523.0 180.0 Q 1523.0 188.0 1517.2 193.5 L 1484.8 224.5 Q 1479.0 230.0 1471.0 230.0 L 1341.0 230.0 Q 1333.0 230.0 1333.0 222.0 L 1333.0 184.0 Q 1333.0 176.0 1341.0 176.0 L 1445.0 176.0 Q 1453.0 176.0 1458.7 170.3 L 1461.3 167.7 Q 1467.0 162.0 1467.0 154.0 L 1467.0 148.0 Q 1467.0 140.0 1461.3 134.3 L 1458.7 131.7 Q 1453.0 126.0 1445.0 126.0 L 1383.0 126.0 Q 1375.0 126.0 1369.3 120.3 L 1338.7 89.7 Q 1333.0 84.0 1333.0 76.0 L 1333.0 50.0 Q 1333.0 42.0 1338.8 36.5 Z" fill="currentColor" fill-rule="evenodd"/>
           </svg>
         </h2>
         <p class="roads-name">
@@ -210,12 +210,24 @@ const phNote = t(lang, 'about.placeholderNote');
     </section>
   </article>
 
+  {/* SVG filter for organic Chinese ink wash / colored pencil sketch texture */}
+  <svg style="position:absolute;width:0;height:0;pointer-events:none;" aria-hidden="true">
+    <defs>
+      <filter id="acc-ink-wash" x="-25%" y="-25%" width="150%" height="150%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.075" numOctaves="3" result="grain" />
+        <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="inkEdge" />
+        <feComposite in="inkEdge" in2="SourceGraphic" operator="over" />
+      </filter>
+    </defs>
+  </svg>
+
   {/* ==============================================================
       Chapter overlay — the "interactive view". Prose is rendered
       here in the markup, so it is indexable and reachable without JS.
      ============================================================== */}
   <div class="sheet" data-sheet="chapter" hidden>
     <div class="sheet-backdrop" data-sheet-close></div>
+    <div class="sheet-birds" aria-hidden="true"></div>
     <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-idiom">
       <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -234,13 +246,12 @@ const phNote = t(lang, 'about.placeholderNote');
               data-card-open={i}
               aria-expanded={i === 0 ? 'true' : 'false'}
             >
-              <span class="card-num">{String(i + 1).padStart(2, '0')}</span>
+              <img class="card-mark" src={c.symbol} alt="" aria-hidden="true" width="60" height="40" />
               <span class="card-edge">{c.idiom}</span>
             </button>
 
             <div class="card-body">
               <div class="card-text">
-                <img class="card-symbol" src={c.symbol} alt="" width="60" height="40" />
                 <p class="card-en">{c.en}</p>
                 <h3 class="card-idiom" id={i === 0 ? 'sheet-idiom' : undefined}>{c.idiom}</h3>
                 {c.gloss && <p class="card-gloss">{c.gloss}</p>}
@@ -311,24 +322,362 @@ const phNote = t(lang, 'about.placeholderNote');
       if (!sheets.length) return;
       let lastFocus = null;
 
+      // Chinese ink wash & colored pencil sketch bird vectors (写意水墨/彩铅素描风)
+      const BIRD_SVGS = [
+        // 1. Soaring Falcon / Raptor (水墨大鹏滑翔 — 浓淡写意羽羽生辉)
+        '<svg viewBox="0 0 54 36" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M27 15 C19 8, 10 7, 2 13 C9 15, 17 18, 23 20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M27 15 C35 8, 44 7, 52 13 C45 15, 37 18, 31 20" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M5 14 C12 18, 19 22, 25 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M49 14 C42 18, 35 22, 29 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M9 17 C16 21, 21 24, 26 26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.65" />' +
+          '<path d="M45 17 C38 21, 33 24, 28 26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.65" />' +
+          '<path d="M27 12 C25 15, 24 20, 27 25 C30 20, 29 15, 27 12 Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.2" />' +
+          '<circle cx="27" cy="11" r="1.6" fill="currentColor" />' +
+          '<path d="M26 25 L23 34" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />' +
+          '<path d="M28 25 L31 34" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />' +
+          '<path d="M27 25 L27 31" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.75" />' +
+          '<path d="M2 13 C12 11, 22 13, 27 15 C32 13, 42 11, 52 13 C44 19, 36 24, 27 26 C18 24, 10 19, 2 13 Z" fill="currentColor" fill-opacity="0.12" />' +
+        '</svg>',
+
+        // 2. Wheeling Swift / Swallow (写意双燕回旋 — 枯笔飞白分叉剪尾)
+        '<svg viewBox="0 0 50 40" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M23 18 C15 9, 7 3, 2 2 C8 11, 15 19, 21 24" stroke="currentColor" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M5 6 C12 14, 17 21, 22 26" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M25 18 C33 13, 41 10, 48 11 C41 16, 34 22, 28 26" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M44 13 C38 18, 32 23, 27 27" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.75" />' +
+          '<path d="M22 17 C21 20, 22 24, 25 27 C26 24, 26 19, 24 17 Z" fill="currentColor" fill-opacity="0.24" stroke="currentColor" stroke-width="1.4" />' +
+          '<circle cx="22.5" cy="15.5" r="1.8" fill="currentColor" />' +
+          '<path d="M24 27 C22 31, 19 36, 15 39" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />' +
+          '<path d="M25 27 C26 31, 28 35, 30 38" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M2 2 C12 8, 18 14, 24 18 C33 13, 41 11, 48 11 C38 18, 30 25, 25 28 C19 23, 11 14, 2 2 Z" fill="currentColor" fill-opacity="0.12" />' +
+        '</svg>',
+
+        // 3. Gliding Crane / Dove (素描滑翔白鹤 — 舒展双翼工写兼备)
+        '<svg viewBox="0 0 52 30" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M26 13 C17 3, 9 2, 2 9 C11 11, 19 15, 25 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />' +
+          '<path d="M26 13 C35 3, 43 2, 50 9 C41 11, 33 15, 27 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />' +
+          '<path d="M6 9 C13 14, 20 18, 25 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M46 9 C39 14, 32 18, 27 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M11 12 C18 17, 22 20, 26 22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />' +
+          '<path d="M41 12 C34 17, 30 20, 26 22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />' +
+          '<path d="M26 12 C24 15, 24 19, 26 23 C28 19, 28 15, 26 12 Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.3" />' +
+          '<circle cx="26" cy="10" r="1.5" fill="currentColor" />' +
+          '<path d="M24 23 L22 29" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />' +
+          '<path d="M26 23 L26 30" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" />' +
+          '<path d="M28 23 L30 29" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />' +
+          '<path d="M2 9 C11 5, 20 7, 26 13 C32 7, 41 5, 50 9 C42 16, 34 21, 26 23 C18 21, 10 16, 2 9 Z" fill="currentColor" fill-opacity="0.13" />' +
+        '</svg>',
+
+        // 4. Banking Alpine Chough (高山悬崖翻飞 — 昂首掠影灵动)
+        '<svg viewBox="0 0 46 42" fill="none" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible;filter:url(#acc-ink-wash);">' +
+          '<path d="M19 22 C13 13, 8 5, 5 1 C10 8, 15 16, 19 25" stroke="currentColor" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M8 4 C13 11, 17 18, 20 27" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />' +
+          '<path d="M22 24 C28 22, 36 21, 43 23 C36 27, 29 30, 24 33" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />' +
+          '<path d="M39 24 C33 28, 28 31, 23 34" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.75" />' +
+          '<path d="M19 20 C18 18, 19 16, 21 16 C23 16, 23 18, 22 21 Z" fill="currentColor" fill-opacity="0.3" stroke="currentColor" stroke-width="1.4" />' +
+          '<path d="M22 17 L25 16" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" />' +
+          '<path d="M21 32 C19 36, 16 39, 13 41" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />' +
+          '<path d="M22 32 C22 36, 22 39, 21 42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />' +
+          '<path d="M5 1 C11 7, 16 14, 20 22 C27 21, 35 21, 43 23 C34 28, 27 33, 22 33 C17 29, 11 18, 5 1 Z" fill="currentColor" fill-opacity="0.13" />' +
+        '</svg>'
+      ];
+
+      // Palette strictly sampled from the alpine ridge contours (深灰、绿、红、蓝)
+      const BIRD_PALETTE_LIGHT = [
+        '#2D312E', '#1B7A43', '#C92A2A', '#0084B4',
+        '#454B46', '#22864C', '#DC2626', '#0284C7'
+      ];
+      const BIRD_PALETTE_DARK = [
+        '#E4E8E5', '#4ADE80', '#F87171', '#38BDF8',
+        '#F2F5F3', '#22C55E', '#EF4444', '#60A5FA'
+      ];
+
+      function setupBirdsContainer(container) {
+        const roads = document.querySelector('.roads');
+        if (!roads || !container) {
+          return {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            isPortrait: window.innerHeight > window.innerWidth
+          };
+        }
+        const rect = roads.getBoundingClientRect();
+        const top = Math.max(0, rect.top);
+        const bottom = Math.min(window.innerHeight, rect.bottom);
+        const height = Math.max(260, bottom - top);
+
+        // Constrain the bird flock layer strictly to the visible .roads mountain section
+        container.style.position = 'fixed';
+        container.style.top = `${top}px`;
+        container.style.left = '0px';
+        container.style.width = '100vw';
+        container.style.height = `${height}px`;
+        container.style.overflow = 'hidden';
+        container.style.pointerEvents = 'none';
+
+        return {
+          width: window.innerWidth,
+          height: height,
+          isPortrait: window.innerHeight > window.innerWidth
+        };
+      }
+
+      function spawnBirdsAssemble(container) {
+        container.innerHTML = '';
+        const b = setupBirdsContainer(container);
+        const isDark = document.documentElement.classList.contains('dark');
+        const palette = isDark ? BIRD_PALETTE_DARK : BIRD_PALETTE_LIGHT;
+        const fragment = document.createDocumentFragment();
+
+        // Enlarged +50% art bird size: 78px - 110px desktop, 60px - 82px portrait
+        const baseSize = b.isPortrait ? 60 : 78;
+        const sizeRange = b.isPortrait ? 22 : 32;
+
+        // 5 Cohesive Formations (Total 54 birds):
+        // 1. Top-Left High Alpine (11)
+        // 2. Top-Right High Alpine (11)
+        // 3. Left Mountain Slope (12)
+        // 4. Right Mountain Slope (12)
+        // 5. Upper ACROSS Sky (8)
+        const formations = [
+          { count: 11, type: 'top-left' },
+          { count: 11, type: 'top-right' },
+          { count: 12, type: 'left' },
+          { count: 12, type: 'right' },
+          { count: 8, type: 'top' }
+        ];
+
+        let birdIndex = 0;
+        formations.forEach((f) => {
+          for (let i = 0; i < f.count; i++) {
+            const bird = document.createElement('span');
+            bird.className = 'bird-particle bird-converge';
+
+            let sx, sy, tx, ty, sRot;
+
+            if (f.type === 'top-left') {
+              // Diagonal swoop from top-left high sky to top-left area of card
+              sx = -(b.width * 0.35) - (i * 22) - Math.random() * 25;
+              sy = -(b.height * 0.36) - (i * 8) - Math.random() * 15;
+              tx = -(b.isPortrait ? 80 : 160) + (Math.random() - 0.5) * 120;
+              ty = -(b.isPortrait ? 60 : 90) + (Math.random() - 0.5) * 80;
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else if (f.type === 'top-right') {
+              // Diagonal swoop from top-right high sky to top-right area of card
+              sx = (b.width * 0.35) + (i * 22) + Math.random() * 25;
+              sy = -(b.height * 0.36) - (i * 8) - Math.random() * 15;
+              tx = (b.isPortrait ? 80 : 160) + (Math.random() - 0.5) * 120;
+              ty = -(b.isPortrait ? 60 : 90) + (Math.random() - 0.5) * 80;
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else if (f.type === 'left') {
+              // Left mid-mountain slope echelon to left wing of card
+              const streamOffset = (i - f.count / 2) * 18;
+              sx = -(b.width * 0.40) - (i * 24) - Math.random() * 30;
+              sy = streamOffset + (Math.random() - 0.5) * 20;
+              tx = -(b.isPortrait ? 90 : 180) + (Math.random() - 0.5) * 100;
+              ty = (Math.random() - 0.5) * (b.isPortrait ? 120 : 180);
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else if (f.type === 'right') {
+              // Right mid-mountain slope echelon to right wing of card
+              const streamOffset = (i - f.count / 2) * 18;
+              sx = (b.width * 0.40) + (i * 24) + Math.random() * 30;
+              sy = streamOffset + (Math.random() - 0.5) * 20;
+              tx = (b.isPortrait ? 90 : 180) + (Math.random() - 0.5) * 100;
+              ty = (Math.random() - 0.5) * (b.isPortrait ? 120 : 180);
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 6;
+            } else {
+              // Upper ACROSS sky echelon to card center-top
+              sx = (i - f.count / 2) * 44 + (Math.random() - 0.5) * 20;
+              sy = -(b.height * 0.40) - Math.random() * 15;
+              tx = (Math.random() - 0.5) * (b.isPortrait ? 140 : 260);
+              ty = (Math.random() - 0.5) * 100;
+              sRot = (Math.atan2(ty - sy, tx - sx) * 180 / Math.PI) + (Math.random() - 0.5) * 8;
+            }
+
+            const tRot = sRot + (Math.random() - 0.5) * 10;
+            const size = baseSize + (i % 4) * (sizeRange / 4) + Math.random() * 4;
+            const dur = 0.68 + (i * 0.018) + Math.random() * 0.06;
+            const delay = i * 0.028; // clean echelon sequence
+            const wingDur = 0.36 + Math.random() * 0.08;
+            const svgTemplate = BIRD_SVGS[birdIndex % BIRD_SVGS.length];
+            const color = palette[birdIndex % palette.length];
+            birdIndex++;
+
+            bird.style.cssText = `
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              width: ${size.toFixed(1)}px;
+              height: ${(size * 0.62).toFixed(1)}px;
+              margin-left: -${(size * 0.5).toFixed(1)}px;
+              margin-top: -${(size * 0.31).toFixed(1)}px;
+              color: ${color};
+              display: block;
+              pointer-events: none;
+              will-change: transform, opacity;
+              --sx: ${sx.toFixed(1)}px;
+              --sy: ${sy.toFixed(1)}px;
+              --tx: ${tx.toFixed(1)}px;
+              --ty: ${ty.toFixed(1)}px;
+              --s-rot: ${sRot.toFixed(1)}deg;
+              --t-rot: ${tRot.toFixed(1)}deg;
+              --b-size: ${size.toFixed(1)}px;
+              --fly-dur: ${dur.toFixed(2)}s;
+              --fly-delay: ${delay.toFixed(2)}s;
+              --wing-dur: ${wingDur.toFixed(2)}s;
+              --b-color: ${color};
+            `;
+            bird.innerHTML = svgTemplate;
+            fragment.appendChild(bird);
+          }
+        });
+        container.appendChild(fragment);
+      }
+
+      function spawnBirdsScatter(container) {
+        container.innerHTML = '';
+        const b = setupBirdsContainer(container);
+        const isDark = document.documentElement.classList.contains('dark');
+        const palette = isDark ? BIRD_PALETTE_DARK : BIRD_PALETTE_LIGHT;
+        const fragment = document.createDocumentFragment();
+
+        const baseSize = b.isPortrait ? 60 : 78;
+        const sizeRange = b.isPortrait ? 22 : 32;
+
+        // 3 Downward Streams into Mountain Forest (Total 54 birds):
+        // Left Ridge Stream (18), Right Ridge Stream (18), Center Valley Stream (18)
+        const streams = [
+          { count: 18, dir: 'left' },
+          { count: 18, dir: 'right' },
+          { count: 18, dir: 'center' }
+        ];
+
+        let birdIndex = 0;
+        streams.forEach((s) => {
+          for (let i = 0; i < s.count; i++) {
+            const bird = document.createElement('span');
+            bird.className = 'bird-particle bird-scatter';
+
+            // Start across the card body
+            const cx = (Math.random() - 0.5) * (b.isPortrait ? 260 : 440);
+            const cy = (Math.random() - 0.5) * 140;
+
+            let dx, dy, dRot;
+            // The mountain ridges live at dy = +b.height * 0.24 ~ +b.height * 0.38
+            // Strictly staying above the bottom edge of .roads!
+            const targetRidgeY = (b.height * 0.24) + (Math.random() * (b.height * 0.14));
+
+            if (s.dir === 'left') {
+              // Swoop into left mountain ridge
+              dx = -(b.width * 0.16) - (i * 15) - Math.random() * 25;
+              dy = targetRidgeY;
+              dRot = (Math.atan2(dy - cy, dx - cx) * 180 / Math.PI) + (Math.random() - 0.5) * 8;
+            } else if (s.dir === 'right') {
+              // Swoop into right mountain ridge
+              dx = (b.width * 0.16) + (i * 15) + Math.random() * 25;
+              dy = targetRidgeY;
+              dRot = (Math.atan2(dy - cy, dx - cx) * 180 / Math.PI) + (Math.random() - 0.5) * 8;
+            } else {
+              // Swoop straight down into center mountain valley
+              dx = (i - s.count / 2) * 32 + (Math.random() - 0.5) * 20;
+              dy = targetRidgeY + 15;
+              dRot = (Math.atan2(dy - cy, dx - cx) * 180 / Math.PI) + (Math.random() - 0.5) * 10;
+            }
+
+            const sRot = dRot - 10 + (Math.random() - 0.5) * 14;
+            const size = baseSize + (i % 4) * (sizeRange / 4) + Math.random() * 4;
+            const dur = 0.72 + (i * 0.015) + Math.random() * 0.06;
+            const delay = i * 0.022;
+            const wingDur = 0.34 + Math.random() * 0.08;
+            const svgTemplate = BIRD_SVGS[birdIndex % BIRD_SVGS.length];
+            const color = palette[birdIndex % palette.length];
+            birdIndex++;
+
+            bird.style.cssText = `
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              width: ${size.toFixed(1)}px;
+              height: ${(size * 0.62).toFixed(1)}px;
+              margin-left: -${(size * 0.5).toFixed(1)}px;
+              margin-top: -${(size * 0.31).toFixed(1)}px;
+              color: ${color};
+              display: block;
+              pointer-events: none;
+              will-change: transform, opacity;
+              --cx: ${cx.toFixed(1)}px;
+              --cy: ${cy.toFixed(1)}px;
+              --dx: ${dx.toFixed(1)}px;
+              --dy: ${dy.toFixed(1)}px;
+              --s-rot: ${sRot.toFixed(1)}deg;
+              --d-rot: ${dRot.toFixed(1)}deg;
+              --b-size: ${size.toFixed(1)}px;
+              --fly-dur: ${dur.toFixed(2)}s;
+              --fly-delay: ${delay.toFixed(2)}s;
+              --wing-dur: ${wingDur.toFixed(2)}s;
+              --b-color: ${color};
+            `;
+            bird.innerHTML = svgTemplate;
+            fragment.appendChild(bird);
+          }
+        });
+        container.appendChild(fragment);
+      }
+
       function open(sheet) {
         lastFocus = document.activeElement;
         sheet.hidden = false;
-        // Force a reflow so the transition has a start value. rAF would
-        // work too, but it never fires in a backgrounded tab — the sheet
-        // would then open stuck at opacity 0.
         void sheet.offsetWidth;
-        sheet.classList.add('open');
         document.body.style.overflow = 'hidden';
+
+        const birds = sheet.querySelector('.sheet-birds');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (birds && !prefersReduced) {
+          sheet.classList.remove('assembled', 'scattering');
+          sheet.classList.add('open', 'assembling');
+          spawnBirdsAssemble(birds);
+
+          window.setTimeout(() => {
+            sheet.classList.add('assembled');
+            sheet.classList.remove('assembling');
+          }, 360);
+
+          window.setTimeout(() => {
+            birds.innerHTML = '';
+          }, 900);
+        } else {
+          sheet.classList.add('open');
+        }
+
         const x = sheet.querySelector('.sheet-x');
         if (x) x.focus();
       }
+
       function close(sheet) {
-        sheet.classList.remove('open');
         document.body.style.overflow = '';
-        window.setTimeout(() => { sheet.hidden = true; }, 240);
+        const birds = sheet.querySelector('.sheet-birds');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (birds && !prefersReduced) {
+          sheet.classList.remove('open', 'assembling', 'assembled');
+          sheet.classList.add('scattering');
+          spawnBirdsScatter(birds);
+
+          window.setTimeout(() => {
+            sheet.hidden = true;
+            sheet.classList.remove('scattering');
+            birds.innerHTML = '';
+          }, 900);
+        } else {
+          sheet.classList.remove('open');
+          window.setTimeout(() => { sheet.hidden = true; }, 240);
+        }
+
         if (lastFocus && lastFocus.focus) lastFocus.focus();
       }
+
       function openSheet() { return sheets.find((s) => !s.hidden); }
 
       sheets.forEach((sheet) => {
@@ -1022,100 +1371,226 @@ const phNote = t(lang, 'about.placeholderNote');
     justify-content: center;
     padding: clamp(16px, 4vw, 48px);
   }
-  /* An author `display` beats the UA sheet's `[hidden] { display: none }`,
-     so the closed overlay would otherwise sit invisibly over the page and
-     swallow every click. */
   .sheet[hidden] { display: none; }
   .sheet-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     opacity: 0;
-    transition: opacity 0.24s ease;
+    transition: opacity 0.35s ease;
   }
   .sheet.open .sheet-backdrop { opacity: 1; }
-  :global(:root.dark) .sheet-backdrop { background: rgba(0, 0, 0, 0.72); }
+  :global(:root.dark) .sheet-backdrop {
+    background: rgba(10, 14, 12, 0.45);
+  }
 
+  /* Bird flock interactive layer (飞鸟聚散系统 — 严格限定在山脉天际视界) */
+  .sheet-birds {
+    position: fixed;
+    pointer-events: none;
+    z-index: 85;
+    overflow: hidden;
+  }
+  :global(.bird-particle) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    will-change: transform, opacity;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  :global(:root.dark) :global(.bird-particle) {
+    mix-blend-mode: screen;
+  }
+  :global(.bird-particle svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    transform-origin: center center;
+    animation: birdWingBeat var(--wing-dur, 0.36s) ease-in-out infinite alternate;
+  }
+  @keyframes birdWingBeat {
+    0% { transform: scaleY(1) translateY(0); }
+    50% { transform: scaleY(0.42) translateY(-2px) skewX(3deg); }
+    100% { transform: scaleY(0.95) translateY(1px); }
+  }
+
+  /* Birds Converge Animation (细线飞鸟聚成故事卡片) */
+  :global(.bird-converge) {
+    animation: birdConverge var(--fly-dur, 0.72s) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: var(--fly-delay, 0s);
+  }
+  @keyframes birdConverge {
+    0% {
+      opacity: 0;
+      transform: translate3d(var(--sx), var(--sy), 0) rotate(var(--s-rot)) scale(0.95);
+    }
+    15% {
+      opacity: 0.95;
+    }
+    70% {
+      opacity: 0.95;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) rotate(var(--t-rot, 0deg)) scale(0.48);
+    }
+  }
+
+  /* Birds Scatter Down Animation (多向飞鸟散落入下方山林) */
+  :global(.bird-scatter) {
+    animation: birdScatterDown var(--fly-dur, 0.76s) cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation-delay: var(--fly-delay, 0s);
+  }
+  @keyframes birdScatterDown {
+    0% {
+      opacity: 0.95;
+      transform: translate3d(var(--cx, 0px), var(--cy, 0px), 0) rotate(var(--s-rot, 0deg)) scale(1);
+    }
+    15% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--d-rot)) scale(0.5);
+    }
+  }
+
+  /* Story card modal panel (大画幅，扇形微倾，柔和环境影) */
   .sheet-panel {
     position: relative;
-    width: min(1300px, 100%);
-    max-height: 92vh;
-    overflow: auto;
+    width: min(1140px, 88vw);
+    max-height: 86vh;
+    overflow: hidden;
     background: var(--color-bg-canvas);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: clamp(16px, 1.8vw, 24px);
+    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.22), 0 0 30px rgba(0, 0, 0, 0.05);
     opacity: 0;
-    transform: translateY(18px) scale(0.98);
-    transition: opacity 0.26s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(18px) scale(0.96);
+    transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
   }
-  .sheet.open .sheet-panel { opacity: 1; transform: none; }
-  .sheet-panel--member { width: min(990px, 100%); }
+  :global(:root.dark) .sheet-panel {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 70px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.4);
+  }
+  .sheet.open .sheet-panel {
+    opacity: 1;
+    transform: rotate(var(--sheet-tilt, -2deg));
+  }
+  .sheet-panel--member {
+    width: min(990px, 100%);
+    transform: none !important;
+  }
+
+  /* Assembly & Scatter motion states */
+  .sheet[data-sheet="chapter"].assembling .sheet-panel {
+    opacity: 0;
+    transform: scale(0.85) rotate(-3.5deg);
+    filter: blur(8px);
+    pointer-events: none;
+  }
+  .sheet[data-sheet="chapter"].assembled .sheet-panel {
+    opacity: 1;
+    transform: scale(1) rotate(var(--sheet-tilt, -2deg));
+    filter: blur(0);
+    pointer-events: auto;
+  }
+  .sheet[data-sheet="chapter"].scattering .sheet-panel {
+    opacity: 0;
+    transform: scale(0.92) rotate(-1deg) translateY(24px);
+    filter: blur(6px);
+    transition: opacity 0.24s ease-in, transform 0.28s ease-in, filter 0.24s ease-in;
+  }
+  .sheet[data-sheet="chapter"].scattering .sheet-backdrop {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
 
   .sheet-x {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 16px;
+    right: 16px;
     z-index: 5;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--radius-full);
     border: 1px solid rgba(255, 255, 255, 0.35);
-    background: rgba(0, 0, 0, 0.32);
+    background: rgba(0, 0, 0, 0.35);
     color: #fff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
   }
-  .sheet-x:hover { background: rgba(0, 0, 0, 0.55); }
+  .sheet-x:hover {
+    background: rgba(0, 0, 0, 0.65);
+    transform: scale(1.06);
+  }
 
-  /* A fanned deck. Cards overlap by their left edge with a shadow cast
-     back onto the one behind, so the row reads as a held hand rather than
-     three tabs. The open card takes the remaining room; the rest collapse
-     to their spine. Transitioning flex-basis keeps the row's total width
-     fixed, so nothing outside the deck moves. */
+  /* A fanned deck. Sized to 580px for spacious storytelling with room for landscape. */
   .deck {
     display: flex;
     align-items: stretch;
-    height: min(62vh, 460px);
+    height: min(72vh, 580px);
     background: var(--color-bg-secondary);
   }
   .card {
     position: relative;
     display: flex;
     align-items: stretch;
-    flex: 0 0 clamp(58px, 7vw, 84px);
+    flex: 0 0 clamp(62px, 7vw, 92px);
     min-width: 0;
     overflow: hidden;
     background: var(--color-bg-canvas);
     z-index: calc(var(--i) + 1);
     transition: flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                flex-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+                flex-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .card + .card {
-    margin-left: -16px;
-    border-radius: var(--radius-aero) 0 0 var(--radius-aero);
-    box-shadow: -16px 0 34px rgba(0, 0, 0, 0.13);
+  /* Casual fanned stack angles for inactive cards */
+  .card[data-card="0"]:not(.is-open) {
+    transform: rotate(-3.5deg) translateY(4px);
   }
-  :global(:root.dark) .card + .card {
-    box-shadow: -16px 0 34px rgba(0, 0, 0, 0.5);
+  .card[data-card="1"]:not(.is-open) {
+    transform: rotate(1.5deg) translateY(2px);
+  }
+  .card[data-card="2"]:not(.is-open) {
+    transform: rotate(4.5deg) translateY(-2px);
   }
   .card.is-open {
     flex: 1 1 auto;
     z-index: 10;
+    transform: none;
+  }
+  .card + .card {
+    margin-left: -16px;
+    border-radius: var(--radius-aero) 0 0 var(--radius-aero);
+    box-shadow: -18px 0 38px rgba(0, 0, 0, 0.16);
+  }
+  :global(:root.dark) .card + .card {
+    box-shadow: -18px 0 38px rgba(0, 0, 0, 0.55);
   }
 
   /* Spine — the card's readable edge, and the control that opens it. */
   .card-spine {
-    flex: 0 0 clamp(58px, 7vw, 84px);
+    flex: 0 0 clamp(62px, 7vw, 92px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.4rem 0;
+    padding: 1.6rem 0;
     background: none;
     border: none;
     border-right: 1px solid var(--color-border);
@@ -1127,18 +1602,21 @@ const phNote = t(lang, 'about.placeholderNote');
   .card:not(.is-open) .card-spine:hover { background: var(--color-bg-tint); }
   .card-spine:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -3px; }
 
-  .card-num {
-    font-family: var(--font-heading);
-    font-size: clamp(1.5rem, 2.4vw, 2rem);
-    font-weight: 500;
-    color: var(--color-border-strong);
-    transition: color 0.3s ease;
+  /* The chapter's own symbol stands in for a number */
+  .card-mark {
+    width: clamp(32px, 3.6vw, 46px);
+    height: auto;
+    display: block;
+    opacity: 0.32;
+    filter: grayscale(1);
+    transition: opacity 0.35s ease, filter 0.35s ease;
   }
-  .card.is-open .card-num { color: var(--color-accent); }
+  .card:not(.is-open) .card-spine:hover .card-mark { opacity: 0.55; }
+  .card.is-open .card-mark { opacity: 1; filter: none; }
 
   .card-edge {
     font-family: var(--font-heading);
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.24em;
     color: var(--color-text-muted);
@@ -1148,8 +1626,7 @@ const phNote = t(lang, 'about.placeholderNote');
   .card:not(.is-open) .card-spine:hover .card-edge { color: var(--color-text-secondary); }
   .card.is-open .card-edge { color: var(--color-text-secondary); }
 
-  /* Body — only the open card gives it room, and it fades in behind the
-     width change so text never reflows in view. */
+  /* Body — open card expands with generous typography and photo layout */
   .card-body {
     flex: 1 1 auto;
     min-width: 0;
@@ -1165,44 +1642,43 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   .card-text {
-    padding: clamp(26px, 3vw, 44px);
+    padding: clamp(32px, 4vw, 56px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-width: 0;
     overflow-y: auto;
   }
-  .card-symbol { width: 48px; height: auto; display: block; margin-bottom: 1.1rem; }
   .card-en {
     font-family: var(--font-heading);
-    font-size: 0.75rem;
+    font-size: 0.84rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     color: var(--color-accent);
     margin: 0;
   }
   .card-idiom {
     font-family: var(--font-heading);
-    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    font-size: clamp(1.85rem, 3vw, 2.75rem);
     font-weight: 700;
     letter-spacing: 0.05em;
     color: var(--color-text-main);
-    margin: 0.55rem 0 0;
+    margin: 0.65rem 0 0;
   }
   .card-gloss {
     font-family: var(--font-body);
-    font-size: 0.86rem;
-    line-height: 1.7;
+    font-size: 0.96rem;
+    line-height: 1.8;
     color: var(--color-text-muted);
-    margin: 0.65rem 0 0;
+    margin: 0.75rem 0 0;
   }
   .card-prose {
     font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.95;
+    font-size: clamp(1.02rem, 1.15vw, 1.12rem);
+    line-height: 2.1;
     color: var(--color-text-main);
-    margin: 1.2rem 0 0;
+    margin: 1.35rem 0 0;
     text-align: justify;
     text-justify: inter-ideograph;
   }
@@ -1233,10 +1709,21 @@ const phNote = t(lang, 'about.placeholderNote');
 
   @media (prefers-reduced-motion: reduce) {
     .card, .card-body { transition: none; }
+    .bird-particle { display: none !important; }
+    .sheet-panel { transform: none !important; transition-duration: 0.15s !important; filter: none !important; }
   }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 860px) {
+    .sheet-panel {
+      width: 100%;
+      transform: none !important;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+    .card[data-card]:not(.is-open) { transform: none; }
+    .card.is-open { transform: none; }
+
     /* No room to fan three cards on a phone: the deck stacks and the
        spines turn into horizontal bars. */
     .deck, .deck--solo { flex-direction: column; height: auto; }
@@ -1258,7 +1745,7 @@ const phNote = t(lang, 'about.placeholderNote');
       border-bottom: 1px solid var(--color-border);
     }
     .card-edge { writing-mode: horizontal-tb; letter-spacing: 0.16em; }
-    .card-num { font-size: 1.25rem; }
+    .card-mark { width: 26px; }
     .card-body { grid-template-columns: 1fr; }
     .card:not(.is-open) .card-body { display: none; }
     .card-media { min-height: 190px; max-height: 34vh; }
