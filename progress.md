@@ -12,6 +12,7 @@
 ## Recent Updates
 
 - [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
+  - [X] Linked hero CTA button ("加入我们") to the localized membership page (`/${lang}/membership`).
   - [X] Fixed mobile chapter modal close button `X` visibility and tap targets by raising `z-index` to 99 above open cards.
   - [X] Redesigned mobile chapter view into top segmented navigation tabs (`倾盖如故`, `翻山越岭`, `天涯比邻`), smooth internal vertical scrolling (`overflow-y: auto`), and touch swipe navigation.
   - [X] Added interactive touch and mouse drag to the story reel filmstrip so users can freely pan and select stories without waiting for auto-scroll.
