@@ -11,6 +11,12 @@
 
 ## Recent Updates
 
+- [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
+  - [X] Applied subtle aerodynamic 8px quadratic Bézier rounded corners across all ACROSS wordmark letterforms and echo layers.
+  - [X] Realigned club identity copy across zh/en/de (`about.heroLede`, `about.intro1`) to highlight welcoming riders from all corners of the world while celebrating Chinese community roots.
+  - [X] Integrated official high-resolution ACC club photography into `public/images/about/` (`hero.webp`, `paths.webp`, `mountains.webp`, `borders.webp`) replacing placeholders.
+  - [X] Verified Vitest test suite (54 passed) and Astro type checking (0 errors).
+
 - [X] **About Page Mountain Ridge Background Optimization** (2026-09-03) — branch `phase-9/about-redesign`
   - [X] Re-nested the mountain ridges into a unified `<section class="roads">` container spanning edge-to-edge behind both the ACROSS logo and cards reel.
   - [X] Built a dual-layer alpine terrain system (`roads-ridge--far` and `roads-ridge--near`) sized at `--tile: clamp(300px, 28vw, 400px)`, scaling strokes down by 40% for delicate, fine-line elegance.
