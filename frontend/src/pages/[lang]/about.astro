@@ -127,6 +127,7 @@ const phNote = t(lang, 'about.placeholderNote');
         and untabbable, but stay clickable. */}
     <div class="reel" data-reel>
       <div class="reel-ridge" aria-hidden="true"></div>
+      <div class="reel-road" aria-hidden="true"></div>
       <div class="reel-fade reel-fade--l" aria-hidden="true"></div>
       <div class="reel-fade reel-fade--r" aria-hidden="true"></div>
 
@@ -704,21 +705,41 @@ const phNote = t(lang, 'about.placeholderNote');
 
   /* Ridge line: one repeating band drifting slower than the concepts, so
      the two layers part company slightly and the strip gains depth. */
-  .reel-ridge {
+  /* Both terrain layers pin background-size in px and travel exactly one
+     tile per cycle. Sizing by height instead left the tile width tied to
+     the layer's rendered height, so the shift was never a whole number of
+     tiles and the pattern jumped on every loop. */
+  .reel-ridge,
+  .reel-road {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 62%;
-    background-image: url('/images/about/ridge-line.svg');
     background-repeat: repeat-x;
     background-position: 0 bottom;
-    background-size: auto 100%;
-    opacity: 0.34;
     pointer-events: none;
-    animation: ridgeDrift 96s linear infinite;
+  }
+  .reel-ridge {
+    --tile: 300px;
+    height: 191px;
+    background-image: url('/images/about/ridge-line.svg');
+    background-size: var(--tile) auto;
+    opacity: 0.34;
+    animation: terrainDrift 34s linear infinite;
+  }
+  /* The road is the near layer: shorter, a touch stronger, and drifting
+     faster than the ridges behind it. Its perspective already recedes, so
+     it sits upright with the far end running up into them. */
+  .reel-road {
+    --tile: 488px;
+    height: 170px;
+    background-image: url('/images/about/road-line.svg');
+    background-size: var(--tile) auto;
+    opacity: 0.26;
+    animation: terrainDrift 40s linear infinite;
   }
   :global(:root.dark) .reel-ridge { opacity: 0.38; }
+  :global(:root.dark) .reel-road { opacity: 0.3; }
 
   /* Feather both ends so concepts enter and leave instead of popping. */
   .reel-fade {
@@ -742,7 +763,9 @@ const phNote = t(lang, 'about.placeholderNote');
   .reel:hover .reel-track,
   .reel:focus-within .reel-track,
   .reel:hover .reel-ridge,
-  .reel:focus-within .reel-ridge {
+  .reel:focus-within .reel-ridge,
+  .reel:hover .reel-road,
+  .reel:focus-within .reel-road {
     animation-play-state: paused;
   }
 
@@ -750,9 +773,10 @@ const phNote = t(lang, 'about.placeholderNote');
     from { transform: translateX(0); }
     to   { transform: translateX(-25%); }
   }
-  @keyframes ridgeDrift {
+  /* One tile per cycle, whatever the breakpoint set --tile to. */
+  @keyframes terrainDrift {
     from { background-position: 0 bottom; }
-    to   { background-position: -840px bottom; }
+    to   { background-position: calc(-1 * var(--tile)) bottom; }
   }
 
   .concept {
@@ -828,7 +852,7 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reel-track, .reel-ridge { animation: none; }
+    .reel-track, .reel-ridge, .reel-road { animation: none; }
     .reel-track { justify-content: center; flex-wrap: wrap; width: 100%; }
     .concept:hover { transform: none; }
   }
@@ -1224,6 +1248,8 @@ const phNote = t(lang, 'about.placeholderNote');
     .sheet-media { min-height: 200px; max-height: 38vh; }
   }
   @media (max-width: 560px) {
+    .reel-ridge { --tile: 208px; height: 132px; animation-duration: 24s; }
+    .reel-road { --tile: 338px; height: 118px; animation-duration: 28s; }
     .about-hero-inner { padding: 2rem 1.25rem 2.5rem; }
     .roads, .garage, .join { padding-left: 1.25rem; padding-right: 1.25rem; }
     .join-actions { flex-direction: column; }
