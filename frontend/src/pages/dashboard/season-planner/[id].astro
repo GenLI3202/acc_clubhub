@@ -4,17 +4,10 @@ export const prerender = false;
 
 import type { PlanSlot } from "../../../lib/admin/seasonPlanner";
 import { EVENT_TYPE_LABEL } from "../../../lib/admin/seasonPlanner";
+import "../../../styles/dashboard.css";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 const cookie = Astro.request.headers.get("cookie") || "";
-
-// Auth check
-try {
-  const meRes = await fetch(`${apiUrl}/auth/me`, { headers: { Cookie: cookie } });
-  if (!meRes.ok) return Astro.redirect("/dashboard/login", 302);
-} catch {
-  return Astro.redirect("/dashboard/login", 302);
-}
 
 const { id } = Astro.params;
 
@@ -153,7 +146,7 @@ const READINESS_OPTIONS = [
       .error-banner { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-season-detail">
     <div class="container">
       <div class="breadcrumb">
         <a href="/dashboard">Admin Dashboard</a>

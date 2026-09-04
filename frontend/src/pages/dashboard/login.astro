@@ -2,6 +2,8 @@
 // dashboard/login.astro - Admin direct email login page (SSR)
 export const prerender = false;
 
+import "../../styles/dashboard.css";
+
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
 try {
@@ -128,7 +130,7 @@ try {
       }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-login">
     <div class="login-box">
       <h1>ACC ClubHub Admin</h1>
       <p>Enter an authorized ride leader email and dashboard password.</p>

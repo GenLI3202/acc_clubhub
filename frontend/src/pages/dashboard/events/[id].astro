@@ -7,6 +7,7 @@ import {
   format_cancellation_timestamp,
   get_cancellation_reason_label,
 } from '../../../lib/events/eventCancellation';
+import '../../../styles/dashboard.css';
 
 const { id } = Astro.params;
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -14,20 +15,7 @@ const isLocalPreview = import.meta.env.DEV
   && ["127.0.0.1", "localhost"].includes(Astro.url.hostname)
   && Astro.url.searchParams.get("preview") === "1";
 
-// Verify authentication — forward browser cookies to backend
 const cookie = Astro.request.headers.get("cookie") || "";
-if (!isLocalPreview) {
-  try {
-    const meRes = await fetch(`${apiUrl}/auth/me`, {
-      headers: { "Cookie": cookie },
-    });
-    if (!meRes.ok) {
-      return Astro.redirect("/dashboard/login", 302);
-    }
-  } catch {
-    return Astro.redirect("/dashboard/login", 302);
-  }
-}
 
 // Fetch event RSVPs
 let eventData = null;
@@ -444,7 +432,7 @@ function formatKm(value: number | null | undefined): string {
       .confirm-accept.danger:hover { background: #a40e26; }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-event-detail">
     <div class="container">
       <div class="breadcrumb">
         <a href="/dashboard">&larr; Admin Dashboard</a>
@@ -596,12 +584,65 @@ function formatKm(value: number | null | undefined): string {
 
           <div style="height: 1.5rem;"></div>
 
+          {eventData.summary.confirmed > 0 && (
+            <section
+              class="check-in-toolbar"
+              aria-labelledby="bulk-check-in-title"
+            >
+              <div class="check-in-toolbar__copy">
+                <strong id="bulk-check-in-title">Bulk attendance</strong>
+                <span id="bulk-selection-count">0 selected</span>
+              </div>
+              <div class="check-in-toolbar__actions">
+                <button
+                  type="button"
+                  class="action-btn secondary"
+                  id="select-all-confirmed"
+                >
+                  Select all confirmed
+                </button>
+                <button
+                  type="button"
+                  class="action-btn secondary"
+                  id="clear-rsvp-selection"
+                  disabled
+                >
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  class="action-btn"
+                  id="bulk-check-in-btn"
+                  disabled
+                >
+                  Check in selected
+                </button>
+                <button
+                  type="button"
+                  class="action-btn secondary"
+                  id="bulk-undo-check-in-btn"
+                  disabled
+                >
+                  Undo selected
+                </button>
+              </div>
+              <p
+                class="check-in-toolbar__status"
+                id="bulk-check-in-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </section>
+          )}
+
           {eventData.rsvps.length === 0 ? (
             <div class="empty">No RSVPs for this event yet.</div>
           ) : (
-            <table>
+            <div class="table-shell">
+              <table>
               <thead>
                 <tr>
+                  <th class="selection-cell">Select</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Status</th>
@@ -615,6 +656,20 @@ function formatKm(value: number | null | undefined): string {
               <tbody>
                 {eventData.rsvps.map((rsvp: any) => (
                   <tr id={`rsvp-${rsvp.id}`}>
+                    <td class="selection-cell">
+                      {rsvp.status === "confirmed" ? (
+                        <input
+                          type="checkbox"
+                          class="rsvp-select"
+                          data-rsvp-id={rsvp.id}
+                          data-rsvp-name={rsvp.name}
+                          data-checked-in={String(Boolean(rsvp.checked_in_at))}
+                          aria-label={`Select ${rsvp.name} for a bulk attendance action`}
+                        />
+                      ) : (
+                        <span aria-hidden="true">—</span>
+                      )}
+                    </td>
                     <td><strong>{rsvp.name}</strong></td>
                     <td class="email-cell">{rsvp.email}</td>
                     <td>
@@ -718,7 +773,8 @@ function formatKm(value: number | null | undefined): string {
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
           )}
         </>
       )}
@@ -791,6 +847,126 @@ function formatKm(value: number | null | undefined): string {
         if (event.key === "Escape" && confirmOverlay?.classList.contains("is-open")) {
           closeConfirm(false);
         }
+      });
+
+      const rsvpSelection = Array.from(
+        document.querySelectorAll(".rsvp-select"),
+      );
+      const selectAllConfirmed = document.getElementById(
+        "select-all-confirmed",
+      );
+      const clearRsvpSelection = document.getElementById(
+        "clear-rsvp-selection",
+      );
+      const bulkCheckInButton = document.getElementById("bulk-check-in-btn");
+      const bulkUndoButton = document.getElementById(
+        "bulk-undo-check-in-btn",
+      );
+      const bulkSelectionCount = document.getElementById(
+        "bulk-selection-count",
+      );
+      const bulkStatus = document.getElementById("bulk-check-in-status");
+
+      function selectedRsvpIds() {
+        return rsvpSelection
+          .filter((checkbox) => checkbox.checked)
+          .map((checkbox) => Number.parseInt(checkbox.dataset.rsvpId, 10));
+      }
+
+      function updateBulkControls() {
+        const count = selectedRsvpIds().length;
+        if (bulkSelectionCount) {
+          bulkSelectionCount.textContent = `${count} selected`;
+        }
+        if (clearRsvpSelection) clearRsvpSelection.disabled = count === 0;
+        if (bulkCheckInButton) bulkCheckInButton.disabled = count === 0;
+        if (bulkUndoButton) bulkUndoButton.disabled = count === 0;
+      }
+
+      rsvpSelection.forEach((checkbox) => {
+        checkbox.addEventListener("change", updateBulkControls);
+      });
+      selectAllConfirmed?.addEventListener("click", () => {
+        rsvpSelection.forEach((checkbox) => {
+          checkbox.checked = true;
+        });
+        updateBulkControls();
+      });
+      clearRsvpSelection?.addEventListener("click", () => {
+        rsvpSelection.forEach((checkbox) => {
+          checkbox.checked = false;
+        });
+        updateBulkControls();
+      });
+
+      async function bulkUpdateAttendance(checkedIn) {
+        const rsvpIds = selectedRsvpIds();
+        if (rsvpIds.length === 0) return;
+        const actionLabel = checkedIn ? "check in" : "undo check-in for";
+        const confirmed = await confirmAction({
+          title: checkedIn ? "Bulk check-in" : "Bulk undo check-in",
+          message: `${actionLabel.charAt(0).toUpperCase()}${actionLabel.slice(1)} ${rsvpIds.length} selected confirmed riders?`,
+          confirmLabel: checkedIn ? "Check in selected" : "Undo selected",
+        });
+        if (!confirmed) return;
+
+        rsvpSelection.forEach((checkbox) => {
+          checkbox.disabled = true;
+        });
+        if (selectAllConfirmed) selectAllConfirmed.disabled = true;
+        if (clearRsvpSelection) clearRsvpSelection.disabled = true;
+        if (bulkCheckInButton) bulkCheckInButton.disabled = true;
+        if (bulkUndoButton) bulkUndoButton.disabled = true;
+        if (bulkStatus) {
+          bulkStatus.textContent = checkedIn
+            ? "Checking in selected riders…"
+            : "Undoing selected check-ins…";
+          bulkStatus.dataset.state = "loading";
+        }
+
+        try {
+          const response = await fetch(
+            `/dashboard/api/events/${id}/rsvp/check-in/bulk`,
+            {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                rsvp_ids: rsvpIds,
+                checked_in: checkedIn,
+              }),
+            },
+          );
+          const data = await response.json();
+          if (!response.ok) {
+            const detail = typeof data.detail === "object"
+              ? data.detail.message
+              : data.detail;
+            throw new Error(detail || `${response.status}`);
+          }
+          if (bulkStatus) {
+            bulkStatus.textContent = `${data.updated_count} riders updated. Refreshing…`;
+            bulkStatus.dataset.state = "success";
+          }
+          window.setTimeout(() => window.location.reload(), 500);
+        } catch (error) {
+          if (bulkStatus) {
+            bulkStatus.textContent = `Bulk attendance failed: ${error.message}`;
+            bulkStatus.dataset.state = "error";
+          }
+          rsvpSelection.forEach((checkbox) => {
+            checkbox.disabled = false;
+          });
+          if (selectAllConfirmed) selectAllConfirmed.disabled = false;
+          updateBulkControls();
+        }
+      }
+
+      bulkCheckInButton?.addEventListener("click", () => {
+        bulkUpdateAttendance(true);
+      });
+      bulkUndoButton?.addEventListener("click", () => {
+        bulkUpdateAttendance(false);
       });
 
       async function checkInRsvp(rsvpId, rsvpName, btn) {

@@ -9,16 +9,11 @@ import type {
   EventType,
 } from "../../../lib/admin/seasonPlanner";
 import { EVENT_TYPE_LABEL } from "../../../lib/admin/seasonPlanner";
+import "../../../styles/dashboard.css";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
 const cookie = Astro.request.headers.get("cookie") || "";
-try {
-  const meRes = await fetch(`${apiUrl}/auth/me`, { headers: { "Cookie": cookie } });
-  if (!meRes.ok) return Astro.redirect("/dashboard/login", 302);
-} catch {
-  return Astro.redirect("/dashboard/login", 302);
-}
 
 const season = Astro.url.searchParams.get("season") || "2026";
 const claimedByFilter = Astro.url.searchParams.get("claimed_by") || "";
@@ -31,36 +26,45 @@ let ownerFetchError: string | null = null;
 try {
   const groupedParams = new URLSearchParams({ season });
   if (claimedByFilter) groupedParams.set("claimed_by", claimedByFilter);
-
-  const res = await fetch(
+  const filteredRequest = fetch(
     `${apiUrl}/api/admin/season/slots/grouped?${groupedParams.toString()}`,
     { headers: { "Cookie": cookie } },
   );
-  if (res.ok) {
-    const data: GroupedSlotsResponse = await res.json();
-    weeks = data.weeks || [];
-  } else if (res.status === 401) {
-    return Astro.redirect("/dashboard/login", 302);
-  } else {
-    fetchError = `Failed to load slots (${res.status})`;
-  }
-} catch (e: unknown) {
-  fetchError = `Error loading slots: ${e instanceof Error ? e.message : String(e)}`;
-}
+  const ownerRequest = claimedByFilter
+    ? fetch(
+        `${apiUrl}/api/admin/season/slots/grouped?season=${
+          encodeURIComponent(season)
+        }`,
+        { headers: { "Cookie": cookie } },
+      )
+    : null;
+  const [filteredResponse, ownerResponse] = await Promise.all([
+    filteredRequest,
+    ownerRequest,
+  ]);
 
-try {
-  const res = await fetch(
-    `${apiUrl}/api/admin/season/slots/grouped?season=${encodeURIComponent(season)}`,
-    { headers: { "Cookie": cookie } },
-  );
-  if (res.ok) {
-    const data: GroupedSlotsResponse = await res.json();
-    ownerWeeks = data.weeks || [];
-  } else if (res.status !== 401) {
-    ownerFetchError = `Failed to load owner filters (${res.status})`;
+  if (filteredResponse.status === 401 || ownerResponse?.status === 401) {
+    return Astro.redirect("/dashboard/login", 302);
+  }
+  if (!filteredResponse.ok) {
+    fetchError = `Failed to load slots (${filteredResponse.status})`;
+  } else {
+    const data: GroupedSlotsResponse = await filteredResponse.json();
+    weeks = data.weeks || [];
+  }
+
+  if (!ownerResponse) {
+    ownerWeeks = weeks;
+  } else if (!ownerResponse.ok) {
+    ownerFetchError = `Failed to load owner filters (${ownerResponse.status})`;
+  } else {
+    const ownerData: GroupedSlotsResponse = await ownerResponse.json();
+    ownerWeeks = ownerData.weeks || [];
   }
 } catch (e: unknown) {
-  ownerFetchError = `Error loading owner filters: ${e instanceof Error ? e.message : String(e)}`;
+  fetchError = `Error loading slots: ${
+    e instanceof Error ? e.message : String(e)
+  }`;
 }
 
 function addDays(dateStr: string, days: number): string {
@@ -644,7 +648,7 @@ function plannerUrl(params: Record<string, string | null>): string {
       .checkbox-row label { margin: 0; font-weight: 400; font-size: 0.875rem; }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-season-planner">
     <div class="container">
       <div class="breadcrumb">
         <a href="/dashboard">&larr; Admin Dashboard</a>

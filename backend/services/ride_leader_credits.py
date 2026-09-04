@@ -4,10 +4,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
 from math import ceil
-from typing import Iterable
-
 from fastapi import HTTPException
-from sqlalchemy import and_, func
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from models import (
@@ -578,6 +576,168 @@ def get_annual_ride_leader_summary(db: Session, year: int) -> list[dict]:
     return result
 
 
+def _get_annual_ride_leader_history_map(
+    db: Session,
+    year: int,
+) -> dict[str, list[dict]]:
+    """Load and group every leader history for a year in one query."""
+    start = datetime(year, 1, 1, tzinfo=timezone.utc)
+    end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    rows = db.query(EventRideLeaderCredit, Event).join(Event).filter(
+        EventRideLeaderCredit.is_active.is_(True),
+        Event.event_date >= start,
+        Event.event_date < end,
+    ).order_by(Event.event_date.asc(), EventRideLeaderCredit.id.asc()).all()
+
+    histories: dict[str, list[dict]] = {}
+    history_keys: set[tuple[str, str, str]] = set()
+    for credit, event in rows:
+        leader_name = canonicalize_ride_leader_name(credit.leader_name)
+        if event.event_date is not None:
+            history_keys.add(
+                _manual_credit_key(
+                    credit.leader_name,
+                    event.slug,
+                    event.event_date,
+                )
+            )
+        override = _manual_event_credit_override(event)
+        distance_km = (
+            override["distance_km"]
+            if override is not None else credit.distance_km
+        )
+        checked_in_count = (
+            override["checked_in_count"]
+            if override is not None else credit.checked_in_count
+        )
+        effective_group_count = (
+            override["effective_group_count"]
+            if override is not None else credit.effective_group_count
+        )
+        credited_leader_count = (
+            override["credited_leader_count"]
+            if override is not None else credit.credited_leader_count
+        )
+        credit_km = (
+            override["credit_km"]
+            if override is not None else credit.credit_km
+        )
+        histories.setdefault(leader_name, []).append({
+            "event_id": event.id,
+            "event_slug": event.slug,
+            "event_title": event.title,
+            "event_date": (
+                event.event_date.isoformat() if event.event_date else None
+            ),
+            "distance_km": (
+                float(distance_km) if distance_km is not None else None
+            ),
+            "checked_in_count": checked_in_count,
+            "effective_group_count": effective_group_count,
+            "credited_leader_count": credited_leader_count,
+            "credit_km": float(credit_km),
+        })
+
+    for credit in MANUAL_RIDE_LEADER_CREDITS:
+        event_date = credit["event_date"]
+        if not (start <= event_date < end):
+            continue
+        manual_key = _manual_credit_key(
+            str(credit["leader_name"]),
+            str(credit["event_slug"]),
+            event_date,
+        )
+        if manual_key in history_keys:
+            continue
+        leader_name = canonicalize_ride_leader_name(str(credit["leader_name"]))
+        histories.setdefault(leader_name, []).append({
+            "event_id": credit["event_id"],
+            "event_slug": credit["event_slug"],
+            "event_title": credit["event_title"],
+            "event_date": event_date.isoformat(),
+            "distance_km": float(credit["distance_km"]),
+            "checked_in_count": credit["checked_in_count"],
+            "effective_group_count": credit["effective_group_count"],
+            "credited_leader_count": credit["credited_leader_count"],
+            "credit_km": float(credit["credit_km"]),
+        })
+
+    for leader_name in RIDE_LEADER_REPORTING_ROSTER:
+        canonical_name = canonicalize_ride_leader_name(leader_name)
+        histories.setdefault(canonical_name, [])
+
+    for history in histories.values():
+        history.sort(key=lambda row: (row["event_date"] or "", row["event_id"]))
+
+    return histories
+
+
+def _build_progress_from_history(history: list[dict]) -> list[dict]:
+    """Build cumulative chart points from an already loaded history."""
+    cumulative = Decimal("0.00")
+    points: list[dict] = []
+    for row in history:
+        cumulative += _decimal(row["credit_km"]) or Decimal("0.00")
+        points.append({
+            "event_id": row["event_id"],
+            "event_date": row["event_date"],
+            "cumulative_km": float(cumulative.quantize(Decimal("0.01"))),
+            "credit_km": row["credit_km"],
+        })
+    return points
+
+
+def _build_detail_from_history(
+    leader_name: str,
+    history: list[dict],
+) -> dict:
+    """Build annual leader metrics without another database query."""
+    total = sum(
+        (Decimal(str(row["credit_km"])) for row in history),
+        Decimal("0.00"),
+    )
+    excess = max(total - ANNUAL_TARGET_KM, Decimal("0.00"))
+    subsidy = (
+        (excess / SUBSIDY_STEP_KM).to_integral_value(
+            rounding=ROUND_HALF_UP,
+        ) * SUBSIDY_EURO_PER_STEP
+        if excess > 0
+        else Decimal("0.00")
+    )
+    return {
+        "leader_name": leader_name,
+        "lead_events_count": len(history),
+        "total_credited_km": float(total.quantize(Decimal("0.01"))),
+        "reimbursement_eligible": total >= REIMBURSEMENT_THRESHOLD_KM,
+        "annual_target_km": float(ANNUAL_TARGET_KM),
+        "excess_km": float(excess),
+        "estimated_subsidy_eur": float(subsidy),
+        "progress": _build_progress_from_history(history),
+        "history": history,
+    }
+
+
+def get_annual_ride_leader_overview(db: Session, year: int) -> dict:
+    """Return all annual leader summaries and details from one history load."""
+    histories = _get_annual_ride_leader_history_map(db, year)
+    details = [
+        _build_detail_from_history(leader_name, histories[leader_name])
+        for leader_name in sorted(histories)
+    ]
+    leaders = [
+        {
+            key: value
+            for key, value in detail.items()
+            if key not in {"progress", "history"}
+        }
+        for detail in details
+    ]
+    return {
+        "leaders": leaders,
+        "details": details,
+    }
+
+
 def get_ride_leader_event_history(
     db: Session,
     year: int,
@@ -677,41 +837,10 @@ def get_annual_ride_leader_progress(
     leader_name: str,
 ) -> list[dict]:
     history = get_ride_leader_event_history(db, year, leader_name)
-    cumulative = Decimal("0.00")
-    points: list[dict] = []
-    for row in history:
-        cumulative += _decimal(row["credit_km"]) or Decimal("0.00")
-        points.append(
-            {
-                "event_id": row["event_id"],
-                "event_date": row["event_date"],
-                "cumulative_km": float(cumulative.quantize(Decimal("0.01"))),
-                "credit_km": row["credit_km"],
-            }
-        )
-    return points
+    return _build_progress_from_history(history)
 
 
 def get_ride_leader_detail(db: Session, year: int, leader_name: str) -> dict:
     canonical_leader_name = canonicalize_ride_leader_name(leader_name)
     history = get_ride_leader_event_history(db, year, leader_name)
-    progress = get_annual_ride_leader_progress(db, year, leader_name)
-    total = sum((Decimal(str(row["credit_km"])) for row in history), Decimal("0.00"))
-    excess = max(total - ANNUAL_TARGET_KM, Decimal("0.00"))
-    subsidy = (
-        (excess / SUBSIDY_STEP_KM).to_integral_value(rounding=ROUND_HALF_UP)
-        * SUBSIDY_EURO_PER_STEP
-        if excess > 0
-        else Decimal("0.00")
-    )
-    return {
-        "leader_name": canonical_leader_name,
-        "lead_events_count": len(history),
-        "total_credited_km": float(total.quantize(Decimal("0.01"))),
-        "reimbursement_eligible": total >= REIMBURSEMENT_THRESHOLD_KM,
-        "annual_target_km": float(ANNUAL_TARGET_KM),
-        "excess_km": float(excess),
-        "estimated_subsidy_eur": float(subsidy),
-        "progress": progress,
-        "history": history,
-    }
+    return _build_detail_from_history(canonical_leader_name, history)

@@ -11,6 +11,23 @@
 
 ## Recent Updates
 
+- [X] **GitHub Issue 待办清理** (2026-09-04) — 分支 `phase-10/issue-cleanup-dashboard`
+  - [X] 根据实时正文、评论、标签、代码和当前架构，审核原有 22 个开放 Issue 及新记录的 3 项 Dashboard 需求。
+  - [X] 将停止采用的 Sveltia CMS Issue #127 以“不计划实施”关闭；将已验证交付的 #142、#143、#149、#166、#167 和 #168 以“已完成”关闭；将已被当前架构取代的 #61 以“不计划实施”关闭。
+  - [X] 为每个剩余开放 Issue 增加边界清晰的实施或治理方案，包括所需输入、决策门槛、权限边界和验收证据。
+  - [X] 将本轮新增的 Issue 正文、全部解决方案和结案说明统一为中文，仅保留必要的技术标识与产品专名。
+  - [X] 政策、法律、财务、成员数据和公开内容决定继续由相应负责人确认，没有虚构批准、人选、预算或事实。
+
+- [X] **Dashboard 运营、性能与视觉更新** (2026-09-04) — 分支 `phase-10/issue-cleanup-dashboard`
+  - [X] 为选中的 confirmed RSVP 增加原子批量签到和撤销，包括结构化错误、单一事务、一次 Ride Leader 重算及桌面/移动端 E2E 覆盖。
+  - [X] 将活动列表启动从 4 次后端请求合并为 1 次 overview 请求，删除受保护页面的重复鉴权，并把 Ride Leader 页面从 N+2 次 HTTP 请求改为 1 次 overview 请求和 1 次年度历史查询。
+  - [X] 为全部后台页面引入共享 Dashboard 视觉系统，统一信息层级、响应式表格、无障碍焦点状态和控件，并完成桌面/移动端打磨。
+  - [X] 完善活动发布检查清单，覆盖三语一致性、frontmatter 规范化和发布验证，并使嵌入式 Komoot 路线在窄屏下响应式显示。
+  - [X] 增加活动 overview 失败时的只读统计回退，避免将真实报名数误显示为 0；批量签到计数只报告真正发生状态变化的 RSVP。
+  - [X] 确认生产 Neon 所需表和字段齐全，并将历史 Ride Leader 通知标记同步至一致性检查为 0。
+  - [X] 将活动与 RSVP 持续增长后的有界查询、分页及索引评估记录为 Issue #169，并附中文实施方案和验收标准。
+  - [X] 验证后端完整测试 172 项、前端单元测试 57 项、Dashboard 定向 Playwright 测试 4 项、Astro 检查 0 error（33 个既有 hint）及生产构建。
+
 - [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
   - [X] Linked hero CTA button ("加入我们") to the localized membership page (`/${lang}/membership`).
   - [X] Fixed mobile chapter modal close button `X` visibility and tap targets by raising `z-index` to 99 above open cards.
@@ -399,15 +416,6 @@
 
 ## In Progress
 
-- [ ] **Season Planner Dashboard** (Issue [#143](https://github.com/GenLI3202/acc_clubhub/issues/143))
-  - [X] Board cells now show the owner name when claimed, otherwise `Unclaimed`, instead of showing the internal `claimed` status.
-  - [X] Claim API accepts ready/in-planning slots without downgrading their planning status.
-  - [X] Slot detail page now centers planning details, route links, ownership, backup notes, and readiness instead of manual status management.
-  - [ ] Fair random auto-assignment is tracked separately in Issue [#149](https://github.com/GenLI3202/acc_clubhub/issues/149).
-- [ ] **Admin Dashboard — Outstanding Issues**
-  - [ ] **BLOCKED** — `/dashboard/login` returns 404 (Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67))
-  - [ ] Registration spot count mismatch in dashboard (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
-  - [ ] Participant portal not tested end-to-end
 - [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
   - [ ] Survey delivery mechanism and trigger timing still pending.
   - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.

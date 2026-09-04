@@ -2,18 +2,11 @@
 // dashboard/subscribers/index.astro — Subscriber list + management (SSR)
 export const prerender = false;
 
+import '../../../styles/dashboard.css';
+
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
-// Auth check
 const cookie = Astro.request.headers.get("cookie") || "";
-try {
-  const meRes = await fetch(`${apiUrl}/auth/me`, {
-    headers: { "Cookie": cookie },
-  });
-  if (!meRes.ok) return Astro.redirect("/dashboard/login", 302);
-} catch {
-  return Astro.redirect("/dashboard/login", 302);
-}
 
 // Fetch subscribers
 let subscribers: any[] = [];
@@ -181,7 +174,7 @@ function formatDate(dateStr: string | null): string {
       #broadcast-status { font-size: 0.85rem; }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-subscribers">
     <div class="container">
       <div class="breadcrumb">
         <a href="/dashboard">&larr; Admin Dashboard</a>
@@ -220,7 +213,8 @@ function formatDate(dateStr: string | null): string {
       {subscribers.length === 0 && !fetchError ? (
         <div class="empty">No subscribers yet.</div>
       ) : (
-        <table>
+        <div class="table-shell">
+          <table>
           <thead>
             <tr>
               <th>Name</th>
@@ -256,7 +250,8 @@ function formatDate(dateStr: string | null): string {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       )}
     </div>
 

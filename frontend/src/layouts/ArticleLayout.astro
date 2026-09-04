@@ -242,6 +242,18 @@ const formattedDate = isValidDate
     margin: var(--space-md) auto;
   }
 
+  .article-content :global(iframe[src*="komoot"]) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: clamp(360px, 68vw, 700px);
+    margin: var(--space-lg) auto;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-aero);
+    background: var(--color-bg-secondary);
+  }
+
   .article-content :global(a) {
     color: var(--color-accent);
     text-decoration: underline;
@@ -250,6 +262,13 @@ const formattedDate = isValidDate
 
   .article-content :global(a:hover) {
     color: var(--color-accent-dark);
+  }
+
+  @media (max-width: 640px) {
+    .article-content :global(iframe[src*="komoot"]) {
+      height: min(64vh, 520px);
+      min-height: 360px;
+    }
   }
 </style>
 
