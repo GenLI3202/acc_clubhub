@@ -310,3 +310,24 @@ class TestAdminBulkRsvpCheckIn:
         assert response.json()["attendance_status"] == "registered"
         db.refresh(confirmed_rsvp)
         assert confirmed_rsvp.checked_in_at is None
+
+    def test_bulk_check_in_counts_only_changed_rsvps(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ) -> None:
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+
+        response = _bulk_check_in(
+            client,
+            sample_event.id,
+            [confirmed_rsvp.id],
+            checked_in=True,
+        )
+
+        assert response.status_code == 200
+        assert response.json()["updated_count"] == 0
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.checked_in_at is not None

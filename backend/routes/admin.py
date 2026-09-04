@@ -160,7 +160,7 @@ def _sync_occurrence_rows(
 
 
 def _serialize_admin_events(db: Session) -> list[dict]:
-    """Return event rows with RSVP counts using two bounded queries."""
+    """Return event rows with RSVP counts using two aggregate queries."""
     count_rows = db.query(
         RSVP.event_id.label("event_id"),
         func.sum(
@@ -677,13 +677,16 @@ def bulk_update_rsvp_check_in(
         )
 
     checked_in_at = datetime.now(timezone.utc) if body.checked_in else None
+    updated_count = 0
     try:
         for rsvp_id in rsvp_ids:
             rsvp = rsvps_by_id[rsvp_id]
-            if body.checked_in:
-                rsvp.checked_in_at = rsvp.checked_in_at or checked_in_at
-            else:
+            if body.checked_in and rsvp.checked_in_at is None:
+                rsvp.checked_in_at = checked_in_at
+                updated_count += 1
+            elif not body.checked_in and rsvp.checked_in_at is not None:
                 rsvp.checked_in_at = None
+                updated_count += 1
 
         snapshot = recalculate_event_ride_leader_state(db, event_id)
         db.commit()
@@ -693,7 +696,7 @@ def bulk_update_rsvp_check_in(
 
     return {
         "success": True,
-        "updated_count": len(rsvp_ids),
+        "updated_count": updated_count,
         "rsvp_ids": rsvp_ids,
         "attendance_status": (
             "checked_in" if body.checked_in else "registered"
