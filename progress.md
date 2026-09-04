@@ -11,18 +11,19 @@
 
 ## Recent Updates
 
-- [X] **GitHub Issue Backlog Resolution** (2026-09-04) — branch `phase-10/issue-cleanup-dashboard`
-  - [X] Audited all 22 previously open issues plus the three newly recorded Dashboard requirements against their live bodies, comments, labels, code, and current architecture.
-  - [X] Closed the discontinued Sveltia CMS issue #127 as not planned; closed verified deliveries #142, #143, #149, #166, #167, and #168 as completed; closed superseded architecture proposal #61 as not planned.
-  - [X] Added a bounded implementation or governance plan to every remaining open issue, including required inputs, decision gates, safety/authority boundaries, and acceptance evidence.
-  - [X] Preserved policy, legal, finance, member-data, and public-content decisions for their accountable owners instead of inventing approvals, people, budgets, or facts.
+- [X] **GitHub Issue 待办清理** (2026-09-04) — 分支 `phase-10/issue-cleanup-dashboard`
+  - [X] 根据实时正文、评论、标签、代码和当前架构，审核原有 22 个开放 Issue 及新记录的 3 项 Dashboard 需求。
+  - [X] 将停止采用的 Sveltia CMS Issue #127 以“不计划实施”关闭；将已验证交付的 #142、#143、#149、#166、#167 和 #168 以“已完成”关闭；将已被当前架构取代的 #61 以“不计划实施”关闭。
+  - [X] 为每个剩余开放 Issue 增加边界清晰的实施或治理方案，包括所需输入、决策门槛、权限边界和验收证据。
+  - [X] 将本轮新增的 Issue 正文、全部解决方案和结案说明统一为中文，仅保留必要的技术标识与产品专名。
+  - [X] 政策、法律、财务、成员数据和公开内容决定继续由相应负责人确认，没有虚构批准、人选、预算或事实。
 
-- [X] **Dashboard Operations, Performance & Visual Refresh** (2026-09-04) — branch `phase-10/issue-cleanup-dashboard`
-  - [X] Added atomic bulk check-in and undo for selected confirmed RSVPs, including structured errors, one transaction, a single ride-leader recalculation, and desktop/mobile E2E coverage.
-  - [X] Consolidated the Events dashboard bootstrap from four backend requests to one overview request, removed redundant authentication calls from protected pages, and replaced the Ride Leader page's N+2 HTTP pattern with one overview request and one annual-history query.
-  - [X] Introduced a shared Dashboard visual system with clearer hierarchy, responsive tables, accessible focus states, consistent controls, and polished desktop/mobile layouts across all admin pages.
-  - [X] Hardened the event authoring checklist for multilingual parity, frontmatter normalization, and publish validation, and made embedded Komoot routes responsive on narrow screens.
-  - [X] Verified the full backend suite (171 passed), frontend unit suite (54 passed), targeted Dashboard Playwright suite (4 passed), Astro checking (0 errors; 33 existing hints), and production build.
+- [X] **Dashboard 运营、性能与视觉更新** (2026-09-04) — 分支 `phase-10/issue-cleanup-dashboard`
+  - [X] 为选中的 confirmed RSVP 增加原子批量签到和撤销，包括结构化错误、单一事务、一次 Ride Leader 重算及桌面/移动端 E2E 覆盖。
+  - [X] 将活动列表启动从 4 次后端请求合并为 1 次 overview 请求，删除受保护页面的重复鉴权，并把 Ride Leader 页面从 N+2 次 HTTP 请求改为 1 次 overview 请求和 1 次年度历史查询。
+  - [X] 为全部后台页面引入共享 Dashboard 视觉系统，统一信息层级、响应式表格、无障碍焦点状态和控件，并完成桌面/移动端打磨。
+  - [X] 完善活动发布检查清单，覆盖三语一致性、frontmatter 规范化和发布验证，并使嵌入式 Komoot 路线在窄屏下响应式显示。
+  - [X] 验证后端完整测试 171 项、前端单元测试 54 项、Dashboard 定向 Playwright 测试 4 项、Astro 检查 0 error（33 个既有 hint）及生产构建。
 
 - [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
   - [X] Linked hero CTA button ("加入我们") to the localized membership page (`/${lang}/membership`).
