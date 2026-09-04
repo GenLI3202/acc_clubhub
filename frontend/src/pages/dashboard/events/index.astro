@@ -14,11 +14,11 @@ import {
   getAdminEventStatus,
   getEventTypeLabel,
   mergeAdminEventRows,
-  type AdminEventDbRow,
   type AdminEventCategory,
   type AdminEventRow,
   type AdminEventView,
 } from '../../../lib/admin/events';
+import { loadAdminEventData } from '../../../lib/admin/event_overview';
 import { resolveRecurringEvents } from '../../../lib/events/recurringEvents';
 import '../../../styles/dashboard.css';
 
@@ -94,39 +94,39 @@ const occurrencePayload = zhEvents.map((e) => ({
 if (isLocalPreview) {
   statsWarning = "Local preview mode: RSVP stats and admin actions are not loaded.";
 } else {
-  try {
-    const overviewRes = await fetchWithTimeout(
+  const eventData = await loadAdminEventData({
+    loadOverview: () => fetchWithTimeout(
       `${apiUrl}/api/admin/events/overview`,
       {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cookie": cookie,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cookie": cookie,
+        },
+        body: JSON.stringify(occurrencePayload),
       },
-      body: JSON.stringify(occurrencePayload),
+    ),
+    loadEvents: () => fetchWithTimeout(
+      `${apiUrl}/api/admin/events`,
+      {
+        headers: { "Cookie": cookie },
       },
-    );
-    if (overviewRes.status === 401) {
-      return Astro.redirect("/dashboard/login", 302);
+    ),
+    formatError: getErrorMessage,
+  });
+  if (eventData.unauthorized) {
+    return Astro.redirect("/dashboard/login", 302);
+  }
+  if (eventData.missingColumns.length > 0) {
+    schemaWarning = `Database schema missing: ${eventData.missingColumns.join(", ")}`;
+  }
+  statsWarning = eventData.warning;
+  for (const e of eventData.events) {
+    dbStatsMap.set(e.slug, e);
+    const row = dbRowToAdminEvent(e);
+    if (row) {
+      dbRows.push(row);
     }
-    if (overviewRes.ok) {
-      const overview = await overviewRes.json();
-      if (!overview.schema?.ok && overview.schema?.missing_columns?.length) {
-        schemaWarning = `Database schema missing: ${overview.schema.missing_columns.join(", ")}`;
-      }
-      const dbEvents = overview.events as AdminEventDbRow[];
-      for (const e of dbEvents) {
-        dbStatsMap.set(e.slug, e);
-        const row = dbRowToAdminEvent(e);
-        if (row) {
-          dbRows.push(row);
-        }
-      }
-    } else {
-      statsWarning = `Dashboard data unavailable (API returned ${overviewRes.status})`;
-    }
-  } catch (e) {
-    statsWarning = `Dashboard data unavailable: ${getErrorMessage(e)}`;
   }
 }
 
