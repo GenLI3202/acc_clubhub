@@ -4,6 +4,7 @@ export const prerender = false;
 import {
   RideLeaderTrendChart,
 } from "../../../components/dashboard/RideLeaderTrendChart";
+import "../../../styles/dashboard.css";
 
 const apiUrl = import.meta.env.PUBLIC_API_URL
   || "https://acc-clubhub-events-ms.vercel.app";
@@ -12,18 +13,6 @@ const isLocalPreview = import.meta.env.DEV
   && Astro.url.searchParams.get("preview") === "1";
 
 const cookie = Astro.request.headers.get("cookie") || "";
-if (!isLocalPreview) {
-  try {
-    const meRes = await fetch(`${apiUrl}/auth/me`, {
-      headers: { "Cookie": cookie },
-    });
-    if (!meRes.ok) {
-      return Astro.redirect("/dashboard/login", 302);
-    }
-  } catch {
-    return Astro.redirect("/dashboard/login", 302);
-  }
-}
 
 const now = new Date();
 const requestedYear = Number(
@@ -152,50 +141,25 @@ if (isLocalPreview) {
   ];
 } else {
   try {
-    const summaryRes = await fetch(`${apiUrl}/api/admin/ride-leaders?year=${year}`, {
-      headers: { "Cookie": cookie },
-    });
-    if (summaryRes.ok) {
-      summaryData = await summaryRes.json();
-    } else if (summaryRes.status === 401) {
+    const overviewRes = await fetch(
+      `${apiUrl}/api/admin/ride-leaders/overview?year=${year}`,
+      { headers: { "Cookie": cookie } },
+    );
+    if (overviewRes.status === 401) {
       return Astro.redirect("/dashboard/login", 302);
-    } else {
-      fetchError = `Failed to fetch ride leader summary: ${summaryRes.status}`;
     }
-
-    const leaderForDetail = selectedLeader || summaryData.leaders[0]?.leader_name;
-    if (leaderForDetail && !fetchError) {
-      const detailRequests = await Promise.all(
-        summaryData.leaders.map(async (leader: any) => {
-          const res = await fetch(
-            `${apiUrl}/api/admin/ride-leaders/${
-              encodeURIComponent(leader.leader_name)
-            }?year=${year}`,
-            { headers: { "Cookie": cookie } }
-          );
-          if (res.status === 401) {
-            return { unauthorized: true };
-          }
-          if (!res.ok) {
-            return { error: res.status, leader_name: leader.leader_name };
-          }
-          return await res.json();
-        })
+    if (!overviewRes.ok) {
+      fetchError = `Failed to fetch ride leader data: ${overviewRes.status}`;
+    } else {
+      const overview = await overviewRes.json();
+      summaryData = { year: overview.year, leaders: overview.leaders ?? [] };
+      allLeaderDetails = overview.details ?? [];
+      const leaderForDetail = (
+        selectedLeader || summaryData.leaders[0]?.leader_name
       );
-
-      if (detailRequests.some((item: any) => item.unauthorized)) {
-        return Astro.redirect("/dashboard/login", 302);
-      }
-
-      const failedDetail = detailRequests.find((item: any) => item.error);
-      if (failedDetail) {
-        fetchError = `Failed to fetch ride leader detail: ${failedDetail.error}`;
-      } else {
-        allLeaderDetails = detailRequests;
-        detailData = allLeaderDetails.find(
-          (leader: any) => leader.leader_name === leaderForDetail,
-        ) ?? allLeaderDetails[0] ?? null;
-      }
+      detailData = allLeaderDetails.find(
+        (leader: any) => leader.leader_name === leaderForDetail,
+      ) ?? allLeaderDetails[0] ?? null;
     }
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
@@ -467,7 +431,7 @@ const selectedProgressPercent = detailData
       }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-ride-leaders">
     <div class="container">
       <div class="breadcrumb">
         <a href="/dashboard">&larr; Admin Dashboard</a>

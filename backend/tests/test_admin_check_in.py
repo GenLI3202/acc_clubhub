@@ -24,6 +24,20 @@ def _undo_check_in(client, event_id: int, rsvp_id: int):
     )
 
 
+def _bulk_check_in(
+    client,
+    event_id: int,
+    rsvp_ids: list[int],
+    *,
+    checked_in: bool,
+):
+    """POST a bulk attendance update."""
+    return client.post(
+        f"/api/admin/events/{event_id}/rsvp/check-in/bulk",
+        json={"rsvp_ids": rsvp_ids, "checked_in": checked_in},
+    )
+
+
 class TestAdminRsvpCheckIn:
     def test_check_in_confirmed_rsvp_sets_attendance(
         self,
@@ -193,3 +207,106 @@ class TestAdminRsvpCheckIn:
         assert by_email[confirmed_rsvp.email]["attendance_status"] == "checked_in"
         assert by_email[confirmed_rsvp.email]["checked_in_at"] is not None
         assert by_email["waitlist@example.com"]["attendance_status"] == "registered"
+
+
+class TestAdminBulkRsvpCheckIn:
+    def test_bulk_check_in_updates_multiple_confirmed_rsvps(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ) -> None:
+        second = RSVP(
+            event_id=sample_event.id,
+            email="second@example.com",
+            name="Second Rider",
+            status="confirmed",
+            privacy_accepted=True,
+        )
+        db.add(second)
+        db.commit()
+        db.refresh(second)
+
+        response = _bulk_check_in(
+            client,
+            sample_event.id,
+            [confirmed_rsvp.id, second.id],
+            checked_in=True,
+        )
+
+        assert response.status_code == 200
+        assert response.json()["updated_count"] == 2
+        assert response.json()["attendance_status"] == "checked_in"
+        db.refresh(confirmed_rsvp)
+        db.refresh(second)
+        assert confirmed_rsvp.checked_in_at is not None
+        assert second.checked_in_at is not None
+
+    def test_bulk_check_in_is_atomic_when_selection_contains_waitlist(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+        waitlisted_rsvp,
+    ) -> None:
+        response = _bulk_check_in(
+            client,
+            sample_event.id,
+            [confirmed_rsvp.id, waitlisted_rsvp.id],
+            checked_in=True,
+        )
+
+        assert response.status_code == 409
+        assert response.json()["detail"]["error_code"] == (
+            "BULK_CHECK_IN_INELIGIBLE_RSVP"
+        )
+        db.refresh(confirmed_rsvp)
+        db.refresh(waitlisted_rsvp)
+        assert confirmed_rsvp.checked_in_at is None
+        assert waitlisted_rsvp.checked_in_at is None
+
+    def test_bulk_check_in_rejects_missing_rsvp_without_partial_update(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ) -> None:
+        response = _bulk_check_in(
+            client,
+            sample_event.id,
+            [confirmed_rsvp.id, 99999],
+            checked_in=True,
+        )
+
+        assert response.status_code == 404
+        assert response.json()["detail"]["error_code"] == (
+            "BULK_CHECK_IN_RSVP_NOT_FOUND"
+        )
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.checked_in_at is None
+
+    def test_bulk_undo_is_idempotent_and_deduplicates_ids(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ) -> None:
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+
+        response = _bulk_check_in(
+            client,
+            sample_event.id,
+            [confirmed_rsvp.id, confirmed_rsvp.id],
+            checked_in=False,
+        )
+
+        assert response.status_code == 200
+        assert response.json()["updated_count"] == 1
+        assert response.json()["rsvp_ids"] == [confirmed_rsvp.id]
+        assert response.json()["attendance_status"] == "registered"
+        db.refresh(confirmed_rsvp)
+        assert confirmed_rsvp.checked_in_at is None

@@ -10,7 +10,7 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import case, func, inspect
 from sqlalchemy.orm import Session
 from database import get_db
@@ -30,7 +30,7 @@ from services.event_counts import (
 )
 from services.registration_alerts import find_active_ride_leader_rsvp_by_email
 from services.ride_leader_credits import (
-    get_annual_ride_leader_progress,
+    get_annual_ride_leader_overview,
     get_annual_ride_leader_summary,
     get_event_active_leader_rsvp_ids,
     get_event_ride_leader_credit_map,
@@ -88,6 +88,144 @@ class CancelEventRequest(BaseModel):
     reason: EventCancellationReason
 
 
+def _get_missing_schema_columns(db: Session) -> list[str]:
+    """Return Dashboard columns missing from the current database."""
+    missing_columns: list[str] = []
+    inspector = inspect(db.bind)
+
+    for table_name, required_columns in REQUIRED_SCHEMA_COLUMNS.items():
+        existing_columns = {
+            column["name"]
+            for column in inspector.get_columns(table_name)
+        }
+        for column_name in sorted(required_columns - existing_columns):
+            missing_columns.append(f"{table_name}.{column_name}")
+
+    return missing_columns
+
+
+def _sync_occurrence_rows(
+    db: Session,
+    occurrences: List[SyncOccurrenceRequest],
+) -> SyncOccurrencesResponse:
+    """Upsert occurrence rows with one lookup for all existing slugs."""
+    occurrences_by_slug = {
+        occurrence.slug: occurrence
+        for occurrence in occurrences
+    }
+    slugs = list(occurrences_by_slug)
+    existing_events = (
+        db.query(Event).filter(Event.slug.in_(slugs)).all()
+        if slugs
+        else []
+    )
+    events_by_slug = {event.slug: event for event in existing_events}
+    created = 0
+    updated = 0
+
+    for occurrence in occurrences_by_slug.values():
+        event = events_by_slug.get(occurrence.slug)
+        if event is None:
+            event = Event(
+                slug=occurrence.slug,
+                title=occurrence.title,
+                description=occurrence.description,
+                event_date=occurrence.event_date,
+                location=occurrence.location,
+                event_type=occurrence.event_type,
+                max_participants=occurrence.max_participants,
+                current_participants=0,
+                registration_deadline=occurrence.registration_deadline,
+                distance_km=occurrence.distance_km,
+                is_public=True,
+            )
+            db.add(event)
+            events_by_slug[occurrence.slug] = event
+            created += 1
+            continue
+
+        event.title = occurrence.title
+        event.description = occurrence.description
+        event.event_date = occurrence.event_date
+        event.location = occurrence.location
+        event.event_type = occurrence.event_type
+        event.max_participants = occurrence.max_participants
+        event.registration_deadline = occurrence.registration_deadline
+        if occurrence.distance_km is not None:
+            event.distance_km = occurrence.distance_km
+        event.is_public = True
+        updated += 1
+
+    return SyncOccurrencesResponse(created=created, updated=updated)
+
+
+def _serialize_admin_events(db: Session) -> list[dict]:
+    """Return event rows with RSVP counts using two bounded queries."""
+    count_rows = db.query(
+        RSVP.event_id.label("event_id"),
+        func.sum(
+            case((RSVP.status == "confirmed", 1), else_=0),
+        ).label("confirmed_count"),
+        func.sum(
+            case((RSVP.status == "waitlist", 1), else_=0),
+        ).label("waitlist_count"),
+        func.sum(
+            case((RSVP.status == "cancelled", 1), else_=0),
+        ).label("cancelled_count"),
+    ).group_by(RSVP.event_id).all()
+    counts_by_event_id = {
+        row.event_id: {
+            "confirmed_count": int(row.confirmed_count or 0),
+            "waitlist_count": int(row.waitlist_count or 0),
+            "cancelled_count": int(row.cancelled_count or 0),
+        }
+        for row in count_rows
+    }
+
+    events = db.query(Event).order_by(Event.event_date.desc()).all()
+    result: list[dict] = []
+    for event in events:
+        counts = counts_by_event_id.get(event.id, {})
+        confirmed_count = counts.get("confirmed_count", 0)
+        waitlist_count = counts.get("waitlist_count", 0)
+        cancelled_count = counts.get("cancelled_count", 0)
+        result.append({
+            "id": event.id,
+            "title": event.title,
+            "slug": event.slug,
+            "event_date": (
+                event.event_date.isoformat() if event.event_date else None
+            ),
+            "location": event.location,
+            "event_type": event.event_type,
+            "max_participants": event.max_participants,
+            "current_participants": confirmed_count,
+            "confirmed_count": confirmed_count,
+            "waitlist_count": waitlist_count,
+            "cancelled_count": cancelled_count,
+            "spots_remaining": get_available_spots(
+                event.max_participants,
+                confirmed_count,
+            ),
+            "is_public": event.is_public,
+            "registration_deadline": (
+                event.registration_deadline.isoformat()
+                if event.registration_deadline else None
+            ),
+            "cancellation_reason": event.cancellation_reason,
+            "cancelled_at": (
+                event.cancelled_at.isoformat()
+                if event.cancelled_at else None
+            ),
+            "distance_km": (
+                float(event.distance_km)
+                if event.distance_km is not None else None
+            ),
+        })
+
+    return result
+
+
 # ── Admin Schema Health ──────────────────────────────────────
 
 @router.get("/api/admin/health/schema")
@@ -98,17 +236,7 @@ def get_schema_health(
     """
     Check that production database columns required by current code exist.
     """
-    missing_columns = []
-
-    inspector = inspect(db.bind)
-
-    for table_name, required_columns in REQUIRED_SCHEMA_COLUMNS.items():
-        existing_columns = {
-            column["name"]
-            for column in inspector.get_columns(table_name)
-        }
-        for column_name in sorted(required_columns - existing_columns):
-            missing_columns.append(f"{table_name}.{column_name}")
+    missing_columns = _get_missing_schema_columns(db)
 
     return {
         "ok": len(missing_columns) == 0,
@@ -133,49 +261,14 @@ def sync_occurrences(
     Existing rows keep operational counters such as current_participants while
     content-owned fields are refreshed from Markdown.
     """
-    created = 0
-    updated = 0
-
     try:
-        for occurrence in occurrences:
-            event = db.query(Event).filter(Event.slug == occurrence.slug).first()
-            if event:
-                event.title = occurrence.title
-                event.description = occurrence.description
-                event.event_date = occurrence.event_date
-                event.location = occurrence.location
-                event.event_type = occurrence.event_type
-                event.max_participants = occurrence.max_participants
-                event.registration_deadline = occurrence.registration_deadline
-                if occurrence.distance_km is not None:
-                    event.distance_km = occurrence.distance_km
-                event.is_public = True
-                updated += 1
-                continue
-
-            db.add(
-                Event(
-                    slug=occurrence.slug,
-                    title=occurrence.title,
-                    description=occurrence.description,
-                    event_date=occurrence.event_date,
-                    location=occurrence.location,
-                    event_type=occurrence.event_type,
-                    max_participants=occurrence.max_participants,
-                    current_participants=0,
-                    registration_deadline=occurrence.registration_deadline,
-                    distance_km=occurrence.distance_km,
-                    is_public=True,
-                )
-            )
-            created += 1
-
+        result = _sync_occurrence_rows(db, occurrences)
         db.commit()
     except Exception:
         db.rollback()
         raise
 
-    return SyncOccurrencesResponse(created=created, updated=updated)
+    return result
 
 
 # ── Admin Event List ──────────────────────────────────────────
@@ -189,60 +282,32 @@ def list_events(
     List all events with registration statistics.
     Requires admin authentication.
     """
-    count_rows = db.query(
-        RSVP.event_id.label("event_id"),
-        func.sum(case((RSVP.status == "confirmed", 1), else_=0)).label("confirmed_count"),
-        func.sum(case((RSVP.status == "waitlist", 1), else_=0)).label("waitlist_count"),
-        func.sum(case((RSVP.status == "cancelled", 1), else_=0)).label("cancelled_count"),
-    ).group_by(RSVP.event_id).all()
-    counts_by_event_id = {
-        row.event_id: {
-            "confirmed_count": int(row.confirmed_count or 0),
-            "waitlist_count": int(row.waitlist_count or 0),
-            "cancelled_count": int(row.cancelled_count or 0),
-        }
-        for row in count_rows
+    return _serialize_admin_events(db)
+
+
+@router.post("/api/admin/events/overview")
+def get_events_overview(
+    occurrences: List[SyncOccurrenceRequest],
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Sync content and return schema health plus event statistics."""
+    missing_columns = _get_missing_schema_columns(db)
+    try:
+        sync_result = _sync_occurrence_rows(db, occurrences)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
+    return {
+        "schema": {
+            "ok": len(missing_columns) == 0,
+            "missing_columns": missing_columns,
+        },
+        "sync": sync_result.model_dump(),
+        "events": _serialize_admin_events(db),
     }
-
-    events = db.query(Event).order_by(Event.event_date.desc()).all()
-
-    result = []
-    for event in events:
-        counts = counts_by_event_id.get(event.id, {})
-        confirmed_count = counts.get("confirmed_count", 0)
-        waitlist_count = counts.get("waitlist_count", 0)
-        cancelled_count = counts.get("cancelled_count", 0)
-
-        result.append({
-            "id": event.id,
-            "title": event.title,
-            "slug": event.slug,
-            "event_date": event.event_date.isoformat() if event.event_date else None,
-            "location": event.location,
-            "event_type": event.event_type,
-            "max_participants": event.max_participants,
-            "current_participants": confirmed_count,
-            "confirmed_count": confirmed_count,
-            "waitlist_count": waitlist_count,
-            "cancelled_count": cancelled_count,
-            "spots_remaining": get_available_spots(
-                event.max_participants,
-                confirmed_count,
-            ),
-            "is_public": event.is_public,
-            "registration_deadline": (
-                event.registration_deadline.isoformat()
-                if event.registration_deadline else None
-            ),
-            "cancellation_reason": event.cancellation_reason,
-            "cancelled_at": (
-                event.cancelled_at.isoformat()
-                if event.cancelled_at else None
-            ),
-            "distance_km": float(event.distance_km) if event.distance_km is not None else None,
-        })
-
-    return result
 
 
 # ── Admin RSVP List ────────────────────────────────────────────
@@ -458,6 +523,13 @@ class CheckInRsvpRequest(BaseModel):
     rsvp_id: int
 
 
+class BulkCheckInRsvpRequest(BaseModel):
+    """Atomic attendance update for one or more confirmed RSVPs."""
+
+    rsvp_ids: List[int] = Field(min_length=1)
+    checked_in: bool
+
+
 @router.post("/api/admin/events/{event_id}/rsvp/check-in")
 def check_in_rsvp(
     event_id: int,
@@ -546,6 +618,86 @@ def undo_check_in_rsvp(
         "message": f"Check-in for {rsvp.name} undone",
         "attendance_status": "registered",
         "checked_in_at": None,
+        "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
+    }
+
+
+@router.post("/api/admin/events/{event_id}/rsvp/check-in/bulk")
+def bulk_update_rsvp_check_in(
+    event_id: int,
+    body: BulkCheckInRsvpRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Atomically update attendance for selected confirmed RSVPs."""
+    event = db.query(Event).filter(Event.id == event_id).one_or_none()
+    if event is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_FOUND",
+                "message": "Event not found",
+            },
+        )
+
+    rsvp_ids = list(dict.fromkeys(body.rsvp_ids))
+    rsvps = db.query(RSVP).filter(
+        RSVP.event_id == event_id,
+        RSVP.id.in_(rsvp_ids),
+    ).all()
+    rsvps_by_id = {rsvp.id: rsvp for rsvp in rsvps}
+    missing_ids = [
+        rsvp_id
+        for rsvp_id in rsvp_ids
+        if rsvp_id not in rsvps_by_id
+    ]
+    if missing_ids:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "BULK_CHECK_IN_RSVP_NOT_FOUND",
+                "message": "One or more RSVPs were not found for this event",
+                "rsvp_ids": missing_ids,
+            },
+        )
+
+    ineligible_ids = [
+        rsvp_id
+        for rsvp_id in rsvp_ids
+        if rsvps_by_id[rsvp_id].status != "confirmed"
+    ]
+    if ineligible_ids:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "BULK_CHECK_IN_INELIGIBLE_RSVP",
+                "message": "Only confirmed RSVPs can be updated",
+                "rsvp_ids": ineligible_ids,
+            },
+        )
+
+    checked_in_at = datetime.now(timezone.utc) if body.checked_in else None
+    try:
+        for rsvp_id in rsvp_ids:
+            rsvp = rsvps_by_id[rsvp_id]
+            if body.checked_in:
+                rsvp.checked_in_at = rsvp.checked_in_at or checked_in_at
+            else:
+                rsvp.checked_in_at = None
+
+        snapshot = recalculate_event_ride_leader_state(db, event_id)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
+    return {
+        "success": True,
+        "updated_count": len(rsvp_ids),
+        "rsvp_ids": rsvp_ids,
+        "attendance_status": (
+            "checked_in" if body.checked_in else "registered"
+        ),
         "ride_leader_summary": serialize_ride_leader_snapshot(snapshot),
     }
 
@@ -840,6 +992,21 @@ def list_ride_leaders(
     return {
         "year": target_year,
         "leaders": get_annual_ride_leader_summary(db, target_year),
+    }
+
+
+@router.get("/api/admin/ride-leaders/overview")
+def get_ride_leader_overview(
+    year: Optional[int] = None,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Return annual summary and every leader detail in one response."""
+    target_year = year or datetime.now(timezone.utc).year
+    overview = get_annual_ride_leader_overview(db, target_year)
+    return {
+        "year": target_year,
+        **overview,
     }
 
 

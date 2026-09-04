@@ -65,6 +65,48 @@ class TestAdminEventsEndpoint:
         assert event["waitlist_count"] == 1
         assert event["cancelled_count"] == 1
 
+
+class TestAdminEventsOverviewEndpoint:
+    """POST /api/admin/events/overview combines sync, health, and listing."""
+
+    def test_syncs_occurrences_and_returns_dashboard_payload(
+        self,
+        client,
+    ) -> None:
+        response = client.post(
+            "/api/admin/events/overview",
+            json=[
+                {
+                    "slug": "overview-ride-2026",
+                    "title": "Overview Ride",
+                    "event_date": "2026-09-12T08:00:00Z",
+                    "location": "Munich",
+                    "event_type": "social-ride",
+                    "max_participants": 20,
+                },
+            ],
+        )
+
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["schema"] == {"ok": True, "missing_columns": []}
+        assert payload["sync"] == {"created": 1, "updated": 0}
+        event = next(
+            item
+            for item in payload["events"]
+            if item["slug"] == "overview-ride-2026"
+        )
+        assert event["title"] == "Overview Ride"
+        assert event["confirmed_count"] == 0
+
+    def test_requires_authentication(self, client_no_auth) -> None:
+        response = client_no_auth.post(
+            "/api/admin/events/overview",
+            json=[],
+        )
+
+        assert response.status_code == 401
+
 class TestAdminSchemaHealthEndpoint:
     """GET /api/admin/health/schema — verifies DB migrations are applied."""
 

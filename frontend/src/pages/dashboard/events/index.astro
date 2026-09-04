@@ -20,6 +20,7 @@ import {
   type AdminEventView,
 } from '../../../lib/admin/events';
 import { resolveRecurringEvents } from '../../../lib/events/recurringEvents';
+import '../../../styles/dashboard.css';
 
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 const isLocalPreview = import.meta.env.DEV
@@ -61,20 +62,7 @@ function getErrorMessage(error: unknown): string {
   return String(error);
 }
 
-// Verify authentication — forward browser cookies to backend
 const cookie = Astro.request.headers.get("cookie") || "";
-if (!isLocalPreview) {
-  try {
-    const meRes = await fetchWithTimeout(`${apiUrl}/auth/me`, {
-      headers: { "Cookie": cookie },
-    });
-    if (!meRes.ok) {
-      return Astro.redirect("/dashboard/login", 302);
-    }
-  } catch {
-    return Astro.redirect("/dashboard/login", 302);
-  }
-}
 
 // 1. Read events from Markdown (source of truth — same as frontend)
 const allEvents = await getCollection('events');
@@ -85,30 +73,11 @@ const zhEvents = resolveRecurringEvents(
   })
 );
 
-// 2. Sync resolved occurrences to DB before fetching RSVP stats
+// Sync content and fetch schema health plus RSVP stats in one request.
 const dbStatsMap = new Map<string, any>();
 const dbRows: AdminEventRow[] = [];
 let statsWarning: string | null = null;
 let schemaWarning: string | null = null;
-
-try {
-  const schemaRes = await fetchWithTimeout(`${apiUrl}/api/admin/health/schema`, {
-    headers: { "Cookie": cookie },
-  });
-  if (schemaRes.status === 401) {
-    return Astro.redirect("/dashboard/login", 302);
-  }
-  if (schemaRes.ok) {
-    const schemaHealth = await schemaRes.json();
-    if (!schemaHealth.ok && schemaHealth.missing_columns?.length) {
-      schemaWarning = `Database schema missing: ${schemaHealth.missing_columns.join(", ")}`;
-    }
-  } else {
-    schemaWarning = `Database schema check unavailable (API returned ${schemaRes.status})`;
-  }
-} catch (e) {
-  schemaWarning = `Database schema check unavailable: ${getErrorMessage(e)}`;
-}
 
 const occurrencePayload = zhEvents.map((e) => ({
   slug: e.data.slug,
@@ -126,33 +95,26 @@ if (isLocalPreview) {
   statsWarning = "Local preview mode: RSVP stats and admin actions are not loaded.";
 } else {
   try {
-    const syncRes = await fetchWithTimeout(`${apiUrl}/api/admin/sync-occurrences`, {
+    const overviewRes = await fetchWithTimeout(
+      `${apiUrl}/api/admin/events/overview`,
+      {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Cookie": cookie,
       },
       body: JSON.stringify(occurrencePayload),
-    });
-    if (syncRes.status === 401) {
+      },
+    );
+    if (overviewRes.status === 401) {
       return Astro.redirect("/dashboard/login", 302);
     }
-    if (!syncRes.ok) {
-      statsWarning = `Occurrence sync unavailable (API returned ${syncRes.status})`;
-    }
-  } catch (e) {
-    statsWarning = `Occurrence sync unavailable: ${getErrorMessage(e)}`;
-  }
-}
-
-// 3. Fetch RSVP stats from DB (for enrichment only)
-if (!isLocalPreview) {
-  try {
-    const res = await fetchWithTimeout(`${apiUrl}/api/admin/events`, {
-      headers: { "Cookie": cookie },
-    });
-    if (res.ok) {
-      const dbEvents = await res.json() as AdminEventDbRow[];
+    if (overviewRes.ok) {
+      const overview = await overviewRes.json();
+      if (!overview.schema?.ok && overview.schema?.missing_columns?.length) {
+        schemaWarning = `Database schema missing: ${overview.schema.missing_columns.join(", ")}`;
+      }
+      const dbEvents = overview.events as AdminEventDbRow[];
       for (const e of dbEvents) {
         dbStatsMap.set(e.slug, e);
         const row = dbRowToAdminEvent(e);
@@ -160,17 +122,15 @@ if (!isLocalPreview) {
           dbRows.push(row);
         }
       }
-    } else if (res.status === 401) {
-      return Astro.redirect("/dashboard/login", 302);
     } else {
-      statsWarning = `RSVP stats unavailable (API returned ${res.status})`;
+      statsWarning = `Dashboard data unavailable (API returned ${overviewRes.status})`;
     }
   } catch (e) {
-    statsWarning = `RSVP stats unavailable: ${getErrorMessage(e)}`;
+    statsWarning = `Dashboard data unavailable: ${getErrorMessage(e)}`;
   }
 }
 
-// 4. Merge: Markdown events + DB RSVP stats
+// Merge Markdown events with DB-backed RSVP stats.
 const currentRows: AdminEventRow[] = zhEvents.map((e) => {
   const slug = e.data.slug ?? e.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? '';
   const stats = dbStatsMap.get(slug);
@@ -429,7 +389,7 @@ function getCategoryUrl(category: AdminEventCategory): string {
       }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-events">
     <div class="container">
       <div class="breadcrumb">
         <a href="/dashboard">&larr; Admin Dashboard</a>
@@ -470,7 +430,8 @@ function getCategoryUrl(category: AdminEventCategory): string {
       {events.length === 0 && !fetchError ? (
         <div class="empty">No events found.</div>
       ) : (
-        <table>
+        <div class="table-shell">
+          <table>
           <thead>
             <tr>
               <th>Event</th>
@@ -520,7 +481,8 @@ function getCategoryUrl(category: AdminEventCategory): string {
               );
             })}
           </tbody>
-        </table>
+          </table>
+        </div>
       )}
     </div>
   </body>

@@ -2,6 +2,8 @@
 // dashboard/index.astro — Admin dashboard landing (SSR)
 export const prerender = false;
 
+import "../../styles/dashboard.css";
+
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
 
 // Verify authentication — forward browser cookies to backend
@@ -95,7 +97,7 @@ if (adminUser) {
       .error { background: #ffebe9; border: 1px solid #ff818266; padding: 1rem; border-radius: 6px; color: #cf222e; }
     </style>
   </head>
-  <body>
+  <body class="dashboard-page dashboard-home">
     <div class="container">
       <div class="header">
         <h1>ACC ClubHub Admin</h1>

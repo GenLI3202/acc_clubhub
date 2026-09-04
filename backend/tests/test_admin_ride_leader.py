@@ -36,6 +36,10 @@ def _leader_detail(client, leader_name: str, year: int):
     return client.get(f"/api/admin/ride-leaders/{leader_name}?year={year}")
 
 
+def _leader_overview(client, year: int):
+    return client.get(f"/api/admin/ride-leaders/overview?year={year}")
+
+
 def _make_checked_in_rsvp(db, event_id: int, email: str, name: str) -> RSVP:
     rsvp = RSVP(
         event_id=event_id,
@@ -342,6 +346,51 @@ class TestRideLeaderWorkflow:
 
 
 class TestRideLeaderReporting:
+    def test_overview_returns_summary_and_all_details_in_one_response(
+        self,
+        client,
+        db,
+        sample_event,
+        confirmed_rsvp,
+    ) -> None:
+        sample_event.distance_km = Decimal("40.00")
+        sample_event.event_date = datetime(
+            2026,
+            4,
+            18,
+            10,
+            30,
+            tzinfo=timezone.utc,
+        )
+        db.commit()
+        _check_in(client, sample_event.id, confirmed_rsvp.id)
+        _mark_leader(client, sample_event.id, confirmed_rsvp.id)
+
+        response = _leader_overview(client, 2026)
+
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["year"] == 2026
+        assert any(
+            leader["leader_name"] == "Alice"
+            for leader in payload["leaders"]
+        )
+        alice = next(
+            detail
+            for detail in payload["details"]
+            if detail["leader_name"] == "Alice"
+        )
+        assert alice["total_credited_km"] == 40.0
+        assert len(alice["history"]) == 1
+
+    def test_overview_requires_authentication(
+        self,
+        client_no_auth,
+    ) -> None:
+        response = _leader_overview(client_no_auth, 2026)
+
+        assert response.status_code == 401
+
     def test_reporting_roster_includes_taoyue_without_credits(self, client, db):
         summary_resp = _leader_summary(client, 2025)
         detail_resp = _leader_detail(client, "Taoyue Yang", 2025)
@@ -556,8 +605,8 @@ class TestRideLeaderReporting:
         assert leaders["Gen Li"]["total_credited_km"] == 50.0
         assert leaders["Sheng Yuan"]["total_credited_km"] == 40.0
         assert leaders["Zhikuan Shen"]["total_credited_km"] == 50.0
-        assert leaders["Taoyue Yang"]["lead_events_count"] == 3
-        assert leaders["Taoyue Yang"]["total_credited_km"] == 128.2
+        assert leaders["Taoyue Yang"]["lead_events_count"] == 2
+        assert leaders["Taoyue Yang"]["total_credited_km"] == 80.8
         assert leaders["Ziyang Zhang"]["lead_events_count"] == 2
         assert leaders["Ziyang Zhang"]["total_credited_km"] == 90.8
 
@@ -574,7 +623,7 @@ class TestRideLeaderReporting:
         assert konfuzius_detail_resp.json()["leader_name"] == "Sheng Yuan"
         assert shane_detail_resp.json()["leader_name"] == "Zhikuan Shen"
         assert taoyue_detail_resp.json()["leader_name"] == "Taoyue Yang"
-        assert taoyue_detail_resp.json()["lead_events_count"] == 3
+        assert taoyue_detail_resp.json()["lead_events_count"] == 2
         assert ziyang_detail_resp.json()["leader_name"] == "Ziyang Zhang"
 
     def test_reimbursement_and_subsidy_thresholds_are_reported(self, client, db, sample_event, confirmed_rsvp):

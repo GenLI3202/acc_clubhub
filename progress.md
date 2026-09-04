@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **Dashboard Operations, Performance & Visual Refresh** (2026-09-04) — branch `phase-10/issue-cleanup-dashboard`
+  - [X] Added atomic bulk check-in and undo for selected confirmed RSVPs, including structured errors, one transaction, a single ride-leader recalculation, and desktop/mobile E2E coverage.
+  - [X] Consolidated the Events dashboard bootstrap from four backend requests to one overview request, removed redundant authentication calls from protected pages, and replaced the Ride Leader page's N+2 HTTP pattern with one overview request and one annual-history query.
+  - [X] Introduced a shared Dashboard visual system with clearer hierarchy, responsive tables, accessible focus states, consistent controls, and polished desktop/mobile layouts across all admin pages.
+  - [X] Hardened the event authoring checklist for multilingual parity, frontmatter normalization, and publish validation, and made embedded Komoot routes responsive on narrow screens.
+  - [X] Verified the full backend suite (171 passed), frontend unit suite (54 passed), targeted Dashboard Playwright suite (4 passed), Astro checking (0 errors; 33 existing hints), and production build.
+
 - [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
   - [X] Linked hero CTA button ("加入我们") to the localized membership page (`/${lang}/membership`).
   - [X] Fixed mobile chapter modal close button `X` visibility and tap targets by raising `z-index` to 99 above open cards.
