@@ -11,6 +11,12 @@
 
 ## Recent Updates
 
+- [X] **GitHub Issue Backlog Resolution** (2026-09-04) — branch `phase-10/issue-cleanup-dashboard`
+  - [X] Audited all 22 previously open issues plus the three newly recorded Dashboard requirements against their live bodies, comments, labels, code, and current architecture.
+  - [X] Closed the discontinued Sveltia CMS issue #127 as not planned; closed verified deliveries #142, #143, #149, #166, #167, and #168 as completed; closed superseded architecture proposal #61 as not planned.
+  - [X] Added a bounded implementation or governance plan to every remaining open issue, including required inputs, decision gates, safety/authority boundaries, and acceptance evidence.
+  - [X] Preserved policy, legal, finance, member-data, and public-content decisions for their accountable owners instead of inventing approvals, people, budgets, or facts.
+
 - [X] **Dashboard Operations, Performance & Visual Refresh** (2026-09-04) — branch `phase-10/issue-cleanup-dashboard`
   - [X] Added atomic bulk check-in and undo for selected confirmed RSVPs, including structured errors, one transaction, a single ride-leader recalculation, and desktop/mobile E2E coverage.
   - [X] Consolidated the Events dashboard bootstrap from four backend requests to one overview request, removed redundant authentication calls from protected pages, and replaced the Ride Leader page's N+2 HTTP pattern with one overview request and one annual-history query.
@@ -406,15 +412,6 @@
 
 ## In Progress
 
-- [ ] **Season Planner Dashboard** (Issue [#143](https://github.com/GenLI3202/acc_clubhub/issues/143))
-  - [X] Board cells now show the owner name when claimed, otherwise `Unclaimed`, instead of showing the internal `claimed` status.
-  - [X] Claim API accepts ready/in-planning slots without downgrading their planning status.
-  - [X] Slot detail page now centers planning details, route links, ownership, backup notes, and readiness instead of manual status management.
-  - [ ] Fair random auto-assignment is tracked separately in Issue [#149](https://github.com/GenLI3202/acc_clubhub/issues/149).
-- [ ] **Admin Dashboard — Outstanding Issues**
-  - [ ] **BLOCKED** — `/dashboard/login` returns 404 (Issue [#67](https://github.com/GenLI3202/acc_clubhub/issues/67))
-  - [ ] Registration spot count mismatch in dashboard (Issue [#66](https://github.com/GenLI3202/acc_clubhub/issues/66))
-  - [ ] Participant portal not tested end-to-end
 - [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
   - [ ] Survey delivery mechanism and trigger timing still pending.
   - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.
