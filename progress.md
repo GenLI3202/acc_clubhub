@@ -23,7 +23,10 @@
   - [X] 将活动列表启动从 4 次后端请求合并为 1 次 overview 请求，删除受保护页面的重复鉴权，并把 Ride Leader 页面从 N+2 次 HTTP 请求改为 1 次 overview 请求和 1 次年度历史查询。
   - [X] 为全部后台页面引入共享 Dashboard 视觉系统，统一信息层级、响应式表格、无障碍焦点状态和控件，并完成桌面/移动端打磨。
   - [X] 完善活动发布检查清单，覆盖三语一致性、frontmatter 规范化和发布验证，并使嵌入式 Komoot 路线在窄屏下响应式显示。
-  - [X] 验证后端完整测试 171 项、前端单元测试 54 项、Dashboard 定向 Playwright 测试 4 项、Astro 检查 0 error（33 个既有 hint）及生产构建。
+  - [X] 增加活动 overview 失败时的只读统计回退，避免将真实报名数误显示为 0；批量签到计数只报告真正发生状态变化的 RSVP。
+  - [X] 确认生产 Neon 所需表和字段齐全，并将历史 Ride Leader 通知标记同步至一致性检查为 0。
+  - [X] 将活动与 RSVP 持续增长后的有界查询、分页及索引评估记录为 Issue #169，并附中文实施方案和验收标准。
+  - [X] 验证后端完整测试 172 项、前端单元测试 57 项、Dashboard 定向 Playwright 测试 4 项、Astro 检查 0 error（33 个既有 hint）及生产构建。
 
 - [X] **About Page Visuals, Copy & Photography Integration** (2026-09-03) — branch `phase-9/about-redesign`
   - [X] Linked hero CTA button ("加入我们") to the localized membership page (`/${lang}/membership`).
