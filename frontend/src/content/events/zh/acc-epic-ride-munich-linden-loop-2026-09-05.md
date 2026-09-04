@@ -1,10 +1,10 @@
 ---
 slug: acc-epic-ride-munich-linden-loop-2026-09-05
 title: ACC Epic Ride | 慕尼黑 - Linden - Schäftlarn 环线
-description: 9 月 5 日周六早上从慕尼黑动物园出发，经 Linden 与 Schäftlarn 完成约 76.4 km 公路环线，限 15 人官网实名报名。
+description: 9 月 5 日周六下午从慕尼黑动物园出发，经 Linden 与 Schäftlarn 完成约 76.4 km 公路环线，限 15 人官网实名报名。
 location: 慕尼黑动物园 · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-09-05 09:30
+date: 2026-09-05 13:00
 eventType: social-ride
 cover: /images/events/acc-epic-ride-munich-linden-loop-2026-09-05/cover.jpg
 displaySections:
@@ -25,7 +25,7 @@ routeKomootUrl: https://www.komoot.com/de-de/tour/3252837959?share_token=a5OfvOB
 
 |  |  |
 | --- | --- |
-| **时间** | **2026 年 9 月 5 日（周六）9:30 集合出发** |
+| **时间** | **2026 年 9 月 5 日（周六）13:00 集合出发** |
 | **集合地点** | **慕尼黑动物园** · Tierparkstraße 30, 81543 München |
 | **路线** | 慕尼黑 → Linden → Schäftlarn → 慕尼黑 · [Komoot 查看路线](https://www.komoot.com/de-de/tour/3252837959?share_token=a5OfvOBZxmooKxtM0OvC1yD53YDTDvL4bUn06h8zV459RqM2om&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=1542830902343) |
 | **距离 / 爬升** | 约 **76.4 km / 564 m** |
