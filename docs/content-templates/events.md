@@ -35,3 +35,36 @@ status: published           # draft | published (drafts are hidden from the site
 
 Event description body goes here. Keep it concise — one short paragraph is enough for the listing.
 Full details can follow below if needed.
+
+## Publishing checklist
+
+- Keep the same `slug` in `zh`, `en`, and `de`; publish all three language
+  entries together when the event is publicly visible.
+- Set `status: published`. A draft is intentionally hidden.
+- Use `displaySections` as the canonical placement field. Add `hero` only for
+  a deliberate homepage feature; use `upcoming` for the normal event list.
+- Use `cover`; the content schema maps it to the normalized `coverImage` value
+  consumed by existing event cards and hero components.
+- Omit optional values such as `maxParticipants` and
+  `registrationDeadline` when unknown. Do not write `null` or an empty date.
+- Run `npm run check` and `npm run build` from `frontend/` before publishing.
+
+## Komoot embed
+
+Use one responsive iframe pattern when a visible route embed is needed:
+
+```html
+<iframe
+  src="https://www.komoot.com/tour/TOUR_ID/embed?profile=1"
+  width="100%"
+  height="700"
+  frameborder="0"
+  scrolling="no"
+  loading="lazy"
+  title="Route map on Komoot"
+></iframe>
+```
+
+The article layout constrains Komoot embeds on desktop and mobile. Also set
+`routeKomootUrl` in frontmatter when the registration flow should expose the
+route link independently from the article body.
