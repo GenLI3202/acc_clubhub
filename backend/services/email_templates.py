@@ -10,7 +10,10 @@ from services.event_schedule import format_event_time
 RED = "#C62828"
 INK = "#1A1A1A"
 MUTED = "#666666"
-FONT = "Arial, 'Microsoft YaHei', sans-serif"
+KOMOOT_GREEN = "#6AA127"
+KOMOOT_INK = "#42661C"
+KOMOOT_SURFACE = "#F5F8F0"
+FONT = "Arial, Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif"
 SIGNATURE = "Let's Ride, Free and Together"
 MOTTO = "Across Paths · Mountains · Borders"
 CONTACT = "letusride@across-cc.de"
@@ -18,7 +21,7 @@ CONTACT = "letusride@across-cc.de"
 
 def _paragraph(value: str) -> str:
     """Escape a paragraph and apply email-safe spacing."""
-    return f'<p style="margin:0 0 20px;line-height:1.7;">{escape(value)}</p>'
+    return f'<p style="margin:0 0 18px;line-height:1.75;">{escape(value)}</p>'
 
 
 def _safe_url(value: str) -> str:
@@ -42,24 +45,28 @@ def _render_card(
     paragraphs: list[str],
     links: list[tuple[str, str]],
     frontend_url: str,
+    komoot_route: str = "",
     footer_link: tuple[str, str] | None = None,
     qr: tuple[str, str] | None = None,
 ) -> dict[str, str]:
     """Render supplied copy using a fluid table with an Outlook width fallback."""
     rows = "".join(
         "<tr>"
-        f'<td width="30%" valign="top" style="padding:16px 12px;'
-        f'border-bottom:1px solid #E5E5E2;color:{MUTED};font-size:13px;">'
+        f'<td width="30%" valign="top" style="padding:14px 12px;'
+        f"color:{MUTED};font-size:12px;"
+        f'{"border-top:1px solid #E5E5E2;" if index else ""}">'
         f"{escape(key)}</td>"
-        '<td width="70%" valign="top" style="padding:16px 12px;'
-        'border-bottom:1px solid #E5E5E2;font-weight:bold;word-wrap:break-word;">'
+        '<td width="70%" valign="top" style="padding:14px 12px;'
+        "font-weight:600;word-wrap:break-word;"
+        f'{"border-top:1px solid #E5E5E2;" if index else ""}">'
         f"{escape(value)}</td></tr>"
-        for key, value in facts
+        for index, (key, value) in enumerate(facts)
     )
     facts_html = (
         '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"'
         ' border="0" bgcolor="#F4F4F1" style="width:100%;table-layout:fixed;'
-        f"border-collapse:collapse;background-color:#F4F4F1;color:{INK};"
+        "border-collapse:separate;border-spacing:0;border-radius:8px;"
+        f"background-color:#F4F4F1;color:{INK};"
         f'font-family:{FONT};font-size:14px;line-height:1.6;margin-bottom:24px;">'
         f"{rows}</table>"
         if facts
@@ -69,19 +76,26 @@ def _render_card(
     links_html = ""
     for index, (text, url) in enumerate(links):
         if index == 0:
+            is_komoot = bool(komoot_route) and url == _safe_url(komoot_route)
+            background = KOMOOT_SURFACE if is_komoot else RED
+            border = KOMOOT_GREEN if is_komoot else RED
+            ink = KOMOOT_INK if is_komoot else "#FFFFFF"
             links_html += (
                 '<table role="presentation" cellpadding="0" cellspacing="0"'
-                ' border="0" style="margin:4px 0 20px;"><tr>'
-                f'<td bgcolor="{RED}" style="background-color:{RED};'
-                'padding:12px 18px;mso-padding-alt:12px 18px;">'
-                f'<a href="{escape(url, quote=True)}" style="color:#FFFFFF;'
-                f"font-family:{FONT};font-size:14px;font-weight:bold;"
-                f'text-decoration:none;display:inline-block;">{escape(text)}</a>'
+                ' border="0" style="margin:2px 0 18px;border-collapse:separate;'
+                'border-spacing:0;"><tr>'
+                f'<td bgcolor="{background}" style="background-color:{background};'
+                f"border:1px solid {border};border-radius:5px;"
+                'padding:9px 14px;mso-padding-alt:9px 14px;">'
+                f'<a href="{escape(url, quote=True)}" style="color:{ink};'
+                f"font-family:{FONT};font-size:13px;font-weight:600;line-height:20px;"
+                f'text-decoration:none;display:inline-block;border-radius:5px;">'
+                f"{escape(text)}</a>"
                 "</td></tr></table>"
             )
         else:
             links_html += (
-                '<p style="margin:0 0 20px;font-size:14px;">'
+                '<p style="margin:0 0 18px;font-size:13px;">'
                 f'<a href="{escape(url, quote=True)}" style="color:{RED};'
                 f'text-decoration:underline;">{escape(text)}</a></p>'
             )
@@ -127,32 +141,35 @@ def _render_card(
         ' cellspacing="0" border="0"><tr><td><![endif]-->'
         '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"'
         ' border="0" bgcolor="#FFFFFF" style="width:100%;max-width:600px;'
-        f"border-collapse:collapse;font-family:{FONT};font-size:16px;"
-        f'line-height:1.7;color:{INK};background-color:#FFFFFF;">'
-        f'<tr><td bgcolor="{RED}" style="padding:24px;background-color:{RED};'
-        'color:#FFFFFF;"><span style="font-size:26px;font-weight:bold;">ACC</span>'
-        '<br /><span style="font-size:11px;letter-spacing:1px;">'
+        "border-collapse:separate;border-spacing:0;border-radius:8px;"
+        f"font-family:{FONT};font-size:15px;"
+        f'line-height:1.75;color:{INK};background-color:#FFFFFF;">'
+        f'<tr><td bgcolor="{RED}" style="padding:22px 24px;'
+        f"border-radius:8px 8px 0 0;background-color:{RED};"
+        'color:#FFFFFF;"><span style="font-size:24px;font-weight:600;">ACC</span>'
+        '<br /><span style="font-size:10px;letter-spacing:0.8px;">'
         "ACROSS CYCLING CLUB · MUNICH</span></td></tr>"
         '<tr><td style="padding:28px 24px 8px;">'
-        f'<p style="margin:0 0 12px;font-size:12px;color:{MUTED};">'
+        f'<p style="margin:0 0 10px;font-size:11px;color:{MUTED};">'
         f"{escape(label)}</p>"
-        '<h1 style="margin:0 0 24px;font-size:24px;line-height:1.35;'
-        f'font-weight:bold;color:{INK};">{escape(title)}</h1>'
+        '<h1 style="margin:0 0 22px;font-size:22px;line-height:1.4;'
+        f'font-weight:600;color:{INK};">{escape(title)}</h1>'
         f"{_paragraph(greeting)}{_paragraph(intro)}{facts_html}"
         f"{''.join(_paragraph(item) for item in paragraphs)}"
         f"{links_html}{qr_html}"
-        '<p style="margin:28px 0 8px;font-size:16px;font-weight:bold;">'
+        '<p style="margin:28px 0 6px;font-size:14px;font-weight:600;">'
         f"{escape(SIGNATURE)}</p>"
-        f'<p style="margin:0 0 16px;font-size:13px;color:{MUTED};">'
+        f'<p style="margin:0 0 14px;font-size:12px;color:{MUTED};">'
         f"{MOTTO}</p>"
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0"'
         ' bgcolor="#FFFFFF"><tr><td bgcolor="#FFFFFF" style="padding:4px 0 12px;">'
         f'<img src="{escape(calligraphy_url, quote=True)}" alt="穿越无疆"'
-        ' width="200" height="64" style="display:block;width:200px;height:64px;'
+        ' width="180" height="57" style="display:block;width:180px;height:57px;'
         'border:0;color:#1A1A1A;background-color:#FFFFFF;" />'
         "</td></tr></table></td></tr>"
         f'<tr><td style="padding:20px 24px 28px;color:{MUTED};font-size:12px;'
-        f'border-top:1px solid #E5E5E2;">{footer}</td></tr></table>'
+        'border-top:1px solid #E5E5E2;border-radius:0 0 8px 8px;">'
+        f"{footer}</td></tr></table>"
         "<!--[if mso]></td></tr></table><![endif]-->"
         "</td></tr></table></body></html>"
     )
@@ -265,6 +282,7 @@ def confirmation_card(
         paragraphs=[],
         links=links,
         frontend_url=frontend_url,
+        komoot_route=route_komoot_url or "",
         qr=qr,
     )
 
