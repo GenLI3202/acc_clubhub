@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getEventDisplaySections,
+  getTodayAtMidnight,
   getRegulars,
   isEventInSection,
   type EventSection,
@@ -14,6 +15,13 @@ type MockEvent = {
 };
 
 describe('event section helpers', () => {
+  it('uses Munich midnight for event day boundaries in summer and winter', () => {
+    expect(getTodayAtMidnight(new Date('2026-09-05T22:30:00Z')).toISOString())
+      .toBe('2026-09-05T22:00:00.000Z');
+    expect(getTodayAtMidnight(new Date('2026-01-05T23:30:00Z')).toISOString())
+      .toBe('2026-01-05T23:00:00.000Z');
+  });
+
   it('uses displaySections when multiple sections are configured', () => {
     const event: MockEvent = {
       data: {

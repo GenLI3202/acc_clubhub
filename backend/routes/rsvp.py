@@ -10,9 +10,11 @@ from typing import Optional
 from urllib.parse import urlparse
 
 from database import get_db
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from models import RSVP, Event, Subscriber
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
+from services.event_schedule import as_utc, event_input_as_utc
+from services.rsvp_cancellation import cancel_registration
 from services.email import (
     send_confirmation_email,
     send_subscription_confirmation_email,
@@ -77,6 +79,12 @@ class RSVPCreateV2(BaseModel):
     wechat_qr_code: Optional[str] = None
     distance_km: Optional[float] = None
     route_komoot_url: Optional[str] = None
+
+    @field_validator("event_date", "registration_deadline")
+    @classmethod
+    def normalize_event_time(cls, value: datetime | None) -> datetime | None:
+        """Use Munich for timezone-free input and UTC for database storage."""
+        return event_input_as_utc(value) if value is not None else None
 
     @field_validator("route_komoot_url")
     @classmethod
@@ -326,12 +334,7 @@ def create_rsvp_v2(
         )
 
     event_date_dt = data.event_date
-    if event_date_dt.tzinfo is None:
-        event_date_dt = event_date_dt.replace(tzinfo=timezone.utc)
-
     reg_deadline = data.registration_deadline
-    if reg_deadline and reg_deadline.tzinfo is None:
-        reg_deadline = reg_deadline.replace(tzinfo=timezone.utc)
 
     if not event:
         event = Event(
@@ -507,13 +510,87 @@ def create_rsvp_v2(
 
 # ── Participant Portal Endpoint ──────────────────────────────
 
+class CancelRegistrationRequest(BaseModel):
+    """Private token from the recipient's registration email."""
+
+    token: str = Field(min_length=1, max_length=256)
+
+
+@router.post("/api/events/{slug}/registration/cancel")
+def cancel_own_registration(
+    slug: str,
+    body: CancelRegistrationRequest,
+    response: Response,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Cancel the token owner's RSVP after explicit confirmation, without login.
+
+    Args:
+        slug: Event identifier.
+        body: Recipient's private registration token.
+        response: HTTP response for private cache headers.
+        db: Database session owned by this request.
+
+    Returns:
+        The owner's cancelled status, including on repeated requests.
+
+    Raises:
+        HTTPException: Invalid token, missing event, or cancellation closed.
+    """
+    response.headers["Cache-Control"] = "private, no-store"
+    event = db.query(Event).filter(
+        Event.slug == slug,
+    ).with_for_update().first()
+    if not event:
+        raise HTTPException(status_code=404, detail={
+            "error_code": "EVENT_NOT_FOUND", "message": "Event not found",
+        })
+    rsvp = db.query(RSVP).filter(
+        RSVP.event_id == event.id, RSVP.view_token == body.token,
+    ).with_for_update().first()
+    if not rsvp:
+        raise HTTPException(status_code=401, detail={
+            "error_code": "INVALID_REGISTRATION_TOKEN",
+            "message": "Invalid registration link",
+        })
+    result = {"success": True, "status": "cancelled"}
+    if rsvp.status == "cancelled":
+        return result
+    if rsvp.checked_in_at is not None or (
+        as_utc(event.event_date) <= datetime.now(timezone.utc)
+    ):
+        raise HTTPException(status_code=409, detail={
+            "error_code": "REGISTRATION_CANCELLATION_CLOSED",
+            "message": "Self-cancellation is closed. Please contact the club.",
+        })
+    try:
+        promoted = cancel_registration(db, event, rsvp)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    if promoted:
+        try:
+            send_confirmation_email(
+                user_email=promoted.email, user_name=promoted.name,
+                event_title=event.title, event_date=event.event_date,
+                event_location=event.location, event_id=event.id, lang="en",
+                event_slug=event.slug, view_token=promoted.view_token or "",
+            )
+        except Exception:
+            logger.exception("Waitlist promotion email failed after cancellation")
+    return result
+
+
 @router.get("/api/events/{slug}/participant")
 def get_participant_view(
     slug: str,
     token: str,
+    response: Response,
     db: Session = Depends(get_db),
 ) -> dict:
     """View event participant list with RSVP token (no login required)."""
+    response.headers["Cache-Control"] = "private, no-store"
     # Get event by slug
     event = db.query(Event).filter(Event.slug == slug).first()
     if not event:
@@ -528,14 +605,11 @@ def get_participant_view(
     if not rsvp:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    if rsvp.status == "cancelled":
-        raise HTTPException(status_code=401, detail="Registration was cancelled")
-
     # Get confirmed participants (names only)
     confirmed_rsvps = db.query(RSVP).filter(
         RSVP.event_id == event.id,
         RSVP.status == "confirmed",
-    ).order_by(RSVP.created_at).all()
+    ).order_by(RSVP.created_at).all() if rsvp.status != "cancelled" else []
 
     return {
         "event": {
@@ -551,6 +625,12 @@ def get_participant_view(
         ],
         "total_confirmed": len(confirmed_rsvps),
         "your_status": rsvp.status,
+        "your_name": rsvp.name,
+        "can_cancel": (
+            rsvp.status in {"confirmed", "waitlist"}
+            and rsvp.checked_in_at is None
+            and as_utc(event.event_date) > datetime.now(timezone.utc)
+        ),
     }
 
 

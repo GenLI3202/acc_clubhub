@@ -4,7 +4,7 @@ title: ACC Epic Ride | 慕尼黑 - Linden - Schäftlarn 环线
 description: 9 月 6 日周日上午从慕尼黑动物园出发，经 Linden 与 Schäftlarn 完成约 76.4 km 公路环线，限 15 人官网实名报名。
 location: 慕尼黑动物园 · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-09-06 09:30
+date: "2026-09-06T09:30:00+02:00"
 eventType: social-ride
 cover: /images/events/acc-epic-ride-munich-linden-loop-2026-09-05/cover.jpg
 displaySections:

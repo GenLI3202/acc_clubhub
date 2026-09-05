@@ -9,6 +9,7 @@ import { t, type Locale } from '../lib/i18n';
 interface Props {
   title: string;
   date?: Date | string; // 支持 Date 对象和 ISO 字符串
+  timeZone?: string;
   author?: string;
   cover?: string;
   lang: Locale;
@@ -17,7 +18,9 @@ interface Props {
   xiaohongshuUrl?: string;
 }
 
-const { title, date, author, cover, lang, backLink, backLabel, xiaohongshuUrl } = Astro.props;
+const {
+  title, date, timeZone, author, cover, lang, backLink, backLabel, xiaohongshuUrl,
+} = Astro.props;
 
 // 安全转换日期：支持 Date 对象和字符串
 const dateObj = date ? (date instanceof Date ? date : new Date(date)) : null;
@@ -26,6 +29,7 @@ const isValidDate = dateObj && !isNaN(dateObj.getTime());
 const formattedDate = isValidDate
   ? dateObj.toLocaleDateString(lang === 'de' ? 'de-DE' : lang === 'en' ? 'en-US' : 'zh-CN', {
       year: 'numeric',
+      timeZone,
       month: 'long',
       day: 'numeric',
     })

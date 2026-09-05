@@ -37,7 +37,7 @@ const fallbackSub   = lang === 'zh' ? '更多活动即将公布'
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString(
     lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
-    { year: 'numeric', month: 'long', day: 'numeric' }
+    { timeZone: 'Europe/Berlin', year: 'numeric', month: 'long', day: 'numeric' }
   );
 }
 ---

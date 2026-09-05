@@ -8,9 +8,14 @@ import { t, type Locale } from '../../../lib/i18n';
 import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
 import { get_cancellation_notice } from '../../../lib/events/eventCancellation';
-import { format_departure, SCHEDULE_NOTICE } from '../../../lib/events/event_schedule';
+import {
+  departure_day, format_departure, SCHEDULE_NOTICE,
+} from '../../../lib/events/event_schedule';
+import { parse_event_datetime } from '../../../lib/events/event_datetime';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
+import RegistrationManagement from '../../../components/events/registration_management';
+import type { RegistrationData } from '../../../components/events/registration_management';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
 
 export const prerender = false;
@@ -54,17 +59,19 @@ try {
 }
 
 // Participant portal: check for token in query param
-let participantData = null;
+let participantData: RegistrationData | null = null;
 const token = Astro.url.searchParams.get("token");
 
 if (token) {
+  Astro.response.headers.set("Referrer-Policy", "no-referrer");
+  Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
   try {
     const res = await fetch(`${apiUrl}/api/events/${entry.data.slug}/participant?token=${encodeURIComponent(token)}`);
     if (res.ok) {
       participantData = await res.json();
     }
   } catch {
-    // Invalid token — silently ignore, show normal page
+    // The management panel explains unavailable or invalid personal links.
   }
 }
 
@@ -105,9 +112,11 @@ const rawDeadline = entry.data.registrationDeadline;
 const effectiveDeadline = rawDeadline
   ? String(rawDeadline)
   : (() => {
-      const d = new Date(entry.data.date);
+      const d = new Date(`${departure_day(entry.data.date)}T00:00:00Z`);
       d.setUTCDate(d.getUTCDate() - 1);
-      return `${d.toISOString().slice(0, 10)}T22:00:00`;
+      return parse_event_datetime(
+        `${d.toISOString().slice(0, 10)}T22:00:00`,
+      ).toISOString();
     })();
 
 const endedLabels: Record<string, string> = {
@@ -122,6 +131,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 <ArticleLayout
   title={entry.data.title}
   date={effective_event_date}
+  timeZone="Europe/Berlin"
   cover={entry.data.cover}
   lang={lang}
   backLink={`/${lang}/events`}
@@ -144,6 +154,10 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
     )}
   </div>
 
+  {token && <RegistrationManagement client:load
+    lang={lang} api_url={apiUrl} slug={entry.data.slug}
+    token={token} initial_data={participantData} />}
+
   <!-- Main Content -->
   {updated_departure && (
     <aside class="schedule-notice" role="status">
@@ -154,29 +168,6 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
     </aside>
   )}
   <Content />
-
-  <!-- Participant List (shown when valid token is present) -->
-  {participantData && (
-    <section class="participant-portal" style="margin-top: 2rem; padding: 1.5rem; background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px;">
-      <h3 style="margin: 0 0 1rem 0; font-size: 1.1rem; color: #24292f;">
-        Participants ({participantData.total_confirmed})
-      </h3>
-      <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #57606a;">
-        Your registration status: <strong>{participantData.your_status}</strong>
-      </p>
-      {participantData.participants.length > 0 ? (
-        <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem;">
-          {participantData.participants.map((p: any) => (
-            <li style="padding: 0.5rem 0.75rem; background: white; border-radius: 4px; border: 1px solid #eaeef2;">
-              {p.name}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p style="color: #57606a; font-size: 0.9rem;">No confirmed participants yet.</p>
-      )}
-    </section>
-  )}
 
   <!-- Registration Form: inline compact, before comments -->
   {isEventCancelled && (

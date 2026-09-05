@@ -36,7 +36,7 @@ function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   return d.toLocaleDateString(
     lang === 'zh' ? 'zh-CN' : lang === 'de' ? 'de-DE' : 'en-GB',
-    { month: 'short', day: 'numeric' }
+    { timeZone: 'Europe/Berlin', month: 'short', day: 'numeric' }
   );
 }
 ---

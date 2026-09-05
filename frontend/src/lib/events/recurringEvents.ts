@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import { parse_event_datetime } from "./event_datetime";
 
 type RecurringConfig = {
     enabled?: boolean;
@@ -110,7 +111,7 @@ function get_deadline(
 ): string | null {
     const override = recurring.registrationDeadlineOverrides?.[local_date];
     if (override) {
-        return new Date(override).toISOString();
+        return parse_event_datetime(override).toISOString();
     }
 
     if (typeof recurring.registrationDeadlineHoursBefore === "number") {

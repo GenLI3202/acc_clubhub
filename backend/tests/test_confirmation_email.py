@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from services.email import send_confirmation_email
+from services.email import send_registrant_notification_email, send_waitlist_email
 
 SAMPLE_DATE = datetime(2026, 4, 19, 9, 0, tzinfo=timezone.utc)
 FRONTEND_URL = "https://www.across-cc.de"
@@ -116,3 +117,53 @@ def test_no_route_omits_komoot_link() -> None:
     )
 
     assert "komoot.com" not in params["html"]
+
+
+@pytest.mark.parametrize("lang", ["zh", "en", "de"])
+@pytest.mark.parametrize("kind", ["confirmation", "reminder", "waitlist"])
+def test_registration_emails_offer_personal_cancellation(
+    lang: str, kind: str,
+) -> None:
+    """All registration receipts carry a private HTML and plain-text action."""
+    kwargs = {
+        "user_email": "test@example.com", "user_name": "Test User",
+        "event_title": "Test Ride", "event_slug": "test-ride",
+        "view_token": "private&token", "lang": lang,
+    }
+    send = {
+        "confirmation": send_confirmation_email,
+        "reminder": send_registrant_notification_email,
+        "waitlist": send_waitlist_email,
+    }[kind]
+    if kind == "waitlist":
+        kwargs["waitlist_position"] = 1
+    else:
+        kwargs["event_date"] = SAMPLE_DATE
+    with patch("resend.Emails.send") as email, patch(
+        "services.email.settings",
+    ) as settings:
+        settings.RESEND_API_KEY = "test-key"
+        settings.PUBLIC_FRONTEND_URL = FRONTEND_URL
+        send(**kwargs)
+    params = email.call_args.args[0]
+    url = (
+        f"{FRONTEND_URL}/{lang}/events/test-ride"
+        "?token=private%26token#registration-management"
+    )
+    label = {
+        "zh": "取消我的报名", "en": "Cancel my registration",
+        "de": "Meine Anmeldung stornieren",
+    }[lang]
+    for part in ("html", "text"):
+        assert url in params[part]
+        assert label in params[part]
+
+
+def test_confirmation_without_token_omits_cancellation_action() -> None:
+    params = _capture_email_params(
+        user_email="test@example.com", user_name="Test User",
+        event_title="Test Ride", event_date=SAMPLE_DATE, lang="en",
+        event_slug="test-ride",
+    )
+    assert "Cancel my registration" not in params["html"]
+    assert "#registration-management" not in params["text"]

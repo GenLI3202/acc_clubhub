@@ -4,7 +4,7 @@ title: ACC Epic Ride | Munich - Linden - Schäftlarn Loop
 description: A Sunday morning road loop from Munich Zoo through Linden and Schäftlarn, around 76.4 km with 564 m of climbing, limited to 15 registered riders.
 location: Munich Zoo · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-09-06 09:30
+date: "2026-09-06T09:30:00+02:00"
 eventType: social-ride
 cover: /images/events/acc-epic-ride-munich-linden-loop-2026-09-05/cover.jpg
 displaySections:

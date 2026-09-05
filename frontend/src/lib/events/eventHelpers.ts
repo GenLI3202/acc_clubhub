@@ -1,4 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
+import { parse_event_datetime } from "./event_datetime";
+import { departure_day } from "./event_schedule";
 
 type EventEntry = CollectionEntry<'events'>;
 export type EventSection = 'hero' | 'upcoming' | 'regular';
@@ -12,10 +14,8 @@ type EventWithSections = {
   data: EventSectionData;
 };
 
-export function getTodayAtMidnight(): Date {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d;
+export function getTodayAtMidnight(now: Date = new Date()): Date {
+  return parse_event_datetime(`${departure_day(now.toISOString())} 00:00`);
 }
 
 export function splitEvents(events: EventEntry[]): { upcoming: EventEntry[]; past: EventEntry[] } {
