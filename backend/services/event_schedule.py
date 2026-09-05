@@ -1,6 +1,6 @@
 """Munich departure-time conversion shared by routes and email rendering."""
 
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timezone
 from zoneinfo import ZoneInfo
 
 from domain.exceptions import InvalidDepartureTimeError
@@ -24,31 +24,21 @@ def as_utc(value: datetime) -> datetime:
     )
 
 
-def departure_on_same_day(event_date: datetime, departure_time: str) -> datetime:
-    """Resolve an unambiguous Munich clock time on the current event date.
+def departure_in_munich(event_day: date, departure_time: str) -> datetime:
+    """Resolve an unambiguous departure on the selected Munich calendar date.
 
     Args:
-        event_date: Current event timestamp.
+        event_day: Selected Munich calendar date.
         departure_time: Validated HH:MM clock time.
 
     Returns:
-        New UTC timestamp on the same Munich calendar day.
+        New UTC timestamp for the selected local date and time.
 
     Raises:
         InvalidDepartureTimeError: If DST makes the time nonexistent or ambiguous.
     """
     hour, minute = map(int, departure_time.split(":"))
-    local = (
-        as_utc(event_date)
-        .astimezone(MUNICH)
-        .replace(
-            hour=hour,
-            minute=minute,
-            second=0,
-            microsecond=0,
-            fold=0,
-        )
-    )
+    local = datetime.combine(event_day, time(hour, minute), tzinfo=MUNICH)
     utc = local.astimezone(timezone.utc)
     if (
         utc.astimezone(MUNICH).replace(tzinfo=None) != local.replace(tzinfo=None)
