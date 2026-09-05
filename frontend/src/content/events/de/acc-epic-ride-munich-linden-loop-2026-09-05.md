@@ -1,10 +1,10 @@
 ---
 slug: acc-epic-ride-munich-linden-loop-2026-09-05
 title: ACC Epic Ride | München - Linden - Schäftlarn Runde
-description: Eine Samstags-Rennradrunde ab Tierpark München über Linden und Schäftlarn, ca. 76,4 km mit 564 m Anstieg, begrenzt auf 15 angemeldete Teilnehmende.
+description: Eine Sonntags-Rennradrunde am Morgen ab Tierpark München über Linden und Schäftlarn, ca. 76,4 km mit 564 m Anstieg, begrenzt auf 15 angemeldete Teilnehmende.
 location: Tierpark München · Tierparkstraße 30, 81543 München
 author: ACC Club
-date: 2026-09-05 13:00
+date: 2026-09-06 09:30
 eventType: social-ride
 cover: /images/events/acc-epic-ride-munich-linden-loop-2026-09-05/cover.jpg
 displaySections:
@@ -25,7 +25,7 @@ Das ist keine reine Einsteiger-Runde. Bitte meldet euch nur an, wenn ihr mehr al
 
 |  |  |
 | --- | --- |
-| **Datum / Uhrzeit** | **Samstag, 5. September 2026 · 13:00 Uhr** |
+| **Datum / Uhrzeit** | **Sonntag, 6. September 2026 · 09:30 Uhr** |
 | **Treffpunkt** | **Tierpark München** · Tierparkstraße 30, 81543 München |
 | **Route** | München → Linden → Schäftlarn → München · [Auf Komoot ansehen](https://www.komoot.com/de-de/tour/3252837959?share_token=a5OfvOBZxmooKxtM0OvC1yD53YDTDvL4bUn06h8zV459RqM2om&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=1542830902343) |
 | **Distanz / Anstieg** | ca. **76,4 km / 564 m** |
