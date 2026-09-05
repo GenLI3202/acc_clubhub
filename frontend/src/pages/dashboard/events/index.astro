@@ -179,6 +179,7 @@ function formatDate(dateStr: string | null): string {
   if (!dateStr) return "—";
   try {
     return new Date(dateStr).toLocaleDateString("en-GB", {
+      timeZone: "Europe/Berlin",
       year: "numeric",
       month: "short",
       day: "numeric",

@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import get_db
 from models import Event
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+from services.event_schedule import event_input_as_utc
 from datetime import datetime, timezone
 from routes.auth import get_current_admin
 from services.event_counts import (
@@ -182,6 +183,12 @@ class EventCreate(BaseModel):
     description: Optional[str] = None
     max_participants: Optional[int] = None
     registration_deadline: Optional[datetime] = None
+
+    @field_validator("event_date", "registration_deadline")
+    @classmethod
+    def normalize_event_time(cls, value: datetime | None) -> datetime | None:
+        """Use Munich for timezone-free input and UTC for database storage."""
+        return event_input_as_utc(value) if value is not None else None
 
 
 @router.post("/api/events", response_model=EventResponse)

@@ -36,7 +36,10 @@ function getTypeLabel(event: CollectionEntry<"events">): string {
 function formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString(
         lang === "zh" ? "zh-CN" : lang === "de" ? "de-DE" : "en-GB",
-        { year: "numeric", month: "long", day: "numeric" },
+        {
+            timeZone: "Europe/Berlin",
+            year: "numeric", month: "long", day: "numeric",
+        },
     );
 }
 

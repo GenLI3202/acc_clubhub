@@ -24,6 +24,33 @@ def as_utc(value: datetime) -> datetime:
     )
 
 
+def event_input_as_utc(value: datetime) -> datetime:
+    """Interpret timezone-free event inputs in Munich and normalize for storage.
+
+    Args:
+        value: Incoming event date or registration deadline, not a stored row.
+
+    Returns:
+        The same instant in UTC; naive inputs use Europe/Berlin.
+
+    Raises:
+        InvalidDepartureTimeError: The local time is missing or ambiguous.
+    """
+    if value.tzinfo is not None:
+        return value.astimezone(timezone.utc)
+    local = value.replace(tzinfo=MUNICH)
+    utc = local.astimezone(timezone.utc)
+    if (
+        utc.astimezone(MUNICH).replace(tzinfo=None) != value
+        or local.utcoffset() != local.replace(fold=1).utcoffset()
+    ):
+        raise InvalidDepartureTimeError(
+            "This Munich time is missing or ambiguous due to daylight saving. "
+            "Specify an explicit UTC offset or choose another time.",
+        )
+    return utc
+
+
 def departure_in_munich(event_day: date, departure_time: str) -> datetime:
     """Resolve an unambiguous departure on the selected Munich calendar date.
 

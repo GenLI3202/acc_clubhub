@@ -3,7 +3,7 @@
 slug: my-event-slug          # URL path: /[lang]/events/[slug] — use kebab-case, same across all languages
 title: Event Title
 location: Meeting point / venue
-date: 2026-06-01             # ISO date YYYY-MM-DD
+date: "2026-06-01T09:30:00+02:00" # Munich departure with explicit UTC offset
 
 # DISPLAY SECTIONS — controls which parts of the events page this event appears in
 # 'hero'     → featured carousel at the top (use for 2-3 flagship events max)
@@ -29,7 +29,7 @@ cover: /images/events/{slug}/cover.jpg
 wechatQrCode: /images/events/{slug}/wechat-qr.png   # optional, omit if no QR
 
 maxParticipants: 30         # omit for unlimited
-registrationDeadline: 2026-05-25   # ISO date; registration form closes after this date
+registrationDeadline: "2026-05-31T22:00:00+02:00" # Exact closing time in Munich
 status: published           # draft | published (drafts are hidden from the site)
 ---
 
@@ -38,9 +38,17 @@ Full details can follow below if needed.
 
 ## Publishing checklist
 
+- All ACC events default to Munich local time (`Europe/Berlin`), including
+  departure, registration deadlines and calendar-day boundaries. Summer/winter
+  offsets are resolved from the event date, never from server or viewer settings.
 - Keep the same `slug` in `zh`, `en`, and `de`; publish all three language
   entries together when the event is publicly visible.
 - Set `status: published`. A draft is intentionally hidden.
+- Write departure and deadline timestamps as quoted ISO strings with an explicit
+  offset: Munich summer time uses `+02:00`, winter uses `+01:00`. Legacy strings
+  such as `2026-09-06 09:30` are interpreted as Munich local time by the event
+  schema, independently of the server timezone. Do not add `Z` to a local clock
+  time: `09:30Z` means 11:30 in Munich in summer. Keep the body time consistent.
 - Use `displaySections` as the canonical placement field. Add `hero` only for
   a deliberate homepage feature; use `upcoming` for the normal event list.
 - Use `cover`; the content schema maps it to the normalized `coverImage` value

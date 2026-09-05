@@ -13,7 +13,7 @@ from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from models import RSVP, Event, Subscriber
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from services.event_schedule import as_utc
+from services.event_schedule import as_utc, event_input_as_utc
 from services.rsvp_cancellation import cancel_registration
 from services.email import (
     send_confirmation_email,
@@ -79,6 +79,12 @@ class RSVPCreateV2(BaseModel):
     wechat_qr_code: Optional[str] = None
     distance_km: Optional[float] = None
     route_komoot_url: Optional[str] = None
+
+    @field_validator("event_date", "registration_deadline")
+    @classmethod
+    def normalize_event_time(cls, value: datetime | None) -> datetime | None:
+        """Use Munich for timezone-free input and UTC for database storage."""
+        return event_input_as_utc(value) if value is not None else None
 
     @field_validator("route_komoot_url")
     @classmethod
@@ -328,12 +334,7 @@ def create_rsvp_v2(
         )
 
     event_date_dt = data.event_date
-    if event_date_dt.tzinfo is None:
-        event_date_dt = event_date_dt.replace(tzinfo=timezone.utc)
-
     reg_deadline = data.registration_deadline
-    if reg_deadline and reg_deadline.tzinfo is None:
-        reg_deadline = reg_deadline.replace(tzinfo=timezone.utc)
 
     if not event:
         event = Event(

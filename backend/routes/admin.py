@@ -10,7 +10,7 @@ import logging
 from datetime import date, datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import AwareDatetime, BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field, field_validator
 from sqlalchemy import case, func, inspect
 from sqlalchemy.orm import Session
 from database import get_db
@@ -25,7 +25,9 @@ from services.email import (
     send_registrant_notification_email,
 )
 from services.event_cancellation import EventCancellationReason
-from services.event_schedule import MUNICH, as_utc, departure_in_munich
+from services.event_schedule import (
+    MUNICH, as_utc, departure_in_munich, event_input_as_utc,
+)
 from services.event_counts import (
     count_confirmed_rsvps,
     get_available_spots,
@@ -77,6 +79,12 @@ class SyncOccurrenceRequest(BaseModel):
     registration_deadline: Optional[datetime] = None
     description: Optional[str] = None
     distance_km: Optional[float] = None
+
+    @field_validator("event_date", "registration_deadline")
+    @classmethod
+    def normalize_event_time(cls, value: datetime | None) -> datetime | None:
+        """Use Munich for timezone-free input and UTC for database storage."""
+        return event_input_as_utc(value) if value is not None else None
 
 
 class SyncOccurrencesResponse(BaseModel):

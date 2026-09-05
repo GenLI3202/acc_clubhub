@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
     testDir: "./e2e",
-    testMatch: "registration_cancellation.spec.ts",
+    testMatch: ["registration_cancellation.spec.ts", "registration_timezone.spec.ts"],
     workers: 1,
     retries: 0,
     use: { baseURL: "http://localhost:4497", screenshot: "only-on-failure" },
@@ -16,7 +16,7 @@ export default defineConfig({
         {
             command: "npm run dev -- --port 4497",
             url: "http://localhost:4497",
-            env: { PUBLIC_API_URL: "http://127.0.0.1:8011" },
+            env: { PUBLIC_API_URL: "http://127.0.0.1:8011", TZ: "UTC" },
             reuseExistingServer: false,
         },
     ],

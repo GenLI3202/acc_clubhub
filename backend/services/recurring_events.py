@@ -6,7 +6,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 
-def parse_datetime(value: object, time_zone: str = "UTC") -> datetime:
+def parse_datetime(value: object, time_zone: str = "Europe/Berlin") -> datetime:
     """Coerce frontmatter date values to timezone-aware datetimes.
 
     Args:
@@ -28,6 +28,11 @@ def parse_datetime(value: object, time_zone: str = "UTC") -> datetime:
         return datetime.combine(value, time.min, tzinfo=tz)
 
     raw = str(value).strip()
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        return parsed if parsed.tzinfo is not None else parsed.replace(tzinfo=tz)
+    except ValueError:
+        pass
     for fmt in ("%Y-%m-%d %H:%M", "%Y-%m-%d"):
         try:
             return datetime.strptime(raw, fmt).replace(tzinfo=tz)

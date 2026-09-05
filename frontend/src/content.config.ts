@@ -5,6 +5,7 @@
 
 import { z, defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { parse_event_datetime } from './lib/events/event_datetime';
 
 // ─────────────────────────────────────────────────────────────────
 // Konstanten gemäß Content Governance Guide
@@ -245,7 +246,7 @@ const eventsCollection = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     location: z.string(),
-    date: z.coerce.date(),
+    date: z.preprocess(parse_event_datetime, z.date()),
     author: z.string().default('ACC Club'),
     status: z.enum(['draft', 'published']).default('published'),
     eventType: z.enum(EVENT_TYPES).optional(),
@@ -253,7 +254,7 @@ const eventsCollection = defineCollection({
     cover: z.string().optional(),
     xiaohongshuUrl: z.string().optional(),
     maxParticipants: z.number().optional(),
-    registrationDeadline: z.coerce.date().optional(),
+    registrationDeadline: z.preprocess(parse_event_datetime, z.date()).optional(),
     registrationReopened: z.boolean().optional().default(false),
     directOnly: z.boolean().optional().default(false),
     displayUntil: z.coerce.date().optional(),

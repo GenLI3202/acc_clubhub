@@ -8,7 +8,10 @@ import { t, type Locale } from '../../../lib/i18n';
 import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
 import { get_cancellation_notice } from '../../../lib/events/eventCancellation';
-import { format_departure, SCHEDULE_NOTICE } from '../../../lib/events/event_schedule';
+import {
+  departure_day, format_departure, SCHEDULE_NOTICE,
+} from '../../../lib/events/event_schedule';
+import { parse_event_datetime } from '../../../lib/events/event_datetime';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 import RegistrationManagement from '../../../components/events/registration_management';
@@ -109,9 +112,11 @@ const rawDeadline = entry.data.registrationDeadline;
 const effectiveDeadline = rawDeadline
   ? String(rawDeadline)
   : (() => {
-      const d = new Date(entry.data.date);
+      const d = new Date(`${departure_day(entry.data.date)}T00:00:00Z`);
       d.setUTCDate(d.getUTCDate() - 1);
-      return `${d.toISOString().slice(0, 10)}T22:00:00`;
+      return parse_event_datetime(
+        `${d.toISOString().slice(0, 10)}T22:00:00`,
+      ).toISOString();
     })();
 
 const endedLabels: Record<string, string> = {
@@ -126,6 +131,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 <ArticleLayout
   title={entry.data.title}
   date={effective_event_date}
+  timeZone="Europe/Berlin"
   cover={entry.data.cover}
   lang={lang}
   backLink={`/${lang}/events`}
