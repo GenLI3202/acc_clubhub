@@ -109,13 +109,13 @@ def _render_card(
         else ""
     )
     contact_label = {
-        "zh": "有问题，可以写信给",
-        "en": "Questions? Write to",
-        "de": "Bei Fragen schreib uns an",
+        "zh": "有疑问？写信联系我们 📧",
+        "en": "Questions? Email us 📧",
+        "de": "Fragen? Schreib uns 📧",
     }[lang]
     footer = (
-        f'{escape(contact_label)} <a href="mailto:{CONTACT}"'
-        f' style="color:{RED};text-decoration:underline;">{CONTACT}</a>'
+        f'<a href="mailto:{CONTACT}" style="color:{RED};'
+        f'text-decoration:underline;">{escape(contact_label)}</a>'
     )
     footer_text = f"{contact_label} {CONTACT}"
     if footer_link and _safe_url(footer_link[1]):
