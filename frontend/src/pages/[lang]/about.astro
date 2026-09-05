@@ -171,7 +171,7 @@ const phNote = t(lang, 'about.placeholderNote');
         <p class="garage-lede">{t(lang, 'about.garageDesc')}</p>
       </div>
 
-      <ul class="garage-grid">
+      <ul class="garage-grid" id="garage-bikes">
         {MEMBERS.map((m) => (
           <li class="bike-card" data-reveal>
             <button class="bike-btn" type="button" data-member={m.id} aria-haspopup="dialog">
@@ -185,6 +185,15 @@ const phNote = t(lang, 'about.placeholderNote');
           </li>
         ))}
       </ul>
+      <div class="garage-controls">
+        <button class="garage-prev btn-outline" type="button"
+          aria-controls="garage-bikes"
+          aria-label={lang === 'zh' ? '上一组自行车' : lang === 'de' ? 'Vorherige Fahrräder' : 'Previous bikes'}>←</button>
+        <span>{lang === 'zh' ? '滑动探索车库' : lang === 'de' ? 'Wischen und entdecken' : 'Swipe to explore'}</span>
+        <button class="garage-next btn-outline" type="button"
+          aria-controls="garage-bikes"
+          aria-label={lang === 'zh' ? '下一组自行车' : lang === 'de' ? 'Weitere Fahrräder' : 'Next bikes'}>→</button>
+      </div>
     </section>
 
     {/* ============================================================
@@ -274,7 +283,8 @@ const phNote = t(lang, 'about.placeholderNote');
       <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
-      <div class="deck deck--solo">
+      <div class="deck deck--solo" tabindex="0"
+        role="region" aria-labelledby="member-name">
         <article class="card is-open">
           <div class="card-body">
             <div class="card-media card-media--bike">
@@ -763,6 +773,27 @@ const phNote = t(lang, 'about.placeholderNote');
     }
 
     // ---- interactive touch & drag controller for the reel ----
+    const garage_strip = document.querySelector('.garage-grid');
+    if (garage_strip) {
+      const previous = document.querySelector('.garage-prev');
+      const next = document.querySelector('.garage-next');
+      const update_controls = () => {
+        previous.disabled = garage_strip.scrollLeft <= 1;
+        next.disabled = garage_strip.scrollLeft + garage_strip.clientWidth
+          >= garage_strip.scrollWidth - 1;
+      };
+      [previous, next].forEach((button, index) => {
+        button.addEventListener('click', () => garage_strip.scrollBy({
+          left: garage_strip.clientWidth * (index ? 1 : -1),
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ? 'instant' : 'smooth',
+        }));
+      });
+      garage_strip.addEventListener('scroll', update_controls, { passive: true });
+      new ResizeObserver(update_controls).observe(garage_strip);
+      update_controls();
+    }
+
     const reel = document.querySelector('[data-reel]');
     const reelTrack = document.querySelector('[data-reel-track]');
     if (reel && reelTrack) {
@@ -859,11 +890,13 @@ const phNote = t(lang, 'about.placeholderNote');
             const m = byId[btn.getAttribute('data-member')];
             if (!m) return;
             elPhoto.src = m.photo;
+            elPhoto.alt = m.bike;
             elRole.textContent = m.role;
             elName.textContent = m.name;
             elBio.textContent = m.bio;
             elMeta.textContent = m.bike + ' · ' + m.tenure;
             open(member);
+            member.querySelector('.deck--solo').scrollTop = 0;
           });
         });
       }
@@ -1361,10 +1394,42 @@ const phNote = t(lang, 'about.placeholderNote');
   .garage-grid {
     list-style: none;
     margin: clamp(32px, 5vw, 56px) 0 0;
-    padding: 0;
+    padding: 0.5rem 0.25rem 1rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: var(--garage-card-width);
     gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-color: var(--color-accent) var(--color-bg-secondary);
+    scrollbar-width: thin;
+  }
+  .bike-card { scroll-snap-align: start; }
+  .garage-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+  .garage-controls button:disabled { opacity: 0.35; cursor: default; }
+  .garage-controls button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .sheet.open [data-member-photo] {
+    transform-origin: 50% 85%;
+    animation: bike-wobble 800ms cubic-bezier(0.36, 0, 0.2, 1);
+  }
+  @keyframes bike-wobble {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-7deg); }
+    40% { transform: rotate(6deg); }
+    60% { transform: rotate(-4deg); }
+    80% { transform: rotate(2deg); }
   }
   .bike-btn {
     width: 100%;
@@ -1814,6 +1879,7 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .sheet.open [data-member-photo] { animation: none; }
     .card, .card-body { transition: none; }
     .bird-particle { display: none !important; }
     .sheet-panel { transform: none !important; transition-duration: 0.15s !important; filter: none !important; }
@@ -1942,15 +2008,83 @@ const phNote = t(lang, 'about.placeholderNote');
       object-fit: cover;
     }
 
-    /* Solo member deck stays single column */
+    /* Member solo sheet: clean vertical card on mobile */
+    .sheet-panel--member {
+      width: min(92vw, 460px);
+      max-height: 88vh;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: auto;
+    }
     .deck--solo {
-      display: flex;
-      flex-direction: column;
+      display: block;
       height: auto;
+      max-height: 88vh;
+      max-height: 88dvh;
       overflow-y: auto;
+      overscroll-behavior-y: contain;
+      scrollbar-color: var(--color-accent) var(--color-bg-secondary);
+      scrollbar-gutter: stable;
       -webkit-overflow-scrolling: touch;
     }
-    .deck--solo .card-media { min-height: 190px; max-height: 34vh; }
+    .deck--solo .card { overflow: visible; }
+    .deck--solo .card-body {
+      display: flex;
+      flex-direction: column;
+      grid-template-columns: none;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    .deck--solo .card-media--bike {
+      width: 100%;
+      min-height: 220px;
+      max-height: 36vh;
+      padding: 2rem 1.5rem 1.25rem;
+      background: var(--color-bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .deck--solo .card-media--bike img {
+      width: 90%;
+      max-height: 28vh;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .deck--solo .card-text {
+      padding: 1.5rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-width: 0;
+      overflow: visible;
+    }
+    .deck--solo .card-en {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      color: var(--color-accent);
+      margin: 0 0 0.35rem;
+    }
+    .deck--solo .card-idiom {
+      font-size: clamp(1.6rem, 5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--color-text-main);
+      margin: 0 0 0.75rem;
+    }
+    .deck--solo .card-prose {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--color-text-main);
+      margin: 0 0 1rem;
+    }
+    .deck--solo .card-gloss {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
   }
   @media (max-width: 560px) {
     .roads-ridge { --tile: 260px; }

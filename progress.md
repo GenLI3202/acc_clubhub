@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **本地旧分支清理与车库交互修复** (2026-09-05)
+  - [X] 刷新远端记录，从最新主线建立 `phase-11/garage-event-updates`；安全删除已合并的本地 `phase-4/event-cancellation`、`phase-9/about-redesign`、`phase-10/issue-cleanup-dashboard`，保留其他含独有提交的旧分支。
+  - [X] 保留并整合现有未提交的手机端详情样式；车库改为单排横滑，支持原生滚动条和前后按钮，弹窗上图下文、内部纵向滚动，恢复自行车摇晃并尊重 reduced motion。
+  - [X] 桌面/手机 Playwright 4 项通过，覆盖布局、滚动、动效及关闭后的焦点恢复。
+
 - [X] **GitHub Issue 待办清理** (2026-09-04) — 分支 `phase-10/issue-cleanup-dashboard`
   - [X] 根据实时正文、评论、标签、代码和当前架构，审核原有 22 个开放 Issue 及新记录的 3 项 Dashboard 需求。
   - [X] 将停止采用的 Sveltia CMS Issue #127 以“不计划实施”关闭；将已验证交付的 #142、#143、#149、#166、#167 和 #168 以“已完成”关闭；将已被当前架构取代的 #61 以“不计划实施”关闭。
