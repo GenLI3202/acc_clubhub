@@ -452,15 +452,19 @@ def send_registrant_notification_email(
     }
 
     template = templates.get(lang, templates["en"])
-    cancel_label, cancel_note, cancel_url = registration_cancellation_action(
-        frontend_url, lang, event_slug, view_token,
+    (cancel_label, cancel_intro, cancel_note, cancel_url) = (
+        registration_cancellation_action(
+            frontend_url, lang, event_slug, view_token,
+        )
     )
     cancel_html = (
-        f"<p>{escape(cancel_note)}</p>"
+        f"<p>{escape(cancel_intro)}</p>"
         f'<p><a href="{escape(cancel_url, quote=True)}" '
         'style="display:inline-block;padding:10px 16px;border:1px solid #C62828;'
         'border-radius:5px;color:#C62828;text-decoration:none;">'
         f"{escape(cancel_label)}</a></p>"
+        '<p style="margin:0 0 22px;font-size:12px;line-height:1.6;color:#888888;">'
+        f"{escape(cancel_note)}</p>"
         if cancel_url else ""
     )
     html_body = (
@@ -479,8 +483,9 @@ def send_registrant_notification_email(
         "html": html_body,
         "text": "\n\n".join(filter(None, [
             template["subject"], user_name, date_str, event_location, event_link,
-            cancel_note if cancel_url else "",
+            cancel_intro if cancel_url else "",
             f"{cancel_label}: {cancel_url}" if cancel_url else "",
+            cancel_note if cancel_url else "",
             "letusride@across-cc.de",
         ])),
     }
@@ -540,16 +545,20 @@ def send_waitlist_email(
         ),
     }
     html_body = body_templates.get(lang, body_templates["en"]) + _CONTACT.get(lang, _CONTACT["en"])
-    cancel_label, cancel_note, cancel_url = registration_cancellation_action(
-        frontend_url, lang, event_slug, view_token,
+    (cancel_label, cancel_intro, cancel_note, cancel_url) = (
+        registration_cancellation_action(
+            frontend_url, lang, event_slug, view_token,
+        )
     )
     if cancel_url:
         html_body += (
-            f"<p>{escape(cancel_note)}</p>"
+            f"<p>{escape(cancel_intro)}</p>"
             f'<p><a href="{escape(cancel_url, quote=True)}" '
             'style="display:inline-block;padding:10px 16px;border:1px solid #C62828;'
             'border-radius:5px;color:#C62828;text-decoration:none;">'
             f"{escape(cancel_label)}</a></p>"
+            '<p style="margin:0 0 22px;font-size:12px;line-height:1.6;'
+            f'color:#888888;">{escape(cancel_note)}</p>'
         )
 
     params = {
@@ -559,8 +568,9 @@ def send_waitlist_email(
         "html": html_body,
         "text": "\n\n".join(filter(None, [
             template["subject"], user_name, f"#{waitlist_position}",
-            participant_link, cancel_note if cancel_url else "",
+            participant_link, cancel_intro if cancel_url else "",
             f"{cancel_label}: {cancel_url}" if cancel_url else "",
+            cancel_note if cancel_url else "",
             "letusride@across-cc.de",
         ])),
     }

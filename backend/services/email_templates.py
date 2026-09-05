@@ -47,6 +47,8 @@ def _render_card(
     frontend_url: str,
     komoot_route: str = "",
     secondary_action: str = "",
+    secondary_intro: str = "",
+    secondary_note: str = "",
     footer_link: tuple[str, str] | None = None,
     qr: tuple[str, str] | None = None,
 ) -> dict[str, str]:
@@ -77,6 +79,8 @@ def _render_card(
     links_html = ""
     for index, (text, url) in enumerate(links):
         is_secondary = bool(secondary_action) and url == _safe_url(secondary_action)
+        if is_secondary and secondary_intro:
+            links_html += _paragraph(secondary_intro)
         if index == 0 or is_secondary:
             is_komoot = bool(komoot_route) and url == _safe_url(komoot_route)
             background = KOMOOT_SURFACE if is_komoot else RED
@@ -84,9 +88,11 @@ def _render_card(
             ink = KOMOOT_INK if is_komoot else "#FFFFFF"
             if is_secondary:
                 background, border, ink = "#FFFFFF", RED, RED
+            button_gap = "8px" if is_secondary and secondary_note else "18px"
             links_html += (
                 '<table role="presentation" cellpadding="0" cellspacing="0"'
-                ' border="0" style="margin:2px 0 18px;border-collapse:separate;'
+                f' border="0" style="margin:2px 0 {button_gap};'
+                'border-collapse:separate;'
                 'border-spacing:0;"><tr>'
                 f'<td bgcolor="{background}" style="background-color:{background};'
                 f"border:1px solid {border};border-radius:5px;"
@@ -97,6 +103,12 @@ def _render_card(
                 f"{escape(text)}</a>"
                 "</td></tr></table>"
             )
+            if is_secondary and secondary_note:
+                links_html += (
+                    '<p style="margin:0 0 22px;font-size:12px;'
+                    'line-height:1.6;color:#888888;">'
+                    f"{escape(secondary_note)}</p>"
+                )
         else:
             links_html += (
                 '<p style="margin:0 0 18px;font-size:13px;">'
@@ -180,7 +192,13 @@ def _render_card(
     text_parts = [title, greeting, intro]
     text_parts.extend(f"{key}: {value}" for key, value in facts)
     text_parts.extend(paragraphs)
-    text_parts.extend(f"{label}: {url}" for label, url in links)
+    for link_label, url in links:
+        is_secondary = bool(secondary_action) and url == _safe_url(secondary_action)
+        if is_secondary and secondary_intro:
+            text_parts.append(secondary_intro)
+        text_parts.append(f"{link_label}: {url}")
+        if is_secondary and secondary_note:
+            text_parts.append(secondary_note)
     if qr and qr_url:
         text_parts.append(f"{qr[0]}: {qr_url}")
     text_parts.extend([SIGNATURE, MOTTO, "穿越无疆", footer_text])
@@ -189,7 +207,7 @@ def _render_card(
 
 def registration_cancellation_action(
     frontend_url: str, lang: str, event_slug: str, view_token: str,
-) -> tuple[str, str, str]:
+) -> tuple[str, str, str, str]:
     """Build localized self-cancellation copy and a private confirmation-page URL.
 
     Args:
@@ -199,28 +217,30 @@ def registration_cancellation_action(
         view_token: Recipient's private registration token.
 
     Returns:
-        Button label, explanatory note, and URL; URL is empty without a token.
+        Button label, introduction, privacy note, and URL (empty without a token).
     """
     lang = lang if lang in {"zh", "en", "de"} else "en"
-    label, note = {
+    label, intro, note = {
         "zh": (
             "取消我的报名",
             "临时有事无法参加？你可以在出发前点击下方“取消我的报名”，"
-            "无需登录，在页面确认后即可取消并释放名额。"
-            "此链接仅供你本人管理报名，请勿转发。",
+            "无需登录，在页面确认后即可取消并释放名额。",
+            "此为你的个人专属取消链接，请勿分享给他人。",
         ),
         "en": (
             "Cancel my registration",
             "Can't make it? Before departure, use the button below to cancel "
             "your registration and free up your place. No login is needed; "
-            "you'll confirm on the page. This link is personal; please don't share it.",
+            "you'll confirm on the page.",
+            "This cancellation link is personal. Please don't share it with others.",
         ),
         "de": (
             "Meine Anmeldung stornieren",
             "Du kannst nicht teilnehmen? Über den Button unten kannst du vor "
             "dem Start deine Anmeldung stornieren und deinen Platz freigeben. "
-            "Du brauchst kein Login und bestätigst auf der Seite. "
-            "Dieser Link ist persönlich; bitte teile ihn nicht.",
+            "Du brauchst kein Login und bestätigst auf der Seite.",
+            "Dieser Stornierungslink ist persönlich. "
+            "Bitte teile ihn nicht mit anderen.",
         ),
     }[lang]
     url = (
@@ -228,7 +248,7 @@ def registration_cancellation_action(
         f"?token={quote(view_token, safe='')}#registration-management"
         if event_slug and view_token else ""
     )
-    return label, note, _safe_url(url)
+    return label, intro, note, _safe_url(url)
 
 
 def confirmation_card(
@@ -303,8 +323,10 @@ def confirmation_card(
     }[lang]
     label, greeting, intro, time_label, place_label, tbd, route, people, group = copy
     links = [(route, route_komoot_url)] if route_komoot_url else []
-    cancel_label, cancel_note, cancel_url = registration_cancellation_action(
-        frontend_url, lang, event_slug, view_token,
+    (cancel_label, cancel_intro, cancel_note, cancel_url) = (
+        registration_cancellation_action(
+            frontend_url, lang, event_slug, view_token,
+        )
     )
     if event_slug and view_token:
         links.append(
@@ -332,11 +354,13 @@ def confirmation_card(
             (time_label, format_event_time(event_date)),
             (place_label, event_location or tbd),
         ],
-        paragraphs=[cancel_note] if cancel_url else [],
+        paragraphs=[],
         links=links,
         frontend_url=frontend_url,
         komoot_route=route_komoot_url or "",
         secondary_action=cancel_url,
+        secondary_intro=cancel_intro,
+        secondary_note=cancel_note,
         qr=qr,
     )
 
