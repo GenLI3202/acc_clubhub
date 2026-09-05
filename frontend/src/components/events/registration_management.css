@@ -1,0 +1,50 @@
+.registration-management {
+    margin-block: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--color-bg-secondary);
+    border: thin solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    color: var(--color-text-main);
+    scroll-margin-top: var(--space-xl);
+    overflow-wrap: anywhere;
+}
+
+.registration-management .registration-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.registration-management button {
+    padding: var(--space-md);
+    background: var(--color-accent);
+    color: var(--color-text-light);
+    border: thin solid var(--color-accent);
+    border-radius: var(--radius-btn);
+    font: inherit;
+    cursor: pointer;
+}
+
+.registration-management button.secondary {
+    background: var(--color-bg-canvas);
+    color: var(--color-text-main);
+    border-color: var(--color-border-strong);
+}
+
+.registration-management button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.registration-management :focus-visible {
+    outline: medium solid var(--color-accent);
+    outline-offset: var(--space-xs);
+}
+
+.registration-management details {
+    margin-block: var(--space-md);
+}
+
+.registration-management summary {
+    cursor: pointer;
+}

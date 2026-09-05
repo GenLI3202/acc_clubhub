@@ -46,6 +46,7 @@ def _render_card(
     links: list[tuple[str, str]],
     frontend_url: str,
     komoot_route: str = "",
+    secondary_action: str = "",
     footer_link: tuple[str, str] | None = None,
     qr: tuple[str, str] | None = None,
 ) -> dict[str, str]:
@@ -75,11 +76,14 @@ def _render_card(
     links = [(text, _safe_url(url)) for text, url in links if _safe_url(url)]
     links_html = ""
     for index, (text, url) in enumerate(links):
-        if index == 0:
+        is_secondary = bool(secondary_action) and url == _safe_url(secondary_action)
+        if index == 0 or is_secondary:
             is_komoot = bool(komoot_route) and url == _safe_url(komoot_route)
             background = KOMOOT_SURFACE if is_komoot else RED
             border = KOMOOT_GREEN if is_komoot else RED
             ink = KOMOOT_INK if is_komoot else "#FFFFFF"
+            if is_secondary:
+                background, border, ink = "#FFFFFF", RED, RED
             links_html += (
                 '<table role="presentation" cellpadding="0" cellspacing="0"'
                 ' border="0" style="margin:2px 0 18px;border-collapse:separate;'
@@ -183,6 +187,50 @@ def _render_card(
     return {"subject": subject, "html": html, "text": "\n\n".join(text_parts)}
 
 
+def registration_cancellation_action(
+    frontend_url: str, lang: str, event_slug: str, view_token: str,
+) -> tuple[str, str, str]:
+    """Build localized self-cancellation copy and a private confirmation-page URL.
+
+    Args:
+        frontend_url: Public site origin.
+        lang: Recipient locale.
+        event_slug: Stable event identifier.
+        view_token: Recipient's private registration token.
+
+    Returns:
+        Button label, explanatory note, and URL; URL is empty without a token.
+    """
+    lang = lang if lang in {"zh", "en", "de"} else "en"
+    label, note = {
+        "zh": (
+            "取消我的报名",
+            "临时有事无法参加？你可以在出发前点击下方“取消我的报名”，"
+            "无需登录，在页面确认后即可取消并释放名额。"
+            "此链接仅供你本人管理报名，请勿转发。",
+        ),
+        "en": (
+            "Cancel my registration",
+            "Can't make it? Before departure, use the button below to cancel "
+            "your registration and free up your place. No login is needed; "
+            "you'll confirm on the page. This link is personal; please don't share it.",
+        ),
+        "de": (
+            "Meine Anmeldung stornieren",
+            "Du kannst nicht teilnehmen? Über den Button unten kannst du vor "
+            "dem Start deine Anmeldung stornieren und deinen Platz freigeben. "
+            "Du brauchst kein Login und bestätigst auf der Seite. "
+            "Dieser Link ist persönlich; bitte teile ihn nicht.",
+        ),
+    }[lang]
+    url = (
+        f"{frontend_url.rstrip('/')}/{lang}/events/{quote(event_slug, safe='')}"
+        f"?token={quote(view_token, safe='')}#registration-management"
+        if event_slug and view_token else ""
+    )
+    return label, note, _safe_url(url)
+
+
 def confirmation_card(
     *,
     user_name: str,
@@ -255,6 +303,9 @@ def confirmation_card(
     }[lang]
     label, greeting, intro, time_label, place_label, tbd, route, people, group = copy
     links = [(route, route_komoot_url)] if route_komoot_url else []
+    cancel_label, cancel_note, cancel_url = registration_cancellation_action(
+        frontend_url, lang, event_slug, view_token,
+    )
     if event_slug and view_token:
         links.append(
             (
@@ -263,6 +314,8 @@ def confirmation_card(
                 f"{quote(event_slug, safe='')}?token={quote(view_token, safe='')}",
             )
         )
+    if cancel_url:
+        links.append((cancel_label, cancel_url))
     qr = (
         (group, urljoin(frontend_url.rstrip("/") + "/", wechat_qr_code))
         if wechat_qr_code
@@ -279,10 +332,11 @@ def confirmation_card(
             (time_label, format_event_time(event_date)),
             (place_label, event_location or tbd),
         ],
-        paragraphs=[],
+        paragraphs=[cancel_note] if cancel_url else [],
         links=links,
         frontend_url=frontend_url,
         komoot_route=route_komoot_url or "",
+        secondary_action=cancel_url,
         qr=qr,
     )
 
