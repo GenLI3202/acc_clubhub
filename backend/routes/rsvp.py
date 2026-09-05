@@ -350,7 +350,8 @@ def create_rsvp_v2(
         # Sync metadata even if event exists (Markdown is source of truth)
         event.title = data.event_title
         event.location = data.event_location
-        event.event_date = event_date_dt
+        if event.rescheduled_at is None:
+            event.event_date = event_date_dt
         event.event_type = data.event_type
         event.max_participants = data.max_participants
         event.registration_deadline = reg_deadline

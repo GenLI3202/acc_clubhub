@@ -171,20 +171,28 @@ const phNote = t(lang, 'about.placeholderNote');
         <p class="garage-lede">{t(lang, 'about.garageDesc')}</p>
       </div>
 
-      <ul class="garage-grid">
-        {MEMBERS.map((m) => (
-          <li class="bike-card" data-reveal>
-            <button class="bike-btn" type="button" data-member={m.id} aria-haspopup="dialog">
-              <span class="bike-stage">
-                <img class="bike-ring" src="/images/about/logo-stamp-red-transparent.png" alt="" />
-                <img class="bike-photo" src={m.photo} alt="" loading="lazy" />
-              </span>
-              <span class="bike-name">{m.name}</span>
-              <span class="bike-meta">{m.bike} · {m.joined}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div class="garage-window">
+        <div class="garage-grid" id="garage-bikes">
+          {[false, true].map((copy) => (
+            <ul class="garage-lane" aria-hidden={copy ? 'true' : undefined}>
+              {MEMBERS.map((m) => (
+                <li class="bike-card">
+                  <button class="bike-btn" type="button" data-member={m.id}
+                    aria-haspopup="dialog" tabindex={copy ? -1 : 0}>
+                    <span class="bike-stage">
+                      <img class="bike-ring" src="/images/about/logo-stamp-red-transparent.png" alt="" />
+                      <img class="bike-photo" src={m.photo} alt="" loading="lazy" draggable="false" />
+                    </span>
+                    <span class="bike-name">{m.name}</span>
+                    <span class="bike-meta">{m.bike} · {m.joined}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
     </section>
 
     {/* ============================================================
@@ -274,7 +282,8 @@ const phNote = t(lang, 'about.placeholderNote');
       <button class="sheet-x" type="button" data-sheet-close aria-label={t(lang, 'about.close')}>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
-      <div class="deck deck--solo">
+      <div class="deck deck--solo" tabindex="0"
+        role="region" aria-labelledby="member-name">
         <article class="card is-open">
           <div class="card-body">
             <div class="card-media card-media--bike">
@@ -656,6 +665,7 @@ const phNote = t(lang, 'about.placeholderNote');
       }
 
       function close(sheet) {
+        sheet.dispatchEvent(new CustomEvent('member:close'));
         document.body.style.overflow = '';
         const birds = sheet.querySelector('.sheet-birds');
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -859,15 +869,27 @@ const phNote = t(lang, 'about.placeholderNote');
             const m = byId[btn.getAttribute('data-member')];
             if (!m) return;
             elPhoto.src = m.photo;
+            elPhoto.alt = m.bike;
             elRole.textContent = m.role;
             elName.textContent = m.name;
             elBio.textContent = m.bio;
             elMeta.textContent = m.bike + ' · ' + m.tenure;
             open(member);
+            if (btn.closest('[aria-hidden="true"]')) {
+              lastFocus = document.querySelector(
+                `.garage-lane:not([aria-hidden]) [data-member="${m.id}"]`,
+              );
+            }
+            member.querySelector('.deck--solo').scrollTop = 0;
+            member.dispatchEvent(new CustomEvent('member:open'));
           });
         });
       }
     })();
+  </script>
+  <script>
+    import { init_garage } from "../../lib/about/garage";
+    init_garage();
   </script>
 </BaseLayout>
 
@@ -1174,15 +1196,15 @@ const phNote = t(lang, 'about.placeholderNote');
       rgba(0, 0, 0, 0.00) 25%,
       rgba(0, 0, 0, 0.16) 50%,
       rgba(0, 0, 0, 0.60) 78%,
-      rgba(0, 0, 1.00) 95%,
-      rgba(0, 0, 1.00) 100%);
+      rgba(0, 0, 0, 1.00) 95%,
+      rgba(0, 0, 0, 1.00) 100%);
     mask-image: linear-gradient(to bottom,
       rgba(0, 0, 0, 0.00) 0%,
       rgba(0, 0, 0, 0.00) 25%,
       rgba(0, 0, 0, 0.16) 50%,
       rgba(0, 0, 0, 0.60) 78%,
-      rgba(0, 0, 1.00) 95%,
-      rgba(0, 0, 1.00) 100%);
+      rgba(0, 0, 0, 1.00) 95%,
+      rgba(0, 0, 0, 1.00) 100%);
   }
   :global(:root.dark) .roads-ridge--near { opacity: 0.82; }
   
@@ -1358,13 +1380,49 @@ const phNote = t(lang, 'about.placeholderNote');
     max-width: 38rem;
     margin: 0.85rem auto 0;
   }
+  .garage-window {
+    container-type: inline-size;
+    margin-top: clamp(32px, 5vw, 56px);
+    --garage-visible: 4;
+    --garage-gap: 1.25rem;
+  }
   .garage-grid {
+    position: relative;
+    display: flex;
+    gap: var(--garage-gap);
+    overflow-x: auto;
+    padding-block: 0.5rem 1rem;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+    user-select: none;
+    mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+  }
+  .garage-grid::-webkit-scrollbar { display: none; }
+  .garage-grid:active { cursor: grabbing; }
+  .garage-lane {
     list-style: none;
-    margin: clamp(32px, 5vw, 56px) 0 0;
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--garage-gap);
+    margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.25rem;
+  }
+  .bike-card {
+    width: calc((100cqw - (var(--garage-visible) - 1) * var(--garage-gap)) / var(--garage-visible));
+    flex: 0 0 auto;
+  }
+  [data-member-photo] {
+    transform-origin: 50% 85%;
+  }
+  @media (max-width: 1000px) {
+    .garage-window { --garage-visible: 3; }
+  }
+  @media (max-width: 720px) {
+    .garage-window { --garage-visible: 2; }
+  }
+  @media (max-width: 480px) {
+    .garage-window { --garage-visible: 1; }
   }
   .bike-btn {
     width: 100%;
@@ -1942,15 +2000,83 @@ const phNote = t(lang, 'about.placeholderNote');
       object-fit: cover;
     }
 
-    /* Solo member deck stays single column */
+    /* Member solo sheet: clean vertical card on mobile */
+    .sheet-panel--member {
+      width: min(92vw, 460px);
+      max-height: 88vh;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: auto;
+    }
     .deck--solo {
-      display: flex;
-      flex-direction: column;
+      display: block;
       height: auto;
+      max-height: 88vh;
+      max-height: 88dvh;
       overflow-y: auto;
+      overscroll-behavior-y: contain;
+      scrollbar-color: var(--color-accent) var(--color-bg-secondary);
+      scrollbar-gutter: stable;
       -webkit-overflow-scrolling: touch;
     }
-    .deck--solo .card-media { min-height: 190px; max-height: 34vh; }
+    .deck--solo .card { overflow: visible; }
+    .deck--solo .card-body {
+      display: flex;
+      flex-direction: column;
+      grid-template-columns: none;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    .deck--solo .card-media--bike {
+      width: 100%;
+      min-height: 220px;
+      max-height: 36vh;
+      padding: 2rem 1.5rem 1.25rem;
+      background: var(--color-bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .deck--solo .card-media--bike img {
+      width: 90%;
+      max-height: 28vh;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .deck--solo .card-text {
+      padding: 1.5rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-width: 0;
+      overflow: visible;
+    }
+    .deck--solo .card-en {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      color: var(--color-accent);
+      margin: 0 0 0.35rem;
+    }
+    .deck--solo .card-idiom {
+      font-size: clamp(1.6rem, 5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--color-text-main);
+      margin: 0 0 0.75rem;
+    }
+    .deck--solo .card-prose {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--color-text-main);
+      margin: 0 0 1rem;
+    }
+    .deck--solo .card-gloss {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
   }
   @media (max-width: 560px) {
     .roads-ridge { --tile: 260px; }

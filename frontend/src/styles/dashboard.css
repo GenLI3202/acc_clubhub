@@ -32,6 +32,27 @@ body.dashboard-page {
   font-family: var(--font-body);
 }
 
+body.dashboard-page #departure-time-field:not([hidden]) {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--dashboard-muted);
+}
+
+body.dashboard-page #new-departure-time {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--dashboard-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--dashboard-ink);
+  background: var(--dashboard-surface);
+  font: inherit;
+}
+
+body.dashboard-page #new-departure-time:focus-visible {
+  outline: 2px solid var(--dashboard-accent);
+  outline-offset: 2px;
+}
+
 body.dashboard-page::before {
   content: "";
   position: fixed;

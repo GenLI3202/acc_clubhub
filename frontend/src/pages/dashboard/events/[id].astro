@@ -8,6 +8,7 @@ import {
   get_cancellation_reason_label,
 } from '../../../lib/events/eventCancellation';
 import '../../../styles/dashboard.css';
+import { departure_clock, format_departure } from '../../../lib/events/event_schedule';
 
 const { id } = Astro.params;
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -449,7 +450,7 @@ function formatKm(value: number | null | undefined): string {
           <div class="event-header">
             <h2>{eventData.event.title}</h2>
             <div class="event-meta">
-              <span>📅 {formatDate(eventData.event.event_date)}</span>
+              <span id="event-departure">📅 {format_departure(eventData.event.event_date)}</span>
               <span>📍 {eventData.event.location || "—"}</span>
               <span>👥 {eventData.event.current_participants}/{eventData.event.max_participants || "∞"}</span>
               <span>📏 {formatKm(eventData.event.distance_km)}</span>
@@ -561,24 +562,39 @@ function formatKm(value: number | null | undefined): string {
             <div class="event-cancellation-action">
               <select
                 id="event-cancellation-reason"
-                aria-label="Select event cancellation reason"
+                aria-label="Select reason for event update"
               >
-                <option value="">Select cancellation reason</option>
+                <option value="">1. Select reason</option>
                 {EVENT_CANCELLATION_REASON_OPTIONS.map((option) => (
                   <option value={option.value}>{option.label}</option>
                 ))}
               </select>
+              <select id="event-update-action" aria-label="Select event action">
+                <option value="">2. Select action</option>
+                <option value="reschedule">Change departure time</option>
+                <option value="cancel">Cancel event</option>
+              </select>
+              <label id="departure-time-field" hidden>
+                New departure (Munich time)
+                <input type="time" id="new-departure-time" step="60"
+                  value={departure_clock(eventData.event.event_date)} />
+              </label>
               <button
                 type="button"
                 class="action-btn secondary"
                 id="cancel-event-btn"
+                data-event-date={eventData.event.event_date}
+                data-event-label={format_departure(eventData.event.event_date)}
                 data-recipient-count={
                   eventData.summary.confirmed + eventData.summary.waitlist
                 }
               >
-                Cancel event &amp; notify registrants
+                Review &amp; send notification
               </button>
-              <span id="cancel-event-status"></span>
+              <span id="cancel-event-status" role="status" aria-live="polite"></span>
+              <a id="event-update-refresh" href={Astro.url.pathname} hidden>
+                Reload updated event
+              </a>
             </div>
           )}
 
@@ -1259,58 +1275,81 @@ function formatKm(value: number | null | undefined): string {
         }
       });
 
+      const update_action = document.getElementById("event-update-action");
+      const departure_input = document.getElementById("new-departure-time");
+      update_action?.addEventListener("change", () => {
+        document.getElementById("departure-time-field").hidden =
+          update_action.value !== "reschedule";
+      });
       document.getElementById("cancel-event-btn")?.addEventListener(
         "click",
         async () => {
           const button = document.getElementById("cancel-event-btn");
+          if (button.disabled) return;
           const select = document.getElementById("event-cancellation-reason");
           const status = document.getElementById("cancel-event-status");
-          const reason = select?.value ?? "";
-          const reasonLabel = select?.selectedOptions[0]?.textContent ?? reason;
-          const recipientCount = button?.dataset.recipientCount ?? "0";
-
-          if (!reason) {
-            status.textContent = "Select a cancellation reason.";
-            status.style.color = "#cf222e";
-            select?.focus();
+          const reason = select.value;
+          const reason_label = select.selectedOptions[0]?.textContent ?? reason;
+          const action = update_action.value;
+          const rescheduling = action === "reschedule";
+          const recipient_count = button.dataset.recipientCount ?? "0";
+          if (!reason || !action || (rescheduling && !departure_input.value)) {
+            status.textContent = "Select a reason, an action and the new time if needed.";
+            (!reason ? select : !action ? update_action : departure_input).focus();
             return;
           }
-
+          const departure_time = departure_input.value;
+          const expected_event_date = button.dataset.eventDate;
+          const controls = [button, select, update_action, departure_input];
+          controls.forEach((control) => { control.disabled = true; });
           const confirmed = await confirmAction({
-            title: "Cancel event",
-            message: `Cancel this event due to ${reasonLabel.toLowerCase()} and send cancellation email to all ${recipientCount} confirmed and waitlisted registrants?`,
-            confirmLabel: "Cancel event & send email",
-            danger: true,
+            title: rescheduling ? "Change departure time" : "Cancel event",
+            message: rescheduling
+              ? `Reason: ${reason_label}. Previous departure: ${button.dataset.eventLabel}. New departure: ${departure_time}, on the same date in Munich (Europe/Berlin). Email all ${recipient_count} confirmed and waitlisted registrants. Registration status stays unchanged.`
+              : `Cancel this event due to ${reason_label.toLowerCase()} and email all ${recipient_count} confirmed and waitlisted registrants?`,
+            confirmLabel: rescheduling ? "Save time & send email" : "Cancel event & send email",
+            danger: !rescheduling,
           });
-          if (!confirmed) return;
-
-          button.disabled = true;
-          select.disabled = true;
-          status.textContent = "Cancelling event and sending email…";
-          status.style.color = "#57606a";
-
+          if (!confirmed) {
+            controls.forEach((control) => { control.disabled = false; });
+            button.focus();
+            return;
+          }
+          status.textContent = "Saving event update and sending email…";
           try {
-            const response = await fetch(`/api/admin/events/${id}/cancel`, {
+            const url = rescheduling
+              ? `/dashboard/api/events/${id}/reschedule`
+              : `/api/admin/events/${id}/cancel`;
+            const response = await fetch(url, {
               method: "POST",
               credentials: "include",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ reason }),
+              body: JSON.stringify(rescheduling
+                ? { reason, departure_time, expected_event_date } : { reason }),
             });
             const data = await response.json();
             if (!response.ok) {
               const detail = typeof data.detail === "object"
-                ? data.detail.message
-                : data.detail;
-              throw new Error(detail || `${response.status}`);
+                ? data.detail.message : data.detail;
+              throw new Error(detail || `Request rejected (${response.status})`);
             }
-            status.textContent = `Sent: ${data.sent} · Skipped: ${data.skipped} · Failed: ${data.failed}`;
-            status.style.color = data.failed > 0 ? "#9a6700" : "#1a7f37";
-            window.setTimeout(() => window.location.reload(), 1500);
+            const saved_label = rescheduling
+              ? "Departure time saved" : "Event cancelled";
+            status.textContent = `${saved_label}. Email sent: ${data.sent} · Skipped: ${data.skipped} · Failed: ${data.failed}.`;
+            if (data.failed > 0) {
+              status.textContent += " The event update is saved; some riders were not notified. Contact them before the ride.";
+            }
+            if (rescheduling) {
+              document.getElementById("event-departure").textContent =
+                `📅 ${new Date(data.event_date).toLocaleString("en-GB", {
+                  timeZone: "Europe/Berlin", dateStyle: "medium", timeStyle: "short",
+                })} (Munich)`;
+            }
+            document.getElementById("event-update-refresh").hidden = false;
           } catch (error) {
-            status.textContent = `Failed: ${error.message}`;
-            status.style.color = "#cf222e";
-            button.disabled = false;
-            select.disabled = false;
+            status.textContent = `${error.message}. Reload to verify the current event time before retrying.`;
+            document.getElementById("event-update-refresh").hidden = false;
+            controls.forEach((control) => { control.disabled = false; });
           }
         },
       );

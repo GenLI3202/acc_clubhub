@@ -94,12 +94,15 @@ def sync() -> None:
         if distance_km is None:
             distance_km = fm.get("routeDistanceKm")
 
-        existing = db.query(Event).filter(Event.slug == slug).first()
+        existing = (
+            db.query(Event).filter(Event.slug == slug).with_for_update().first()
+        )
 
         if existing:
             existing.title = title
             existing.description = description
-            existing.event_date = event_date
+            if existing.rescheduled_at is None:
+                existing.event_date = event_date
             existing.location = location
             existing.event_type = event_type
             existing.max_participants = max_participants
