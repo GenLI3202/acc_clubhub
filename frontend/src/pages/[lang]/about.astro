@@ -1412,13 +1412,8 @@ const phNote = t(lang, 'about.placeholderNote');
     width: calc((100cqw - (var(--garage-visible) - 1) * var(--garage-gap)) / var(--garage-visible));
     flex: 0 0 auto;
   }
-  :global(.garage-flight) {
-    position: fixed;
-    z-index: var(--z-bike-flight);
-    pointer-events: none;
-    object-fit: contain;
+  [data-member-photo] {
     transform-origin: 50% 85%;
-    will-change: transform;
   }
   @media (max-width: 1000px) {
     .garage-window { --garage-visible: 3; }

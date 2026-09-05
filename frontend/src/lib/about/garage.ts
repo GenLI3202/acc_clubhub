@@ -1,4 +1,4 @@
-/** Continuous garage browsing and a single departure animation per opened bike. */
+/** Continuous garage browsing and a gentle wobble per opened bike. */
 export function init_garage(): void {
     const strip = document.querySelector<HTMLElement>(".garage-grid");
     const lane = strip?.querySelector<HTMLElement>(".garage-lane");
@@ -16,8 +16,7 @@ export function init_garage(): void {
     let resume_at = 0;
     let previous_time = 0;
     let fractional_travel = 0;
-    let flight: Animation | null = null;
-    let ghost: HTMLImageElement | null = null;
+    let wobble: Animation | null = null;
     let opening = 0;
 
     strip.addEventListener("pointerenter", (event: PointerEvent) => {
@@ -86,20 +85,17 @@ export function init_garage(): void {
     }, true);
     strip.addEventListener("dragstart", (event) => event.preventDefault());
 
-    const clear_flight = (): void => {
+    const clear_wobble = (): void => {
         opening += 1;
-        flight?.cancel();
-        flight = null;
-        ghost?.remove();
-        ghost = null;
-        photo.style.visibility = "";
+        wobble?.cancel();
+        wobble = null;
     };
-    sheet.addEventListener("member:close", clear_flight);
+    sheet.addEventListener("member:close", clear_wobble);
     reduced.addEventListener("change", () => {
-        if (reduced.matches) clear_flight();
+        if (reduced.matches) clear_wobble();
     });
     sheet.addEventListener("member:open", async () => {
-        clear_flight();
+        clear_wobble();
         if (reduced.matches) return;
         const version = opening;
         try {
@@ -108,35 +104,15 @@ export function init_garage(): void {
             await Promise.all(panel?.getAnimations().map((a) => a.finished) ?? []);
         } catch { return; }
         if (opening !== version || sheet.hidden || reduced.matches) return;
-        const rect = photo.getBoundingClientRect();
-        ghost = photo.cloneNode() as HTMLImageElement;
-        ghost.removeAttribute("data-member-photo");
-        ghost.className = "garage-flight";
-        ghost.alt = "";
-        ghost.setAttribute("aria-hidden", "true");
-        Object.assign(ghost.style, {
-            left: `${rect.left}px`, top: `${rect.top}px`,
-            width: `${rect.width}px`, height: `${rect.height}px`,
-        });
-        document.body.append(ghost);
-        photo.style.visibility = "hidden";
-        const left = -rect.right - rect.height;
-        const right = window.innerWidth - rect.left + rect.height;
-        flight = ghost.animate([
-            { transform: "translateX(0) rotate(0)", offset: 0 },
-            { transform: "translateX(0) rotate(-6deg)", offset: 0.08 },
-            { transform: "translateX(0) rotate(5deg)", offset: 0.16 },
-            { transform: "translateX(0) rotate(0)", offset: 0.24 },
-            { transform: `translateX(${right}px) rotate(8deg)`, opacity: 1, offset: 0.48 },
-            { transform: `translateX(${right}px)`, opacity: 0, offset: 0.49 },
-            { transform: `translateX(${left}px)`, opacity: 0, offset: 0.50 },
-            { transform: `translateX(${left}px) rotate(-5deg)`, opacity: 1, offset: 0.51 },
-            { transform: "translateX(0) rotate(0)", opacity: 1, offset: 0.88 },
-            { transform: "translateX(0) rotate(0)", opacity: 1, offset: 1 },
-        ], { duration: 2300, easing: "ease-in-out", fill: "forwards" });
-        flight.finished.then(() => {
-            if (opening === version) clear_flight();
-        }).catch(() => { /* Closing the dialog cancels its flight. */ });
+        wobble = photo.animate([
+            { transform: "rotate(0)" },
+            { transform: "rotate(-4deg)" },
+            { transform: "rotate(3deg)" },
+            { transform: "rotate(-2deg)" },
+            { transform: "rotate(0)" },
+        ], { duration: 650, easing: "ease-in-out" });
+        wobble.finished.then(() => {
+            if (opening === version) clear_wobble();
+        }).catch(() => { /* Closing the dialog cancels its wobble. */ });
     });
-    window.addEventListener("resize", clear_flight);
 }

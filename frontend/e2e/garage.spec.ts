@@ -17,8 +17,10 @@ test("garage is a compact strip with scrollable mobile bike details", async ({
     const dialog = page.locator(".sheet-panel--member");
     await expect(dialog).toBeVisible();
     const photo = dialog.locator("[data-member-photo]");
-    await expect(page.locator(".garage-flight")).toBeAttached();
-    await expect(page.locator(".garage-flight")).toHaveCount(0, { timeout: 5000 });
+    await expect.poll(() => photo.evaluate((element) => element.getAnimations().length))
+        .toBeGreaterThan(0);
+    await expect.poll(() => photo.evaluate((element) => element.getAnimations().length))
+        .toBe(0);
     await expect(photo).toBeVisible();
     if (test_info.project.name === "mobile") {
         const media = await dialog.locator(".card-media").boundingBox();
@@ -48,6 +50,9 @@ test("bike wobble respects reduced motion", async ({ page }) => {
     await page.locator(".bike-btn").first().click();
     await expect(page.locator("[data-member-photo]")).toBeVisible();
     await expect(page.locator(".garage-flight")).toHaveCount(0);
+    expect(await page.locator("[data-member-photo]").evaluate(
+        (element) => element.getAnimations().length,
+    )).toBe(0);
 });
 
 test("long member text scrolls inside a small mobile dialog", async ({ page }) => {
@@ -65,7 +70,7 @@ test("long member text scrolls inside a small mobile dialog", async ({ page }) =
 });
 
 
-test("loop wraps without an empty frame and flight crosses both viewport edges", async ({ page }) => {
+test("loop wraps and bike stays in its detail panel while wobbling", async ({ page }) => {
     await page.goto("/zh/about");
     const strip = page.locator(".garage-grid");
     await strip.scrollIntoViewIfNeeded();
@@ -77,22 +82,25 @@ test("loop wraps without an empty frame and flight crosses both viewport edges",
     await strip.evaluate((element, distance) => { element.scrollLeft = distance - 2; }, period);
     await expect.poll(() => strip.evaluate((element) => element.scrollLeft)).toBeLessThan(100);
     await page.locator(".bike-btn").first().click();
-    const ghost = page.locator(".garage-flight");
-    await expect(ghost).toBeAttached();
-    await ghost.evaluate((element) => {
+    const photo = page.locator("[data-member-photo]");
+    await expect.poll(() => photo.evaluate((element) => element.getAnimations().length))
+        .toBeGreaterThan(0);
+    await photo.evaluate((element) => {
         const animation = element.getAnimations()[0];
         animation.pause();
-        animation.currentTime = 2300 * 0.48;
+        animation.currentTime = Number(animation.effect!.getTiming().duration) / 4;
     });
-    let bounds = await ghost.boundingBox();
-    expect(bounds!.x).toBeGreaterThan(page.viewportSize()!.width);
-    await ghost.evaluate((element) => {
-        element.getAnimations()[0].currentTime = 2300 * 0.51;
-    });
-    bounds = await ghost.boundingBox();
-    expect(bounds!.x + bounds!.width).toBeLessThan(0);
+    const bounds = await photo.boundingBox();
+    const panel = await page.locator(".sheet-panel--member").boundingBox();
+    expect(bounds!.x + bounds!.width / 2).toBeGreaterThan(panel!.x);
+    expect(bounds!.x + bounds!.width / 2).toBeLessThan(panel!.x + panel!.width);
+    await expect(photo).toBeVisible();
+    await expect(photo).not.toHaveCSS("transform", "none");
+    await expect(page.locator(".garage-flight")).toHaveCount(0);
+    await photo.evaluate((element) => element.getAnimations()[0].finish());
+    await expect(photo).toHaveCSS("transform", "none");
     await page.keyboard.press("Escape");
-    await expect(ghost).toHaveCount(0);
+    expect(await photo.evaluate((element) => element.getAnimations().length)).toBe(0);
 });
 
 test("dragging the garage does not accidentally open a rider", async ({ page }) => {
