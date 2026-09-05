@@ -171,29 +171,28 @@ const phNote = t(lang, 'about.placeholderNote');
         <p class="garage-lede">{t(lang, 'about.garageDesc')}</p>
       </div>
 
-      <ul class="garage-grid" id="garage-bikes">
-        {MEMBERS.map((m) => (
-          <li class="bike-card" data-reveal>
-            <button class="bike-btn" type="button" data-member={m.id} aria-haspopup="dialog">
-              <span class="bike-stage">
-                <img class="bike-ring" src="/images/about/logo-stamp-red-transparent.png" alt="" />
-                <img class="bike-photo" src={m.photo} alt="" loading="lazy" />
-              </span>
-              <span class="bike-name">{m.name}</span>
-              <span class="bike-meta">{m.bike} · {m.joined}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      <div class="garage-controls">
-        <button class="garage-prev btn-outline" type="button"
-          aria-controls="garage-bikes"
-          aria-label={lang === 'zh' ? '上一组自行车' : lang === 'de' ? 'Vorherige Fahrräder' : 'Previous bikes'}>←</button>
-        <span>{lang === 'zh' ? '滑动探索车库' : lang === 'de' ? 'Wischen und entdecken' : 'Swipe to explore'}</span>
-        <button class="garage-next btn-outline" type="button"
-          aria-controls="garage-bikes"
-          aria-label={lang === 'zh' ? '下一组自行车' : lang === 'de' ? 'Weitere Fahrräder' : 'Next bikes'}>→</button>
+      <div class="garage-window">
+        <div class="garage-grid" id="garage-bikes">
+          {[false, true].map((copy) => (
+            <ul class="garage-lane" aria-hidden={copy ? 'true' : undefined}>
+              {MEMBERS.map((m) => (
+                <li class="bike-card">
+                  <button class="bike-btn" type="button" data-member={m.id}
+                    aria-haspopup="dialog" tabindex={copy ? -1 : 0}>
+                    <span class="bike-stage">
+                      <img class="bike-ring" src="/images/about/logo-stamp-red-transparent.png" alt="" />
+                      <img class="bike-photo" src={m.photo} alt="" loading="lazy" draggable="false" />
+                    </span>
+                    <span class="bike-name">{m.name}</span>
+                    <span class="bike-meta">{m.bike} · {m.joined}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
       </div>
+
     </section>
 
     {/* ============================================================
@@ -666,6 +665,7 @@ const phNote = t(lang, 'about.placeholderNote');
       }
 
       function close(sheet) {
+        sheet.dispatchEvent(new CustomEvent('member:close'));
         document.body.style.overflow = '';
         const birds = sheet.querySelector('.sheet-birds');
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -773,27 +773,6 @@ const phNote = t(lang, 'about.placeholderNote');
     }
 
     // ---- interactive touch & drag controller for the reel ----
-    const garage_strip = document.querySelector('.garage-grid');
-    if (garage_strip) {
-      const previous = document.querySelector('.garage-prev');
-      const next = document.querySelector('.garage-next');
-      const update_controls = () => {
-        previous.disabled = garage_strip.scrollLeft <= 1;
-        next.disabled = garage_strip.scrollLeft + garage_strip.clientWidth
-          >= garage_strip.scrollWidth - 1;
-      };
-      [previous, next].forEach((button, index) => {
-        button.addEventListener('click', () => garage_strip.scrollBy({
-          left: garage_strip.clientWidth * (index ? 1 : -1),
-          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            ? 'instant' : 'smooth',
-        }));
-      });
-      garage_strip.addEventListener('scroll', update_controls, { passive: true });
-      new ResizeObserver(update_controls).observe(garage_strip);
-      update_controls();
-    }
-
     const reel = document.querySelector('[data-reel]');
     const reelTrack = document.querySelector('[data-reel-track]');
     if (reel && reelTrack) {
@@ -896,11 +875,21 @@ const phNote = t(lang, 'about.placeholderNote');
             elBio.textContent = m.bio;
             elMeta.textContent = m.bike + ' · ' + m.tenure;
             open(member);
+            if (btn.closest('[aria-hidden="true"]')) {
+              lastFocus = document.querySelector(
+                `.garage-lane:not([aria-hidden]) [data-member="${m.id}"]`,
+              );
+            }
             member.querySelector('.deck--solo').scrollTop = 0;
+            member.dispatchEvent(new CustomEvent('member:open'));
           });
         });
       }
     })();
+  </script>
+  <script>
+    import { init_garage } from "../../lib/about/garage";
+    init_garage();
   </script>
 </BaseLayout>
 
@@ -1207,15 +1196,15 @@ const phNote = t(lang, 'about.placeholderNote');
       rgba(0, 0, 0, 0.00) 25%,
       rgba(0, 0, 0, 0.16) 50%,
       rgba(0, 0, 0, 0.60) 78%,
-      rgba(0, 0, 1.00) 95%,
-      rgba(0, 0, 1.00) 100%);
+      rgba(0, 0, 0, 1.00) 95%,
+      rgba(0, 0, 0, 1.00) 100%);
     mask-image: linear-gradient(to bottom,
       rgba(0, 0, 0, 0.00) 0%,
       rgba(0, 0, 0, 0.00) 25%,
       rgba(0, 0, 0, 0.16) 50%,
       rgba(0, 0, 0, 0.60) 78%,
-      rgba(0, 0, 1.00) 95%,
-      rgba(0, 0, 1.00) 100%);
+      rgba(0, 0, 0, 1.00) 95%,
+      rgba(0, 0, 0, 1.00) 100%);
   }
   :global(:root.dark) .roads-ridge--near { opacity: 0.82; }
   
@@ -1391,45 +1380,54 @@ const phNote = t(lang, 'about.placeholderNote');
     max-width: 38rem;
     margin: 0.85rem auto 0;
   }
+  .garage-window {
+    container-type: inline-size;
+    margin-top: clamp(32px, 5vw, 56px);
+    --garage-visible: 4;
+    --garage-gap: 1.25rem;
+  }
   .garage-grid {
-    list-style: none;
-    margin: clamp(32px, 5vw, 56px) 0 0;
-    padding: 0.5rem 0.25rem 1rem;
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: var(--garage-card-width);
-    gap: 1.25rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    scrollbar-color: var(--color-accent) var(--color-bg-secondary);
-    scrollbar-width: thin;
-  }
-  .bike-card { scroll-snap-align: start; }
-  .garage-controls {
+    position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
+    gap: var(--garage-gap);
+    overflow-x: auto;
+    padding-block: 0.5rem 1rem;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+    user-select: none;
+    mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
   }
-  .garage-controls button:disabled { opacity: 0.35; cursor: default; }
-  .garage-controls button:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
+  .garage-grid::-webkit-scrollbar { display: none; }
+  .garage-grid:active { cursor: grabbing; }
+  .garage-lane {
+    list-style: none;
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--garage-gap);
+    margin: 0;
+    padding: 0;
   }
-  .sheet.open [data-member-photo] {
+  .bike-card {
+    width: calc((100cqw - (var(--garage-visible) - 1) * var(--garage-gap)) / var(--garage-visible));
+    flex: 0 0 auto;
+  }
+  :global(.garage-flight) {
+    position: fixed;
+    z-index: var(--z-bike-flight);
+    pointer-events: none;
+    object-fit: contain;
     transform-origin: 50% 85%;
-    animation: bike-wobble 800ms cubic-bezier(0.36, 0, 0.2, 1);
+    will-change: transform;
   }
-  @keyframes bike-wobble {
-    0%, 100% { transform: rotate(0); }
-    20% { transform: rotate(-7deg); }
-    40% { transform: rotate(6deg); }
-    60% { transform: rotate(-4deg); }
-    80% { transform: rotate(2deg); }
+  @media (max-width: 1000px) {
+    .garage-window { --garage-visible: 3; }
+  }
+  @media (max-width: 720px) {
+    .garage-window { --garage-visible: 2; }
+  }
+  @media (max-width: 480px) {
+    .garage-window { --garage-visible: 1; }
   }
   .bike-btn {
     width: 100%;
@@ -1879,7 +1877,6 @@ const phNote = t(lang, 'about.placeholderNote');
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sheet.open [data-member-photo] { animation: none; }
     .card, .card-body { transition: none; }
     .bird-particle { display: none !important; }
     .sheet-panel { transform: none !important; transition-duration: 0.15s !important; filter: none !important; }

@@ -32,7 +32,7 @@
 }
 
 :root {
-  --garage-card-width: clamp(14rem, 25vw, 17rem);
+  --z-bike-flight: 120;
   /* -----------------------------------------------
      Color Palette — Modern Cycling Premium
   ----------------------------------------------- */
