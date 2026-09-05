@@ -39,15 +39,29 @@ Dashboard 活动详情的 `Event updates & emails` 提供三个独立入口：
 ## 邮件与失败处理
 
 英文邮件标题：`Departure Time Changed: <event title>`。
-正文列出活动名、原出发时间、新出发时间、原因和集合地点，说明报名及候补状态
-不变、不必重新报名，并提供活动链接和俱乐部联系邮箱。
+使用 ACC 红色出发信息卡，称呼读取报名者姓名。卡片仅突出新出发日期时间及集合地点；
+活动名称、改期原因、原出发时间及报名/候补状态保留说明放在自然段落中。
+底部统一署名、俱乐部标语及“穿越无疆”PNG 书法，并提供活动链接和联系邮箱。
 
 示例内容（仅用于预览）：
 
-> Previous departure: 2030-07-06 09:00 CEST  
-> New departure: 2030-07-06 09:30 CEST  
-> Reason: Adverse weather  
+> Hi Lin Chen,
+>
+> We've moved Isar Weekend Ride because of adverse weather. We were originally
+> due to leave on 2030-07-06 09:00 CEST; here's the new plan.
+>
+> New departure: 2030-07-07 09:30 CEST
+>
+> Meeting point: Square outside Deutsches Museum
+>
 > Your registration status is unchanged, including any waitlist position.
+> You don't need to register again.
+
+用 `backend/.venv/bin/python backend/scripts/preview_email_cards.py` 从真实渲染器
+生成本地样稿到 `docs/design/`，包含报名、订阅和改期邮件；该脚本没有发送能力。
+三个模板同时输出 HTML 和纯文本。HTML 使用内联样式、表格和 Outlook 宽度回退；
+PNG 图片关闭时关键文字仍可阅读。已检查浏览器宽/窄屏，不等同于真实邮箱兼容测试。
+上线前还需验证 Gmail、Outlook、Apple Mail 的真实收件效果，包括图片关闭和深色模式。
 
 数据库提交成功后才发送邮件。发送失败不撤销改时；页面保留 sent / skipped /
 failed 数量，不自动刷新掩盖结果。失败时需联系未收到通知的骑友；本功能沿用

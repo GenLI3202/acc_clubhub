@@ -12,6 +12,9 @@ import resend
 from config import settings
 from services.event_cancellation import get_cancellation_reason_label
 from services.event_schedule import format_event_time
+from services.email_templates import (
+    confirmation_card, rescheduling_card, subscription_card,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -44,96 +47,17 @@ def send_confirmation_email(
         logger.debug("Skipping email (no RESEND_API_KEY): %s", user_email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    date_str = format_event_time(event_date)
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
-    participant_link = (
-        f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
-        if event_slug and view_token
-        else ""
+    template = confirmation_card(
+        user_name=user_name, event_title=event_title, event_date=event_date,
+        event_location=event_location, lang=lang,
+        frontend_url=settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de",
+        event_slug=event_slug, view_token=view_token,
+        wechat_qr_code=wechat_qr_code, route_komoot_url=route_komoot_url,
     )
-    qr_url = (
-        wechat_qr_code if wechat_qr_code and wechat_qr_code.startswith("http")
-        else f"{frontend_url}{wechat_qr_code}"
-        if wechat_qr_code else ""
-    )
-    qr_html = (
-        f'<p style="margin-top:1.2em;"><strong>微信群二维码</strong><br>'
-        f'<img src="{qr_url}" alt="WeChat QR Code" '
-        f'style="width:180px;height:180px;margin-top:8px;border:1px solid #eee;border-radius:4px;" /></p>'
-        if qr_url else ""
-    )
-    route_labels = {
-        "zh": "查看 Komoot 路线",
-        "en": "View route on Komoot",
-        "de": "Route auf Komoot ansehen",
-    }
-    route_html = (
-        '<p style="margin-top:1.2em;">'
-        f'<a href="{escape(route_komoot_url, quote=True)}">'
-        f'{route_labels.get(lang, route_labels["en"])}</a></p>'
-        if route_komoot_url else ""
-    )
-
-    templates = {
-        "zh": {
-            "subject": f"报名确认: {event_title}",
-            "body": f"""<p>您好 {user_name}，</p>
-<p>您已成功报名参加以下活动：</p>
-<ul>
-    <li><strong>活动：</strong>{event_title}</li>
-    <li><strong>时间：</strong>{date_str}</li>
-    <li><strong>地点：</strong>{event_location or "待定"}</li>
-</ul>
-{route_html}
-{f'<p><a href="{participant_link}">查看参与名单</a></p>' if participant_link else ""}
-{qr_html}
-<p>祝您骑行愉快！</p>
-<p>—— ACC ClubHub 团队</p>""",
-        },
-        "en": {
-            "subject": f"Registration Confirmed: {event_title}",
-            "body": f"""<p>Hello {user_name},</p>
-<p>You have successfully registered for:</p>
-<ul>
-    <li><strong>Event:</strong> {event_title}</li>
-    <li><strong>Date:</strong> {date_str}</li>
-    <li><strong>Location:</strong> {event_location or "TBD"}</li>
-</ul>
-{route_html}
-{f'<p><a href="{participant_link}">View participant list</a></p>' if participant_link else ""}
-{qr_html}
-<p>Enjoy your ride!</p>
-<p>—— ACC ClubHub Team</p>""",
-        },
-        "de": {
-            "subject": f"Anmeldung bestätigt: {event_title}",
-            "body": f"""<p>Hallo {user_name},</p>
-<p>Sie haben sich erfolgreich angemeldet für:</p>
-<ul>
-    <li><strong>Veranstaltung:</strong> {event_title}</li>
-    <li><strong>Datum:</strong> {date_str}</li>
-    <li><strong>Ort:</strong> {event_location or "TBD"}</li>
-</ul>
-{route_html}
-{f'<p><a href="{participant_link}">Teilnehmerliste ansehen</a></p>' if participant_link else ""}
-{qr_html}
-<p>Viel Spaß beim Radfahren!</p>
-<p>—— ACC ClubHub Team</p>""",
-        },
-    }
-
-    template = templates.get(lang, templates["zh"])
-    html_body = f"""<div style="font-family: Arial, sans-serif; max-width: 600px;">
-<h2 style="color: #2A5CA6;">🚴 {template["subject"]}</h2>
-{template["body"]}
-{_CONTACT.get(lang, _CONTACT["en"])}
-</div>"""
-
     params = {
         "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [user_email],
-        "subject": template["subject"],
-        "html": html_body,
+        **template,
     }
 
     try:
@@ -334,40 +258,18 @@ def send_event_rescheduling_email(
     """
     if not settings.RESEND_API_KEY:
         return {"status": "skipped", "reason": "no_api_key"}
-    title = escape(event_title)
-    reason_label = escape(get_cancellation_reason_label(reason))
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
-    event_link = f"{frontend_url}/en/events/{escape(event_slug, quote=True)}"
-    html_body = (
-        '<div style="font-family:Arial,sans-serif;max-width:600px;">'
-        f'<h2 style="color:#C62828;">Departure Time Changed: {title}</h2>'
-        f"<p>Hello {escape(user_name)},</p>"
-        "<p>Our ride is still going ahead, with an updated departure time.</p>"
-        "<ul>"
-        f"<li><strong>Event:</strong> {title}</li>"
-        f"<li><strong>Previous departure:</strong> "
-        f"{format_event_time(previous_event_date)}</li>"
-        f"<li><strong>New departure:</strong> {format_event_time(event_date)}</li>"
-        f"<li><strong>Reason:</strong> {reason_label}</li>"
-        + (
-            f"<li><strong>Meeting point:</strong> {escape(event_location)}</li>"
-            if event_location
-            else ""
-        )
-        + "</ul><p>All times are local to Munich (Europe/Berlin). "
-        "Your registration status is unchanged, including any waitlist position. "
-        "You do not need to register again.</p>"
-        f'<p><a href="{event_link}">View updated event details</a></p>'
-        "<p>If the new time no longer works for you, please contact us.</p>"
-        "<p>— ACC ClubHub Team</p>" + _CONTACT["en"] + "</div>"
+    template = rescheduling_card(
+        user_name=user_name, event_title=event_title,
+        previous_event_date=previous_event_date, event_date=event_date,
+        reason=reason, event_slug=event_slug, event_location=event_location,
+        frontend_url=settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de",
     )
     try:
         return resend.Emails.send(
             {
                 "from": "ACC ClubHub <noreply@events.across-cc.de>",
                 "to": [user_email],
-                "subject": f"Departure Time Changed: {event_title}",
-                "html": html_body,
+                **template,
             }
         )
     except Exception as error:
@@ -864,56 +766,14 @@ def send_subscription_confirmation_email(
         logger.debug("Skipping subscription confirmation email (no RESEND_API_KEY): %s", email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
-    unsubscribe_url = (
-        f"{frontend_url}/api/unsubscribe/{unsubscribe_token}"
-        if unsubscribe_token else ""
+    template = subscription_card(
+        user_name=name, lang=lang, unsubscribe_token=unsubscribe_token,
+        frontend_url=settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de",
     )
-    unsubscribe_html = (
-        f'<p style="font-size:0.85rem;color:#888;">'
-        f'<a href="{unsubscribe_url}">Unsubscribe</a></p>'
-        if unsubscribe_url else ""
-    )
-
-    templates = {
-        "zh": {
-            "subject": "订阅确认 — ACC ClubHub 活动通知",
-            "body": (
-                f"<p>您好 {name}，</p>"
-                f"<p>您已成功订阅 ACC ClubHub 活动通知。"
-                f"每当有新活动发布，我们会第一时间通知您。</p>"
-                f"<p>期待与您相见！</p>"
-                f"{unsubscribe_html}"
-            ),
-        },
-        "en": {
-            "subject": "Subscription confirmed — ACC ClubHub event notifications",
-            "body": (
-                f"<p>Hi {name},</p>"
-                f"<p>You're now subscribed to ACC ClubHub event notifications. "
-                f"We'll let you know whenever a new event is published.</p>"
-                f"<p>See you on the road!</p>"
-                f"{unsubscribe_html}"
-            ),
-        },
-        "de": {
-            "subject": "Abo bestätigt — ACC ClubHub Veranstaltungsbenachrichtigungen",
-            "body": (
-                f"<p>Hallo {name},</p>"
-                f"<p>Sie haben die ACC ClubHub Veranstaltungsbenachrichtigungen abonniert. "
-                f"Wir informieren Sie, sobald neue Events veröffentlicht werden.</p>"
-                f"<p>Bis bald auf der Straße!</p>"
-                f"{unsubscribe_html}"
-            ),
-        },
-    }
-
-    template = templates.get(lang, templates["en"])
     params = {
         "from": "ACC ClubHub <noreply@events.across-cc.de>",
         "to": [email],
-        "subject": template["subject"],
-        "html": template["body"] + _CONTACT.get(lang, _CONTACT["en"]),
+        **template,
     }
 
     try:

@@ -57,8 +57,8 @@ def test_qr_code_absolute_url_used_as_is():
     assert f'src="{FRONTEND_URL}{abs_url}"' not in params["html"]
 
 
-def test_no_qr_code_omits_img_tag():
-    """When wechat_qr_code is None, no <img> tag should appear in the email."""
+def test_no_qr_code_omits_qr_image():
+    """When no group QR is supplied, retain only the brand calligraphy image."""
     params = _capture_email_params(
         user_email="test@example.com",
         user_name="Test User",
@@ -67,7 +67,8 @@ def test_no_qr_code_omits_img_tag():
         wechat_qr_code=None,
     )
     assert "WeChat QR Code" not in params["html"]
-    assert "<img" not in params["html"]
+    assert params["html"].count("<img") == 1
+    assert 'alt="穿越无疆"' in params["html"]
 
 
 @pytest.mark.parametrize(

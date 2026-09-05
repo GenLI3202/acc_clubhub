@@ -376,7 +376,7 @@ def test_reschedule_email_shows_escaped_reason_and_both_times() -> None:
     html = send.call_args.args[0]["html"]
     assert "2030-07-06 09:00 CEST" in html
     assert "2030-07-07 09:30 CEST" in html
-    assert "Adverse weather" in html
+    assert "adverse weather" in html
     assert "&lt;Rider&gt;" in html and "A &lt; B" in html
     assert "registration status is unchanged" in html
     assert "/en/events/ride" in html
