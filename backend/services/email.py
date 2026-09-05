@@ -11,6 +11,7 @@ from typing import Optional
 import resend
 from config import settings
 from services.event_cancellation import get_cancellation_reason_label
+from services.event_schedule import format_event_time
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ def send_confirmation_email(
         logger.debug("Skipping email (no RESEND_API_KEY): %s", user_email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    date_str = event_date.strftime("%Y-%m-%d %H:%M")
+    date_str = format_event_time(event_date)
     frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     participant_link = (
         f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
@@ -155,7 +156,7 @@ def send_cancellation_email(
         logger.debug("Skipping cancellation email (no RESEND_API_KEY): %s", user_email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    date_str = format_event_time(event_date) if event_date else ""
 
     templates = {
         "zh": {
@@ -258,7 +259,7 @@ def send_event_cancellation_email(
     safe_reason = escape(
         get_cancellation_reason_label(cancellation_reason),
     )
-    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    date_str = format_event_time(event_date) if event_date else ""
     frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     event_link = (
         f"{frontend_url}/en/events/{escape(event_slug, quote=True)}"
@@ -306,6 +307,74 @@ def send_event_cancellation_email(
         return {"status": "error", "message": str(error)}
 
 
+def send_event_rescheduling_email(
+    user_email: str,
+    user_name: str,
+    event_title: str,
+    previous_event_date: datetime,
+    event_date: datetime,
+    reason: str,
+    event_slug: str,
+    event_location: Optional[str] = None,
+) -> dict:
+    """Notify a registrant of a confirmed departure-time change in Munich time.
+
+    Args:
+        user_email: Recipient email address.
+        user_name: Recipient display name.
+        event_title: Event title.
+        previous_event_date: Departure before this change.
+        event_date: Newly committed departure.
+        reason: Validated operational reason code.
+        event_slug: Public event slug.
+        event_location: Unchanged meeting point.
+
+    Returns:
+        Resend response or a skipped/error delivery status.
+    """
+    if not settings.RESEND_API_KEY:
+        return {"status": "skipped", "reason": "no_api_key"}
+    title = escape(event_title)
+    reason_label = escape(get_cancellation_reason_label(reason))
+    frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
+    event_link = f"{frontend_url}/en/events/{escape(event_slug, quote=True)}"
+    html_body = (
+        '<div style="font-family:Arial,sans-serif;max-width:600px;">'
+        f'<h2 style="color:#C62828;">Departure Time Changed: {title}</h2>'
+        f"<p>Hello {escape(user_name)},</p>"
+        "<p>Our ride is still going ahead, with an updated departure time.</p>"
+        "<ul>"
+        f"<li><strong>Event:</strong> {title}</li>"
+        f"<li><strong>Previous departure:</strong> "
+        f"{format_event_time(previous_event_date)}</li>"
+        f"<li><strong>New departure:</strong> {format_event_time(event_date)}</li>"
+        f"<li><strong>Reason:</strong> {reason_label}</li>"
+        + (
+            f"<li><strong>Meeting point:</strong> {escape(event_location)}</li>"
+            if event_location
+            else ""
+        )
+        + "</ul><p>All times are local to Munich (Europe/Berlin). "
+        "Your registration status is unchanged, including any waitlist position. "
+        "You do not need to register again.</p>"
+        f'<p><a href="{event_link}">View updated event details</a></p>'
+        "<p>If the new time no longer works for you, please contact us.</p>"
+        "<p>— ACC ClubHub Team</p>" + _CONTACT["en"] + "</div>"
+    )
+    try:
+        return resend.Emails.send(
+            {
+                "from": "ACC ClubHub <noreply@events.across-cc.de>",
+                "to": [user_email],
+                "subject": f"Departure Time Changed: {event_title}",
+                "html": html_body,
+            }
+        )
+    except Exception as error:
+        logger.error("Departure change email failed: %s", error, exc_info=True)
+        return {"status": "error", "message": str(error)}
+
+
 def send_broadcast_email(
     user_email: str,
     user_name: str,
@@ -321,7 +390,7 @@ def send_broadcast_email(
         logger.debug("Skipping broadcast email (no RESEND_API_KEY): %s", user_email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    date_str = format_event_time(event_date) if event_date else ""
     frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     event_link = f"{frontend_url}/{lang}/events/{event_slug}" if event_slug else frontend_url
     unsub_link = (
@@ -421,7 +490,7 @@ def send_registrant_notification_email(
         logger.debug("Skipping registrant notification (no RESEND_API_KEY): %s", user_email)
         return {"status": "skipped", "reason": "no_api_key"}
 
-    date_str = event_date.strftime("%Y-%m-%d %H:%M") if event_date else ""
+    date_str = format_event_time(event_date) if event_date else ""
     frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     event_link = (
         f"{frontend_url}/{lang}/events/{event_slug}?token={view_token}"
@@ -600,7 +669,7 @@ def send_ride_leader_registration_alert(
 
     frontend_url = settings.PUBLIC_FRONTEND_URL or "https://www.across-cc.de"
     dashboard_url = f"{frontend_url}/dashboard/events/{event_id}"
-    date_text = event_date.strftime("%Y-%m-%d %H:%M")
+    date_text = format_event_time(event_date)
     status_text = escape(registration_status.replace("_", " ").title())
     capacity_text = (
         f"{confirmed_count} / {max_participants}"

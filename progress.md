@@ -11,6 +11,14 @@
 
 ## Recent Updates
 
+- [X] **Dashboard 出发时间更改与通知** (2026-09-05) — 分支 `phase-11/garage-event-updates`
+  - [X] 原取消操作扩展为“原因 → 取消/改时 → 审核并发送”；按慕尼黑时区调整当天出发时刻，保留报名及候补状态。
+  - [X] 新增改时英文邮件，明确原时间、新时间、原因及集合点；数据库先提交，页面持续显示发送/跳过/失败数量。
+  - [X] 防止重复或过期页面改时；覆盖夏令时无效/歧义时刻、事务失败，以及公开报名、后台同步和 Markdown 同步脚本覆盖新时间的问题。
+  - [X] 三语公开页面显示时间变更提示，报名使用有效时间；Dashboard 列表及详情、后续邮件保持时间一致。
+  - [X] 最终验证：后端完整测试 189 项、前端单元测试 58 项、桌面/手机 Playwright 16 项通过；Astro 检查 0 error，生产构建通过。三语 SSR 以 localhost 模拟 API 验证，已检查桌面/手机截图。
+  - [X] 迁移及上线顺序见 `docs/deployment/event_departure_updates.md`；新增 `014_add_event_rescheduling.sql`。尚未执行生产迁移或部署，未发送真实通知。
+
 - [X] **本地旧分支清理与车库交互修复** (2026-09-05)
   - [X] 刷新远端记录，从最新主线建立 `phase-11/garage-event-updates`；安全删除已合并的本地 `phase-4/event-cancellation`、`phase-9/about-redesign`、`phase-10/issue-cleanup-dashboard`，保留其他含独有提交的旧分支。
   - [X] 保留并整合现有未提交的手机端详情样式；车库改为单排横滑，支持原生滚动条和前后按钮，弹窗上图下文、内部纵向滚动，恢复自行车摇晃并尊重 reduced motion。

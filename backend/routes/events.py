@@ -34,6 +34,9 @@ class EventResponse(BaseModel):
     registration_deadline: Optional[datetime]
     cancellation_reason: Optional[str]
     cancelled_at: Optional[datetime]
+    previous_event_date: Optional[datetime]
+    reschedule_reason: Optional[str]
+    rescheduled_at: Optional[datetime]
     is_cancelled: bool
     available_spots: Optional[int]
     is_public: bool
@@ -75,6 +78,9 @@ def _event_response(db: Session, event: Event) -> dict:
         "registration_deadline": event.registration_deadline,
         "cancellation_reason": event.cancellation_reason,
         "cancelled_at": event.cancelled_at,
+        "previous_event_date": event.previous_event_date,
+        "reschedule_reason": event.reschedule_reason,
+        "rescheduled_at": event.rescheduled_at,
         "is_cancelled": event.cancelled_at is not None,
         "available_spots": get_available_spots(
             event.max_participants,

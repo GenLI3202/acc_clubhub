@@ -8,6 +8,7 @@ import { t, type Locale } from '../../../lib/i18n';
 import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
 import { get_cancellation_notice } from '../../../lib/events/eventCancellation';
+import { format_departure, SCHEDULE_NOTICE } from '../../../lib/events/event_schedule';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 import SubscribeFloatingBanner from '../../../components/SubscribeFloatingBanner.astro';
@@ -32,6 +33,8 @@ Astro.response.headers.set('Cache-Control', 'private, no-store');
 
 let cancellationReason: string | null = null;
 let isEventCancelled = false;
+let updated_departure: string | null = null;
+let previous_departure: string | null = null;
 try {
   const operationalState = await fetch(
     `${apiUrl}/api/events/${encodeURIComponent(entry.data.slug)}`,
@@ -41,6 +44,10 @@ try {
     const eventState = await operationalState.json();
     isEventCancelled = eventState.is_cancelled === true;
     cancellationReason = eventState.cancellation_reason ?? null;
+    if (eventState.rescheduled_at && eventState.event_date) {
+      updated_departure = eventState.event_date;
+      previous_departure = eventState.previous_event_date;
+    }
   }
 } catch {
   // The RSVP API remains the authoritative cancellation guard if unavailable.
@@ -82,7 +89,9 @@ const eventTypeLabel = epicRideSlugs.has(entry.data.slug)
   ? (lang === 'zh' ? 'Epic Ride' : lang === 'de' ? 'Epic Ride' : 'Epic Ride')
   : ((eventTypeLabels[entry.data.eventType] ?? {})[lang] ?? entry.data.eventType);
 
-const isPastEvent = new Date(entry.data.date) < getTodayAtMidnight();
+const effective_event_date = updated_departure ?? entry.data.date;
+const schedule_copy = SCHEDULE_NOTICE[lang];
+const isPastEvent = new Date(effective_event_date) < getTodayAtMidnight();
 const registrationReopened = entry.data.registrationReopened === true;
 const showRegistrationForm = (
   (!isPastEvent || registrationReopened)
@@ -112,7 +121,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 
 <ArticleLayout
   title={entry.data.title}
-  date={entry.data.date}
+  date={effective_event_date}
   cover={entry.data.cover}
   lang={lang}
   backLink={`/${lang}/events`}
@@ -136,6 +145,14 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
   </div>
 
   <!-- Main Content -->
+  {updated_departure && (
+    <aside class="schedule-notice" role="status">
+      <h2>{schedule_copy.title}</h2>
+      {previous_departure && <p>{schedule_copy.previous}: <s>{format_departure(previous_departure, lang)}</s></p>}
+      <p><strong>{schedule_copy.current}: {format_departure(updated_departure, lang)}</strong></p>
+      <p>{schedule_copy.note}</p>
+    </aside>
+  )}
   <Content />
 
   <!-- Participant List (shown when valid token is present) -->
@@ -183,7 +200,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
       data-slug={entry.data.slug}
       data-title={entry.data.title}
       data-location={entry.data.location}
-      data-event-date={entry.data.date}
+      data-event-date={effective_event_date}
       data-event-type={entry.data.eventType}
       data-max-participants={entry.data.maxParticipants != null ? String(entry.data.maxParticipants) : ''}
       data-registration-deadline={effectiveDeadline}
@@ -366,6 +383,16 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 </script>
 
 <style>
+  .schedule-notice {
+    padding: 1.25rem;
+    margin-block: 1.5rem;
+    border-inline-start: 0.25rem solid var(--color-accent);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-main);
+  }
+  .schedule-notice h2 { margin-top: 0; }
+
   .event-info {
     display: flex;
     align-items: center;

@@ -10,19 +10,22 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field
 from sqlalchemy import case, func, inspect
 from sqlalchemy.orm import Session
 from database import get_db
+from domain.exceptions import InvalidDepartureTimeError
 from models import Event, RSVP, Subscriber
 from routes.auth import get_current_admin
 from services.email import (
     send_broadcast_email,
     send_cancellation_email,
     send_event_cancellation_email,
+    send_event_rescheduling_email,
     send_registrant_notification_email,
 )
 from services.event_cancellation import EventCancellationReason
+from services.event_schedule import as_utc, departure_on_same_day
 from services.event_counts import (
     count_confirmed_rsvps,
     get_available_spots,
@@ -56,6 +59,9 @@ REQUIRED_SCHEMA_COLUMNS = {
     "events": {
         "cancellation_reason",
         "cancelled_at",
+        "previous_event_date",
+        "reschedule_reason",
+        "rescheduled_at",
         "distance_km",
     },
 }
@@ -88,6 +94,14 @@ class CancelEventRequest(BaseModel):
     reason: EventCancellationReason
 
 
+class RescheduleEventRequest(BaseModel):
+    """Change the departure clock time on the same Munich calendar date."""
+
+    reason: EventCancellationReason
+    departure_time: str = Field(pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    expected_event_date: AwareDatetime
+
+
 def _get_missing_schema_columns(db: Session) -> list[str]:
     """Return Dashboard columns missing from the current database."""
     missing_columns: list[str] = []
@@ -115,7 +129,7 @@ def _sync_occurrence_rows(
     }
     slugs = list(occurrences_by_slug)
     existing_events = (
-        db.query(Event).filter(Event.slug.in_(slugs)).all()
+        db.query(Event).filter(Event.slug.in_(slugs)).with_for_update().all()
         if slugs
         else []
     )
@@ -146,7 +160,8 @@ def _sync_occurrence_rows(
 
         event.title = occurrence.title
         event.description = occurrence.description
-        event.event_date = occurrence.event_date
+        if event.rescheduled_at is None:
+            event.event_date = occurrence.event_date
         event.location = occurrence.location
         event.event_type = occurrence.event_type
         event.max_participants = occurrence.max_participants
@@ -211,6 +226,14 @@ def _serialize_admin_events(db: Session) -> list[dict]:
             "registration_deadline": (
                 event.registration_deadline.isoformat()
                 if event.registration_deadline else None
+            ),
+            "reschedule_reason": event.reschedule_reason,
+            "previous_event_date": (
+                event.previous_event_date.isoformat()
+                if event.previous_event_date else None
+            ),
+            "rescheduled_at": (
+                event.rescheduled_at.isoformat() if event.rescheduled_at else None
             ),
             "cancellation_reason": event.cancellation_reason,
             "cancelled_at": (
@@ -358,6 +381,14 @@ def get_event_rsvps(
             "max_participants": event.max_participants,
             "current_participants": confirmed_count,
             "distance_km": float(event.distance_km) if event.distance_km is not None else None,
+            "reschedule_reason": event.reschedule_reason,
+            "previous_event_date": (
+                event.previous_event_date.isoformat()
+                if event.previous_event_date else None
+            ),
+            "rescheduled_at": (
+                event.rescheduled_at.isoformat() if event.rescheduled_at else None
+            ),
             "cancellation_reason": event.cancellation_reason,
             "cancelled_at": (
                 event.cancelled_at.isoformat()
@@ -844,6 +875,127 @@ def cancel_event(
     return {
         "success": True,
         "reason": reason,
+        "sent": sent,
+        "skipped": skipped,
+        "failed": failed,
+    }
+
+
+@router.post("/api/admin/events/{event_id}/reschedule")
+def reschedule_event(
+    event_id: int,
+    body: RescheduleEventRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> dict:
+    """Commit a departure change before notifying active registrants.
+
+    Args:
+        event_id: Event to update.
+        body: Reason, Munich clock time and expected current timestamp.
+        db: Active database session.
+        _admin: Authenticated administrator.
+
+    Returns:
+        Updated departure and delivery counts.
+
+    Raises:
+        HTTPException: Missing, cancelled, started, stale or invalid event change.
+    """
+    event = db.query(Event).filter(Event.id == event_id).with_for_update().first()
+    if event is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_FOUND",
+                "message": "Event not found",
+            },
+        )
+    if event.cancelled_at is not None:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_ALREADY_CANCELLED",
+                "message": "A cancelled event cannot be rescheduled",
+            },
+        )
+    previous = as_utc(event.event_date)
+    if previous != as_utc(body.expected_event_date):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_TIME_CONFLICT",
+                "message": "The departure time has changed. Reload before editing.",
+            },
+        )
+    try:
+        departure = departure_on_same_day(previous, body.departure_time)
+    except InvalidDepartureTimeError as error:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error_code": "INVALID_DEPARTURE_TIME",
+                "message": str(error),
+            },
+        ) from error
+    if departure == previous:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_TIME_UNCHANGED",
+                "message": "Choose a different departure time",
+            },
+        )
+    now = datetime.now(timezone.utc)
+    if previous <= now or departure <= now:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_ALREADY_STARTED",
+                "message": "Both current and new departure must be in the future",
+            },
+        )
+    event.previous_event_date = previous
+    event.event_date = departure
+    event.reschedule_reason = body.reason.value
+    event.rescheduled_at = now
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
+    sent = skipped = failed = 0
+    rsvps = db.query(RSVP).filter(RSVP.event_id == event_id).all()
+    for rsvp in rsvps:
+        if rsvp.status not in {"confirmed", "waitlist"}:
+            skipped += 1
+            continue
+        try:
+            result = send_event_rescheduling_email(
+                user_email=rsvp.email,
+                user_name=rsvp.name,
+                event_title=event.title,
+                event_location=event.location,
+                previous_event_date=previous,
+                event_date=departure,
+                reason=body.reason.value,
+                event_slug=event.slug,
+            )
+            if result.get("status") == "error":
+                failed += 1
+            elif result.get("status") == "skipped":
+                skipped += 1
+            else:
+                sent += 1
+        except Exception:
+            logger.exception("Departure notification failed for RSVP %s", rsvp.id)
+            failed += 1
+    return {
+        "success": True,
+        "reason": body.reason.value,
+        "previous_event_date": previous.isoformat(),
+        "event_date": departure.isoformat(),
         "sent": sent,
         "skipped": skipped,
         "failed": failed,

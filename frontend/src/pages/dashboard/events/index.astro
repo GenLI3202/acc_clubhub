@@ -137,7 +137,7 @@ const currentRows: AdminEventRow[] = zhEvents.map((e) => {
   return {
     slug,
     title: e.data.title,
-    date: String(e.data.date),
+    date: stats?.event_date ?? String(e.data.date),
     location: e.data.location ?? null,
     eventType: e.data.eventType,
     maxParticipants: e.data.maxParticipants ?? null,
