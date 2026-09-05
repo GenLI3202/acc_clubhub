@@ -15,6 +15,41 @@ import pytest
 from unittest.mock import patch
 from models import Event, RSVP
 import datetime
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
+
+def test_notify_rejects_cancelled_event(
+    client: TestClient, db: Session, sample_event: Event,
+) -> None:
+    sample_event.cancelled_at = datetime.datetime.now(datetime.timezone.utc)
+    sample_event.cancellation_reason = "weather"
+    db.commit()
+    with patch("routes.admin.send_registrant_notification_email") as email:
+        response = client.post(f"/api/admin/events/{sample_event.id}/notify")
+    assert response.status_code == 409
+    assert response.json()["detail"]["error_code"] == "EVENT_ALREADY_CANCELLED"
+    email.assert_not_called()
+
+
+@pytest.mark.parametrize("delivery", ["error", "skipped"])
+def test_notify_reports_unsent_email_without_changing_event(
+    client: TestClient, db: Session, sample_event: Event, delivery: str,
+) -> None:
+    _make_rsvp(db, sample_event.id, "rider@example.com", "Rider")
+    db.commit()
+    departure = sample_event.event_date
+    with patch(
+        "routes.admin.send_registrant_notification_email",
+        return_value={"status": delivery},
+    ):
+        response = client.post(f"/api/admin/events/{sample_event.id}/notify")
+    assert response.status_code == 200
+    assert response.json()["sent"] == 0
+    assert response.json()["failed" if delivery == "error" else "skipped"] == 1
+    db.refresh(sample_event)
+    assert sample_event.event_date == departure
+    assert sample_event.cancelled_at is None
 
 
 # ── helpers ───────────────────────────────────────────────────

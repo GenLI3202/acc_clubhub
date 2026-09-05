@@ -7,7 +7,7 @@ from __future__ import annotations
 import csv
 import io
 import logging
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import AwareDatetime, BaseModel, Field
@@ -25,7 +25,7 @@ from services.email import (
     send_registrant_notification_email,
 )
 from services.event_cancellation import EventCancellationReason
-from services.event_schedule import as_utc, departure_on_same_day
+from services.event_schedule import MUNICH, as_utc, departure_in_munich
 from services.event_counts import (
     count_confirmed_rsvps,
     get_available_spots,
@@ -95,10 +95,12 @@ class CancelEventRequest(BaseModel):
 
 
 class RescheduleEventRequest(BaseModel):
-    """Change the departure clock time on the same Munich calendar date."""
+    """Change the departure date and clock time in Munich."""
 
     reason: EventCancellationReason
     departure_time: str = Field(pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    # Older clients omit the date when changing only the departure clock time.
+    departure_date: date | None = None
     expected_event_date: AwareDatetime
 
 
@@ -892,7 +894,7 @@ def reschedule_event(
 
     Args:
         event_id: Event to update.
-        body: Reason, Munich clock time and expected current timestamp.
+        body: Reason, Munich date and time, and expected current timestamp.
         db: Active database session.
         _admin: Authenticated administrator.
 
@@ -929,7 +931,10 @@ def reschedule_event(
             },
         )
     try:
-        departure = departure_on_same_day(previous, body.departure_time)
+        departure = departure_in_munich(
+            body.departure_date or previous.astimezone(MUNICH).date(),
+            body.departure_time,
+        )
     except InvalidDepartureTimeError as error:
         raise HTTPException(
             status_code=422,
@@ -1257,7 +1262,18 @@ def notify_registrants(
     """
     event = db.query(Event).filter(Event.id == event_id).first()
     if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(
+            status_code=404,
+            detail={"error_code": "EVENT_NOT_FOUND", "message": "Event not found"},
+        )
+    if event.cancelled_at is not None:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_ALREADY_CANCELLED",
+                "message": "Ride reminders are unavailable for cancelled events",
+            },
+        )
 
     rsvps = (
         db.query(RSVP)
@@ -1271,11 +1287,11 @@ def notify_registrants(
     failed = 0
 
     for rsvp in rsvps:
-        if rsvp.status == "cancelled":
+        if rsvp.status not in {"confirmed", "waitlist"}:
             skipped += 1
             continue
         try:
-            send_registrant_notification_email(
+            result = send_registrant_notification_email(
                 user_email=rsvp.email,
                 user_name=rsvp.name,
                 event_title=event.title,
@@ -1285,7 +1301,12 @@ def notify_registrants(
                 view_token=rsvp.view_token or "",
                 lang="en",
             )
-            sent += 1
+            if result.get("status") == "error":
+                failed += 1
+            elif result.get("status") == "skipped":
+                skipped += 1
+            else:
+                sent += 1
         except Exception as e:
             logger.error("Registrant notification failed for %s: %s", rsvp.email, e)
             failed += 1

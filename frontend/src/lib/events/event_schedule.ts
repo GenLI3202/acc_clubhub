@@ -17,6 +17,15 @@ export function departure_clock(value: string): string {
     });
 }
 
+export function departure_day(value: string): string {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit",
+    }).formatToParts(new Date(value));
+    const part = (type: string): string =>
+        parts.find((item) => item.type === type)!.value;
+    return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
 export const SCHEDULE_NOTICE = {
     zh: {
         title: "出发时间已调整", previous: "原出发时间", current: "新出发时间",

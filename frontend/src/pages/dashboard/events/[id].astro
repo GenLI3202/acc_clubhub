@@ -8,7 +8,7 @@ import {
   get_cancellation_reason_label,
 } from '../../../lib/events/eventCancellation';
 import '../../../styles/dashboard.css';
-import { departure_clock, format_departure } from '../../../lib/events/event_schedule';
+import { departure_clock, departure_day, format_departure } from '../../../lib/events/event_schedule';
 
 const { id } = Astro.params;
 const apiUrl = import.meta.env.PUBLIC_API_URL || "https://acc-clubhub-events-ms.vercel.app";
@@ -220,21 +220,6 @@ function formatKm(value: number | null | undefined): string {
       .ride-summary-list dt { color: #57606a; }
       .ride-summary-list dd { margin: 0; font-weight: 600; color: #24292f; }
       .actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-      .event-cancellation-action {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-      }
-      .event-cancellation-action select {
-        min-width: 240px;
-        padding: 0.4rem 0.7rem;
-        border: 1px solid #d0d7de;
-        border-radius: 6px;
-        background: white;
-        color: #24292f;
-        font-size: 0.85rem;
-      }
       .event-cancelled-state {
         padding: 0.65rem 0.85rem;
         border: 1px solid #ff818266;
@@ -550,53 +535,91 @@ function formatKm(value: number | null | undefined): string {
             >
               Export CSV
             </a>
-            <button class="action-btn" id="notify-btn">
-              📧 Notify Registrants
-            </button>
-            <span id="notify-status"></span>
           </div>
 
-          <div style="height: 1rem;"></div>
-
-          {!eventData.event.cancelled_at && (
-            <div class="event-cancellation-action">
-              <select
-                id="event-cancellation-reason"
-                aria-label="Select reason for event update"
-              >
-                <option value="">1. Select reason</option>
-                {EVENT_CANCELLATION_REASON_OPTIONS.map((option) => (
-                  <option value={option.value}>{option.label}</option>
-                ))}
-              </select>
-              <select id="event-update-action" aria-label="Select event action">
-                <option value="">2. Select action</option>
-                <option value="reschedule">Change departure time</option>
-                <option value="cancel">Cancel event</option>
-              </select>
-              <label id="departure-time-field" hidden>
-                New departure (Munich time)
-                <input type="time" id="new-departure-time" step="60"
-                  value={departure_clock(eventData.event.event_date)} />
-              </label>
-              <button
-                type="button"
-                class="action-btn secondary"
-                id="cancel-event-btn"
-                data-event-date={eventData.event.event_date}
-                data-event-label={format_departure(eventData.event.event_date)}
-                data-recipient-count={
-                  eventData.summary.confirmed + eventData.summary.waitlist
-                }
-              >
-                Review &amp; send notification
-              </button>
-              <span id="cancel-event-status" role="status" aria-live="polite"></span>
-              <a id="event-update-refresh" href={Astro.url.pathname} hidden>
-                Reload updated event
-              </a>
+          <section class="event-communications" aria-labelledby="event-actions-title">
+            <div class="event-actions-heading">
+              <h2 id="event-actions-title">Event updates &amp; emails</h2>
+              <p>Choose what you need to do. Emails go to confirmed and waitlisted riders.</p>
             </div>
-          )}
+            {eventData.event.cancelled_at ? (
+              <p>This event is cancelled. Ride reminders and schedule changes are unavailable.</p>
+            ) : (
+              <>
+                <div class="event-action-cards">
+                  <section class="event-action-card" aria-labelledby="reminder-title">
+                    <span class="event-action-type">Email only</span>
+                    <h3 id="reminder-title">Send ride reminder</h3>
+                    <p>Send the current departure, meeting point and event link.
+                      The event stays unchanged.</p>
+                    <button type="button" class="action-btn secondary" id="notify-btn"
+                      data-recipient-count={eventData.summary.confirmed + eventData.summary.waitlist}>
+                      Review reminder
+                    </button>
+                    <span id="notify-status" role="status" aria-live="polite"></span>
+                  </section>
+                  <section class="event-action-card" aria-labelledby="reschedule-title">
+                    <span class="event-action-type">Save change + email</span>
+                    <h3 id="reschedule-title">Change date &amp; time</h3>
+                    <p>Move the ride to a new date or departure time.
+                      Riders receive the old and new schedule.</p>
+                    <button type="button" class="action-btn secondary"
+                      data-event-action="reschedule" aria-expanded="false"
+                      aria-controls="event-update-form">
+                      Choose new date &amp; time
+                    </button>
+                  </section>
+                  <section class="event-action-card" aria-labelledby="cancellation-title">
+                    <span class="event-action-type">Cancel event + email</span>
+                    <h3 id="cancellation-title">Cancel event</h3>
+                    <p>Mark the whole event as cancelled and tell riders why.
+                      Use this when the ride will not take place.</p>
+                    <button type="button" class="action-btn secondary event-cancel-choice"
+                      data-event-action="cancel" aria-expanded="false"
+                      aria-controls="event-update-form">
+                      Review cancellation
+                    </button>
+                  </section>
+                </div>
+                <div id="event-update-form" class="event-update-form" hidden>
+                  <h3 id="event-update-title" tabindex="-1">Change date &amp; time</h3>
+                  <p>Current departure: <strong>{format_departure(eventData.event.event_date)}</strong></p>
+                  <p id="event-update-explanation"></p>
+                  <div class="event-update-fields">
+                    <label id="departure-date-field">
+                      New date (Munich)
+                      <input type="date" id="new-departure-date" required
+                        value={departure_day(eventData.event.event_date)} />
+                    </label>
+                    <label id="departure-time-field">
+                      New time (Munich)
+                      <input type="time" id="new-departure-time" step="60" required
+                        value={departure_clock(eventData.event.event_date)} />
+                    </label>
+                    <label>
+                      Reason shown in the email
+                      <select id="event-update-reason" required>
+                        <option value="">Select a reason</option>
+                        {EVENT_CANCELLATION_REASON_OPTIONS.map((option) => (
+                          <option value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  <button type="button" class="action-btn" id="event-update-review"
+                    data-event-date={eventData.event.event_date}
+                    data-event-label={format_departure(eventData.event.event_date)}
+                    data-recipient-count={eventData.summary.confirmed + eventData.summary.waitlist}>
+                    Review date &amp; time change
+                  </button>
+                  <p id="event-update-status" role="status" aria-live="polite"></p>
+                  <a id="event-update-refresh" href={Astro.url.pathname} hidden>
+                    Reload updated event
+                  </a>
+                </div>
+              </>
+            )}
+          </section>
 
           <div style="height: 1.5rem;"></div>
 
@@ -1001,7 +1024,7 @@ function formatKm(value: number | null | undefined): string {
             body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          if (!res.ok) throw new Error(data.detail?.message || data.detail || `${res.status}`);
           window.location.reload();
         } catch (e) {
           alert("Failed to check in RSVP: " + e.message);
@@ -1034,7 +1057,7 @@ function formatKm(value: number | null | undefined): string {
             }
           );
           const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          if (!res.ok) throw new Error(data.detail?.message || data.detail || `${res.status}`);
           window.location.reload();
         } catch (e) {
           alert("Failed to undo check-in: " + e.message);
@@ -1064,7 +1087,7 @@ function formatKm(value: number | null | undefined): string {
             body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          if (!res.ok) throw new Error(data.detail?.message || data.detail || `${res.status}`);
           window.location.reload();
         } catch (e) {
           alert("Failed to mark ride leader: " + e.message);
@@ -1094,7 +1117,7 @@ function formatKm(value: number | null | undefined): string {
             body: JSON.stringify({ rsvp_id: parseInt(rsvpId, 10) }),
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          if (!res.ok) throw new Error(data.detail?.message || data.detail || `${res.status}`);
           window.location.reload();
         } catch (e) {
           alert("Failed to undo ride leader: " + e.message);
@@ -1242,17 +1265,24 @@ function formatKm(value: number | null | undefined): string {
         update_registration_alerts("release", release_alerts_button);
       });
 
+      const event_action_controls = [...document.querySelectorAll(
+        ".event-communications button, .event-communications input, .event-communications select",
+      )];
       document.getElementById("notify-btn")?.addEventListener("click", async () => {
         const btn = document.getElementById("notify-btn");
         const status = document.getElementById("notify-status");
+        if (btn.disabled) return;
+        event_action_controls.forEach((control) => { control.disabled = true; });
         const confirmed = await confirmAction({
-          title: "Notify registrants",
-          message: "Send a notification email to all confirmed and waitlisted registrants?",
-          confirmLabel: "Send email",
+          title: "Send ride reminder",
+          message: `Email the current departure, meeting point and event link to all ${btn.dataset.recipientCount} confirmed and waitlisted registrants. This does not change the event date, time or cancellation status.`,
+          confirmLabel: "Send reminder email",
         });
-        if (!confirmed) return;
+        if (!confirmed) {
+          event_action_controls.forEach((control) => { control.disabled = false; });
+          return;
+        }
 
-        btn.disabled = true;
         status.textContent = "Sending…";
         status.style.color = "#57606a";
 
@@ -1264,50 +1294,67 @@ function formatKm(value: number | null | undefined): string {
             body: JSON.stringify({}),
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || `${res.status}`);
+          if (!res.ok) throw new Error(data.detail?.message || data.detail || `${res.status}`);
           status.textContent = `✓ Sent: ${data.sent}  Skipped: ${data.skipped}  Failed: ${data.failed}`;
-          status.style.color = "#1a7f37";
+          status.style.color = data.failed > 0
+            ? "var(--dashboard-danger)" : "var(--dashboard-success)";
         } catch (e) {
           status.textContent = `✗ ${e.message}`;
           status.style.color = "#cf222e";
         } finally {
-          btn.disabled = false;
+          event_action_controls.forEach((control) => { control.disabled = false; });
         }
       });
 
-      const update_action = document.getElementById("event-update-action");
+      let selected_action = "";
+      const action_choices = [...document.querySelectorAll("[data-event-action]")];
       const departure_input = document.getElementById("new-departure-time");
-      update_action?.addEventListener("change", () => {
-        document.getElementById("departure-time-field").hidden =
-          update_action.value !== "reschedule";
-      });
-      document.getElementById("cancel-event-btn")?.addEventListener(
+      const date_input = document.getElementById("new-departure-date");
+      action_choices.forEach((choice) => choice.addEventListener("click", () => {
+        selected_action = choice.dataset.eventAction;
+        const rescheduling = selected_action === "reschedule";
+        action_choices.forEach((item) => {
+          item.setAttribute("aria-expanded", String(item === choice));
+        });
+        document.getElementById("event-update-form").hidden = false;
+        document.getElementById("departure-date-field").hidden = !rescheduling;
+        document.getElementById("departure-time-field").hidden = !rescheduling;
+        document.getElementById("event-update-title").textContent = rescheduling
+          ? "Change date & time" : "Cancel event";
+        document.getElementById("event-update-explanation").textContent = rescheduling
+          ? "Use Munich local time (Europe/Berlin). Registration and waitlist status stay unchanged. The registration deadline is not changed. Saving also sends the schedule-change email; no separate reminder is needed."
+          : "This cancels the whole event and sends a cancellation email. It does not delete the rider records. No separate reminder is needed.";
+        document.getElementById("event-update-review").textContent = rescheduling
+          ? "Review date & time change" : "Review event cancellation";
+        document.getElementById("event-update-status").textContent = "";
+        document.getElementById("event-update-title").focus();
+      }));
+      document.getElementById("event-update-review")?.addEventListener(
         "click",
         async () => {
-          const button = document.getElementById("cancel-event-btn");
+          const button = document.getElementById("event-update-review");
           if (button.disabled) return;
-          const select = document.getElementById("event-cancellation-reason");
-          const status = document.getElementById("cancel-event-status");
+          const select = document.getElementById("event-update-reason");
+          const status = document.getElementById("event-update-status");
           const reason = select.value;
           const reason_label = select.selectedOptions[0]?.textContent ?? reason;
-          const action = update_action.value;
+          const action = selected_action;
           const rescheduling = action === "reschedule";
           const recipient_count = button.dataset.recipientCount ?? "0";
-          if (!reason || !action || (rescheduling && !departure_input.value)) {
-            status.textContent = "Select a reason, an action and the new time if needed.";
-            (!reason ? select : !action ? update_action : departure_input).focus();
-            return;
-          }
+          if (!action || !select.reportValidity()) return;
+          if (rescheduling && (!date_input.reportValidity()
+            || !departure_input.reportValidity())) return;
           const departure_time = departure_input.value;
+          const departure_date = date_input.value;
           const expected_event_date = button.dataset.eventDate;
-          const controls = [button, select, update_action, departure_input];
+          const controls = event_action_controls;
           controls.forEach((control) => { control.disabled = true; });
           const confirmed = await confirmAction({
-            title: rescheduling ? "Change departure time" : "Cancel event",
+            title: rescheduling ? "Change date & time" : "Cancel event",
             message: rescheduling
-              ? `Reason: ${reason_label}. Previous departure: ${button.dataset.eventLabel}. New departure: ${departure_time}, on the same date in Munich (Europe/Berlin). Email all ${recipient_count} confirmed and waitlisted registrants. Registration status stays unchanged.`
+              ? `Previous: ${button.dataset.eventLabel}\nNew: ${departure_date} at ${departure_time} (Munich, Europe/Berlin)\nReason: ${reason_label}\n\nSave this schedule and email all ${recipient_count} confirmed and waitlisted registrants. Registration status stays unchanged.`
               : `Cancel this event due to ${reason_label.toLowerCase()} and email all ${recipient_count} confirmed and waitlisted registrants?`,
-            confirmLabel: rescheduling ? "Save time & send email" : "Cancel event & send email",
+            confirmLabel: rescheduling ? "Save date & time and email riders" : "Cancel event & send email",
             danger: !rescheduling,
           });
           if (!confirmed) {
@@ -1325,7 +1372,7 @@ function formatKm(value: number | null | undefined): string {
               credentials: "include",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(rescheduling
-                ? { reason, departure_time, expected_event_date } : { reason }),
+                ? { reason, departure_date, departure_time, expected_event_date } : { reason }),
             });
             const data = await response.json();
             if (!response.ok) {
@@ -1334,7 +1381,7 @@ function formatKm(value: number | null | undefined): string {
               throw new Error(detail || `Request rejected (${response.status})`);
             }
             const saved_label = rescheduling
-              ? "Departure time saved" : "Event cancelled";
+              ? "New date & time saved" : "Event cancelled";
             status.textContent = `${saved_label}. Email sent: ${data.sent} · Skipped: ${data.skipped} · Failed: ${data.failed}.`;
             if (data.failed > 0) {
               status.textContent += " The event update is saved; some riders were not notified. Contact them before the ride.";

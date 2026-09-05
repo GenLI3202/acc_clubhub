@@ -25,6 +25,65 @@ def payload() -> dict[str, str]:
     }
 
 
+@pytest.mark.parametrize(
+    ("day", "clock", "expected"),
+    [
+        ("2030-07-07", "09:30", "2030-07-07T07:30:00+00:00"),
+        ("2031-01-12", "09:30", "2031-01-12T08:30:00+00:00"),
+        ("2030-07-07", "00:30", "2030-07-06T22:30:00+00:00"),
+    ],
+)
+def test_reschedule_changes_calendar_date_and_emails_saved_timestamp(
+    client: TestClient,
+    db: Session,
+    future_event: Event,
+    confirmed_rsvp: RSVP,
+    day: str,
+    clock: str,
+    expected: str,
+) -> None:
+    deadline = future_event.registration_deadline
+    with patch(
+        "routes.admin.send_event_rescheduling_email", return_value={"status": "sent"},
+    ) as email:
+        response = client.post(
+            f"/api/admin/events/{future_event.id}/reschedule",
+            json={**payload(), "departure_date": day, "departure_time": clock},
+        )
+    assert response.status_code == 200
+    assert response.json()["event_date"] == expected
+    assert email.call_args.kwargs["event_date"].isoformat() == expected
+    db.refresh(future_event)
+    assert future_event.registration_deadline == deadline
+    assert confirmed_rsvp.status == "confirmed"
+
+
+@pytest.mark.parametrize(
+    ("day", "clock", "status"),
+    [
+        ("2030-02-30", "09:30", 422),
+        ("", "09:30", 422),
+        ("2030-03-31", "02:30", 422),
+        ("2030-10-27", "02:30", 422),
+        ("2020-07-06", "09:30", 409),
+    ],
+)
+def test_reschedule_rejects_invalid_new_dates_without_sending(
+    client: TestClient,
+    future_event: Event,
+    day: str,
+    clock: str,
+    status: int,
+) -> None:
+    with patch("routes.admin.send_event_rescheduling_email") as email:
+        response = client.post(
+            f"/api/admin/events/{future_event.id}/reschedule",
+            json={**payload(), "departure_date": day, "departure_time": clock},
+        )
+    assert response.status_code == status
+    email.assert_not_called()
+
+
 def test_reschedule_notifies_active_riders_and_preserves_state(
     client: TestClient,
     db: Session,
@@ -180,7 +239,10 @@ def test_reschedule_survives_sync_and_stale_registration(
     db: Session,
     future_event: Event,
 ) -> None:
-    client.post(f"/api/admin/events/{future_event.id}/reschedule", json=payload())
+    client.post(
+        f"/api/admin/events/{future_event.id}/reschedule",
+        json={**payload(), "departure_date": "2030-07-07"},
+    )
     metadata = {
         "slug": future_event.slug,
         "title": future_event.title,
@@ -205,10 +267,11 @@ def test_reschedule_survives_sync_and_stale_registration(
     assert response.status_code in (200, 201)
     db.refresh(future_event)
     assert future_event.event_date.minute == 30
+    assert future_event.event_date.day == 7
     public = client.get(f"/api/events/{future_event.slug}").json()
     assert public["reschedule_reason"] == "weather"
     assert public["rescheduled_at"] is not None
-    assert "07:30" in public["event_date"]
+    assert "2030-07-07T07:30" in public["event_date"]
 
 
 @pytest.mark.parametrize(
@@ -306,13 +369,14 @@ def test_reschedule_email_shows_escaped_reason_and_both_times() -> None:
             event_title="Ride & Picnic",
             event_location="A < B",
             previous_event_date=datetime(2030, 7, 6, 7, tzinfo=timezone.utc),
-            event_date=datetime(2030, 7, 6, 7, 30, tzinfo=timezone.utc),
+            event_date=datetime(2030, 7, 7, 7, 30, tzinfo=timezone.utc),
             reason="weather",
             event_slug="ride",
         )
     html = send.call_args.args[0]["html"]
-    assert "09:00 CEST" in html and "09:30 CEST" in html
-    assert "Adverse weather" in html
+    assert "2030-07-06 09:00 CEST" in html
+    assert "2030-07-07 09:30 CEST" in html
+    assert "adverse weather" in html
     assert "&lt;Rider&gt;" in html and "A &lt; B" in html
     assert "registration status is unchanged" in html
     assert "/en/events/ride" in html

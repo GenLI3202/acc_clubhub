@@ -32,14 +32,97 @@ body.dashboard-page {
   font-family: var(--font-body);
 }
 
-body.dashboard-page #departure-time-field:not([hidden]) {
+body.dashboard-page .event-communications {
+  margin-block: 1.5rem 2rem;
+}
+
+body.dashboard-page .event-actions-heading h2 {
+  margin-bottom: 0.35rem;
+}
+
+body.dashboard-page .event-communications p {
+  color: var(--dashboard-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+body.dashboard-page .event-action-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+body.dashboard-page .event-action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.4rem;
+  background: var(--dashboard-surface);
+  border: 1px solid var(--dashboard-border);
+  border-radius: var(--radius-md);
+}
+
+body.dashboard-page .event-action-type {
+  color: var(--dashboard-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+
+body.dashboard-page .event-action-card h3 {
+  margin: 0.5rem 0;
+  font-size: 1.15rem;
+}
+
+body.dashboard-page .event-action-card .action-btn {
+  margin-top: auto;
+  white-space: normal;
+}
+
+body.dashboard-page .event-action-card [aria-expanded="true"] {
+  border-color: var(--dashboard-accent);
+  color: var(--dashboard-accent);
+}
+
+body.dashboard-page .event-action-card .action-btn.event-cancel-choice {
+  color: var(--dashboard-danger);
+}
+
+body.dashboard-page .event-update-form {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background: var(--dashboard-surface);
+  border: 1px solid var(--dashboard-border);
+  border-top: 3px solid var(--dashboard-accent);
+  border-radius: var(--radius-md);
+}
+
+body.dashboard-page .event-update-form[hidden],
+body.dashboard-page .event-update-fields [hidden] {
+  display: none;
+}
+
+body.dashboard-page .event-update-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-block: 1rem 1.5rem;
+}
+
+body.dashboard-page .event-update-fields label {
   display: grid;
   gap: 0.35rem;
   font-size: 0.85rem;
   color: var(--dashboard-muted);
 }
 
-body.dashboard-page #new-departure-time {
+body.dashboard-page .event-update-fields input,
+body.dashboard-page .event-update-fields select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--dashboard-border-strong);
   border-radius: var(--radius-sm);
@@ -48,9 +131,29 @@ body.dashboard-page #new-departure-time {
   font: inherit;
 }
 
-body.dashboard-page #new-departure-time:focus-visible {
+body.dashboard-page .event-communications :focus-visible {
   outline: 2px solid var(--dashboard-accent);
   outline-offset: 2px;
+}
+
+body.dashboard-page #notify-status {
+  margin: 0.5rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+body.dashboard-page #notify-status:empty {
+  display: none;
+}
+
+body.dashboard-page .confirm-dialog p {
+  white-space: pre-line;
+}
+
+@media (max-width: 760px) {
+  body.dashboard-page .event-action-cards,
+  body.dashboard-page .event-update-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 body.dashboard-page::before {
