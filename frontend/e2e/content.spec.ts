@@ -14,8 +14,8 @@ test.describe('Content Pages', () => {
         await expect(
             page.getByRole('heading', { name: /2026 ACC 开春首骑/ }),
         ).toBeVisible();
-        // 验证 markdown 渲染
-        await expect(page.locator('.article-content h2').first()).toBeVisible();
+        // 验证 markdown 正文渲染
+        await expect(page.locator('.article-content p').first()).toBeVisible();
     });
 
     test('media detail has back link', async ({ page }) => {
@@ -57,8 +57,57 @@ test.describe('Content Pages', () => {
         await expect(
             page.getByRole('heading', { name: '骑行路线', exact: true }),
         ).toBeVisible();
+        await expect(
+            page
+                .getByRole('link', { name: /Starnberg–Andechs–Raisting 环线/ })
+                .first(),
+        ).toBeVisible();
         await expect(page.getByText('(Fake Template)')).toHaveCount(0);
     });
+
+    test('verified route detail exposes source links and known metrics', async ({
+        page,
+    }) => {
+        await page.goto('/zh/routes/starnberg-andechs-raisting-loop');
+
+        await expect(
+            page.getByRole('heading', {
+                name: 'Starnberg–Andechs–Raisting 环线',
+            }),
+        ).toBeVisible();
+        await expect(page.getByText('58 公里', { exact: true })).toBeVisible();
+        await expect(page.getByText('590 m', { exact: true })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Komoot →' })).toHaveAttribute(
+            'href',
+            /komoot\.com/,
+        );
+        await expect(page.getByRole('link', { name: 'Strava →' })).toHaveAttribute(
+            'href',
+            /strava\.com/,
+        );
+    });
+
+    test('source-reported route range stays a range without elevation', async ({
+        page,
+    }) => {
+        await page.goto('/zh/routes/eaglet-basics');
+
+        await expect(page.getByText('20–30 公里', { exact: true })).toBeVisible();
+        await expect(
+            page.locator('.route-stats').getByText('累计爬升'),
+        ).toHaveCount(0);
+    });
+
+    for (const [lang, heading] of [
+        ['en', 'Starnberg–Andechs–Raisting Loop'],
+        ['de', 'Starnberg–Andechs–Raisting-Runde'],
+    ] as const) {
+        test(`${lang} route detail renders localized archive`, async ({ page }) => {
+            await page.goto(`/${lang}/routes/starnberg-andechs-raisting-loop`);
+            await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+            await expect(page.getByRole('link', { name: 'Komoot →' })).toBeVisible();
+        });
+    }
 
     test('removed placeholder route detail is not generated', async ({ page }) => {
         const response = await page.goto('/zh/routes/isar-valley-loop');

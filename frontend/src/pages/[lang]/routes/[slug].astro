@@ -7,6 +7,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import WalineComments from '../../../components/WalineComments.astro';
 import { getCollection, render } from 'astro:content';
 import { getLangFromEntry, t, type Locale } from '../../../lib/i18n';
+import { getFilterLabel } from '../../../lib/i18n/filterTranslations';
+import { format_route_distance } from '../../../lib/routes/route_metrics';
 
 export async function getStaticPaths() {
   const allRoutes = await getCollection('routes');
@@ -54,7 +56,7 @@ const difficultyColors: Record<string, string> = {
       
       <div class="route-meta-row">
         <div>
-           <p class="route-region">📍 {entry.data.region}</p>
+           <p class="route-region">📍 {getFilterLabel('region', entry.data.region, lang)}</p>
            {entry.data.author && <p class="route-author">By {entry.data.author}</p>}
         </div>
 
@@ -72,13 +74,17 @@ const difficultyColors: Record<string, string> = {
 
     <div class="route-stats">
       <div class="stat">
-        <span class="stat-value">{entry.data.distance}</span>
-        <span class="stat-label">km</span>
+        <span class="stat-value">
+          {format_route_distance(entry.data.distance, entry.data.distanceRange, lang)}
+        </span>
+        <span class="stat-label">{lang === 'zh' ? '距离' : lang === 'de' ? 'Distanz' : 'Distance'}</span>
       </div>
-      <div class="stat">
-        <span class="stat-value">{entry.data.elevation}</span>
-        <span class="stat-label">m ↑</span>
-      </div>
+      {entry.data.elevation !== undefined && (
+        <div class="stat">
+          <span class="stat-value">{entry.data.elevation} m</span>
+          <span class="stat-label">{lang === 'zh' ? '累计爬升' : lang === 'de' ? 'Anstieg' : 'Elevation gain'}</span>
+        </div>
+      )}
       <div class="stat">
         <span
           class="stat-value stat-difficulty"

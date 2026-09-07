@@ -12,6 +12,7 @@ import SectionRule from '../../../components/editorial/SectionRule.astro';
 import FeaturedShelf from '../../../components/editorial/FeaturedShelf.astro';
 import CategoryShelf from '../../../components/knowledge/CategoryShelf.astro';
 import RoutesLibraryPage from '../../../components/content/RoutesLibraryPage';
+import { format_route_distance } from '../../../lib/routes/route_metrics';
 
 export function getStaticPaths() {
   return locales.map((lang) => ({ params: { lang } }));
@@ -42,10 +43,10 @@ const featuredItems = sortedRoutes
     cover: entry.data.coverImage || entry.data.cover,
     tagLabel: getFilterLabel('difficulty', entry.data.difficulty, lang),
     meta: [
-      `${entry.data.distance} km`,
-      `${entry.data.elevation} m ↑`,
+      format_route_distance(entry.data.distance, entry.data.distanceRange, lang),
+      entry.data.elevation !== undefined ? `${entry.data.elevation} m ↑` : undefined,
       getFilterLabel('region', entry.data.region, lang),
-    ].join(' · '),
+    ].filter(Boolean).join(' · '),
   }));
 
 const DIFFICULTY_ORDER = ['easy', 'medium', 'hard', 'expert'] as const;

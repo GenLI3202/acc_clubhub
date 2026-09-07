@@ -38,6 +38,7 @@ export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, s
         expert: { zh: '硬核', de: 'Expert', en: 'Expert' }
     },
     region: {
+        'munich-city': { zh: '慕尼黑市区', de: 'München Stadt', en: 'Munich City' },
         'munich-south': { zh: '慕尼黑南', de: 'München Süd', en: 'Munich South' },
         'munich-north': { zh: '慕尼黑北', de: 'München Nord', en: 'Munich North' },
         'alps-bavaria': { zh: '巴伐利亚阿尔卑斯', de: 'Bayerische Alpen', en: 'Bavarian Alps' },
