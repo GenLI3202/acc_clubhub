@@ -109,6 +109,18 @@ test.describe('Content Pages', () => {
         });
     }
 
+    test('global search includes verified route archive entries', async ({ page }) => {
+        await page.goto('/zh/routes');
+        await page.getByRole('button', { name: 'Search' }).click();
+        await page.getByRole('textbox', { name: 'Search' }).fill('Raisting 环线');
+
+        await expect(
+            page.locator('.search-result-title').filter({
+                hasText: 'Starnberg–Andechs–Raisting 环线',
+            }),
+        ).toBeVisible();
+    });
+
     test('removed placeholder route detail is not generated', async ({ page }) => {
         const response = await page.goto('/zh/routes/isar-valley-loop');
         expect(response?.status()).toBe(404);
