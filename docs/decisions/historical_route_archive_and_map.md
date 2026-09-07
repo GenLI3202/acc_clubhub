@@ -85,7 +85,7 @@ its dedicated images were also removed because it was not an ACC route archive.
 Collection pages, featured shelves, search indexing, internal links, and 404
 coverage were checked against the remaining content. Evidence includes cleanup
 commit `af9813c`, archive commit `64ea9d7`, search test commit `66b8ab1`, a
-successful Astro check/build, 72 passing unit tests, and 32 passing desktop and
+successful Astro check/build, 75 passing unit tests, and 34 passing desktop and
 mobile content tests with two pre-existing skipped tests.
 
 ## Map options
