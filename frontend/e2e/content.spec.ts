@@ -65,6 +65,17 @@ test.describe('Content Pages', () => {
         await expect(page.getByText('(Fake Template)')).toHaveCount(0);
     });
 
+    test('route filters expose localized controls', async ({ page }) => {
+        await page.goto('/zh/routes');
+        await page.getByRole('button', { name: '筛选' }).click();
+
+        await expect(page.getByRole('button', { name: '区域' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '难度' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '距离' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '累计爬升' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '关闭' })).toBeVisible();
+    });
+
     test('verified route detail exposes source links and known metrics', async ({
         page,
     }) => {

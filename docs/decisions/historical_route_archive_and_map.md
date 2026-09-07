@@ -98,9 +98,9 @@ mobile content tests with two pre-existing skipped tests.
 - Coverage and overlaps: all 18 archive routes are visible and filterable, but
   overlapping track geometry is not visualized.
 - Details: ACC detail page first, then a direct Komoot or Strava destination.
-- Filters and languages: route content, search, and filter option values are
-  localized in Chinese, English, and German. Some shared filter chrome remains
-  in English. Surface remains visible as metadata when its source is known.
+- Filters and languages: route content, search, filter sections, option values,
+  actions, and range-input labels are localized in Chinese, English, and German.
+  Surface remains visible as metadata when its source is known.
 - Filter semantics: a source-reported distance range uses its upper bound for
   range filtering. Routes without elevation are excluded when an elevation
   range is active.
