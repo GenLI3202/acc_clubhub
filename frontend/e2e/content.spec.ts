@@ -5,26 +5,26 @@ test.describe('Content Pages', () => {
         await page.goto('/zh/media');
         await expect(page.getByRole('heading', { name: '车影骑踪' })).toBeVisible();
         await expect(
-            page.getByRole('link', { name: /RAD RACE ONE TWENTY/ }).first(),
+            page.getByRole('link', { name: /2026 ACC 开春首骑/ }).first(),
         ).toBeVisible();
     });
 
     test('media detail renders markdown content', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await expect(
-            page.getByRole('heading', { name: /阿尔卑斯夏日骑行记/ }),
+            page.getByRole('heading', { name: /2026 ACC 开春首骑/ }),
         ).toBeVisible();
         // 验证 markdown 渲染
         await expect(page.locator('.article-content h2').first()).toBeVisible();
     });
 
     test('media detail has back link', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await expect(page.locator('.article-back')).toBeVisible();
     });
 
     test('back link navigates to list', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await page.click('.article-back');
         await expect(page).toHaveURL('/zh/media');
     });
@@ -32,14 +32,12 @@ test.describe('Content Pages', () => {
     test('gear list page loads', async ({ page }) => {
         await page.goto('/zh/knowledge/gear');
         await expect(page.getByRole('heading', { name: '器械知识' })).toBeVisible();
-        await expect(page.locator('.article-card').first()).toBeVisible();
+        await expect(page.getByText('没有找到匹配的内容')).toBeVisible();
     });
 
-    test('gear detail page loads', async ({ page }) => {
-        await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
-        await expect(
-            page.getByRole('heading', { name: /公路车购买指南/ }),
-        ).toBeVisible();
+    test('removed placeholder gear detail is not generated', async ({ page }) => {
+        const response = await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
+        expect(response?.status()).toBe(404);
     });
 
     test('training list page loads', async ({ page }) => {
@@ -54,25 +52,17 @@ test.describe('Content Pages', () => {
         await expect(page.locator('h1')).toContainText('FTP训练入门');
     });
 
-    test('routes list shows route cards', async ({ page }) => {
+    test('routes list does not show removed placeholder routes', async ({ page }) => {
         await page.goto('/zh/routes');
         await expect(
             page.getByRole('heading', { name: '骑行路线', exact: true }),
         ).toBeVisible();
-        await expect(
-            page.getByRole('link', { name: /慕尼黑北部经典Afterwork路线/ }).first(),
-        ).toBeVisible();
+        await expect(page.getByText('(Fake Template)')).toHaveCount(0);
     });
 
-    test('route detail has Strava/Komoot links', async ({ page }) => {
-        await page.goto('/zh/routes/isar-valley-loop');
-        await expect(page.locator('.route-link--strava')).toBeVisible();
-        await expect(page.locator('.route-link--komoot')).toBeVisible();
-    });
-
-    test('route detail shows statistics', async ({ page }) => {
-        await page.goto('/zh/routes/isar-valley-loop');
-        await expect(page.locator('.stat-value')).toHaveCount(3);
+    test('removed placeholder route detail is not generated', async ({ page }) => {
+        const response = await page.goto('/zh/routes/isar-valley-loop');
+        expect(response?.status()).toBe(404);
     });
 
     test('about page loads', async ({ page }) => {

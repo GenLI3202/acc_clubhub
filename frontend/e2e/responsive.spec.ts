@@ -31,14 +31,14 @@ test.describe('Responsive Design', () => {
     test('content cards are visible on mobile', async ({ page }) => {
         await page.goto('/zh/media');
         await expect(
-            page.getByRole('link', { name: /RAD RACE ONE TWENTY/ }).first(),
+            page.getByRole('link', { name: /2026 ACC 开春首骑/ }).first(),
         ).toBeVisible();
     });
 
     test('article content is readable on mobile', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await expect(
-            page.getByRole('heading', { name: /阿尔卑斯夏日骑行记/ }),
+            page.getByRole('heading', { name: /2026 ACC 开春首骑/ }),
         ).toBeVisible();
         await expect(page.locator('.article-content')).toBeVisible();
     });
