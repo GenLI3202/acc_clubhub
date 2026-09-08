@@ -506,12 +506,23 @@
     search, favorites, live event status, RSVP, subscriptions, sharing,
     calendar export, and deep links.
   - [X] Added Mac-independent content refresh from the public site on launch,
-    foreground resume, network reconnect, and manual refresh.
+    foreground resume, network reconnect, and pull-to-refresh.
   - [X] Generated Android and iOS native projects with ACC icons, splash
     assets, platform hardening, and minimal permissions.
   - [X] Produced and signature-verified the installable Android 0.1.0 debug APK.
   - [X] Passed mobile tests, type checking, production build, dependency
     audit, native syntax checks, and 390 × 844 browser interaction QA.
+- [X] **Phase 13 — Mobile Navigation and Pull-to-Refresh** (2026-09-08)
+  - [X] Replaced the bottom navigation with the five official website sections:
+    Events, Media, Gear, Training, and About ACC.
+  - [X] Grouped route content into Media and added the ACC partner page to the
+    About section.
+  - [X] Removed duplicate category tabs and the header refresh button from app
+    pages.
+  - [X] Added top-of-page pull and release refresh behavior with loading and
+    threshold states.
+  - [X] Passed 18 mobile tests, type checking, formatting, production build,
+    Capacitor sync, and Android APK signature verification.
 
 
 ## In Progress
