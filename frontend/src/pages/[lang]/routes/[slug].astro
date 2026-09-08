@@ -42,6 +42,32 @@ const difficultyColors: Record<string, string> = {
   hard: '#f97316',
   expert: '#ef4444',
 };
+
+const route_actions = {
+  zh: {
+    eyebrow: "路线导航",
+    title: "打开完整路线",
+    description: "前往路线平台查看完整轨迹、路况信息并开始导航。",
+    komoot_label: "在 Komoot 查看完整路线",
+    strava_label: "在 Strava 查看完整路线",
+  },
+  en: {
+    eyebrow: "Route navigation",
+    title: "Open the full route",
+    description: "View the full track, route details and navigation options.",
+    komoot_label: "View full route on Komoot",
+    strava_label: "View full route on Strava",
+  },
+  de: {
+    eyebrow: "Routennavigation",
+    title: "Komplette Route öffnen",
+    description: "Strecke, Routendetails und Navigation beim Anbieter ansehen.",
+    komoot_label: "Komplette Route bei Komoot ansehen",
+    strava_label: "Komplette Route bei Strava ansehen",
+  },
+} as const;
+
+const route_action = route_actions[lang];
 ---
 
 
@@ -96,18 +122,48 @@ const difficultyColors: Record<string, string> = {
       </div>
     </div>
 
-    <div class="route-links">
-      {entry.data.stravaUrl && (
-        <a href={entry.data.stravaUrl} target="_blank" rel="noopener" class="route-link route-link--strava">
-          Strava →
-        </a>
-      )}
-      {entry.data.komootUrl && (
-        <a href={entry.data.komootUrl} target="_blank" rel="noopener" class="route-link route-link--komoot">
-          Komoot →
-        </a>
-      )}
-    </div>
+    <section class="route-platforms" aria-labelledby="route-platforms-title">
+      <div class="route-platforms__copy">
+        <p class="route-platforms__eyebrow">{route_action.eyebrow}</p>
+        <h2 id="route-platforms-title">{route_action.title}</h2>
+        <p class="route-platforms__description">
+          {route_action.description}
+        </p>
+      </div>
+
+      <div class="route-links">
+        {entry.data.stravaUrl && (
+          <a
+            href={entry.data.stravaUrl}
+            target="_blank"
+            rel="noopener"
+            class="route-link route-link--strava"
+            aria-label={route_action.strava_label}
+          >
+            <span class="route-link__brand">Strava</span>
+            <span class="route-link__label">
+              {route_action.strava_label}
+              <span aria-hidden="true">↗</span>
+            </span>
+          </a>
+        )}
+        {entry.data.komootUrl && (
+          <a
+            href={entry.data.komootUrl}
+            target="_blank"
+            rel="noopener"
+            class="route-link route-link--komoot"
+            aria-label={route_action.komoot_label}
+          >
+            <span class="route-link__brand">Komoot</span>
+            <span class="route-link__label">
+              {route_action.komoot_label}
+              <span aria-hidden="true">↗</span>
+            </span>
+          </a>
+        )}
+      </div>
+    </section>
 
     <div class="route-content prose">
       <Content />
@@ -226,43 +282,92 @@ const difficultyColors: Record<string, string> = {
     font-size: 1.5rem;
   }
 
-  .route-links {
-    display: flex;
-    gap: var(--space-md);
+  .route-platforms {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: var(--space-lg);
+    align-items: center;
+    padding: var(--space-lg);
+    color: var(--color-text-light);
+    background: var(--color-primary);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-lg);
     margin-bottom: var(--space-lg);
   }
 
-  .route-link {
-    display: inline-block;
-    padding: var(--space-sm) var(--space-md);
+  .route-platforms__eyebrow {
+    margin: 0 0 var(--space-xs);
     font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 0.9rem;
-    border: 2px solid;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .route-link--strava {
-    border-color: #fc4c02;
-    color: #fc4c02;
+  .route-platforms h2 {
+    margin: 0;
+    color: inherit;
+    font-size: 1.6rem;
   }
 
-  .route-link--strava:hover {
-    background: #fc4c02;
-    color: white;
+  .route-platforms__description {
+    margin: var(--space-sm) 0 0;
+    color: inherit;
+    line-height: 1.6;
+  }
+
+  .route-links {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .route-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    font-family: var(--font-heading);
+    color: var(--color-primary);
+    background: var(--color-bg-canvas);
+    border: 2px solid var(--color-bg-canvas);
+    border-radius: var(--radius-btn);
+    box-shadow: var(--shadow-sm);
     text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
   }
 
-  .route-link--komoot {
-    border-color: #6aa127;
-    color: #6aa127;
+  .route-link__brand {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .route-link--komoot:hover {
-    background: #6aa127;
-    color: white;
+  .route-link__label {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-md);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .route-link:hover {
+    color: var(--color-text-light);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
     text-decoration: none;
+    transform: translateY(-0.125rem);
+  }
+
+  .route-link:focus-visible {
+    outline: auto;
+    outline-offset: var(--space-xs);
   }
 
   .route-content {
@@ -285,6 +390,76 @@ const difficultyColors: Record<string, string> = {
     padding-left: 1.5rem;
   }
 
+  .route-content :global(h2:last-of-type) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-strong);
+  }
+
+  .route-content :global(h2:last-of-type)::before {
+    content: "↗";
+    display: grid;
+    place-items: center;
+    width: var(--space-lg);
+    height: var(--space-lg);
+    color: var(--color-text-light);
+    background: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+
+  .route-content :global(h2:last-of-type + ul) {
+    display: grid;
+    gap: var(--space-sm);
+    margin: 0 0 var(--space-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  .route-content :global(h2:last-of-type + ul li) {
+    margin: 0;
+  }
+
+  .route-content :global(h2:last-of-type + ul a) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    color: var(--color-primary);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-btn);
+    box-shadow: var(--shadow-sm);
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .route-content :global(h2:last-of-type + ul a)::after {
+    content: "↗";
+    flex: none;
+    color: var(--color-accent);
+    font-size: 1.2rem;
+  }
+
+  .route-content :global(h2:last-of-type + ul a:hover) {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-0.125rem);
+  }
+
+  .route-content :global(h2:last-of-type + ul a:focus-visible) {
+    outline: auto;
+    outline-offset: var(--space-xs);
+  }
+
   .route-content :global(table) {
     width: 100%;
     border-collapse: collapse;
@@ -301,5 +476,13 @@ const difficultyColors: Record<string, string> = {
   .route-content :global(th) {
     background: rgba(45, 93, 155, 0.1);
     font-weight: 600;
+  }
+
+  @media (max-width: 48rem) {
+    .route-platforms {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+      padding: var(--space-md);
+    }
   }
 </style>
