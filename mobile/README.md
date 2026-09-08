@@ -11,6 +11,7 @@ WebView.
 - A bundled content snapshot for first launch and offline fallback
 - Cached remote content with schema and minimum-version validation
 - Automatic content refresh on launch, foreground resume, and network reconnect
+- Signed over-the-air updates for binary-compatible app UI and interaction changes
 - Pull-to-refresh from the top of every app page
 - Five official sections: Events, Media with Routes, Gear, Training, and About
 - Photography-led section heroes using the website's artwork and localized copy
@@ -54,7 +55,7 @@ Preact application.
 The Android command writes the installable test package to:
 
 ```text
-mobile/artifacts/acc-clubhub-0.1.0-debug.apk
+mobile/artifacts/acc-clubhub-0.2.0-debug.apk
 ```
 
 The iOS simulator command uses unsigned simulator output under
@@ -91,6 +92,24 @@ reconnection, or when the page is pulled down from the top. Normal content
 changes do not require a new APK. The frontend version containing the feed
 route must be deployed before network synchronization can succeed.
 
+## Online app updates
+
+Version 0.2.0 includes a native live-update client. After a mobile or shared-code
+change is merged to `master`, GitHub Actions builds and signs the web bundle and
+publishes it to the `mobile-live-production` release. Installed apps check that
+channel on launch, foreground resume, and network reconnection. A valid update
+is downloaded silently and becomes active the next time the app is opened.
+
+The app only accepts bundles from the configured repository and native version,
+and verifies them with the RSA public key embedded in the installed binary. A
+failed bundle automatically rolls back to the built-in version. See
+[`docs/MOBILE_LIVE_UPDATES.md`](../docs/MOBILE_LIVE_UPDATES.md) for signing-key
+setup, publishing, and rollback operations.
+
+Changes to native plugins, system permissions, entitlements, icons, splash
+screens, or Android/iOS code still require a new APK or IPA. Content, layout,
+navigation, CSS, images, and binary-compatible JavaScript changes do not.
+
 ## Deep-link verification
 
 The native projects already register:
@@ -112,6 +131,7 @@ identifiers would cause verification to fail.
 ## Security boundaries
 
 - Remote production pages are never placed in Capacitor's `server.url`.
+- Live-update bundles must pass RSA-SHA256 signature verification before use.
 - Markdown is sanitized during feed generation and again before local rendering.
 - Incompatible content schemas are rejected and fall back to a last-known-good
   or bundled feed.

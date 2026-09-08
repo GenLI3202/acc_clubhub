@@ -535,6 +535,23 @@
     bottom navigation around the new layout.
   - [X] Passed 22 mobile tests, formatting, type checking, production build,
     Capacitor sync, and Android APK signature verification.
+- [ ] **Phase 13 — Signed Mobile Live Updates** (2026-09-08)
+  - [X] Added a Capacitor 8 live-update client for Android and iOS with
+    background checks on launch, foreground resume, and network reconnection.
+  - [X] Restricted bundles to the production GitHub release and native version,
+    with RSA-SHA256 signature verification and SHA-256 integrity metadata.
+  - [X] Added next-launch activation, a 10-second readiness check, automatic
+    rollback, and blocking of failed bundles.
+  - [X] Added GitHub Actions packaging, signing, immutable release history, and
+    production manifest publishing after mobile changes merge to `master`.
+  - [X] Generated and verified the installable Android 0.2.0 debug APK with the
+    native live-update plugin and embedded public key.
+  - [X] Passed 32 mobile tests, formatting, type checking, production build,
+    Capacitor sync, live-update packaging/signature verification, Gradle build,
+    and APK v2 signature verification.
+  - [ ] Store the live-update private key in the GitHub Actions repository secret.
+  - [ ] Merge the workflow and confirm the first public signed bundle is fetched
+    by an installed 0.2.0 app.
 
 
 ## In Progress
