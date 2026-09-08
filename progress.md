@@ -523,6 +523,18 @@
     threshold states.
   - [X] Passed 18 mobile tests, type checking, formatting, production build,
     Capacitor sync, and Android APK signature verification.
+- [X] **Phase 13 — Mobile Section Heroes** (2026-09-08)
+  - [X] Added large photography-led hero sections before the card grids on all
+    five mobile tabs.
+  - [X] Reused website artwork and matching zh/en/de page introductions for
+    Events, Media, Gear, Training, and About ACC.
+  - [X] Made the Events hero follow the current featured feed item and open its
+    registration or detail view.
+  - [X] Added prominent About ACC and Partners image cards below the About hero.
+  - [X] Preserved pull-to-refresh, offline fallback, content search, and fixed
+    bottom navigation around the new layout.
+  - [X] Passed 22 mobile tests, formatting, type checking, production build,
+    Capacitor sync, and Android APK signature verification.
 
 
 ## In Progress
