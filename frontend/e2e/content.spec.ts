@@ -5,26 +5,26 @@ test.describe('Content Pages', () => {
         await page.goto('/zh/media');
         await expect(page.getByRole('heading', { name: '车影骑踪' })).toBeVisible();
         await expect(
-            page.getByRole('link', { name: /RAD RACE ONE TWENTY/ }).first(),
+            page.getByRole('link', { name: /2026 ACC 开春首骑/ }).first(),
         ).toBeVisible();
     });
 
     test('media detail renders markdown content', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await expect(
-            page.getByRole('heading', { name: /阿尔卑斯夏日骑行记/ }),
+            page.getByRole('heading', { name: /2026 ACC 开春首骑/ }),
         ).toBeVisible();
-        // 验证 markdown 渲染
-        await expect(page.locator('.article-content h2').first()).toBeVisible();
+        // 验证 markdown 正文渲染
+        await expect(page.locator('.article-content p').first()).toBeVisible();
     });
 
     test('media detail has back link', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await expect(page.locator('.article-back')).toBeVisible();
     });
 
     test('back link navigates to list', async ({ page }) => {
-        await page.goto('/zh/media/alps-summer-2025');
+        await page.goto('/zh/media/2026-season-opening-recap');
         await page.click('.article-back');
         await expect(page).toHaveURL('/zh/media');
     });
@@ -32,14 +32,12 @@ test.describe('Content Pages', () => {
     test('gear list page loads', async ({ page }) => {
         await page.goto('/zh/knowledge/gear');
         await expect(page.getByRole('heading', { name: '器械知识' })).toBeVisible();
-        await expect(page.locator('.article-card').first()).toBeVisible();
+        await expect(page.getByText('没有找到匹配的内容')).toBeVisible();
     });
 
-    test('gear detail page loads', async ({ page }) => {
-        await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
-        await expect(
-            page.getByRole('heading', { name: /公路车购买指南/ }),
-        ).toBeVisible();
+    test('removed placeholder gear detail is not generated', async ({ page }) => {
+        const response = await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
+        expect(response?.status()).toBe(404);
     });
 
     test('training list page loads', async ({ page }) => {
@@ -54,25 +52,89 @@ test.describe('Content Pages', () => {
         await expect(page.locator('h1')).toContainText('FTP训练入门');
     });
 
-    test('routes list shows route cards', async ({ page }) => {
+    test('routes list does not show removed placeholder routes', async ({ page }) => {
         await page.goto('/zh/routes');
         await expect(
             page.getByRole('heading', { name: '骑行路线', exact: true }),
         ).toBeVisible();
         await expect(
-            page.getByRole('link', { name: /慕尼黑北部经典Afterwork路线/ }).first(),
+            page
+                .getByRole('link', { name: /Starnberg–Andechs–Raisting 环线/ })
+                .first(),
+        ).toBeVisible();
+        await expect(page.getByText('(Fake Template)')).toHaveCount(0);
+    });
+
+    test('route filters expose localized controls', async ({ page }) => {
+        await page.goto('/zh/routes');
+        await page.getByRole('button', { name: '筛选' }).click();
+
+        await expect(page.getByRole('button', { name: '区域' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '难度' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '距离' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '累计爬升' })).toBeVisible();
+        await expect(page.getByRole('button', { name: '关闭' })).toBeVisible();
+    });
+
+    test('verified route detail exposes source links and known metrics', async ({
+        page,
+    }) => {
+        await page.goto('/zh/routes/starnberg-andechs-raisting-loop');
+
+        await expect(
+            page.getByRole('heading', {
+                name: 'Starnberg–Andechs–Raisting 环线',
+            }),
+        ).toBeVisible();
+        await expect(page.getByText('58 公里', { exact: true })).toBeVisible();
+        await expect(page.getByText('590 m', { exact: true })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Komoot →' })).toHaveAttribute(
+            'href',
+            /komoot\.com/,
+        );
+        await expect(page.getByRole('link', { name: 'Strava →' })).toHaveAttribute(
+            'href',
+            /strava\.com/,
+        );
+    });
+
+    test('source-reported route range stays a range without elevation', async ({
+        page,
+    }) => {
+        await page.goto('/zh/routes/eaglet-basics');
+
+        await expect(page.getByText('20–30 公里', { exact: true })).toBeVisible();
+        await expect(
+            page.locator('.route-stats').getByText('累计爬升'),
+        ).toHaveCount(0);
+    });
+
+    for (const [lang, heading] of [
+        ['en', 'Starnberg–Andechs–Raisting Loop'],
+        ['de', 'Starnberg–Andechs–Raisting-Runde'],
+    ] as const) {
+        test(`${lang} route detail renders localized archive`, async ({ page }) => {
+            await page.goto(`/${lang}/routes/starnberg-andechs-raisting-loop`);
+            await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+            await expect(page.getByRole('link', { name: 'Komoot →' })).toBeVisible();
+        });
+    }
+
+    test('global search includes verified route archive entries', async ({ page }) => {
+        await page.goto('/zh/routes');
+        await page.getByRole('button', { name: 'Search' }).click();
+        await page.getByRole('textbox', { name: 'Search' }).fill('Raisting 环线');
+
+        await expect(
+            page.locator('.search-result-title').filter({
+                hasText: 'Starnberg–Andechs–Raisting 环线',
+            }),
         ).toBeVisible();
     });
 
-    test('route detail has Strava/Komoot links', async ({ page }) => {
-        await page.goto('/zh/routes/isar-valley-loop');
-        await expect(page.locator('.route-link--strava')).toBeVisible();
-        await expect(page.locator('.route-link--komoot')).toBeVisible();
-    });
-
-    test('route detail shows statistics', async ({ page }) => {
-        await page.goto('/zh/routes/isar-valley-loop');
-        await expect(page.locator('.stat-value')).toHaveCount(3);
+    test('removed placeholder route detail is not generated', async ({ page }) => {
+        const response = await page.goto('/zh/routes/isar-valley-loop');
+        expect(response?.status()).toBe(404);
     });
 
     test('about page loads', async ({ page }) => {

@@ -4,6 +4,7 @@ import { h } from 'preact';
 import './RouteCard.css';
 import type { Locale } from '../../lib/i18n';
 import { getFilterLabel } from '../../lib/i18n/filterTranslations';
+import { format_route_distance } from '../../lib/routes/route_metrics';
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
@@ -14,7 +15,8 @@ interface RouteCardProps {
   difficulty: Difficulty;
   region?: string;
   distance: number;
-  elevation: number;
+  distanceRange?: [number, number];
+  elevation?: number;
   surface?: string;
   lang: Locale;
 }
@@ -26,6 +28,7 @@ export function RouteCard({
   difficulty,
   region,
   distance,
+  distanceRange,
   elevation,
   surface,
   lang,
@@ -51,8 +54,8 @@ export function RouteCard({
         </div>
         <h3 class="article-card__title">{name}</h3>
         <div class="route-card__stats">
-          <span>{distance} km</span>
-          <span>{elevation} m ↑</span>
+          <span>{format_route_distance(distance, distanceRange, lang)}</span>
+          {elevation !== undefined && <span>{elevation} m ↑</span>}
         </div>
         {surfaceLabel && <div class="route-card__surface">{surfaceLabel}</div>}
       </div>

@@ -13,6 +13,7 @@ import { parse_event_datetime } from './lib/events/event_datetime';
 
 // Regions (Governance Guide 2.4.2)
 const REGIONS = [
+  'munich-city',    // 慕尼黑市区
   'munich-south',   // 慕尼黑南郊
   'munich-north',   // 慕尼黑北郊
   'alps-bavaria',   // 巴伐利亚阿尔卑斯
@@ -207,8 +208,9 @@ const routesCollection = defineCollection({
     description: z.string().optional(),
     region: z.string(), // Flexibel für Migration
     difficulty: z.enum(DIFFICULTIES),
-    distance: z.number(),
-    elevation: z.number(),
+    distance: z.number().optional(),
+    distanceRange: z.tuple([z.number(), z.number()]).optional(),
+    elevation: z.number().optional(),
     surface: z.enum(SURFACES).optional(),
     author: z.string().default('ACC Club'),
     status: z.enum(['draft', 'published']).default('published'),
@@ -223,9 +225,12 @@ const routesCollection = defineCollection({
     ...data,
     coverImage: data.coverImage || data.cover,
     lang: data.lang || 'de' as const,
-    surface: data.surface || 'tarmac' as const,
     description: data.description || '',
-  })).refine((data) => data.stravaUrl || data.komootUrl, {
+    distance: data.distance ?? data.distanceRange?.[1] ?? 0,
+  })).refine((data) => data.distance > 0, {
+    message: 'A positive distance or distanceRange is required',
+    path: ['distance'],
+  }).refine((data) => data.stravaUrl || data.komootUrl, {
     message: 'At least one of stravaUrl or komootUrl is required',
     path: ['stravaUrl'],
   }),

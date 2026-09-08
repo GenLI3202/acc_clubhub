@@ -2,6 +2,49 @@
 // src/lib/i18n/filterTranslations.ts
 import type { Locale } from "../i18n";
 
+const FILTER_UI_TRANSLATIONS = {
+    reset: { zh: "重置", de: "Zurücksetzen", en: "Reset" },
+    close: { zh: "关闭", de: "Schließen", en: "Close" },
+    show_all: { zh: "显示全部", de: "Alle anzeigen", en: "Show All" },
+    show_less: { zh: "收起", de: "Weniger anzeigen", en: "Show Less" },
+    no_options: {
+        zh: "没有可用选项",
+        de: "Keine Optionen verfügbar",
+        en: "No options available",
+    },
+    minimum_value: { zh: "最小值", de: "Mindestwert", en: "Minimum value" },
+    maximum_value: { zh: "最大值", de: "Höchstwert", en: "Maximum value" },
+} satisfies Record<string, Record<Locale, string>>;
+
+const FILTER_SECTION_TRANSLATIONS: Record<string, Record<Locale, string>> = {
+    type: { zh: "形式", de: "Format", en: "Format" },
+    category: { zh: "分类", de: "Kategorie", en: "Category" },
+    subcategory: { zh: "子分类", de: "Unterkategorie", en: "Subcategory" },
+    author: { zh: "作者", de: "Autor", en: "Author" },
+    tags: { zh: "标签", de: "Tags", en: "Tags" },
+    eventType: { zh: "活动类型", de: "Veranstaltungstyp", en: "Type" },
+    region: { zh: "区域", de: "Region", en: "Region" },
+    difficulty: { zh: "难度", de: "Schwierigkeit", en: "Difficulty" },
+    surface: { zh: "路面", de: "Untergrund", en: "Surface" },
+    distance: { zh: "距离", de: "Distanz", en: "Distance" },
+    elevation: { zh: "累计爬升", de: "Höhenmeter", en: "Elevation" },
+    sort: { zh: "排序", de: "Sortieren", en: "Sort By" },
+};
+
+export type FilterUiKey = keyof typeof FILTER_UI_TRANSLATIONS;
+
+export function getFilterUiLabel(key: FilterUiKey, lang: Locale): string {
+    return FILTER_UI_TRANSLATIONS[key][lang];
+}
+
+export function getFilterSectionLabel(
+    filter_key: string,
+    fallback: string,
+    lang: Locale,
+): string {
+    return FILTER_SECTION_TRANSLATIONS[filter_key]?.[lang] ?? fallback;
+}
+
 export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, string>>> = {
     // Media Types
     type: {
@@ -38,6 +81,7 @@ export const FILTER_TRANSLATIONS: Record<string, Record<string, Record<string, s
         expert: { zh: '硬核', de: 'Expert', en: 'Expert' }
     },
     region: {
+        'munich-city': { zh: '慕尼黑市区', de: 'München Stadt', en: 'Munich City' },
         'munich-south': { zh: '慕尼黑南', de: 'München Süd', en: 'Munich South' },
         'munich-north': { zh: '慕尼黑北', de: 'München Nord', en: 'Munich North' },
         'alps-bavaria': { zh: '巴伐利亚阿尔卑斯', de: 'Bayerische Alpen', en: 'Bavarian Alps' },
