@@ -549,7 +549,7 @@
   - [X] Passed 32 mobile tests, formatting, type checking, production build,
     Capacitor sync, live-update packaging/signature verification, Gradle build,
     and APK v2 signature verification.
-  - [ ] Store the live-update private key in the GitHub Actions repository secret.
+  - [X] Stored the live-update private key in the GitHub Actions repository secret.
   - [ ] Merge the workflow and confirm the first public signed bundle is fetched
     by an installed 0.2.0 app.
 
