@@ -14,8 +14,9 @@
 - [X] **移动 App 安装包架构草案** (2026-09-08) — 分支 `phase-13/mobile-app-packaging`
   - [X] 从最新路线归档分支建立独立移动端规划分支，未合并或改写原分支。
   - [X] 审核 Astro 预渲染/SSR 边界、FastAPI 跨域调用、Dashboard 鉴权及现有 PWA 缺口。
-  - [X] 根据 Apple、Google、Capacitor 和 Android 官方文档，排除生产环境纯远程 WebView；记录 PWA、Android TWA 和双商店 Capacitor 三条路径。
-  - [X] 推荐双商店方案采用本地 Web 资源包，复用现有内容与组件，并以深链接、分享、日历和活动通知提供必要的移动端价值。
+  - [X] 根据 Apple、Google、Capacitor 和 Android 官方文档，排除生产环境纯远程 WebView；记录 PWA、Android TWA、双商店及测试分发四条路径。
+  - [X] 推荐双商店方案采用 Capacitor 本地 UI、版本化远程内容 feed 和 FastAPI 实时状态，并以离线收藏、深链接、分享及日历提供移动端价值；远程推送另行设计。
+  - [X] 通过三组独立读者检查并修正内容更新、动态活动、缓存、API 兼容、稳定关联键、私有路由和 TestFlight 签名边界；复查无架构级开工阻断。
   - [ ] 待确认发布目标：仅主屏幕安装、Android 商店加 iOS PWA，
     或 Apple App Store 和 Google Play 双商店。
 
