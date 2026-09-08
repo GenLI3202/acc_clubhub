@@ -1,7 +1,6 @@
 import type { MobileLocale } from "../../../shared/mobile_content";
 import { translate } from "../i18n";
-
-export type AppView = "events" | "favorites" | "home" | "learn" | "routes" | "settings";
+import type { AppView } from "../lib/content";
 
 interface BottomNavigationProps {
     active_view: AppView;
@@ -11,13 +10,13 @@ interface BottomNavigationProps {
 
 const NAV_ITEMS: Array<{
     icon: string;
-    key: "events" | "favorites" | "home" | "routes" | "settings";
+    key: AppView;
 }> = [
-    { icon: "⌂", key: "home" },
     { icon: "◉", key: "events" },
-    { icon: "⌁", key: "routes" },
-    { icon: "★", key: "favorites" },
-    { icon: "•••", key: "settings" },
+    { icon: "▣", key: "media" },
+    { icon: "⚙", key: "gear" },
+    { icon: "↗", key: "training" },
+    { icon: "ACC", key: "about" },
 ];
 
 export function BottomNavigation({
@@ -26,7 +25,10 @@ export function BottomNavigation({
     on_select,
 }: BottomNavigationProps) {
     return (
-        <nav aria-label="Primary" class="bottom-navigation">
+        <nav
+            aria-label={translate(locale, "primary_navigation")}
+            class="bottom-navigation"
+        >
             {NAV_ITEMS.map((item) => (
                 <button
                     aria-current={active_view === item.key ? "page" : undefined}

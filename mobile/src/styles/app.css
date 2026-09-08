@@ -12,6 +12,7 @@ html {
 body {
     margin: 0;
     min-width: 20rem;
+    overscroll-behavior-y: contain;
 }
 
 button,
@@ -81,34 +82,6 @@ a:focus-visible {
     width: 2.25rem;
 }
 
-.app-header__actions {
-    align-items: center;
-    display: flex;
-    gap: var(--space-2);
-}
-
-.sync-button {
-    font-size: 1.15rem;
-    height: 2.35rem;
-    width: 2.35rem;
-}
-
-.sync-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.45;
-}
-
-.sync-button.is-refreshing span {
-    animation: sync-spin 0.8s linear infinite;
-    display: inline-block;
-}
-
-@keyframes sync-spin {
-    to {
-        transform: rotate(1turn);
-    }
-}
-
 .language-picker select {
     background: var(--color-background);
     border: 1px solid var(--color-border);
@@ -124,6 +97,41 @@ a:focus-visible {
     font-size: 0.8rem;
     padding: var(--space-2) var(--space-3);
     text-align: center;
+}
+
+.pull-refresh {
+    align-items: center;
+    color: var(--color-muted);
+    display: flex;
+    font-size: 0.82rem;
+    font-weight: 700;
+    gap: var(--space-2);
+    justify-content: center;
+    overflow: hidden;
+    transition: height 0.18s ease;
+}
+
+.pull-refresh--pulling,
+.pull-refresh--ready {
+    transition: none;
+}
+
+.pull-refresh--ready {
+    color: var(--color-accent);
+}
+
+.pull-refresh__icon {
+    display: inline-block;
+    font-size: 1rem;
+    transition: transform 0.18s ease;
+}
+
+.pull-refresh--ready .pull-refresh__icon {
+    transform: rotate(180deg);
+}
+
+.pull-refresh--refreshing .pull-refresh__icon {
+    animation: spin 0.8s linear infinite;
 }
 
 .app-main {
@@ -161,31 +169,6 @@ h1 {
 
 h2 {
     font-size: 1.35rem;
-}
-
-.category-tabs {
-    display: flex;
-    gap: var(--space-2);
-    margin: 0 calc(var(--space-3) * -1) var(--space-3);
-    overflow-x: auto;
-    padding: 0 var(--space-3) var(--space-1);
-    scrollbar-width: none;
-}
-
-.category-tabs button {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 99rem;
-    flex: 0 0 auto;
-    font-size: 0.88rem;
-    font-weight: 700;
-    padding: 0.65rem 1rem;
-}
-
-.category-tabs button.is-active {
-    background: var(--color-ink);
-    border-color: var(--color-ink);
-    color: var(--color-surface);
 }
 
 .search-field {
@@ -323,6 +306,13 @@ h2 {
 .bottom-navigation button > span {
     font-size: 1.15rem;
     font-weight: 800;
+}
+
+.bottom-navigation small {
+    font-size: 0.66rem;
+    line-height: 1.05;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .bottom-navigation button.is-active {
@@ -510,14 +500,21 @@ h2 {
     margin-bottom: var(--space-3);
 }
 
-.settings-links {
+.about-intro {
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin-bottom: 0;
+    max-width: 40rem;
+}
+
+.about-links {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-large);
     overflow: hidden;
 }
 
-.settings-links button {
+.about-links button {
     align-items: center;
     background: transparent;
     border: 0;
@@ -531,7 +528,7 @@ h2 {
     width: 100%;
 }
 
-.settings-links button:last-child {
+.about-links button:last-child {
     border-bottom: 0;
 }
 
@@ -599,7 +596,7 @@ h2 {
     }
 
     .loader,
-    .sync-button.is-refreshing span {
+    .pull-refresh--refreshing .pull-refresh__icon {
         animation: none;
     }
 }

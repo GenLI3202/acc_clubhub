@@ -11,7 +11,8 @@ WebView.
 - A bundled content snapshot for first launch and offline fallback
 - Cached remote content with schema and minimum-version validation
 - Automatic content refresh on launch, foreground resume, and network reconnect
-- A manual refresh action in the application header
+- Pull-to-refresh from the top of every app page
+- Five official sections: Events, Media with Routes, Gear, Training, and About
 - Local search and favorites
 - Live event status and email-based registration
 - Event-update subscription
@@ -85,9 +86,9 @@ this publishing path:
    cached or bundled content available.
 
 The app refreshes on launch, when returning to the foreground, after a network
-reconnection, or when the refresh button is selected. Normal content changes
-do not require a new APK. The frontend version containing the feed route must
-be deployed before network synchronization can succeed.
+reconnection, or when the page is pulled down from the top. Normal content
+changes do not require a new APK. The frontend version containing the feed
+route must be deployed before network synchronization can succeed.
 
 ## Deep-link verification
 

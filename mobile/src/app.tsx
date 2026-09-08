@@ -7,13 +7,14 @@ import type {
     MobileContentItem,
     MobileLocale,
 } from "../../shared/mobile_content";
-import { BottomNavigation, type AppView } from "./components/BottomNavigation";
+import { BottomNavigation } from "./components/BottomNavigation";
 import { ContentCard } from "./components/ContentCard";
 import { ContentDetail } from "./components/ContentDetail";
 import { SubscribeForm } from "./components/SubscribeForm";
 import { APP_CONFIG } from "./config";
+import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
-import { sort_mobile_items } from "./lib/content";
+import { filter_items_for_view, sort_mobile_items, type AppView } from "./lib/content";
 import {
     ContentUpdateRequiredError,
     load_content_feed,
@@ -43,37 +44,6 @@ function browser_locale(): MobileLocale {
     return "zh";
 }
 
-function filter_for_view(
-    items: MobileContentItem[],
-    view: AppView,
-    favorites: Set<string>,
-): MobileContentItem[] {
-    if (view === "events") {
-        return items.filter((item) => item.type === "event");
-    }
-    if (view === "routes") {
-        return items.filter((item) => item.type === "route");
-    }
-    if (view === "learn") {
-        return items.filter((item) =>
-            ["gear", "media", "training"].includes(item.type),
-        );
-    }
-    if (view === "favorites") {
-        return items.filter((item) => favorites.has(item.id));
-    }
-    if (view === "home") {
-        return items
-            .filter(
-                (item) =>
-                    item.type !== "event" ||
-                    new Date(item.metadata.event_date ?? 0).getTime() >= Date.now(),
-            )
-            .slice(0, 18);
-    }
-    return [];
-}
-
 function source_message(source: ContentSource, locale: MobileLocale): string {
     if (source === "network") {
         return translate(locale, "content_live");
@@ -96,7 +66,7 @@ export function App() {
     const [loading, set_loading] = useState(true);
     const [refreshing, set_refreshing] = useState(false);
     const [error, set_error] = useState<string>();
-    const [active_view, set_active_view] = useState<AppView>("home");
+    const [active_view, set_active_view] = useState<AppView>("events");
     const [selected_item, set_selected_item] = useState<MobileContentItem>();
     const [favorites, set_favorites] = useState<Set<string>>(new Set());
     const [query, set_query] = useState("");
@@ -162,6 +132,17 @@ export function App() {
         },
         [],
     );
+
+    const pull_refresh = use_pull_to_refresh({
+        disabled: !online || loading,
+        on_refresh: async (): Promise<void> => {
+            await load_feed(locale, {
+                announce: true,
+                background: Boolean(feed),
+            });
+        },
+        refreshing,
+    });
 
     useEffect(() => {
         void Promise.all([load_locale(), load_favorites()]).then(
@@ -260,6 +241,18 @@ export function App() {
     }, [feed, pending_link]);
 
     useEffect(() => {
+        if (!feed || !selected_item) {
+            return;
+        }
+        const updated_item = feed.items.find(
+            (candidate) => candidate.id === selected_item.id,
+        );
+        if (updated_item && updated_item !== selected_item) {
+            set_selected_item(updated_item);
+        }
+    }, [feed, selected_item]);
+
+    useEffect(() => {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("backButton", () => {
             if (selected_item) {
@@ -275,7 +268,7 @@ export function App() {
 
     const visible_items = useMemo(() => {
         const all_items = sort_mobile_items(feed?.items ?? []);
-        const scoped_items = filter_for_view(all_items, active_view, favorites);
+        const scoped_items = filter_items_for_view(all_items, active_view);
         const normalized_query = query.trim().toLocaleLowerCase(locale);
         if (!normalized_query) {
             return scoped_items;
@@ -287,7 +280,7 @@ export function App() {
                     value?.toLocaleLowerCase(locale).includes(normalized_query),
                 ),
         );
-    }, [active_view, favorites, feed, locale, query]);
+    }, [active_view, feed, locale, query]);
 
     const select_view = (view: AppView): void => {
         set_active_view(view);
@@ -319,51 +312,51 @@ export function App() {
         <div class="app-shell">
             <header class="app-header">
                 <button
-                    aria-label={translate(locale, "home")}
+                    aria-label={translate(locale, "events")}
                     class="brand-button"
-                    onClick={() => select_view("home")}
+                    onClick={() => select_view("events")}
                     type="button"
                 >
                     <img alt="ACC ClubHub" src="/app-logo.png" />
                     <span>{translate(locale, "app_name")}</span>
                 </button>
-                <div class="app-header__actions">
-                    <button
-                        aria-label={translate(
-                            locale,
-                            refreshing ? "refreshing" : "refresh",
-                        )}
-                        class={`icon-button sync-button${
-                            refreshing ? " is-refreshing" : ""
-                        }`}
-                        disabled={!online || loading || refreshing}
-                        onClick={() =>
-                            void load_feed(locale, {
-                                announce: true,
-                                background: Boolean(feed),
-                            })
+                <label class="language-picker">
+                    <span class="sr-only">{translate(locale, "language")}</span>
+                    <select
+                        aria-label={translate(locale, "language")}
+                        onChange={(event) =>
+                            set_locale(event.currentTarget.value as MobileLocale)
                         }
-                        title={translate(locale, "refresh")}
-                        type="button"
+                        value={locale}
                     >
-                        <span aria-hidden="true">↻</span>
-                    </button>
-                    <label class="language-picker">
-                        <span class="sr-only">{translate(locale, "language")}</span>
-                        <select
-                            aria-label={translate(locale, "language")}
-                            onChange={(event) =>
-                                set_locale(event.currentTarget.value as MobileLocale)
-                            }
-                            value={locale}
-                        >
-                            <option value="zh">中文</option>
-                            <option value="en">EN</option>
-                            <option value="de">DE</option>
-                        </select>
-                    </label>
-                </div>
+                        <option value="zh">中文</option>
+                        <option value="en">EN</option>
+                        <option value="de">DE</option>
+                    </select>
+                </label>
             </header>
+
+            <div
+                aria-hidden={pull_refresh.state === "idle" ? "true" : undefined}
+                aria-live="polite"
+                class={`pull-refresh pull-refresh--${pull_refresh.state}`}
+                role="status"
+                style={{ height: `${pull_refresh.distance}px` }}
+            >
+                <span aria-hidden="true" class="pull-refresh__icon">
+                    ↓
+                </span>
+                <span>
+                    {translate(
+                        locale,
+                        pull_refresh.state === "ready"
+                            ? "release_to_refresh"
+                            : pull_refresh.state === "refreshing"
+                              ? "refreshing"
+                              : "pull_to_refresh",
+                    )}
+                </span>
+            </div>
 
             {!online ? (
                 <div class="connection-banner" role="status">
@@ -386,18 +379,27 @@ export function App() {
                         on_toggle_favorite={toggle_favorite}
                         online={online}
                     />
-                ) : active_view === "settings" ? (
-                    <section class="settings-view">
+                ) : active_view === "about" ? (
+                    <section class="about-view">
                         <div class="page-heading">
                             <span class="eyebrow">Across Cycling Club Munich</span>
-                            <h1>{translate(locale, "settings")}</h1>
+                            <h1>{translate(locale, "about")}</h1>
+                            <p class="about-intro">
+                                {translate(locale, "about_intro")}
+                            </p>
                         </div>
-                        <div class="settings-links">
+                        <div class="about-links">
                             <button
                                 onClick={() => open_site_page("about")}
                                 type="button"
                             >
                                 {translate(locale, "about")} <span>↗</span>
+                            </button>
+                            <button
+                                onClick={() => open_site_page("partners")}
+                                type="button"
+                            >
+                                {translate(locale, "partners")} <span>↗</span>
                             </button>
                             <button
                                 onClick={() => open_site_page("membership")}
@@ -428,24 +430,6 @@ export function App() {
                         <div class="page-heading">
                             <span class="eyebrow">Across Cycling Club Munich</span>
                             <h1>{translate(locale, active_view)}</h1>
-                        </div>
-                        <div class="category-tabs" role="tablist">
-                            {(["home", "events", "routes", "learn"] as AppView[]).map(
-                                (view) => (
-                                    <button
-                                        aria-selected={active_view === view}
-                                        class={active_view === view ? "is-active" : ""}
-                                        key={view}
-                                        onClick={() => select_view(view)}
-                                        role="tab"
-                                        type="button"
-                                    >
-                                        {view === "home"
-                                            ? translate(locale, "all")
-                                            : translate(locale, view)}
-                                    </button>
-                                ),
-                            )}
                         </div>
                         <label class="search-field">
                             <span aria-hidden="true">⌕</span>
