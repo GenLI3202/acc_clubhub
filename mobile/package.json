@@ -4,12 +4,14 @@
     "version": "0.1.0",
     "type": "module",
     "scripts": {
-        "android:debug": "npm run sync && ./android/gradlew -p android assembleDebug",
+        "android:debug": "npm run sync && node scripts/build_android.mjs",
         "build": "npm run content:bundle && tsc --noEmit && vite build",
         "content:bundle": "npm --prefix ../frontend run build && node scripts/bundle_content.mjs",
         "dev": "vite",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
+        "ios:simulator": "npm run ios:sync && node scripts/build_ios_simulator.mjs",
+        "ios:sync": "npm run build && cap sync ios",
         "sync": "npm run build && cap sync",
         "test": "vitest run",
         "test:watch": "vitest"
