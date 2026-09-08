@@ -1,0 +1,39 @@
+{
+    "name": "acc-clubhub-mobile",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "android:debug": "npm run sync && ./android/gradlew -p android assembleDebug",
+        "build": "npm run content:bundle && tsc --noEmit && vite build",
+        "content:bundle": "npm --prefix ../frontend run build && node scripts/bundle_content.mjs",
+        "dev": "vite",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "sync": "npm run build && cap sync",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@capacitor/app": "^8.1.1",
+        "@capacitor/browser": "^8.0.4",
+        "@capacitor/core": "^8.5.1",
+        "@capacitor/network": "^8.0.1",
+        "@capacitor/preferences": "^8.0.1",
+        "@capacitor/share": "^8.0.1",
+        "@ebarooni/capacitor-calendar": "^8.6.0",
+        "dompurify": "^3.4.15",
+        "preact": "^10.29.8"
+    },
+    "devDependencies": {
+        "@capacitor/android": "^8.5.1",
+        "@capacitor/cli": "8.4.3",
+        "@capacitor/ios": "^8.5.1",
+        "@preact/preset-vite": "^2.10.6",
+        "@types/node": "^26.5.0",
+        "prettier": "^3.9.6",
+        "typescript": "5.9.3",
+        "vite": "^8.2.2",
+        "vitest": "^5.0.0"
+    }
+}

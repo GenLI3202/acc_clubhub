@@ -1,0 +1,4 @@
+android/app/src/main/assets/
+ios/App/App/Assets.xcassets/
+ios/App/App/capacitor.config.json
+ios/App/App/public/
