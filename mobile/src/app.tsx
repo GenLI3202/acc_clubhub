@@ -1,6 +1,6 @@
 import { App as CapacitorApp } from "@capacitor/app";
 import { Network } from "@capacitor/network";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 import type {
     MobileContentFeed,
@@ -84,11 +84,17 @@ function source_message(source: ContentSource, locale: MobileLocale): string {
     return translate(locale, "bundled_content");
 }
 
+interface LoadFeedOptions {
+    announce?: boolean;
+    background?: boolean;
+}
+
 export function App() {
     const [locale, set_locale] = useState<MobileLocale>(browser_locale());
     const [feed, set_feed] = useState<MobileContentFeed>();
     const [source, set_source] = useState<ContentSource>();
     const [loading, set_loading] = useState(true);
+    const [refreshing, set_refreshing] = useState(false);
     const [error, set_error] = useState<string>();
     const [active_view, set_active_view] = useState<AppView>("home");
     const [selected_item, set_selected_item] = useState<MobileContentItem>();
@@ -97,28 +103,65 @@ export function App() {
     const [online, set_online] = useState(navigator.onLine);
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
+    const current_feed = useRef<MobileContentFeed>();
+    const feed_request_id = useRef(0);
 
-    const load_feed = async (target_locale: MobileLocale): Promise<void> => {
-        set_loading(true);
-        set_error(undefined);
-        try {
-            const result = await load_content_feed(target_locale);
-            set_feed(result.feed);
-            set_source(result.source);
-        } catch (load_error) {
-            set_feed(undefined);
-            set_source(undefined);
-            set_error(
-                load_error instanceof ContentUpdateRequiredError
-                    ? translate(target_locale, "update_required")
-                    : load_error instanceof Error
-                      ? load_error.message
-                      : translate(target_locale, "no_content"),
-            );
-        } finally {
-            set_loading(false);
-        }
-    };
+    const load_feed = useCallback(
+        async (
+            target_locale: MobileLocale,
+            options: LoadFeedOptions = {},
+        ): Promise<void> => {
+            const request_id = feed_request_id.current + 1;
+            feed_request_id.current = request_id;
+            if (options.background) {
+                set_refreshing(true);
+            } else {
+                set_loading(true);
+                set_error(undefined);
+            }
+
+            try {
+                const result = await load_content_feed(target_locale);
+                if (request_id !== feed_request_id.current) {
+                    return;
+                }
+                const keep_existing =
+                    options.background &&
+                    result.source !== "network" &&
+                    current_feed.current?.locale === target_locale;
+                if (!keep_existing) {
+                    current_feed.current = result.feed;
+                    set_feed(result.feed);
+                    set_source(result.source);
+                }
+                set_error(undefined);
+                if (options.announce && result.source === "network") {
+                    set_message(translate(target_locale, "refreshed"));
+                    window.setTimeout(() => set_message(undefined), 4_000);
+                }
+            } catch (load_error) {
+                if (request_id !== feed_request_id.current) {
+                    return;
+                }
+                current_feed.current = undefined;
+                set_feed(undefined);
+                set_source(undefined);
+                set_error(
+                    load_error instanceof ContentUpdateRequiredError
+                        ? translate(target_locale, "update_required")
+                        : load_error instanceof Error
+                          ? load_error.message
+                          : translate(target_locale, "no_content"),
+                );
+            } finally {
+                if (request_id === feed_request_id.current) {
+                    set_loading(false);
+                    set_refreshing(false);
+                }
+            }
+        },
+        [],
+    );
 
     useEffect(() => {
         void Promise.all([load_locale(), load_favorites()]).then(
@@ -135,20 +178,46 @@ export function App() {
         document.documentElement.lang = locale;
         void save_locale(locale);
         void load_feed(locale);
-    }, [locale]);
+    }, [load_feed, locale]);
 
     useEffect(() => {
+        let previous_connection: boolean | undefined;
         let remove_listener: (() => Promise<void>) | undefined;
-        void Network.getStatus().then((status) => set_online(status.connected));
-        void Network.addListener("networkStatusChange", (status) => {
+        void Network.getStatus().then((status) => {
+            previous_connection = status.connected;
             set_online(status.connected);
+        });
+        void Network.addListener("networkStatusChange", (status) => {
+            const reconnected = previous_connection === false && status.connected;
+            previous_connection = status.connected;
+            set_online(status.connected);
+            if (reconnected) {
+                void load_feed(locale, {
+                    announce: true,
+                    background: true,
+                });
+            }
         }).then((listener) => {
             remove_listener = async (): Promise<void> => listener.remove();
         });
         return (): void => {
             void remove_listener?.();
         };
-    }, []);
+    }, [load_feed, locale]);
+
+    useEffect(() => {
+        let remove_listener: (() => Promise<void>) | undefined;
+        void CapacitorApp.addListener("appStateChange", (state) => {
+            if (state.isActive) {
+                void load_feed(locale, { background: true });
+            }
+        }).then((listener) => {
+            remove_listener = async (): Promise<void> => listener.remove();
+        });
+        return (): void => {
+            void remove_listener?.();
+        };
+    }, [load_feed, locale]);
 
     useEffect(() => {
         const handle_link = (link: ContentDeepLink): void => {
@@ -258,20 +327,42 @@ export function App() {
                     <img alt="ACC ClubHub" src="/app-logo.png" />
                     <span>{translate(locale, "app_name")}</span>
                 </button>
-                <label class="language-picker">
-                    <span class="sr-only">{translate(locale, "language")}</span>
-                    <select
-                        aria-label={translate(locale, "language")}
-                        onChange={(event) =>
-                            set_locale(event.currentTarget.value as MobileLocale)
+                <div class="app-header__actions">
+                    <button
+                        aria-label={translate(
+                            locale,
+                            refreshing ? "refreshing" : "refresh",
+                        )}
+                        class={`icon-button sync-button${
+                            refreshing ? " is-refreshing" : ""
+                        }`}
+                        disabled={!online || loading || refreshing}
+                        onClick={() =>
+                            void load_feed(locale, {
+                                announce: true,
+                                background: Boolean(feed),
+                            })
                         }
-                        value={locale}
+                        title={translate(locale, "refresh")}
+                        type="button"
                     >
-                        <option value="zh">中文</option>
-                        <option value="en">EN</option>
-                        <option value="de">DE</option>
-                    </select>
-                </label>
+                        <span aria-hidden="true">↻</span>
+                    </button>
+                    <label class="language-picker">
+                        <span class="sr-only">{translate(locale, "language")}</span>
+                        <select
+                            aria-label={translate(locale, "language")}
+                            onChange={(event) =>
+                                set_locale(event.currentTarget.value as MobileLocale)
+                            }
+                            value={locale}
+                        >
+                            <option value="zh">中文</option>
+                            <option value="en">EN</option>
+                            <option value="de">DE</option>
+                        </select>
+                    </label>
+                </div>
             </header>
 
             {!online ? (

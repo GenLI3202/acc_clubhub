@@ -10,6 +10,8 @@ WebView.
 - German, English, and Chinese event, route, training, gear, and media content
 - A bundled content snapshot for first launch and offline fallback
 - Cached remote content with schema and minimum-version validation
+- Automatic content refresh on launch, foreground resume, and network reconnect
+- A manual refresh action in the application header
 - Local search and favorites
 - Live event status and email-based registration
 - Event-update subscription
@@ -69,6 +71,23 @@ VITE_SITE_URL=https://www.across-cc.de
 
 The defaults match production, so no environment file is required for the
 standard test build.
+
+## Independent content synchronization
+
+The installed app does not connect to a developer computer. Content follows
+this publishing path:
+
+1. Editors update the existing Astro Markdown collections.
+2. The frontend deployment generates the sanitized, versioned feeds at
+   `/mobile-content/v1/{locale}.json`.
+3. The app downloads the selected locale directly from the public website.
+4. A valid response replaces the last-known-good cache; failed requests keep
+   cached or bundled content available.
+
+The app refreshes on launch, when returning to the foreground, after a network
+reconnection, or when the refresh button is selected. Normal content changes
+do not require a new APK. The frontend version containing the feed route must
+be deployed before network synchronization can succeed.
 
 ## Deep-link verification
 
