@@ -497,10 +497,32 @@
   - [X] Protected `POST /api/events` with the existing admin session dependency and added regression coverage.
   - [X] Replaced a committed Neon connection string example in Waline deployment notes with placeholders.
   - [X] Verified backend tests, frontend type check, frontend build, npm audit, and pip-audit results.
+- [X] **Phase 13 — Mobile App Packaging, Plan D** (2026-09-08)
+  - [X] Created branch `phase-13/mobile-app-packaging` and recorded the
+    hybrid local-app architecture decision.
+  - [X] Added versioned, sanitized zh/en/de content feeds generated from the
+    Astro Markdown collections.
+  - [X] Built a local Preact + Capacitor app with cached/offline content,
+    search, favorites, live event status, RSVP, subscriptions, sharing,
+    calendar export, and deep links.
+  - [X] Generated Android and iOS native projects with ACC icons, splash
+    assets, platform hardening, and minimal permissions.
+  - [X] Produced and signature-verified the installable Android 0.1.0 debug APK.
+  - [X] Passed mobile tests, type checking, production build, dependency
+    audit, native syntax checks, and 390 × 844 browser interaction QA.
 
 
 ## In Progress
 
+- [ ] **Phase 13 — iOS Test Distribution**
+  - [ ] Install full Xcode and an iOS Simulator runtime; only Command Line
+    Tools are currently installed.
+  - [ ] Select an Apple Developer team and create the App Store Connect record
+    before TestFlight signing.
+  - [ ] Add production `apple-app-site-association` and `assetlinks.json`
+    files after signing identifiers exist.
+  - [ ] Run physical-device checks for registration, sharing, calendar export,
+    offline launch, and deep links.
 - [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
   - [ ] Survey delivery mechanism and trigger timing still pending.
   - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.
