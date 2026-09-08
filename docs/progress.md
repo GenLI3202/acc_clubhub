@@ -129,3 +129,11 @@ Issue: [#175](https://github.com/GenLI3202/acc_clubhub/issues/175)
 - A custom Leaflet/OpenStreetMap overview remains coordinated through
   [#113](https://github.com/GenLI3202/acc_clubhub/issues/113) and requires
   approved geometry beyond the repository's single GeoJSON track.
+
+### Route source link presentation
+
+- Reworked the route-provider links into a prominent multilingual navigation
+  panel with explicit action labels for Komoot and Strava.
+- Styled the final Sources, Quellen, or 资料来源 list as full-width link cards
+  with clear external-link indicators, hover feedback, and keyboard focus.
+- Kept the existing source URLs and article content unchanged.
