@@ -11,6 +11,15 @@
 
 ## Recent Updates
 
+- [X] **移动 App 安装包架构草案** (2026-09-08) — 分支 `phase-13/mobile-app-packaging`
+  - [X] 从最新路线归档分支建立独立移动端规划分支，未合并或改写原分支。
+  - [X] 审核 Astro 预渲染/SSR 边界、FastAPI 跨域调用、Dashboard 鉴权及现有 PWA 缺口。
+  - [X] 根据 Apple、Google、Capacitor 和 Android 官方文档，排除生产环境纯远程 WebView；记录 PWA、Android TWA、双商店及测试分发四条路径。
+  - [X] 推荐双商店方案采用 Capacitor 本地 UI、版本化远程内容 feed 和 FastAPI 实时状态，并以离线收藏、深链接、分享及日历提供移动端价值；远程推送另行设计。
+  - [X] 通过三组独立读者检查并修正内容更新、动态活动、缓存、API 兼容、稳定关联键、私有路由和 TestFlight 签名边界；复查无架构级开工阻断。
+  - [ ] 待确认发布目标：仅主屏幕安装、Android 商店加 iOS PWA，
+    或 Apple App Store 和 Google Play 双商店。
+
 - [X] **About Us 原版山谷标识** (2026-09-07)
   - [X] 中英德 About 页面使用用户重新上传并确认的原版山谷 ACROSS 图；原图字节与 SHA-256 保持一致，不重新生成或调色。
   - [X] SVG 视口仅收紧原图外部留白，保留原有桌面宽度、屏幕阅读器标题与三章节交互；窄屏限制最大宽度，深色主题保留原图浅底。
@@ -488,10 +497,39 @@
   - [X] Protected `POST /api/events` with the existing admin session dependency and added regression coverage.
   - [X] Replaced a committed Neon connection string example in Waline deployment notes with placeholders.
   - [X] Verified backend tests, frontend type check, frontend build, npm audit, and pip-audit results.
+- [X] **Phase 13 — Mobile App Packaging, Plan D** (2026-09-08)
+  - [X] Created branch `phase-13/mobile-app-packaging` and recorded the
+    hybrid local-app architecture decision.
+  - [X] Added versioned, sanitized zh/en/de content feeds generated from the
+    Astro Markdown collections.
+  - [X] Built a local Preact + Capacitor app with cached/offline content,
+    search, favorites, live event status, RSVP, subscriptions, sharing,
+    calendar export, and deep links.
+  - [X] Added Mac-independent content refresh from the public site on launch,
+    foreground resume, network reconnect, and manual refresh.
+  - [X] Generated Android and iOS native projects with ACC icons, splash
+    assets, platform hardening, and minimal permissions.
+  - [X] Produced and signature-verified the installable Android 0.1.0 debug APK.
+  - [X] Passed mobile tests, type checking, production build, dependency
+    audit, native syntax checks, and 390 × 844 browser interaction QA.
 
 
 ## In Progress
 
+- [ ] **Phase 13 — Production Mobile Content Feed**
+  - [ ] Deploy the frontend changes so
+    `/mobile-content/v1/{zh,en,de}.json` returns the versioned feed publicly.
+  - [ ] Confirm an installed APK changes from bundled content to network
+    content and receives a newly published Markdown edit without rebuilding.
+- [ ] **Phase 13 — iOS Test Distribution**
+  - [ ] Install full Xcode and an iOS Simulator runtime; only Command Line
+    Tools are currently installed.
+  - [ ] Select an Apple Developer team and create the App Store Connect record
+    before TestFlight signing.
+  - [ ] Add production `apple-app-site-association` and `assetlinks.json`
+    files after signing identifiers exist.
+  - [ ] Run physical-device checks for registration, sharing, calendar export,
+    offline launch, and deep links.
 - [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
   - [ ] Survey delivery mechanism and trigger timing still pending.
   - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.

@@ -40,10 +40,24 @@ Copy `frontend/.env.example` to `frontend/.env` and fill in your values.
 |----------|----------|-------------|---------|
 | `PUBLIC_WALINE_SERVER_URL` | Yes | Waline comment system server URL | `https://your-waline.vercel.app` |
 | `PUBLIC_API_URL` | Yes | Backend API base URL | `https://acc-clubhub-events-ms.vercel.app` |
+| `PUBLIC_SITE_URL` | No | Canonical site URL embedded in generated mobile content | `https://www.across-cc.de` |
+| `MOBILE_MINIMUM_APP_VERSION` | No | Oldest app version accepted by the generated mobile feed | `0.1.0` |
+
+## Mobile (`mobile/.env.local`)
+
+The production defaults are built in. Copy `mobile/.env.example` to
+`mobile/.env.local` only when testing alternate endpoints.
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `VITE_API_URL` | No | FastAPI base URL used for live event status and registration | `https://acc-clubhub-events-ms.vercel.app` |
+| `VITE_CONTENT_BASE_URL` | No | Base URL for versioned, localized mobile content feeds | `https://www.across-cc.de/mobile-content/v1` |
+| `VITE_SITE_URL` | No | Trusted website origin used for links and deep links | `https://www.across-cc.de` |
 
 ### Notes
 
 - Variables prefixed with `PUBLIC_` are exposed to the browser.
+- Variables prefixed with `VITE_` are embedded in the mobile application.
 - For local development, set `PUBLIC_API_URL=http://localhost:8000`.
 - Vercel environment variables are configured in the Vercel Dashboard — they do not need a `.env` file in production.
 
