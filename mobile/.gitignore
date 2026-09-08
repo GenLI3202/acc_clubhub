@@ -3,6 +3,7 @@ node_modules/
 .gradle-user-home/
 artifacts/*.apk
 artifacts/ios-simulator/
+artifacts/live-update/
 public/app-logo.png
 public/mobile-content/
 *.local

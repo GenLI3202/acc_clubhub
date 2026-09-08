@@ -1,0 +1,28 @@
+---
+slug: base-training-plan
+category: planning
+title: Base Training Plan
+description: Winter base training to build your cycling foundation for the year.
+author: acc-training-team
+date: 2025-12-28
+cover: /images/media/adventure/rad-race-120-2025/cover.jpg
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
+status: draft
+---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
+Base period is the foundation of annual training, focusing on aerobic base and cycling habits.
+
+## Weekly Plan Example
+
+| Day | Training | Duration |
+| --- | --- | --- |
+| Monday | Rest | - |
+| Tuesday | Z2 Endurance | 1.5h |
+| Wednesday | Strength Training | 45min |
+| Thursday | Z2 Endurance | 1.5h |
+| Friday | Rest | - |
+| Saturday | Z2 Long Ride | 3-4h |
+| Sunday | Z1 Recovery | 1h |

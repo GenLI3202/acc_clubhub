@@ -4,6 +4,8 @@ import type {
     MobileLocale,
 } from "../../../shared/mobile_content";
 
+export type AppView = "about" | "events" | "gear" | "media" | "training";
+
 const TYPE_ORDER: Record<MobileContentType, number> = {
     event: 0,
     route: 1,
@@ -11,6 +13,49 @@ const TYPE_ORDER: Record<MobileContentType, number> = {
     gear: 3,
     media: 4,
 };
+
+const TYPE_LABELS: Record<MobileLocale, Record<MobileContentItem["type"], string>> = {
+    de: {
+        event: "Tour",
+        gear: "Ausrüstung",
+        media: "Story",
+        route: "Route",
+        training: "Training",
+    },
+    en: {
+        event: "Ride",
+        gear: "Gear",
+        media: "Story",
+        route: "Route",
+        training: "Training",
+    },
+    zh: {
+        event: "活动",
+        gear: "器械",
+        media: "骑行故事",
+        route: "路线",
+        training: "训练",
+    },
+};
+
+export function filter_items_for_view(
+    items: MobileContentItem[],
+    view: AppView,
+): MobileContentItem[] {
+    if (view === "events") {
+        return items.filter((item) => item.type === "event");
+    }
+    if (view === "media") {
+        return items.filter((item) => item.type === "media" || item.type === "route");
+    }
+    if (view === "gear") {
+        return items.filter((item) => item.type === "gear");
+    }
+    if (view === "training") {
+        return items.filter((item) => item.type === "training");
+    }
+    return [];
+}
 
 export function format_item_date(
     item: MobileContentItem,
@@ -29,6 +74,13 @@ export function format_item_date(
         timeStyle: item.type === "event" ? "short" : undefined,
         timeZone: "Europe/Berlin",
     }).format(date);
+}
+
+export function format_item_type(
+    item: MobileContentItem,
+    locale: MobileLocale,
+): string {
+    return TYPE_LABELS[locale][item.type];
 }
 
 export function sort_mobile_items(items: MobileContentItem[]): MobileContentItem[] {

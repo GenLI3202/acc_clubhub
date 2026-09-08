@@ -1,0 +1,24 @@
+---
+slug: power-meter-comparison
+title: 功率计选购对比
+description: 曲柄式、踏板式、花鼓式功率计全面对比。
+author: acc-
+date: 2026-01-12
+cover: /images/shared/placeholders/ai-placeholder-02.jpg
+featured: true
+category: electronics
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
+---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
+功率计是科学训练的基础工具，本文对比市面上主流功率计的优缺点。
+
+## 类型对比
+
+| 类型 | 代表产品 | 精度 | 价格 |
+| --- | --- | --- | --- |
+| 踏板式 | Favero Assioma | ±1% | €€ |
+| 曲柄式 | Stages, 4iiii | ±1.5% | € |
+| 牙盘式 | Quarq, Power2Max | ±1.5% | €€€ |

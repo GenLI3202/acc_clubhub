@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **被删除内容完整恢复与审计** (2026-09-08)
+  - [X] 完整恢复提交 `af9813c5` 删除的 120 篇中英德内容和 9 张图片；逐文件核对删除前 Git 对象，129 个文件均无缺失或差异。
+  - [X] 恢复范围为 15 篇活动、24 篇器械、24 篇训练、30 篇车影和 27 篇路线内容，包括 3 篇未带测试模板标记的慕尼黑观光路线文章。
+  - [X] 更新浏览器回归测试，重新验证器械列表/详情及恢复后的路线列表/详情。
+  - [X] Astro 检查 0 errors、80 项单元测试、生产构建及桌面/手机 34 项内容页面浏览器测试通过。
+  - [X] About 页面响应式套件仍有 6 项旧邮票墙测试引用已不存在的组件，与本次内容恢复无关。
+
 - [X] **移动 App 安装包架构草案** (2026-09-08) — 分支 `phase-13/mobile-app-packaging`
   - [X] 从最新路线归档分支建立独立移动端规划分支，未合并或改写原分支。
   - [X] 审核 Astro 预渲染/SSR 边界、FastAPI 跨域调用、Dashboard 鉴权及现有 PWA 缺口。
@@ -506,12 +513,52 @@
     search, favorites, live event status, RSVP, subscriptions, sharing,
     calendar export, and deep links.
   - [X] Added Mac-independent content refresh from the public site on launch,
-    foreground resume, network reconnect, and manual refresh.
+    foreground resume, network reconnect, and pull-to-refresh.
   - [X] Generated Android and iOS native projects with ACC icons, splash
     assets, platform hardening, and minimal permissions.
   - [X] Produced and signature-verified the installable Android 0.1.0 debug APK.
   - [X] Passed mobile tests, type checking, production build, dependency
     audit, native syntax checks, and 390 × 844 browser interaction QA.
+- [X] **Phase 13 — Mobile Navigation and Pull-to-Refresh** (2026-09-08)
+  - [X] Replaced the bottom navigation with the five official website sections:
+    Events, Media, Gear, Training, and About ACC.
+  - [X] Grouped route content into Media and added the ACC partner page to the
+    About section.
+  - [X] Removed duplicate category tabs and the header refresh button from app
+    pages.
+  - [X] Added top-of-page pull and release refresh behavior with loading and
+    threshold states.
+  - [X] Passed 18 mobile tests, type checking, formatting, production build,
+    Capacitor sync, and Android APK signature verification.
+- [X] **Phase 13 — Mobile Section Heroes** (2026-09-08)
+  - [X] Added large photography-led hero sections before the card grids on all
+    five mobile tabs.
+  - [X] Reused website artwork and matching zh/en/de page introductions for
+    Events, Media, Gear, Training, and About ACC.
+  - [X] Made the Events hero follow the current featured feed item and open its
+    registration or detail view.
+  - [X] Added prominent About ACC and Partners image cards below the About hero.
+  - [X] Preserved pull-to-refresh, offline fallback, content search, and fixed
+    bottom navigation around the new layout.
+  - [X] Passed 22 mobile tests, formatting, type checking, production build,
+    Capacitor sync, and Android APK signature verification.
+- [ ] **Phase 13 — Signed Mobile Live Updates** (2026-09-08)
+  - [X] Added a Capacitor 8 live-update client for Android and iOS with
+    background checks on launch, foreground resume, and network reconnection.
+  - [X] Restricted bundles to the production GitHub release and native version,
+    with RSA-SHA256 signature verification and SHA-256 integrity metadata.
+  - [X] Added next-launch activation, a 10-second readiness check, automatic
+    rollback, and blocking of failed bundles.
+  - [X] Added GitHub Actions packaging, signing, immutable release history, and
+    production manifest publishing after mobile changes merge to `master`.
+  - [X] Generated and verified the installable Android 0.2.0 debug APK with the
+    native live-update plugin and embedded public key.
+  - [X] Passed 32 mobile tests, formatting, type checking, production build,
+    Capacitor sync, live-update packaging/signature verification, Gradle build,
+    and APK v2 signature verification.
+  - [X] Stored the live-update private key in the GitHub Actions repository secret.
+  - [ ] Merge the workflow and confirm the first public signed bundle is fetched
+    by an installed 0.2.0 app.
 
 
 ## In Progress
@@ -558,6 +605,7 @@
 - [ ] Frontend npm audit reports production advisories in Astro / @astrojs/vercel and transitive dependencies — high; likely needs a planned Astro major-version upgrade
 - [ ] Public RSVP/subscription/login endpoints lack rate limiting or CAPTCHA — high
 - [ ] `POST /api/rsvp` accepts event metadata from public clients and can create/update event rows — high; preserve workflow only with server-side event allowlisting or admin sync
+- [ ] About responsive E2E tests still target the removed stamp-wall component — low
 
 ## Architecture Decisions
 

@@ -1,0 +1,16 @@
+---
+slug: club-anniversary
+title: ACC 俱乐部周年庆典
+description: 回顾俱乐部成立以来的精彩瞬间。
+date: 2025-09-01
+author: ''
+type: 影像
+cover: /images/media/video/alps-summer-2025/cover.jpg
+videoUrl: https://www.bilibili.com/video/example
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
+---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
+一起回顾 ACC 俱乐部成立以来的点点滴滴，感谢每一位成员的陪伴！

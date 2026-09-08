@@ -96,7 +96,7 @@ const source_apk = resolve(
     "app/build/outputs/apk/debug/app-debug.apk",
 );
 const artifact_directory = resolve(mobile_directory, "artifacts");
-const target_apk = resolve(artifact_directory, "acc-clubhub-0.1.0-debug.apk");
+const target_apk = resolve(artifact_directory, "acc-clubhub-0.2.0-debug.apk");
 await mkdir(artifact_directory, { recursive: true });
 await copyFile(source_apk, target_apk);
 console.log(`Android debug APK: ${target_apk}`);

@@ -32,12 +32,14 @@ test.describe('Content Pages', () => {
     test('gear list page loads', async ({ page }) => {
         await page.goto('/zh/knowledge/gear');
         await expect(page.getByRole('heading', { name: '器械知识' })).toBeVisible();
-        await expect(page.getByText('没有找到匹配的内容')).toBeVisible();
+        await expect(page.locator('.article-card').first()).toBeVisible();
     });
 
-    test('removed placeholder gear detail is not generated', async ({ page }) => {
-        const response = await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
-        expect(response?.status()).toBe(404);
+    test('gear detail page loads', async ({ page }) => {
+        await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
+        await expect(
+            page.getByRole('heading', { name: /公路车购买指南/ }),
+        ).toBeVisible();
     });
 
     test('training list page loads', async ({ page }) => {
@@ -52,17 +54,14 @@ test.describe('Content Pages', () => {
         await expect(page.locator('h1')).toContainText('FTP训练入门');
     });
 
-    test('routes list does not show removed placeholder routes', async ({ page }) => {
+    test('routes list shows restored routes', async ({ page }) => {
         await page.goto('/zh/routes');
         await expect(
             page.getByRole('heading', { name: '骑行路线', exact: true }),
         ).toBeVisible();
         await expect(
-            page
-                .getByRole('link', { name: /Starnberg–Andechs–Raisting 环线/ })
-                .first(),
+            page.getByRole('link', { name: /慕尼黑北部经典Afterwork路线/ }).first(),
         ).toBeVisible();
-        await expect(page.getByText('(Fake Template)')).toHaveCount(0);
     });
 
     test('route filters expose localized controls', async ({ page }) => {
@@ -138,9 +137,14 @@ test.describe('Content Pages', () => {
         ).toBeVisible();
     });
 
-    test('removed placeholder route detail is not generated', async ({ page }) => {
-        const response = await page.goto('/zh/routes/isar-valley-loop');
-        expect(response?.status()).toBe(404);
+    test('restored route detail exposes its source links', async ({ page }) => {
+        await page.goto('/zh/routes/isar-valley-loop');
+
+        await expect(
+            page.getByRole('heading', { name: /伊萨尔河谷环线/ }),
+        ).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Komoot →' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Strava →' })).toBeVisible();
     });
 
     test('about page loads', async ({ page }) => {
