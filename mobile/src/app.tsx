@@ -22,6 +22,7 @@ import {
     load_content_feed,
     type ContentSource,
 } from "./services/content";
+import { check_for_live_update } from "./services/live_update";
 import {
     listen_for_deep_links,
     open_external_url,
@@ -179,6 +180,7 @@ export function App() {
                     announce: true,
                     background: true,
                 });
+                void check_for_live_update();
             }
         }).then((listener) => {
             remove_listener = async (): Promise<void> => listener.remove();
@@ -193,6 +195,7 @@ export function App() {
         void CapacitorApp.addListener("appStateChange", (state) => {
             if (state.isActive) {
                 void load_feed(locale, { background: true });
+                void check_for_live_update();
             }
         }).then((listener) => {
             remove_listener = async (): Promise<void> => listener.remove();

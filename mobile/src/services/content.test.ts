@@ -76,7 +76,7 @@ describe("load_content_feed", () => {
     it("requires an app update before accepting incompatible content", async () => {
         vi.stubGlobal(
             "fetch",
-            vi.fn().mockResolvedValue(create_response(create_feed("zh", "0.2.0"))),
+            vi.fn().mockResolvedValue(create_response(create_feed("zh", "0.3.0"))),
         );
 
         await expect(load_content_feed("zh")).rejects.toBeInstanceOf(

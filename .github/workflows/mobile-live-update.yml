@@ -1,0 +1,75 @@
+name: Mobile Live Update
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "mobile/**"
+      - "shared/**"
+      - ".github/workflows/mobile-live-update.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: mobile-live-update-production
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build, sign, and publish web bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: |
+            frontend/package-lock.json
+            mobile/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Install mobile dependencies
+        run: npm ci --prefix mobile
+
+      - name: Build mobile web bundle
+        run: npm run build --prefix mobile
+
+      - name: Package and sign live update
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          LIVE_UPDATE_PRIVATE_KEY: ${{ secrets.MOBILE_LIVE_UPDATE_PRIVATE_KEY }}
+        run: npm run live-update:package --prefix mobile
+
+      - name: Create production release when missing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: mobile-live-production
+        run: |
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" \
+              --latest=false \
+              --notes "Signed ACC ClubHub web bundles for in-app updates." \
+              --title "ACC ClubHub mobile live updates"
+          fi
+
+      - name: Publish bundle and manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: mobile-live-production
+        run: |
+          bundle_path="$(find mobile/artifacts/live-update -name 'acc-mobile-*.zip' -type f -print -quit)"
+          test -n "$bundle_path"
+          gh release upload "$RELEASE_TAG" "$bundle_path" --clobber
+          gh release upload "$RELEASE_TAG" \
+            "mobile/artifacts/live-update/manifest-${GITHUB_SHA}.json" \
+            --clobber
+          gh release upload "$RELEASE_TAG" \
+            mobile/artifacts/live-update/latest.json \
+            --clobber
