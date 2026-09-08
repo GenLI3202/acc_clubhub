@@ -11,12 +11,12 @@
 
 ## Recent Updates
 
-- [X] **器械知识文章恢复与删除审计** (2026-09-08)
-  - [X] 从删除前版本恢复中、英、德三语各 8 篇器械知识文章及其实际引用的 4 张封面图。
-  - [X] 将浏览器回归测试恢复为验证列表卡片和文章详情可访问。
-  - [X] 审计提交 `af9813c5`：共删除 120 篇内容和 9 张图片，并修改 2 个 E2E 测试；其中 117 篇带 `aiTemplate: true` 标记。
-  - [X] 确认另外 3 篇未带测试模板标记的慕尼黑观光路线多语言文章及 4 张专属图片也被删除，等待内容负责人决定是否恢复。
-  - [X] Astro 检查 0 errors、80 项单元测试、生产构建及桌面/手机 4 项器械页面浏览器测试通过。
+- [X] **被删除内容完整恢复与审计** (2026-09-08)
+  - [X] 完整恢复提交 `af9813c5` 删除的 120 篇中英德内容和 9 张图片；逐文件核对删除前 Git 对象，129 个文件均无缺失或差异。
+  - [X] 恢复范围为 15 篇活动、24 篇器械、24 篇训练、30 篇车影和 27 篇路线内容，包括 3 篇未带测试模板标记的慕尼黑观光路线文章。
+  - [X] 更新浏览器回归测试，重新验证器械列表/详情及恢复后的路线列表/详情。
+  - [X] Astro 检查 0 errors、80 项单元测试、生产构建及桌面/手机 34 项内容页面浏览器测试通过。
+  - [X] About 页面响应式套件仍有 6 项旧邮票墙测试引用已不存在的组件，与本次内容恢复无关。
 
 - [X] **移动 App 安装包架构草案** (2026-09-08) — 分支 `phase-13/mobile-app-packaging`
   - [X] 从最新路线归档分支建立独立移动端规划分支，未合并或改写原分支。
@@ -605,6 +605,7 @@
 - [ ] Frontend npm audit reports production advisories in Astro / @astrojs/vercel and transitive dependencies — high; likely needs a planned Astro major-version upgrade
 - [ ] Public RSVP/subscription/login endpoints lack rate limiting or CAPTCHA — high
 - [ ] `POST /api/rsvp` accepts event metadata from public clients and can create/update event rows — high; preserve workflow only with server-side event allowlisting or admin sync
+- [ ] About responsive E2E tests still target the removed stamp-wall component — low
 
 ## Architecture Decisions
 
