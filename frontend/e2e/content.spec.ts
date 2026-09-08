@@ -32,12 +32,14 @@ test.describe('Content Pages', () => {
     test('gear list page loads', async ({ page }) => {
         await page.goto('/zh/knowledge/gear');
         await expect(page.getByRole('heading', { name: '器械知识' })).toBeVisible();
-        await expect(page.getByText('没有找到匹配的内容')).toBeVisible();
+        await expect(page.locator('.article-card').first()).toBeVisible();
     });
 
-    test('removed placeholder gear detail is not generated', async ({ page }) => {
-        const response = await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
-        expect(response?.status()).toBe(404);
+    test('gear detail page loads', async ({ page }) => {
+        await page.goto('/zh/knowledge/gear/road-bike-buying-guide');
+        await expect(
+            page.getByRole('heading', { name: /公路车购买指南/ }),
+        ).toBeVisible();
     });
 
     test('training list page loads', async ({ page }) => {
