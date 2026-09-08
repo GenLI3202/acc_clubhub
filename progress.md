@@ -11,6 +11,14 @@
 
 ## Recent Updates
 
+- [X] **移动 App 安装包架构草案** (2026-09-08) — 分支 `phase-13/mobile-app-packaging`
+  - [X] 从最新路线归档分支建立独立移动端规划分支，未合并或改写原分支。
+  - [X] 审核 Astro 预渲染/SSR 边界、FastAPI 跨域调用、Dashboard 鉴权及现有 PWA 缺口。
+  - [X] 根据 Apple、Google、Capacitor 和 Android 官方文档，排除生产环境纯远程 WebView；记录 PWA、Android TWA 和双商店 Capacitor 三条路径。
+  - [X] 推荐双商店方案采用本地 Web 资源包，复用现有内容与组件，并以深链接、分享、日历和活动通知提供必要的移动端价值。
+  - [ ] 待确认发布目标：仅主屏幕安装、Android 商店加 iOS PWA，
+    或 Apple App Store 和 Google Play 双商店。
+
 - [X] **About Us 原版山谷标识** (2026-09-07)
   - [X] 中英德 About 页面使用用户重新上传并确认的原版山谷 ACROSS 图；原图字节与 SHA-256 保持一致，不重新生成或调色。
   - [X] SVG 视口仅收紧原图外部留白，保留原有桌面宽度、屏幕阅读器标题与三章节交互；窄屏限制最大宽度，深色主题保留原图浅底。
