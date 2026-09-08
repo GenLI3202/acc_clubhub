@@ -13,6 +13,7 @@ import {
     normalize_public_url,
     sanitize_mobile_markdown,
 } from "../../../lib/mobile_content/feed";
+import { resolveRecurringEvents } from "../../../lib/events/recurringEvents";
 
 const CONTENT_TYPE_PATHS = {
     event: "events",
@@ -227,61 +228,67 @@ async function build_items(
         type: "route",
     }));
 
-    const event_items: MobileContentItem[] = events.map((entry) => ({
-        body_html: sanitize_mobile_markdown(entry.body, site_url),
-        cover_image: normalize_public_url(entry.data.coverImage, site_url),
-        description: entry.data.description,
-        featured: entry.data.displaySections.includes("hero"),
-        id: `event:${entry.data.slug}`,
-        links: compact_links([
-            create_link(
-                "website",
-                content_website_url(
-                    "event",
-                    locale,
-                    entry.data.slug,
+    const event_items: MobileContentItem[] = resolveRecurringEvents(events).map(
+        (entry) => ({
+            body_html: sanitize_mobile_markdown(entry.body, site_url),
+            cover_image: normalize_public_url(entry.data.coverImage, site_url),
+            description: entry.data.description,
+            featured: entry.data.displaySections.includes("hero"),
+            id: `event:${entry.sourceSlug ?? entry.data.slug}`,
+            links: compact_links([
+                create_link(
+                    "website",
+                    content_website_url(
+                        "event",
+                        locale,
+                        entry.data.slug,
+                        site_url,
+                    ),
                     site_url,
                 ),
-                site_url,
-            ),
-            create_link("komoot", entry.data.routeKomootUrl, site_url),
-            create_link("strava", entry.data.routeStravaUrl, site_url),
-            create_link("xiaohongshu", entry.data.xiaohongshuUrl, site_url),
-        ]),
-        locale,
-        metadata: {
-            author: entry.data.author,
-            distance_km: entry.data.distanceKm,
-            event_date: entry.data.date,
-            event_type: entry.data.eventType,
-            location: entry.data.location,
-            max_participants: entry.data.maxParticipants,
-            recurring: entry.data.recurring
-                ? {
-                      enabled: entry.data.recurring.enabled,
-                      frequency: entry.data.recurring.frequency,
-                      interval_weeks: entry.data.recurring.intervalWeeks,
-                      paused: entry.data.recurring.paused,
-                      rollover_time: entry.data.recurring.rolloverTime,
-                      timezone: entry.data.recurring.timezone,
-                  }
-                : undefined,
-            registration_deadline: entry.data.registrationDeadline,
-            registration_link: normalize_public_url(
-                entry.data.registrationLink,
-                site_url,
-            ),
-            registration_reopened: entry.data.registrationReopened,
-            wechat_qr_code: normalize_public_url(
-                entry.data.wechatQrCode,
-                site_url,
-            ),
-        },
-        published_at: entry.data.date,
-        slug: entry.data.slug,
-        title: entry.data.title,
-        type: "event",
-    }));
+                create_link("komoot", entry.data.routeKomootUrl, site_url),
+                create_link("strava", entry.data.routeStravaUrl, site_url),
+                create_link(
+                    "xiaohongshu",
+                    entry.data.xiaohongshuUrl,
+                    site_url,
+                ),
+            ]),
+            locale,
+            metadata: {
+                author: entry.data.author,
+                distance_km: entry.data.distanceKm,
+                event_date: entry.data.date,
+                event_type: entry.data.eventType,
+                location: entry.data.location,
+                max_participants: entry.data.maxParticipants,
+                recurring: entry.data.recurring
+                    ? {
+                          enabled: entry.data.recurring.enabled,
+                          frequency: entry.data.recurring.frequency,
+                          interval_weeks: entry.data.recurring.intervalWeeks,
+                          paused: entry.data.recurring.paused,
+                          rollover_time: entry.data.recurring.rolloverTime,
+                          timezone: entry.data.recurring.timezone,
+                      }
+                    : undefined,
+                registration_deadline: entry.data.registrationDeadline,
+                registration_link: normalize_public_url(
+                    entry.data.registrationLink,
+                    site_url,
+                ),
+                registration_reopened: entry.data.registrationReopened,
+                wechat_qr_code: normalize_public_url(
+                    entry.data.wechatQrCode,
+                    site_url,
+                ),
+            },
+            published_at: entry.data.date,
+            slug: entry.data.slug,
+            title: entry.data.title,
+            type: "event",
+        }),
+    );
 
     return [
         ...event_items,
@@ -316,9 +323,11 @@ export const GET: APIRoute = async ({ params }) => {
 
     return new Response(JSON.stringify(feed), {
         headers: {
+            "Access-Control-Allow-Origin": "*",
             "Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
             "Content-Type": "application/json; charset=utf-8",
             ETag: `\"${feed.content_revision}\"`,
+            "X-Content-Type-Options": "nosniff",
         },
         status: 200,
     });
