@@ -72,3 +72,68 @@ Branch: `phase-4/tier2-tier3-fixes`
 | Roadmap | [#48](https://github.com/GenLI3202/acc_clubhub/issues/48) | Community event creation — multi-phase |
 | Roadmap | [#20](https://github.com/GenLI3202/acc_clubhub/issues/20) | Elevation profile + map sync — multi-phase |
 | Roadmap | [#61](https://github.com/GenLI3202/acc_clubhub/issues/61) | Merge FastAPI into Astro API routes — multi-phase |
+
+---
+
+## 2026-09-08 — Historical route archive and map decision
+
+Branch: `phase-12/historical-route-archive-map`
+
+Issue: [#175](https://github.com/GenLI3202/acc_clubhub/issues/175)
+
+### Completed
+
+- Removed all 117 files marked `aiTemplate: true`, representing 39 logical
+  placeholders across events, media, gear, training, and routes. Removed the
+  generic non-ACC Munich guide entry and its dedicated images.
+- Audited every repository event with a route source, deduplicated the repeated
+  Starnberg route, and retained the two distinct Hahntennjoch variants.
+- Published 18 logical historical routes as 54 aligned Chinese, English, and
+  German entries with ride records, provider sources, available measurements,
+  regions, difficulty, and source-confirmed surface.
+- Added distance-range and optional-elevation support so incomplete source data
+  is displayed honestly instead of being estimated.
+- Localized route filter sections, actions, option values, and range-input
+  accessibility labels in Chinese, English, and German.
+- Recorded the archive inventory, Komoot Collection evaluation, custom-map
+  trade-offs, and defer decision in
+  `docs/decisions/historical_route_archive_and_map.md`.
+
+### Commits
+
+- `af9813c` — remove AI placeholder content.
+- `64ea9d7` — publish the verified multilingual route archive.
+- `66b8ab1` — cover archived routes in global search.
+- `8a6835d` — record the route inventory and map decision.
+- `817149a` — localize shared route filter controls.
+
+### Verification
+
+- `npm run check`: 0 errors and 0 warnings; 33 existing hints.
+- `npm run test`: 75 tests passed.
+- `npm run build`: passed; all 54 localized route detail paths generated.
+- `npx playwright test e2e/content.spec.ts`: 34 tests passed on desktop and
+  mobile, with two pre-existing skipped tests.
+- Route slugs match across all three locales, no duplicate route slugs remain,
+  all route-to-event links resolve, and no `aiTemplate: true` marker remains.
+
+### External inputs and follow-up
+
+- The selected production approach is the native archive with direct Komoot or
+  Strava links. No Collection embed or custom overview map ships in this change.
+- ACC still needs to provide its complete off-repository ride inventory and the
+  missing source measurements for seven routes.
+- A future Collection embed requires an ACC-owned public Collection with all 18
+  routes, plus confirmed account ownership and Premium renewal responsibility.
+  Its interactive desktop/mobile checks remain a release gate.
+- A custom Leaflet/OpenStreetMap overview remains coordinated through
+  [#113](https://github.com/GenLI3202/acc_clubhub/issues/113) and requires
+  approved geometry beyond the repository's single GeoJSON track.
+
+### Route source link presentation
+
+- Reworked the route-provider links into a prominent multilingual navigation
+  panel with explicit action labels for Komoot and Strava.
+- Styled the final Sources, Quellen, or 资料来源 list as full-width link cards
+  with clear external-link indicators, hover feedback, and keyboard focus.
+- Kept the existing source URLs and article content unchanged.

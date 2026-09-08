@@ -100,6 +100,7 @@ export const routesFilters: FilterDefinition[] = [
         label: 'Region',
         type: 'select',
         options: [
+            { value: 'munich-city', label: 'Munich City' },
             { value: 'munich-south', label: 'Munich South' },
             { value: 'munich-north', label: 'Munich North' },
             { value: 'alps-bavaria', label: 'Bavarian Alps' },

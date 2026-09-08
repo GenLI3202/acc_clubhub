@@ -208,6 +208,7 @@ export const GET: APIRoute = async ({ params }) => {
         region: item.data.region as any,
         difficulty: item.data.difficulty,
         distance: item.data.distance,
+        distanceRange: item.data.distanceRange,
         elevation: item.data.elevation,
         surface: item.data.surface,
         gpxFile: item.data.gpxFile,

@@ -4,6 +4,7 @@
 import './RouteCard.css';
 import { getFilterLabel } from '../../lib/i18n/filterTranslations';
 import type { Locale } from '../../lib/i18n';
+import { format_route_distance } from '../../lib/routes/route_metrics';
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
@@ -14,7 +15,8 @@ interface Props {
   difficulty: Difficulty;
   region?: string;
   distance: number;
-  elevation: number;
+  distanceRange?: [number, number];
+  elevation?: number;
   surface?: string;
   lang: Locale;
 }
@@ -26,6 +28,7 @@ const {
   difficulty,
   region,
   distance,
+  distanceRange,
   elevation,
   surface,
   lang,
@@ -52,8 +55,8 @@ const surfaceLabel = surface ? getFilterLabel('surface', surface, lang) : '';
     </div>
     <h3 class="article-card__title">{name}</h3>
     <div class="route-card__stats">
-      <span>{distance} km</span>
-      <span>{elevation} m ↑</span>
+      <span>{format_route_distance(distance, distanceRange, lang)}</span>
+      {elevation !== undefined && <span>{elevation} m ↑</span>}
     </div>
     {surfaceLabel && <div class="route-card__surface">{surfaceLabel}</div>}
   </div>

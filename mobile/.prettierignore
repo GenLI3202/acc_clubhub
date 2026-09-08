@@ -1,0 +1,7 @@
+android/**/build/
+android/app/src/main/assets/
+artifacts/
+.gradle-user-home/
+ios/App/App/Assets.xcassets/
+ios/App/App/capacitor.config.json
+ios/App/App/public/

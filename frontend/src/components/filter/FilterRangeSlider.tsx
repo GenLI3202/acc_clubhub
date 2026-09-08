@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import type { VNode } from 'preact';
+import type { Locale } from '../../lib/i18n';
+import { getFilterUiLabel } from '../../lib/i18n/filterTranslations';
 
 interface FilterRangeSliderProps {
     min: number;
@@ -8,9 +10,18 @@ interface FilterRangeSliderProps {
     unit?: string;
     step?: number;
     onChange: (range: [number, number]) => void;
+    lang: Locale;
 }
 
-export function FilterRangeSlider({ min, max, value, unit = '', step = 1, onChange }: FilterRangeSliderProps): VNode {
+export function FilterRangeSlider({
+    min,
+    max,
+    value,
+    unit = '',
+    step = 1,
+    onChange,
+    lang,
+}: FilterRangeSliderProps): VNode {
     const toNumber = (nextValue: number | string, fallback: number): number => {
         const parsed = Number(nextValue);
         return Number.isFinite(parsed) ? parsed : fallback;
@@ -76,7 +87,7 @@ export function FilterRangeSlider({ min, max, value, unit = '', step = 1, onChan
                         value={localValue[0]}
                         onInput={(e) => handleInput(0, Number((e.target as HTMLInputElement).value))}
                         onBlur={handleBlur}
-                        aria-label="Minimum value"
+                        aria-label={getFilterUiLabel('minimum_value', lang)}
                     />
                     {unit ? <span className="slider-value-unit">{unit}</span> : null}
                 </label>
@@ -90,7 +101,7 @@ export function FilterRangeSlider({ min, max, value, unit = '', step = 1, onChan
                         value={localValue[1]}
                         onInput={(e) => handleInput(1, Number((e.target as HTMLInputElement).value))}
                         onBlur={handleBlur}
-                        aria-label="Maximum value"
+                        aria-label={getFilterUiLabel('maximum_value', lang)}
                     />
                     {unit ? <span className="slider-value-unit">{unit}</span> : null}
                 </label>
@@ -112,7 +123,7 @@ export function FilterRangeSlider({ min, max, value, unit = '', step = 1, onChan
                     onInput={(e) => handleInput(0, Number((e.target as HTMLInputElement).value))}
                     onChange={handleBlur}
                     className="thumb thumb-left"
-                    aria-label="Minimum value"
+                    aria-label={getFilterUiLabel('minimum_value', lang)}
                 />
                 <input
                     type="range"
@@ -123,7 +134,7 @@ export function FilterRangeSlider({ min, max, value, unit = '', step = 1, onChan
                     onInput={(e) => handleInput(1, Number((e.target as HTMLInputElement).value))}
                     onChange={handleBlur}
                     className="thumb thumb-right"
-                    aria-label="Maximum value"
+                    aria-label={getFilterUiLabel('maximum_value', lang)}
                 />
             </div>
         </div>

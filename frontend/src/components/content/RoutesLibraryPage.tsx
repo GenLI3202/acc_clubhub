@@ -94,6 +94,7 @@ export default function RoutesLibraryPage({
                 difficulty={data.difficulty}
                 region={data.region}
                 distance={data.distance}
+                distanceRange={data.distanceRange}
                 elevation={data.elevation}
                 surface={data.surface}
                 lang={lang}

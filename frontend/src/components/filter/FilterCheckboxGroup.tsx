@@ -2,7 +2,10 @@ import { useState } from 'preact/hooks';
 import type { VNode } from 'preact';
 import type { FilterOption } from '../../types/filter';
 import type { Locale } from '../../lib/i18n';
-import { getFilterLabel } from '../../lib/i18n/filterTranslations';
+import {
+    getFilterLabel,
+    getFilterUiLabel,
+} from '../../lib/i18n/filterTranslations';
 
 interface FilterCheckboxGroupProps {
     field: string;
@@ -33,7 +36,11 @@ export function FilterCheckboxGroup({ field, options, selectedValues, onChange, 
     };
 
     if (options.length === 0) {
-        return <div className="filter-empty">No options available</div>;
+        return (
+            <div className="filter-empty">
+                {getFilterUiLabel('no_options', lang)}
+            </div>
+        );
     }
 
     return (
@@ -61,7 +68,9 @@ export function FilterCheckboxGroup({ field, options, selectedValues, onChange, 
                     className="show-more-btn"
                     onClick={() => setShowAll(!showAll)}
                 >
-                    {showAll ? 'Show Less' : `Show All (${options.length})`}
+                    {showAll
+                        ? getFilterUiLabel('show_less', lang)
+                        : `${getFilterUiLabel('show_all', lang)} (${options.length})`}
                 </button>
             )}
         </div>

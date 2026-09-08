@@ -11,6 +11,7 @@ export type Language = 'de' | 'en' | 'zh';
 
 // Region Types (gemäß Governance Guide 2.4.2)
 export type Region =
+  | 'munich-city'     // 慕尼黑市区
   | 'munich-south'    //慕尼黑南郊
   | 'munich-north'    // 慕尼黑北郊
   | 'alps-bavaria'    // 巴伐利亚阿尔卑斯
@@ -131,8 +132,9 @@ export interface RouteSearchItem extends BaseSearchItem {
   region: Region;
   difficulty: Difficulty;
   distance: number; // km
-  elevation: number; // m
-  surface: Surface;
+  distanceRange?: [number, number]; // km
+  elevation?: number; // m
+  surface?: Surface;
   gpxFile?: string;
   coverImage?: string;
 }

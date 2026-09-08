@@ -15,8 +15,24 @@
   - [X] 按用户提供的黑色 ACROSS 参考图描摹并整理为纯矢量路径，保留几何字形与三层渐隐红色残影；移除山峰 JPG、图片视口和混合模式。
   - [X] SVG 约 2.2 KB，无嵌入图片、背景色块或滤镜；字母使用 currentColor 适配现有明暗主题，保留可访问标题和响应式宽度。
   - [X] 已检查浅色/深色 SVG 渲染及外部、间隙、A/R/O 镂空 alpha=0；三语生产页面均输出 9 条路径、不含位图；本地浏览器计算背景透明、无横向溢出。
-  - [X] Astro 检查 0 errors / 0 warnings、70 项前端测试及生产构建通过。
+  - [X] Astro 检查 0 errors / 0 warnings、80 项前端测试及生产构建通过。
   - [ ] 浏览器截图接口仍不可用；独立 SVG 的明暗渲染已核验，真实手机整页视觉复核待完成。
+
+- [X] **被删除内容完整恢复与审计** (2026-09-08)
+  - [X] 完整恢复提交 `af9813c5` 删除的 120 篇中英德内容和 9 张图片；逐文件核对删除前 Git 对象，129 个文件均无缺失或差异。
+  - [X] 恢复范围为 15 篇活动、24 篇器械、24 篇训练、30 篇车影和 27 篇路线内容，包括 3 篇未带测试模板标记的慕尼黑观光路线文章。
+  - [X] 更新浏览器回归测试，重新验证器械列表/详情及恢复后的路线列表/详情。
+  - [X] Astro 检查 0 errors、80 项单元测试、生产构建及桌面/手机 34 项内容页面浏览器测试通过。
+  - [X] About 页面响应式套件仍有 6 项旧邮票墙测试引用已不存在的组件，与本次内容恢复无关。
+
+- [X] **移动 App 安装包架构草案** (2026-09-08) — 分支 `phase-13/mobile-app-packaging`
+  - [X] 从最新路线归档分支建立独立移动端规划分支，未合并或改写原分支。
+  - [X] 审核 Astro 预渲染/SSR 边界、FastAPI 跨域调用、Dashboard 鉴权及现有 PWA 缺口。
+  - [X] 根据 Apple、Google、Capacitor 和 Android 官方文档，排除生产环境纯远程 WebView；记录 PWA、Android TWA、双商店及测试分发四条路径。
+  - [X] 推荐双商店方案采用 Capacitor 本地 UI、版本化远程内容 feed 和 FastAPI 实时状态，并以离线收藏、深链接、分享及日历提供移动端价值；远程推送另行设计。
+  - [X] 通过三组独立读者检查并修正内容更新、动态活动、缓存、API 兼容、稳定关联键、私有路由和 TestFlight 签名边界；复查无架构级开工阻断。
+  - [ ] 待确认发布目标：仅主屏幕安装、Android 商店加 iOS PWA，
+    或 Apple App Store 和 Google Play 双商店。
 
 - [X] **About Us 原版山谷标识** (2026-09-07)
   - [X] 中英德 About 页面使用用户重新上传并确认的原版山谷 ACROSS 图；原图字节与 SHA-256 保持一致，不重新生成或调色。
@@ -495,10 +511,79 @@
   - [X] Protected `POST /api/events` with the existing admin session dependency and added regression coverage.
   - [X] Replaced a committed Neon connection string example in Waline deployment notes with placeholders.
   - [X] Verified backend tests, frontend type check, frontend build, npm audit, and pip-audit results.
+- [X] **Phase 13 — Mobile App Packaging, Plan D** (2026-09-08)
+  - [X] Created branch `phase-13/mobile-app-packaging` and recorded the
+    hybrid local-app architecture decision.
+  - [X] Added versioned, sanitized zh/en/de content feeds generated from the
+    Astro Markdown collections.
+  - [X] Built a local Preact + Capacitor app with cached/offline content,
+    search, favorites, live event status, RSVP, subscriptions, sharing,
+    calendar export, and deep links.
+  - [X] Added Mac-independent content refresh from the public site on launch,
+    foreground resume, network reconnect, and pull-to-refresh.
+  - [X] Generated Android and iOS native projects with ACC icons, splash
+    assets, platform hardening, and minimal permissions.
+  - [X] Produced and signature-verified the installable Android 0.1.0 debug APK.
+  - [X] Passed mobile tests, type checking, production build, dependency
+    audit, native syntax checks, and 390 × 844 browser interaction QA.
+- [X] **Phase 13 — Mobile Navigation and Pull-to-Refresh** (2026-09-08)
+  - [X] Replaced the bottom navigation with the five official website sections:
+    Events, Media, Gear, Training, and About ACC.
+  - [X] Grouped route content into Media and added the ACC partner page to the
+    About section.
+  - [X] Removed duplicate category tabs and the header refresh button from app
+    pages.
+  - [X] Added top-of-page pull and release refresh behavior with loading and
+    threshold states.
+  - [X] Passed 18 mobile tests, type checking, formatting, production build,
+    Capacitor sync, and Android APK signature verification.
+- [X] **Phase 13 — Mobile Section Heroes** (2026-09-08)
+  - [X] Added large photography-led hero sections before the card grids on all
+    five mobile tabs.
+  - [X] Reused website artwork and matching zh/en/de page introductions for
+    Events, Media, Gear, Training, and About ACC.
+  - [X] Made the Events hero follow the current featured feed item and open its
+    registration or detail view.
+  - [X] Added prominent About ACC and Partners image cards below the About hero.
+  - [X] Preserved pull-to-refresh, offline fallback, content search, and fixed
+    bottom navigation around the new layout.
+  - [X] Passed 22 mobile tests, formatting, type checking, production build,
+    Capacitor sync, and Android APK signature verification.
+- [ ] **Phase 13 — Signed Mobile Live Updates** (2026-09-08)
+  - [X] Added a Capacitor 8 live-update client for Android and iOS with
+    background checks on launch, foreground resume, and network reconnection.
+  - [X] Restricted bundles to the production GitHub release and native version,
+    with RSA-SHA256 signature verification and SHA-256 integrity metadata.
+  - [X] Added next-launch activation, a 10-second readiness check, automatic
+    rollback, and blocking of failed bundles.
+  - [X] Added GitHub Actions packaging, signing, immutable release history, and
+    production manifest publishing after mobile changes merge to `master`.
+  - [X] Generated and verified the installable Android 0.2.0 debug APK with the
+    native live-update plugin and embedded public key.
+  - [X] Passed 32 mobile tests, formatting, type checking, production build,
+    Capacitor sync, live-update packaging/signature verification, Gradle build,
+    and APK v2 signature verification.
+  - [X] Stored the live-update private key in the GitHub Actions repository secret.
+  - [ ] Merge the workflow and confirm the first public signed bundle is fetched
+    by an installed 0.2.0 app.
 
 
 ## In Progress
 
+- [ ] **Phase 13 — Production Mobile Content Feed**
+  - [ ] Deploy the frontend changes so
+    `/mobile-content/v1/{zh,en,de}.json` returns the versioned feed publicly.
+  - [ ] Confirm an installed APK changes from bundled content to network
+    content and receives a newly published Markdown edit without rebuilding.
+- [ ] **Phase 13 — iOS Test Distribution**
+  - [ ] Install full Xcode and an iOS Simulator runtime; only Command Line
+    Tools are currently installed.
+  - [ ] Select an Apple Developer team and create the App Store Connect record
+    before TestFlight signing.
+  - [ ] Add production `apple-app-site-association` and `assetlinks.json`
+    files after signing identifiers exist.
+  - [ ] Run physical-device checks for registration, sharing, calendar export,
+    offline launch, and deep links.
 - [ ] **Post-Event Survey** (Issue [#105](https://github.com/GenLI3202/acc_clubhub/issues/105))
   - [ ] Survey delivery mechanism and trigger timing still pending.
   - [ ] Survey recipient list should use RSVPs with `checked_in_at IS NOT NULL`.
@@ -527,6 +612,7 @@
 - [ ] Frontend npm audit reports production advisories in Astro / @astrojs/vercel and transitive dependencies — high; likely needs a planned Astro major-version upgrade
 - [ ] Public RSVP/subscription/login endpoints lack rate limiting or CAPTCHA — high
 - [ ] `POST /api/rsvp` accepts event metadata from public clients and can create/update event rows — high; preserve workflow only with server-side event allowlisting or admin sync
+- [ ] About responsive E2E tests still target the removed stamp-wall component — low
 
 ## Architecture Decisions
 

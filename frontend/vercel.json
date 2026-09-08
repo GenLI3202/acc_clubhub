@@ -1,4 +1,13 @@
 {
+  "headers": [
+    {
+      "source": "/mobile-content/v1/:path*",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/api/admin/:path*", "destination": "https://acc-clubhub-events-ms.vercel.app/api/admin/:path*" },
     { "source": "/auth/:path*", "destination": "https://acc-clubhub-events-ms.vercel.app/auth/:path*" }

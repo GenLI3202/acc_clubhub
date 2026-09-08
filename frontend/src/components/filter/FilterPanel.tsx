@@ -7,6 +7,10 @@ import { FilterCheckboxGroup } from './FilterCheckboxGroup';
 import { FilterRangeSlider } from './FilterRangeSlider';
 import type { FilterDefinition, FilterState, FilterOption } from '../../types/filter';
 import type { Locale } from '../../lib/i18n';
+import {
+    getFilterSectionLabel,
+    getFilterUiLabel,
+} from '../../lib/i18n/filterTranslations';
 import './FilterComponents.css';
 
 interface FilterPanelProps {
@@ -101,10 +105,14 @@ export function FilterPanel({
                     <div className="filter-actions">
                         {onReset && activeCount > 0 && (
                             <button className="reset-all-btn" onClick={handleReset}>
-                                Reset
+                                {getFilterUiLabel('reset', lang)}
                             </button>
                         )}
-                        <button className="close-filter-btn" onClick={() => setIsOpen(false)} aria-label="Close">
+                        <button
+                            className="close-filter-btn"
+                            onClick={() => setIsOpen(false)}
+                            aria-label={getFilterUiLabel('close', lang)}
+                        >
                             ✕
                         </button>
                     </div>
@@ -125,11 +133,11 @@ export function FilterPanel({
                             });
                         }
 
-                        // Translate section title if it's 'sort'
-                        let sectionTitle = def.label;
-                        if (def.key === 'sort') {
-                            sectionTitle = lang === 'zh' ? '排序' : lang === 'de' ? 'Sortieren' : 'Sort By';
-                        }
+                        const sectionTitle = getFilterSectionLabel(
+                            def.key,
+                            def.label,
+                            lang,
+                        );
 
                         return (
                             <FilterSection key={def.key} title={sectionTitle}>
@@ -156,6 +164,7 @@ export function FilterPanel({
                                         unit={def.unit}
                                         step={def.step}
                                         onChange={(range) => onFilterChange(def.key, range)}
+                                        lang={lang}
                                     />
                                 ) : (
                                     <div>Unsupported filter type: {def.type}</div>
