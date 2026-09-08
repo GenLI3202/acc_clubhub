@@ -505,6 +505,8 @@
   - [X] Built a local Preact + Capacitor app with cached/offline content,
     search, favorites, live event status, RSVP, subscriptions, sharing,
     calendar export, and deep links.
+  - [X] Added Mac-independent content refresh from the public site on launch,
+    foreground resume, network reconnect, and manual refresh.
   - [X] Generated Android and iOS native projects with ACC icons, splash
     assets, platform hardening, and minimal permissions.
   - [X] Produced and signature-verified the installable Android 0.1.0 debug APK.
@@ -514,6 +516,11 @@
 
 ## In Progress
 
+- [ ] **Phase 13 — Production Mobile Content Feed**
+  - [ ] Deploy the frontend changes so
+    `/mobile-content/v1/{zh,en,de}.json` returns the versioned feed publicly.
+  - [ ] Confirm an installed APK changes from bundled content to network
+    content and receives a newly published Markdown edit without rebuilding.
 - [ ] **Phase 13 — iOS Test Distribution**
   - [ ] Install full Xcode and an iOS Simulator runtime; only Command Line
     Tools are currently installed.
