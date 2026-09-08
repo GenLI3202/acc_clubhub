@@ -13,6 +13,7 @@ WebView.
 - Automatic content refresh on launch, foreground resume, and network reconnect
 - Pull-to-refresh from the top of every app page
 - Five official sections: Events, Media with Routes, Gear, Training, and About
+- Photography-led section heroes using the website's artwork and localized copy
 - Local search and favorites
 - Live event status and email-based registration
 - Event-update subscription

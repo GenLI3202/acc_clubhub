@@ -1,5 +1,5 @@
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
-import { format_item_date } from "../lib/content";
+import { format_item_date, format_item_type } from "../lib/content";
 import { translate } from "../i18n";
 
 interface ContentCardProps {
@@ -9,30 +9,6 @@ interface ContentCardProps {
     on_open: (item: MobileContentItem) => void;
     on_toggle_favorite: (item: MobileContentItem) => void;
 }
-
-const TYPE_LABELS: Record<MobileLocale, Record<MobileContentItem["type"], string>> = {
-    de: {
-        event: "Tour",
-        gear: "Ausrüstung",
-        media: "Story",
-        route: "Route",
-        training: "Training",
-    },
-    en: {
-        event: "Ride",
-        gear: "Gear",
-        media: "Story",
-        route: "Route",
-        training: "Training",
-    },
-    zh: {
-        event: "活动",
-        gear: "器械",
-        media: "骑行故事",
-        route: "路线",
-        training: "训练",
-    },
-};
 
 export function ContentCard({
     favorite,
@@ -66,7 +42,7 @@ export function ContentCard({
                 )}
                 <span class="content-card__body">
                     <span class="content-card__eyebrow">
-                        {TYPE_LABELS[locale][item.type]}
+                        {format_item_type(item, locale)}
                         {date ? ` · ${date}` : ""}
                     </span>
                     <strong>{item.title}</strong>

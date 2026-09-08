@@ -14,6 +14,30 @@ const TYPE_ORDER: Record<MobileContentType, number> = {
     media: 4,
 };
 
+const TYPE_LABELS: Record<MobileLocale, Record<MobileContentItem["type"], string>> = {
+    de: {
+        event: "Tour",
+        gear: "Ausrüstung",
+        media: "Story",
+        route: "Route",
+        training: "Training",
+    },
+    en: {
+        event: "Ride",
+        gear: "Gear",
+        media: "Story",
+        route: "Route",
+        training: "Training",
+    },
+    zh: {
+        event: "活动",
+        gear: "器械",
+        media: "骑行故事",
+        route: "路线",
+        training: "训练",
+    },
+};
+
 export function filter_items_for_view(
     items: MobileContentItem[],
     view: AppView,
@@ -50,6 +74,13 @@ export function format_item_date(
         timeStyle: item.type === "event" ? "short" : undefined,
         timeZone: "Europe/Berlin",
     }).format(date);
+}
+
+export function format_item_type(
+    item: MobileContentItem,
+    locale: MobileLocale,
+): string {
+    return TYPE_LABELS[locale][item.type];
 }
 
 export function sort_mobile_items(items: MobileContentItem[]): MobileContentItem[] {

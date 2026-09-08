@@ -10,11 +10,13 @@ import type {
 import { BottomNavigation } from "./components/BottomNavigation";
 import { ContentCard } from "./components/ContentCard";
 import { ContentDetail } from "./components/ContentDetail";
+import { PageHero } from "./components/PageHero";
 import { SubscribeForm } from "./components/SubscribeForm";
 import { APP_CONFIG } from "./config";
 import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
 import { filter_items_for_view, sort_mobile_items, type AppView } from "./lib/content";
+import { create_page_hero, section_title } from "./lib/page_hero";
 import {
     ContentUpdateRequiredError,
     load_content_feed,
@@ -266,9 +268,12 @@ export function App() {
         };
     }, [selected_item]);
 
+    const all_items = useMemo(() => sort_mobile_items(feed?.items ?? []), [feed]);
+    const scoped_items = useMemo(
+        () => filter_items_for_view(all_items, active_view),
+        [active_view, all_items],
+    );
     const visible_items = useMemo(() => {
-        const all_items = sort_mobile_items(feed?.items ?? []);
-        const scoped_items = filter_items_for_view(all_items, active_view);
         const normalized_query = query.trim().toLocaleLowerCase(locale);
         if (!normalized_query) {
             return scoped_items;
@@ -280,12 +285,22 @@ export function App() {
                     value?.toLocaleLowerCase(locale).includes(normalized_query),
                 ),
         );
-    }, [active_view, feed, locale, query]);
+    }, [locale, query, scoped_items]);
+    const hero_content = useMemo(
+        () => create_page_hero(active_view, scoped_items, locale, APP_CONFIG.site_url),
+        [active_view, locale, scoped_items],
+    );
 
     const select_view = (view: AppView): void => {
         set_active_view(view);
         set_selected_item(undefined);
         set_query("");
+        window.scrollTo(0, 0);
+    };
+
+    const open_item = (item: MobileContentItem): void => {
+        set_selected_item(item);
+        window.scrollTo(0, 0);
     };
 
     const toggle_favorite = (item: MobileContentItem): void => {
@@ -308,9 +323,17 @@ export function App() {
         void open_external_url(`${APP_CONFIG.site_url}/${locale}/${path}`);
     };
 
+    const activate_hero = (): void => {
+        if (hero_content.action_target === "content" && hero_content.item) {
+            open_item(hero_content.item);
+        } else if (hero_content.action_target === "membership") {
+            open_site_page("membership");
+        }
+    };
+
     return (
         <div class="app-shell">
-            <header class="app-header">
+            <header class={`app-header${selected_item ? "" : " app-header--hero"}`}>
                 <button
                     aria-label={translate(locale, "events")}
                     class="brand-button"
@@ -359,16 +382,26 @@ export function App() {
             </div>
 
             {!online ? (
-                <div class="connection-banner" role="status">
+                <div
+                    class={`connection-banner${
+                        selected_item ? "" : " connection-banner--hero"
+                    }`}
+                    role="status"
+                >
                     {translate(locale, "network_offline")}
                 </div>
             ) : source && source !== "network" ? (
-                <div class="connection-banner" role="status">
+                <div
+                    class={`connection-banner${
+                        selected_item ? "" : " connection-banner--hero"
+                    }`}
+                    role="status"
+                >
                     {source_message(source, locale)}
                 </div>
             ) : null}
 
-            <main class="app-main">
+            <main class={`app-main${selected_item ? " app-main--detail" : ""}`}>
                 {selected_item ? (
                     <ContentDetail
                         favorite={favorites.has(selected_item.id)}
@@ -379,108 +412,154 @@ export function App() {
                         on_toggle_favorite={toggle_favorite}
                         online={online}
                     />
-                ) : active_view === "about" ? (
-                    <section class="about-view">
-                        <div class="page-heading">
-                            <span class="eyebrow">Across Cycling Club Munich</span>
-                            <h1>{translate(locale, "about")}</h1>
-                            <p class="about-intro">
-                                {translate(locale, "about_intro")}
-                            </p>
-                        </div>
-                        <div class="about-links">
-                            <button
-                                onClick={() => open_site_page("about")}
-                                type="button"
-                            >
-                                {translate(locale, "about")} <span>↗</span>
-                            </button>
-                            <button
-                                onClick={() => open_site_page("partners")}
-                                type="button"
-                            >
-                                {translate(locale, "partners")} <span>↗</span>
-                            </button>
-                            <button
-                                onClick={() => open_site_page("membership")}
-                                type="button"
-                            >
-                                {translate(locale, "membership")} <span>↗</span>
-                            </button>
-                            <button
-                                onClick={() => open_site_page("insurance")}
-                                type="button"
-                            >
-                                {translate(locale, "insurance")} <span>↗</span>
-                            </button>
-                            <button
-                                onClick={() => open_site_page("privacy")}
-                                type="button"
-                            >
-                                {translate(locale, "privacy")} <span>↗</span>
-                            </button>
-                            <button onClick={() => open_site_page("")} type="button">
-                                {translate(locale, "website")} <span>↗</span>
-                            </button>
-                        </div>
-                        <SubscribeForm locale={locale} online={online} />
-                    </section>
                 ) : (
-                    <section>
-                        <div class="page-heading">
-                            <span class="eyebrow">Across Cycling Club Munich</span>
-                            <h1>{translate(locale, active_view)}</h1>
-                        </div>
-                        <label class="search-field">
-                            <span aria-hidden="true">⌕</span>
-                            <span class="sr-only">
-                                {translate(locale, "search_placeholder")}
-                            </span>
-                            <input
-                                onInput={(event) =>
-                                    set_query(event.currentTarget.value)
-                                }
-                                placeholder={translate(locale, "search_placeholder")}
-                                type="search"
-                                value={query}
-                            />
-                        </label>
-
-                        {loading ? (
-                            <div class="empty-state" role="status">
-                                <span class="loader" />
-                                {translate(locale, "loading")}
-                            </div>
-                        ) : error ? (
-                            <div class="empty-state" role="alert">
-                                <p>{error}</p>
-                                <button
-                                    class="secondary-button"
-                                    onClick={() => void load_feed(locale)}
-                                    type="button"
-                                >
-                                    {translate(locale, "retry")}
-                                </button>
-                            </div>
-                        ) : visible_items.length === 0 ? (
-                            <div class="empty-state">
-                                {translate(locale, "no_content")}
-                            </div>
+                    <>
+                        <PageHero content={hero_content} on_action={activate_hero} />
+                        {active_view === "about" ? (
+                            <section class="page-content about-view">
+                                <div class="section-heading">
+                                    <span class="eyebrow">Across, together.</span>
+                                    <h2>{section_title(active_view, locale)}</h2>
+                                </div>
+                                <div class="about-feature-grid">
+                                    <button
+                                        aria-label={translate(locale, "about")}
+                                        class="about-feature-card"
+                                        onClick={() => open_site_page("about")}
+                                        type="button"
+                                    >
+                                        <img
+                                            alt={translate(locale, "about")}
+                                            src={`${APP_CONFIG.site_url}/images/about/paths.webp`}
+                                        />
+                                        <span class="about-feature-card__overlay" />
+                                        <span class="about-feature-card__body">
+                                            <small>
+                                                {translate(locale, "about_eyebrow")}
+                                            </small>
+                                            <strong>
+                                                {translate(locale, "about")}
+                                            </strong>
+                                            <span>
+                                                {translate(locale, "about_intro")}
+                                            </span>
+                                            <b aria-hidden="true">↗</b>
+                                        </span>
+                                    </button>
+                                    <button
+                                        aria-label={translate(locale, "partners")}
+                                        class="about-feature-card"
+                                        onClick={() => open_site_page("partners")}
+                                        type="button"
+                                    >
+                                        <img
+                                            alt={translate(locale, "partners")}
+                                            src={`${APP_CONFIG.site_url}/images/about/mountains.webp`}
+                                        />
+                                        <span class="about-feature-card__overlay" />
+                                        <span class="about-feature-card__body">
+                                            <small>Across, together.</small>
+                                            <strong>
+                                                {translate(locale, "partners")}
+                                            </strong>
+                                            <span>
+                                                {translate(locale, "partners_intro")}
+                                            </span>
+                                            <b aria-hidden="true">↗</b>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="about-links">
+                                    <button
+                                        onClick={() => open_site_page("membership")}
+                                        type="button"
+                                    >
+                                        {translate(locale, "membership")} <span>↗</span>
+                                    </button>
+                                    <button
+                                        onClick={() => open_site_page("insurance")}
+                                        type="button"
+                                    >
+                                        {translate(locale, "insurance")} <span>↗</span>
+                                    </button>
+                                    <button
+                                        onClick={() => open_site_page("privacy")}
+                                        type="button"
+                                    >
+                                        {translate(locale, "privacy")} <span>↗</span>
+                                    </button>
+                                    <button
+                                        onClick={() => open_site_page("")}
+                                        type="button"
+                                    >
+                                        {translate(locale, "website")} <span>↗</span>
+                                    </button>
+                                </div>
+                                <SubscribeForm locale={locale} online={online} />
+                            </section>
                         ) : (
-                            <div class="content-grid">
-                                {visible_items.map((item) => (
-                                    <ContentCard
-                                        favorite={favorites.has(item.id)}
-                                        item={item}
-                                        key={`${item.locale}:${item.id}`}
-                                        locale={locale}
-                                        on_open={set_selected_item}
-                                        on_toggle_favorite={toggle_favorite}
+                            <section class="page-content">
+                                <div class="section-heading">
+                                    <span class="eyebrow">
+                                        Across Cycling Club Munich
+                                    </span>
+                                    <h2>{section_title(active_view, locale)}</h2>
+                                </div>
+                                <label class="search-field">
+                                    <span aria-hidden="true">⌕</span>
+                                    <span class="sr-only">
+                                        {translate(locale, "search_placeholder")}
+                                    </span>
+                                    <input
+                                        onInput={(event) =>
+                                            set_query(event.currentTarget.value)
+                                        }
+                                        placeholder={translate(
+                                            locale,
+                                            "search_placeholder",
+                                        )}
+                                        type="search"
+                                        value={query}
                                     />
-                                ))}
-                            </div>
+                                </label>
+
+                                {loading ? (
+                                    <div class="empty-state" role="status">
+                                        <span class="loader" />
+                                        {translate(locale, "loading")}
+                                    </div>
+                                ) : error ? (
+                                    <div class="empty-state" role="alert">
+                                        <p>{error}</p>
+                                        <button
+                                            class="secondary-button"
+                                            onClick={() => void load_feed(locale)}
+                                            type="button"
+                                        >
+                                            {translate(locale, "retry")}
+                                        </button>
+                                    </div>
+                                ) : visible_items.length === 0 ? (
+                                    <div class="empty-state">
+                                        {translate(locale, "no_content")}
+                                    </div>
+                                ) : (
+                                    <div class="content-grid">
+                                        {visible_items.map((item) => (
+                                            <ContentCard
+                                                favorite={favorites.has(item.id)}
+                                                item={item}
+                                                key={`${item.locale}:${item.id}`}
+                                                locale={locale}
+                                                on_open={open_item}
+                                                on_toggle_favorite={toggle_favorite}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
                         )}
-                    </section>
+                    </>
                 )}
             </main>
 
