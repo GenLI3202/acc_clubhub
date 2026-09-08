@@ -1,0 +1,21 @@
+---
+slug: isar-valley-loop
+name: (Demo) Isartal Rundfahrt
+region: munich-south
+distance: 65
+elevation: 450
+difficulty: medium
+cover: /images/shared/stock/munich-cycling.jpg
+stravaUrl: https://www.strava.com/routes/123456
+komootUrl: https://www.komoot.com/tour/123456
+xiaohongshuUrl: https://www.xiaohongshu.com/explore/123456
+aiTemplate: true
+---
+
+> **⚠️ AI Generated Test Template** — This post is auto-generated placeholder content for development/testing purposes only.
+
+Diese klassische Route schlängelt sich durch das Isartal, eine der beliebtesten Wochenendtouren des ACC.
+
+## Streckenübersicht
+
+Start im Münchner Zentrum, Fahrt südlich entlang des Isar-Radwegs, vorbei an Bad Tölz, dann zurück nach München in einer perfekten Runde.
