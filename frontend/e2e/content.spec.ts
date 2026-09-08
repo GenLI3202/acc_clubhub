@@ -88,14 +88,18 @@ test.describe('Content Pages', () => {
         ).toBeVisible();
         await expect(page.getByText('58 公里', { exact: true })).toBeVisible();
         await expect(page.getByText('590 m', { exact: true })).toBeVisible();
-        await expect(page.getByRole('link', { name: 'Komoot →' })).toHaveAttribute(
-            'href',
-            /komoot\.com/,
-        );
-        await expect(page.getByRole('link', { name: 'Strava →' })).toHaveAttribute(
-            'href',
-            /strava\.com/,
-        );
+        await expect(
+            page.getByRole("link", { name: "在 Komoot 查看完整路线" }),
+        ).toHaveAttribute("href", /komoot\.com/);
+        await expect(
+            page.getByRole("link", { name: "在 Strava 查看完整路线" }),
+        ).toHaveAttribute("href", /strava\.com/);
+        await expect(
+            page
+                .getByRole("heading", { name: "资料来源" })
+                .locator("xpath=following-sibling::ul[1]")
+                .getByRole("link"),
+        ).toHaveCount(4);
     });
 
     test('source-reported route range stays a range without elevation', async ({
@@ -116,7 +120,9 @@ test.describe('Content Pages', () => {
         test(`${lang} route detail renders localized archive`, async ({ page }) => {
             await page.goto(`/${lang}/routes/starnberg-andechs-raisting-loop`);
             await expect(page.getByRole('heading', { name: heading })).toBeVisible();
-            await expect(page.getByRole('link', { name: 'Komoot →' })).toBeVisible();
+            await expect(
+                page.getByRole("link", { name: /Komoot/ }).first(),
+            ).toBeVisible();
         });
     }
 
