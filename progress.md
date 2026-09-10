@@ -11,6 +11,13 @@
 
 ## Recent Updates
 
+- [X] **发布 Rosenheim - Kufstein 环线 Epic Ride 活动** (2026-09-10) — 分支 `phase-4/rosenheim-kufstein-ride`
+  - [X] 根据用户提供的 Komoot 路线（125 km / 2230 m 爬升 / 最高海拔约 1120 m）及真实骑行照片创建中英德三语活动页（`acc-epic-ride-rosenheim-kufstein-loop-2026-09-12`）。
+  - [X] 明确高配速长距离公路骑行定位（非休闲骑，平路巡航 25–30 km/h，爬坡各自发挥后坡顶集合，中途 Kufstein 午餐）。
+  - [X] 严格按要求载明慕尼黑集合火车信息（08:43 München Hbf Gleis 5–10 出发，09:26 抵达 Rosenheim 后开骑，RE 5 车次 79011），不臆造额外信息。
+  - [X] 补充 `epicRideSlugs` 配置使活动卡片及详情页统一定位并显示为 Epic Ride 标识，内嵌原生响应式 Komoot 路线预览与实名报名组件。
+  - [X] Astro 检查 0 errors / 0 warnings、前端 80 项单元测试及生产构建通过，本地全语言页面及封面图加载正常。
+
 - [X] **About Us 简约透明 SVG 标识** (2026-09-08)
   - [X] 按用户提供的黑色 ACROSS 参考图描摹并整理为纯矢量路径，保留几何字形与三层渐隐红色残影；移除山峰 JPG、图片视口和混合模式。
   - [X] SVG 约 2.2 KB，无嵌入图片、背景色块或滤镜；字母使用 currentColor 适配现有明暗主题，保留可访问标题和响应式宽度。
