@@ -62,3 +62,16 @@ The production defaults are built in. Copy `mobile/.env.example` to
 - Vercel environment variables are configured in the Vercel Dashboard — they do not need a `.env` file in production.
 
 <!-- END AUTO-GENERATED -->
+
+## iOS release environment
+
+Set these in the shell when running `npm run ios:check` or `npm run ios:release`
+from `mobile/`. They are build inputs, not `VITE_` runtime configuration, and
+are not automatically loaded from `.env.local`.
+
+- `IOS_TEAM_ID`: 10-character Apple Developer Team ID. Configure the associated
+  account in Xcode Settings before building. Never put Apple account passwords here.
+- `IOS_BUILD_NUMBER`: unused positive integer, up to 9 digits. Passed as
+  `CURRENT_PROJECT_VERSION` without modifying the committed project.
+- `DEVELOPER_DIR`: optional full Xcode developer path, for example
+  `/Applications/Xcode.app/Contents/Developer`, when the selected tools differ.

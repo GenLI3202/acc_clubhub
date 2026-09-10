@@ -11,6 +11,15 @@
 
 ## Recent Updates
 
+- [X] **iOS 签名发布流程准备** (2026-09-10)
+  - [X] 增加 `ios:check` 与 `ios:release`，检查 Xcode 26+、iOS SDK、团队 ID 和构建号，
+    构建共享内容与 UI 后进行签名归档和 App Store Connect IPA 导出；不自动上传。
+  - [X] 发布产物按构建号隔离并忽略，补充环境变量、TestFlight 操作和真机验收说明。
+  - [X] 共享前端生产构建、TypeScript 检查及 Capacitor iOS 同步通过，7 个插件已同步。
+  - [X] 发布脚本语法检查通过；环境检查正确提示本机缺少 Xcode 和签名构建参数。
+  - [ ] 真机包及原生验收尚未完成；打开 App Store 时遇到 Mac 锁屏，需用户解锁，
+    然后安装完整 Xcode 并配置 Apple Developer 账号。
+
 - [X] **iOS 内容同步与功能更新分离** (2026-09-10)
   - [X] iOS 跳过可执行热更新通道，功能更新通过 TestFlight/App Store 构建发布。
   - [X] Android 保留签名热更新；两端继续共用 UI、内容 feed 和报名后台。

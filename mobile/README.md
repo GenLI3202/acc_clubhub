@@ -29,7 +29,7 @@ are intentionally not exposed in the app.
 
 - Node.js 22 or newer
 - Android: JDK 21, Android SDK Platform 36, and Build Tools 36
-- iOS: a full Xcode installation with an iOS Simulator runtime
+- iOS: Xcode 26+ with iOS platform support and an iOS Simulator runtime
 
 The application id and bundle id are `de.acrosscc.clubhub`. Confirm this id
 before creating permanent store records or signing credentials.
@@ -46,6 +46,7 @@ npm run build
 npm run sync
 npm run android:debug
 npm run ios:simulator
+npm run ios:check
 ```
 
 `npm run build` first builds the Astro frontend, copies the three generated
@@ -61,6 +62,12 @@ mobile/artifacts/acc-clubhub-0.2.0-debug.apk
 The iOS simulator command uses unsigned simulator output under
 `mobile/artifacts/ios-simulator/`. TestFlight still requires an Apple Developer
 team, signing certificate, provisioning, and App Store Connect app record.
+
+## Signed iOS release
+
+The iOS build uses the same UI, bundled content, remote feeds, and API as Android.
+See [the release instructions](../docs/IOS_RELEASE.md) for signing, IPA export,
+TestFlight distribution, and the device acceptance checklist.
 
 ## Runtime configuration
 

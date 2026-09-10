@@ -10,6 +10,8 @@
         "dev": "vite",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
+        "ios:check": "node scripts/build_ios_release.mjs --check",
+        "ios:release": "node scripts/build_ios_release.mjs",
         "ios:simulator": "npm run ios:sync && node scripts/build_ios_simulator.mjs",
         "ios:sync": "npm run build && cap sync ios",
         "live-update:package": "node scripts/package_live_update.mjs",
