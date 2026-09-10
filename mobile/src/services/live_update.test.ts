@@ -6,7 +6,7 @@ const native_mocks = vi.hoisted(() => ({
     download: vi.fn(),
     downloaded: vi.fn(),
     http_get: vi.fn(),
-    is_native: vi.fn(),
+    platform: vi.fn(),
     next: vi.fn(),
     ready: vi.fn(),
     set_next: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock("@capawesome/capacitor-live-update", () => ({
 
 vi.mock("@capacitor/core", () => ({
     Capacitor: {
-        isNativePlatform: native_mocks.is_native,
+        getPlatform: native_mocks.platform,
     },
     CapacitorHttp: {
         get: native_mocks.http_get,
@@ -44,7 +44,7 @@ const BUNDLE_URL =
 
 beforeEach(() => {
     vi.clearAllMocks();
-    native_mocks.is_native.mockReturnValue(true);
+    native_mocks.platform.mockReturnValue("android");
     native_mocks.version.mockResolvedValue({ versionCode: "2" });
     native_mocks.current.mockResolvedValue({ bundleId: null });
     native_mocks.next.mockResolvedValue({ bundleId: null });
@@ -78,6 +78,18 @@ describe("mark_live_update_ready", () => {
 });
 
 describe("check_for_live_update", () => {
+    it.each(["ios", "web"])("skips executable updates on %s", async (platform) => {
+        native_mocks.platform.mockReturnValue(platform);
+
+        await mark_live_update_ready();
+        await expect(check_for_live_update()).resolves.toEqual({ status: "skipped" });
+        expect(native_mocks.ready).not.toHaveBeenCalled();
+        expect(native_mocks.version).not.toHaveBeenCalled();
+        expect(native_mocks.http_get).not.toHaveBeenCalled();
+        expect(native_mocks.download).not.toHaveBeenCalled();
+        expect(native_mocks.set_next).not.toHaveBeenCalled();
+    });
+
     it("downloads a signed update and activates it on the next launch", async () => {
         const result = await check_for_live_update();
 

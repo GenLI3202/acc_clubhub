@@ -94,7 +94,7 @@ route must be deployed before network synchronization can succeed.
 
 ## Online app updates
 
-Version 0.2.0 includes a native live-update client. After a mobile or shared-code
+Android version 0.2.0 includes a native live-update client. After a mobile or shared-code
 change is merged to `master`, GitHub Actions builds and signs the web bundle and
 publishes it to the `mobile-live-production` release. Installed apps check that
 channel on launch, foreground resume, and network reconnection. A valid update
@@ -108,7 +108,9 @@ setup, publishing, and rollback operations.
 
 Changes to native plugins, system permissions, entitlements, icons, splash
 screens, or Android/iOS code still require a new APK or IPA. Content, layout,
-navigation, CSS, images, and binary-compatible JavaScript changes do not.
+navigation, CSS, images, and binary-compatible JavaScript changes do not on Android.
+iOS skips executable live updates and receives UI/functionality changes through
+TestFlight or App Store builds. Both platforms refresh the same content feeds.
 
 ## Deep-link verification
 

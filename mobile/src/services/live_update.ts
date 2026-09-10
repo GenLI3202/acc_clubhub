@@ -80,7 +80,7 @@ async function perform_live_update_check(): Promise<LiveUpdateCheckResult> {
 }
 
 export async function mark_live_update_ready(): Promise<void> {
-    if (!Capacitor.isNativePlatform()) {
+    if (Capacitor.getPlatform() !== "android") {
         return;
     }
     try {
@@ -91,7 +91,7 @@ export async function mark_live_update_ready(): Promise<void> {
 }
 
 export function check_for_live_update(): Promise<LiveUpdateCheckResult> {
-    if (!Capacitor.isNativePlatform()) {
+    if (Capacitor.getPlatform() !== "android") {
         return Promise.resolve({ status: "skipped" });
     }
     if (active_check) {

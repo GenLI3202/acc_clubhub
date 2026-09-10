@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **iOS 内容同步与功能更新分离** (2026-09-10)
+  - [X] iOS 跳过可执行热更新通道，功能更新通过 TestFlight/App Store 构建发布。
+  - [X] Android 保留签名热更新；两端继续共用 UI、内容 feed 和报名后台。
+  - [X] 移动端 34 项单元测试通过，包含 iOS/Web 不下载或激活热更新的回归检查。
+
 - [X] **iOS 同内容安装与分发可行性评估** (2026-09-10)
   - [X] 确认现有 Capacitor iOS 工程可复用 Android 的 Preact UI、三语内容 feed 和报名 API。
   - [X] 建议先 TestFlight 真机测试，再 App Store 正式分发；俱乐部链接分发可申请 Unlisted App。

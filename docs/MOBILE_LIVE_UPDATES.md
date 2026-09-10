@@ -1,7 +1,11 @@
 # Mobile Live Updates
 
 ACC ClubHub 0.2.0 and later can install signed HTML, CSS, JavaScript, image, and
-bundled-content updates without replacing the native Android or iOS app.
+bundled-content updates without replacing the native Android app.
+
+iOS skips this executable-update channel. Publish iOS UI and functionality
+changes through a signed TestFlight/App Store build. Both platforms continue
+to refresh the same content feeds independently of executable updates.
 
 ## Publishing flow
 
