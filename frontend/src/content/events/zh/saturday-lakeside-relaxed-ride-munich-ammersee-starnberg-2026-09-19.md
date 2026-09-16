@@ -6,6 +6,7 @@ location: Forst-Kasten-Allee, Parkplatz Waldfriedhof · 3FWP+8W, 81475 München
 author: ACC Club
 date: "2026-09-19T09:45:00+02:00"
 eventType: social-ride
+cover: /images/events/saturday-lakeside-relaxed-ride-munich-ammersee-starnberg-2026-09-19/cover.jpg
 displaySections:
   - upcoming
 status: published
@@ -19,6 +20,8 @@ routeKomootUrl: "https://www.komoot.com/tour/3284712467?share_token=aemifCGgBK5O
 这次 ACC 从慕尼黑出发，骑向 **Ammersee**，中午计划在 **Klostergasthof Andechs** 一起午餐。午餐后可以继续完成路线骑回慕尼黑，也可以按自己的状态从 **Herrsching** 或 **Starnberg** 火车站乘 **S-Bahn** 返回。
 
 整体是休闲轻松骑，节奏友好，适合想在周六骑一条长一点但不追求拉爆的路线的朋友。
+
+![往期活动配图：骑友在山林间骑行](/images/events/saturday-lakeside-relaxed-ride-munich-ammersee-starnberg-2026-09-19/cover.jpg)
 
 ---
 

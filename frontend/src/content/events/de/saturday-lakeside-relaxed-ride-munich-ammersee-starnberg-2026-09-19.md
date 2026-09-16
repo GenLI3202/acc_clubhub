@@ -6,6 +6,7 @@ location: Forst-Kasten-Allee, Parkplatz Waldfriedhof · 3FWP+8W, 81475 München
 author: ACC Club
 date: "2026-09-19T09:45:00+02:00"
 eventType: social-ride
+cover: /images/events/saturday-lakeside-relaxed-ride-munich-ammersee-starnberg-2026-09-19/cover.jpg
 displaySections:
   - upcoming
 status: published
@@ -19,6 +20,8 @@ Komm diesen Samstag mit ACC auf eine entspannte Runde Richtung See.
 Wir starten in München und fahren Richtung **Ammersee**. Das Mittagessen ist im **Klostergasthof Andechs** geplant. Danach kann die Gruppe die komplette Route weiter Richtung München fahren; alternativ ist eine eigenständige Rückfahrt mit der **S-Bahn** ab **Herrsching** oder **Starnberg** möglich.
 
 Die Ausfahrt ist als entspannte Social Ride gedacht: lang genug für einen richtigen Samstag auf dem Rad, aber nicht als Drop Ride geplant.
+
+![Bild einer früheren Veranstaltung: Radfahrer in einer Berglandschaft](/images/events/saturday-lakeside-relaxed-ride-munich-ammersee-starnberg-2026-09-19/cover.jpg)
 
 ---
 
