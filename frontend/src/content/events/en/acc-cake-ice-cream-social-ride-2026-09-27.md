@@ -4,7 +4,7 @@ title: ACC Sunday Cake & Ice Cream Ride | Final Social Ride of the Year
 description: Join ACC on 27 September for a 73.1 km social ride from Waldfriedhof South Entrance, three food stops and a small surprise gift for every participant.
 location: Waldfriedhof Eingang Süd · 3FXW+V4, Hadern, 81377 München
 author: ACC Club
-date: "2026-09-27T09:00:00+02:00"
+date: "2026-09-27T10:00:00+02:00"
 eventType: social-ride
 cover: /images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg
 displaySections:
@@ -23,7 +23,7 @@ The route is about **73.1 km with 510 m of climbing**. On flat roads in calm con
 
 |  |  |
 | --- | --- |
-| **Departure** | Sunday, 27 September 2026 at **09:00**; please arrive beforehand |
+| **Departure** | Sunday, 27 September 2026 at **10:00**; please arrive beforehand |
 | **Start** | **Waldfriedhof Eingang Süd** · 3FXW+V4, Hadern, 81377 München · [Directions](https://maps.app.goo.gl/HkyR4YdMowehhx5g6) |
 | **Route** | [View on Komoot](https://www.komoot.com/de-de/tour/3306057729?share_token=a1g606M5HW1xThVj9p5QfQdclRVhqoN6W7hFQ2GQboUett60U1) |
 | **Distance / climbing** | About **73.1 km / 510 m** |

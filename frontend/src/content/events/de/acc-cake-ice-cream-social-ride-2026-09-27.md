@@ -4,7 +4,7 @@ title: ACC Sonntagsrunde mit Kuchen & Eis | Letzte Social Ride des Jahres
 description: Am 27. September fahren wir ab Waldfriedhof Südeingang eine entspannte 73,1-km-Runde mit drei Einkehrstopps und einer kleinen ACC-Überraschung für alle Teilnehmenden.
 location: Waldfriedhof Eingang Süd · 3FXW+V4, Hadern, 81377 München
 author: ACC Club
-date: "2026-09-27T09:00:00+02:00"
+date: "2026-09-27T10:00:00+02:00"
 eventType: social-ride
 cover: /images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg
 displaySections:
@@ -23,7 +23,7 @@ Die Strecke ist etwa **73,1 km lang und hat 510 Höhenmeter**. Auf flacher Strec
 
 |  |  |
 | --- | --- |
-| **Abfahrt** | Sonntag, 27. September 2026 um **09:00 Uhr**; bitte vorher da sein |
+| **Abfahrt** | Sonntag, 27. September 2026 um **10:00 Uhr**; bitte vorher da sein |
 | **Startpunkt** | **Waldfriedhof Eingang Süd** · 3FXW+V4, Hadern, 81377 München · [Anfahrt](https://maps.app.goo.gl/HkyR4YdMowehhx5g6) |
 | **Route** | [Auf Komoot ansehen](https://www.komoot.com/de-de/tour/3306057729?share_token=a1g606M5HW1xThVj9p5QfQdclRVhqoN6W7hFQ2GQboUett60U1) |
 | **Strecke / Höhenmeter** | Etwa **73,1 km / 510 m** |

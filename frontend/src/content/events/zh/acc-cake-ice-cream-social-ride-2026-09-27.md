@@ -4,7 +4,7 @@ title: ACC 蛋糕冰淇淋周日休闲骑｜年度最后一场
 description: 9 月 27 日从 Waldfriedhof 南门出发，73.1 km 休闲骑，沿途三次美食歇脚，并为参与者准备 ACC 惊喜小礼物。
 location: Waldfriedhof Eingang Süd · 3FXW+V4, Hadern, 81377 München
 author: ACC Club
-date: "2026-09-27T09:00:00+02:00"
+date: "2026-09-27T10:00:00+02:00"
 eventType: social-ride
 cover: /images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg
 displaySections:
@@ -23,7 +23,7 @@ routeKomootUrl: "https://www.komoot.com/de-de/tour/3306057729?share_token=a1g606
 
 |  |  |
 | --- | --- |
-| **出发** | 2026 年 9 月 27 日（周日）**09:00**，请提前抵达 |
+| **出发** | 2026 年 9 月 27 日（周日）**10:00**，请提前抵达 |
 | **地点** | **Waldfriedhof Eingang Süd** · 3FXW+V4, Hadern, 81377 München · [地图导航](https://maps.app.goo.gl/HkyR4YdMowehhx5g6) |
 | **路线** | [Komoot 查看路线](https://www.komoot.com/de-de/tour/3306057729?share_token=a1g606M5HW1xThVj9p5QfQdclRVhqoN6W7hFQ2GQboUett60U1) |
 | **距离 / 爬升** | 约 **73.1 km / 510 m** |
