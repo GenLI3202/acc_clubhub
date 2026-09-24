@@ -19,7 +19,7 @@ Join us on Sunday for a relaxed ride with cake, a restaurant stop and ice cream.
 
 The route is about **73.1 km with 510 m of climbing**. On flat roads in calm conditions, cruising speed will **not exceed 32 km/h**. We plan three food and rest stops at approximately 18 km, 45 km and 59 km.
 
-![Photo from an earlier event: view of a lake](/images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg)
+![Two cyclists enjoying ice cream outside an ice cream shop](/images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg)
 
 |  |  |
 | --- | --- |

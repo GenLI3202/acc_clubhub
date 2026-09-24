@@ -19,7 +19,7 @@ Am Sonntag machen wir eine entspannte Runde mit Kuchen, Restaurantbesuch und Eis
 
 Die Strecke ist etwa **73,1 km lang und hat 510 Höhenmeter**. Auf flacher Strecke bei Windstille liegt das Cruising-Tempo bei **höchstens 32 km/h**. Bei etwa 18 km, 45 km und 59 km sind Pausen mit Essen und Getränken geplant.
 
-![Foto einer früheren Ausfahrt: Blick auf einen See](/images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg)
+![Zwei Radfahrende essen Eis vor einer Eisdiele](/images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg)
 
 |  |  |
 | --- | --- |

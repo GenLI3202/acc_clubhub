@@ -19,7 +19,7 @@ routeKomootUrl: "https://www.komoot.com/de-de/tour/3306057729?share_token=a1g606
 
 路线约 **73.1 km，累计爬升 510 m**。平路、无风条件下的巡航速度**不超过 32 km/h**；沿途计划在 18 km、45 km 和 59 km 处停下来吃喝休息。
 
-![往期活动配图：湖边风景](/images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg)
+![两位骑友在冰淇淋店门口吃冰淇淋](/images/events/acc-cake-ice-cream-social-ride-2026-09-27/cover.jpg)
 
 |  |  |
 | --- | --- |
