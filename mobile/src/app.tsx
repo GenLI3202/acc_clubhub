@@ -376,6 +376,12 @@ export function App() {
                 </label>
             </header>
 
+            {APP_CONFIG.stage === "staging" ? (
+                <div class="connection-banner" role="status">
+                    {translate(locale, "staging_build")}
+                </div>
+            ) : null}
+
             <div
                 aria-hidden={pull_refresh.state === "idle" ? "true" : undefined}
                 aria-live="polite"

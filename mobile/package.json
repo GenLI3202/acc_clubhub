@@ -1,10 +1,11 @@
 {
     "name": "acc-clubhub-mobile",
     "private": true,
-    "version": "0.2.0",
+    "version": "0.3.0",
     "type": "module",
     "scripts": {
         "android:debug": "npm run sync && node scripts/build_android.mjs",
+        "android:pilot": "node scripts/build_android_pilot.mjs",
         "build": "npm run content:bundle && tsc --noEmit && vite build",
         "content:bundle": "npm --prefix ../frontend run build && node scripts/bundle_content.mjs",
         "dev": "vite",

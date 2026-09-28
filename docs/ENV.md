@@ -53,6 +53,14 @@ The production defaults are built in. Copy `mobile/.env.example` to
 | `VITE_API_URL` | No | FastAPI base URL used for live event status and registration | `https://acc-clubhub-events-ms.vercel.app` |
 | `VITE_CONTENT_BASE_URL` | No | Base URL for versioned, localized mobile content feeds | `https://www.across-cc.de/mobile-content/v1` |
 | `VITE_SITE_URL` | No | Trusted website origin used for links and deep links | `https://www.across-cc.de` |
+| `VITE_APP_ENV` | No | `production` or `staging`; staging requires explicit non-production endpoints | `production` |
+
+The signed Android staging pilot uses `ACC_PILOT_API_URL`,
+`ACC_PILOT_CONTENT_BASE_URL`, and `ACC_PILOT_SITE_URL` instead of production
+defaults. Its `ACC_PILOT_KEYSTORE`, `ACC_PILOT_STORE_PASSWORD`,
+`ACC_PILOT_KEY_ALIAS`, `ACC_PILOT_KEY_PASSWORD`, and
+`ACC_PILOT_SIGNING_OWNER` inputs are consumed only by the local build script;
+do not add them to `VITE_` variables or commit them. See `docs/ANDROID_PILOT.md`.
 
 ### Notes
 

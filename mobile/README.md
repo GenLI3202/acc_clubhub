@@ -17,13 +17,16 @@ WebView.
 - Photography-led section heroes using the website's artwork and localized copy
 - Local search and favorites
 - Live event status and email-based registration
+- Administrator login, paged event/participant lists, check-in, registration
+  cancellation/restoration, event rescheduling/cancellation, and reminders
 - Event-update subscription
 - Native share sheet and calendar editor
 - Custom-scheme and website deep-link handling
 - External-browser isolation for hosted and third-party links
 
-Admin dashboards, magic-link login, unsubscribe tokens, and other private pages
-are intentionally not exposed in the app.
+Complex season planning and content publishing remain in the website dashboard.
+The mobile administrator session is held in memory and uses the same
+single-active-session policy as the website.
 
 ## Requirements
 
@@ -45,6 +48,7 @@ npm test
 npm run build
 npm run sync
 npm run android:debug
+npm run android:pilot
 npm run ios:simulator
 npm run ios:check
 ```
@@ -56,8 +60,11 @@ Preact application.
 The Android command writes the installable test package to:
 
 ```text
-mobile/artifacts/acc-clubhub-0.2.0-debug.apk
+mobile/artifacts/acc-clubhub-0.3.0-debug.apk
 ```
+
+The signed staging pilot requires external signing credentials and three
+staging endpoints. See [the Android pilot runbook](../docs/ANDROID_PILOT.md).
 
 The iOS simulator command uses unsigned simulator output under
 `mobile/artifacts/ios-simulator/`. TestFlight still requires an Apple Developer
@@ -77,6 +84,7 @@ Copy `.env.example` to `.env.local` only when an endpoint override is needed:
 VITE_API_URL=https://acc-clubhub-events-ms.vercel.app
 VITE_CONTENT_BASE_URL=https://www.across-cc.de/mobile-content/v1
 VITE_SITE_URL=https://www.across-cc.de
+VITE_APP_ENV=production
 ```
 
 The defaults match production, so no environment file is required for the

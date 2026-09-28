@@ -3,6 +3,7 @@ import type { MobileLocale } from "../../shared/mobile_content";
 const COPY = {
     de: {
         manage: "Verwalten",
+        staging_build: "Testversion · Staging",
         admin_password: "Passwort",
         admin_login: "Als Admin anmelden",
         admin_logout: "Abmelden",
@@ -121,6 +122,7 @@ const COPY = {
     },
     en: {
         manage: "Manage",
+        staging_build: "Test build · Staging",
         admin_password: "Password",
         admin_login: "Admin sign in",
         admin_logout: "Sign out",
@@ -237,6 +239,7 @@ const COPY = {
     },
     zh: {
         manage: "管理",
+        staging_build: "测试版 · 测试环境",
         admin_password: "密码",
         admin_login: "管理员登录",
         admin_logout: "退出登录",

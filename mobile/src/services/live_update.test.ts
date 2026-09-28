@@ -45,7 +45,7 @@ const BUNDLE_URL =
 beforeEach(() => {
     vi.clearAllMocks();
     native_mocks.platform.mockReturnValue("android");
-    native_mocks.version.mockResolvedValue({ versionCode: "2" });
+    native_mocks.version.mockResolvedValue({ versionCode: "3" });
     native_mocks.current.mockResolvedValue({ bundleId: null });
     native_mocks.next.mockResolvedValue({ bundleId: null });
     native_mocks.downloaded.mockResolvedValue({ bundleIds: [] });
@@ -60,7 +60,7 @@ beforeEach(() => {
             bundle_url: BUNDLE_URL,
             checksum: "b".repeat(64),
             signature: "c2lnbmF0dXJl",
-            native_version_code: "2",
+            native_version_code: "3",
             published_at: "2026-09-08T12:00:00.000Z",
         },
         headers: {},

@@ -91,7 +91,7 @@ export async function mark_live_update_ready(): Promise<void> {
 }
 
 export function check_for_live_update(): Promise<LiveUpdateCheckResult> {
-    if (Capacitor.getPlatform() !== "android") {
+    if (!APP_CONFIG.live_update.enabled || Capacitor.getPlatform() !== "android") {
         return Promise.resolve({ status: "skipped" });
     }
     if (active_check) {
