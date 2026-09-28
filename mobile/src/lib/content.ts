@@ -5,7 +5,7 @@ import type {
 } from "../../../shared/mobile_content";
 import type { EventStatusResult } from "../services/api";
 
-export type AppView = "about" | "events" | "gear" | "media" | "training";
+export type AppView = "about" | "events" | "gear" | "manage" | "media" | "training";
 
 const TYPE_ORDER: Record<MobileContentType, number> = {
     event: 0,

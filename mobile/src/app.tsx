@@ -8,6 +8,7 @@ import type {
     MobileLocale,
 } from "../../shared/mobile_content";
 import { BottomNavigation } from "./components/BottomNavigation";
+import { AdminPage } from "./components/AdminPage";
 import { ContentCard } from "./components/ContentCard";
 import { ContentDetail } from "./components/ContentDetail";
 import { PageHero } from "./components/PageHero";
@@ -339,7 +340,9 @@ export function App() {
 
     return (
         <div class="app-shell">
-            <header class={`app-header${selected_item ? "" : " app-header--hero"}`}>
+            <header
+                class={`app-header${selected_item || active_view === "manage" ? "" : " app-header--hero"}`}
+            >
                 <button
                     aria-label={translate(locale, "events")}
                     class="brand-button"
@@ -348,6 +351,14 @@ export function App() {
                 >
                     <img alt="ACC ClubHub" src="/app-logo.png" />
                     <span>{translate(locale, "app_name")}</span>
+                </button>
+                <button
+                    aria-label={translate(locale, "website")}
+                    class="text-button"
+                    onClick={() => open_site_page("")}
+                    type="button"
+                >
+                    {translate(locale, "website")} ↗
                 </button>
                 <label class="language-picker">
                     <span class="sr-only">{translate(locale, "language")}</span>
@@ -421,8 +432,19 @@ export function App() {
                     />
                 ) : (
                     <>
-                        <PageHero content={hero_content} on_action={activate_hero} />
-                        {active_view === "about" ? (
+                        {active_view !== "manage" ? (
+                            <PageHero
+                                content={hero_content}
+                                on_action={activate_hero}
+                            />
+                        ) : null}
+                        {active_view === "manage" ? (
+                            <AdminPage
+                                locale={locale}
+                                online={online}
+                                refresh_epoch={live_refresh_epoch}
+                            />
+                        ) : active_view === "about" ? (
                             <section class="page-content about-view">
                                 <div class="section-heading">
                                     <span class="eyebrow">Across, together.</span>

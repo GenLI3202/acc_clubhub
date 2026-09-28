@@ -17,6 +17,7 @@ const NAV_ITEMS: Array<{
     { icon: "⚙", key: "gear" },
     { icon: "↗", key: "training" },
     { icon: "ACC", key: "about" },
+    { icon: "⌘", key: "manage" },
 ];
 
 export function BottomNavigation({

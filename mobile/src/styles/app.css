@@ -441,13 +441,78 @@ h2 {
     border-top: 1px solid var(--color-border);
     bottom: 0;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     left: 0;
     padding: var(--space-1) var(--space-1) env(safe-area-inset-bottom);
     position: fixed;
     right: 0;
     z-index: 20;
     backdrop-filter: blur(1rem);
+}
+
+.admin-page {
+    margin: 0 auto;
+    max-width: 48rem;
+    padding: var(--space-4) var(--space-3);
+}
+
+.admin-page .form-card {
+    max-width: 28rem;
+}
+
+.admin-toolbar,
+.admin-actions,
+.admin-pager {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-3) 0;
+}
+
+.admin-actions {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-medium);
+    padding: var(--space-3);
+}
+
+.admin-actions label {
+    display: grid;
+    gap: var(--space-1);
+    width: 100%;
+}
+
+.admin-actions input,
+.admin-actions select {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-small);
+    padding: var(--space-2);
+    width: 100%;
+}
+
+.admin-list {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.admin-row {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-small);
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    text-align: left;
+}
+
+.admin-row--button {
+    width: 100%;
+}
+
+.admin-pager {
+    align-items: center;
+    justify-content: space-between;
 }
 
 .bottom-navigation button {
