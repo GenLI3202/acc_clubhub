@@ -64,6 +64,9 @@ The production defaults are built in. Copy `mobile/.env.example` to
 `npm run android:debug` forces the read-only preview stage and public production
 feed URLs, regardless of local `VITE_` overrides. The signed Android pilot
 script forces the staging stage and its three explicit staging endpoints.
+`npm run android:connected` explicitly builds the production-connected internal
+APK with registration, management, and signed OTA updates enabled. It retains
+the local debug signing identity for replacing an existing preview installation.
 
 The signed Android staging pilot uses `ACC_PILOT_API_URL`,
 `ACC_PILOT_CONTENT_BASE_URL`, and `ACC_PILOT_SITE_URL` instead of production

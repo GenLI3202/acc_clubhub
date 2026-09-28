@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "android:debug": "node scripts/build_android.mjs",
+        "android:connected": "node scripts/build_android.mjs --connected",
         "android:pilot": "node scripts/build_android_pilot.mjs",
         "build": "npm run content:bundle && tsc --noEmit && vite build",
         "content:bundle": "npm --prefix ../frontend run build && node scripts/bundle_content.mjs",
@@ -16,6 +17,7 @@
         "ios:simulator": "npm run ios:sync && node scripts/build_ios_simulator.mjs",
         "ios:sync": "npm run build && cap sync ios",
         "live-update:package": "node scripts/package_live_update.mjs",
+        "release:check": "node scripts/check_release_services.mjs",
         "sync": "npm run build && cap sync",
         "test": "vitest run",
         "test:watch": "vitest"

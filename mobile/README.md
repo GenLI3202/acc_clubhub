@@ -48,6 +48,7 @@ npm test
 npm run build
 npm run sync
 npm run android:debug
+npm run android:connected
 npm run android:pilot
 npm run ios:simulator
 npm run ios:check
@@ -68,6 +69,17 @@ local environment file contains other endpoints. It reads public production
 content and event status, but hides registration, subscription, and management
 forms and blocks their API writes. The debug key and this preview behavior do
 not qualify it as the signed staging pilot.
+
+`android:connected` builds `artifacts/acc-clubhub-0.3.0-connected.apk` with
+production content, registration, administration, and signed remote updates
+enabled. It uses the same local debug signing identity as the preview APK, so
+it can replace that APK without uninstalling. It is a connected internal build,
+not a Play-signed release. Both commands emit a JSON artifact record with the
+source revision, endpoints, APK checksum, and verified signing digest.
+
+The connected app displays interface version 0.3.1; its unchanged native base
+is 0.3.0/code 3. A preview installation needs this one replacement because its
+remote updates were disabled. Future compatible UI changes use the OTA channel.
 
 The signed staging pilot requires external signing credentials and three
 staging endpoints. See [the Android pilot runbook](../docs/ANDROID_PILOT.md).
@@ -114,14 +126,21 @@ The app refreshes on launch, when returning to the foreground, after a network
 reconnection, or when the page is pulled down from the top. Normal content
 changes do not require a new APK. The frontend version containing the feed
 route must be deployed before network synchronization can succeed.
+While the app is visible and online, content refreshes every 60 seconds and
+event details refresh every 30 seconds. In-progress registration fields survive
+successful status refreshes; a cancellation or closed registration disables
+submission. Website content edits still need to be published on the website.
 
 ## Online app updates
 
-Android version 0.2.0 includes a native live-update client. After a mobile or shared-code
+Android versions 0.2.0 and 0.3.0 have a compatible native live-update client.
+After a mobile or shared-code
 change is merged to `master`, GitHub Actions builds and signs the web bundle and
 publishes it to the `mobile-live-production` release. Installed apps check that
 channel on launch, foreground resume, and network reconnection. A valid update
-is downloaded silently and becomes active the next time the app is opened.
+is downloaded silently and becomes active on the next cold launch. About →
+App updates shows the interface/base versions, checks for updates, and lets the
+user explicitly apply a downloaded update after confirming a reload.
 
 The app only accepts bundles from the configured repository and native version,
 and verifies them with the RSA public key embedded in the installed binary. A

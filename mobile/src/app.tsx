@@ -9,6 +9,7 @@ import type {
 } from "../../shared/mobile_content";
 import { BottomNavigation } from "./components/BottomNavigation";
 import { AdminPage } from "./components/AdminPage";
+import { AppUpdates } from "./components/AppUpdates";
 import { ContentCard } from "./components/ContentCard";
 import { ContentDetail } from "./components/ContentDetail";
 import { PageHero } from "./components/PageHero";
@@ -76,6 +77,7 @@ export function App() {
     const [favorites, set_favorites] = useState<Set<string>>(new Set());
     const [query, set_query] = useState("");
     const [online, set_online] = useState(navigator.onLine);
+    const [app_active, set_app_active] = useState(true);
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
     const [live_refresh_epoch, set_live_refresh_epoch] = useState(0);
@@ -198,6 +200,7 @@ export function App() {
     useEffect(() => {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("appStateChange", (state) => {
+            set_app_active(state.isActive);
             if (state.isActive) {
                 set_live_refresh_epoch((current) => current + 1);
                 void load_feed(locale, { background: true });
@@ -210,6 +213,18 @@ export function App() {
             void remove_listener?.();
         };
     }, [load_feed, locale]);
+
+    useEffect(() => {
+        if (!online || !app_active) {
+            return;
+        }
+        const timer = window.setInterval(() => {
+            if (document.visibilityState === "visible") {
+                void load_feed(locale, { background: true });
+            }
+        }, 60_000);
+        return (): void => window.clearInterval(timer);
+    }, [app_active, load_feed, locale, online]);
 
     useEffect(() => {
         const handle_link = (link: ContentDeepLink): void => {
@@ -585,6 +600,7 @@ export function App() {
                                 {APP_CONFIG.stage !== "preview" ? (
                                     <SubscribeForm locale={locale} online={online} />
                                 ) : null}
+                                <AppUpdates locale={locale} />
                             </section>
                         ) : (
                             <section class="page-content">

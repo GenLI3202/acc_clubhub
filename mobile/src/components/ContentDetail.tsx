@@ -110,20 +110,37 @@ export function ContentDetail({
             };
         }
 
-        set_live_state({ kind: "loading" });
-        void get_event_status(item.slug)
-            .then((result) => {
-                if (active) {
-                    set_live_state(result);
-                }
-            })
-            .catch(() => {
-                if (active) {
-                    set_live_state({ kind: "error" });
-                }
-            });
+        set_live_state((current) =>
+            current.kind === "live" && current.value.slug === item.slug
+                ? current
+                : { kind: "loading" },
+        );
+        let in_flight = false;
+        const refresh = (): void => {
+            if (in_flight) return;
+            in_flight = true;
+            void get_event_status(item.slug)
+                .then((result) => {
+                    if (active) {
+                        set_live_state(result);
+                    }
+                })
+                .catch(() => {
+                    if (active) {
+                        set_live_state({ kind: "error" });
+                    }
+                })
+                .finally(() => {
+                    in_flight = false;
+                });
+        };
+        refresh();
+        const timer = window.setInterval(() => {
+            if (document.visibilityState === "visible") refresh();
+        }, 30_000);
         return (): void => {
             active = false;
+            window.clearInterval(timer);
         };
     }, [item.slug, item.type, online, refresh_epoch, registration_refresh]);
 

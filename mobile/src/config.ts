@@ -9,7 +9,7 @@ const environment = resolve_mobile_environment({
     stage: import.meta.env.VITE_APP_ENV,
 });
 
-export const APP_VERSION = "0.3.0";
+export const APP_VERSION = "0.3.1";
 
 export const APP_CONFIG = {
     ...environment,
@@ -25,5 +25,8 @@ export const APP_CONFIG = {
             live_update_config.manifest_asset_name,
         ),
         native_version_code: live_update_config.native_version_code,
+        supported_native_version_codes:
+            live_update_config.supported_native_version_codes,
+        legacy_native_version_code: live_update_config.legacy_native_version_code,
     },
 } as const;

@@ -58,6 +58,11 @@ Collect rider and admin feedback and triage blockers before distribution.
 The debug APK is a read-only preview of public production content. It can test
 installation and browsing, but disables registration, subscription, and admin
 writes, and is not the signed staging pilot.
+The separate `npm run android:connected` command builds a production-connected,
+debug-signed internal APK with writes and OTA updates enabled. This is the
+one-time replacement for an existing read-only preview. Its signing identity
+matches the preview built on the same computer; it does not satisfy the staging
+pilot acceptance gate or establish a Play Store signing identity.
 Until a signing custodian, staging environment, prior pilot APK, and Android
 device evidence are available, this gate remains pending. iOS TestFlight and
 store artifacts are separate later gates under issue #174.
