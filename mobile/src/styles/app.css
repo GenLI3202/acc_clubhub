@@ -655,6 +655,34 @@ h2 {
     overflow-x: auto;
 }
 
+@media (max-width: 40rem) {
+    .rich-content table {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .rich-content th,
+    .rich-content td {
+        border-bottom: 1px solid var(--color-border);
+        overflow-wrap: anywhere;
+        padding: var(--space-2) var(--space-1);
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .rich-content th:first-child,
+    .rich-content td:first-child {
+        padding-left: 0;
+        width: 6rem;
+    }
+
+    .rich-content th:last-child,
+    .rich-content td:last-child {
+        padding-right: 0;
+    }
+}
+
 .link-list {
     display: flex;
     flex-wrap: wrap;
