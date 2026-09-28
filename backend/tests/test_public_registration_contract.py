@@ -324,3 +324,27 @@ def test_public_registration_errors_have_machine_codes(
     duplicate = client_no_auth.post("/api/rsvp", json=_payload())
     assert duplicate.status_code == 400
     assert duplicate.json()["detail"]["error_code"] == "DUPLICATE_REGISTRATION"
+
+
+def test_published_capacity_places_next_rider_on_waitlist(
+    client_no_auth: TestClient,
+    published_event,
+) -> None:
+    """Published capacity controls confirmation and waitlist position."""
+    published_event({
+        "slug": "trusted-ride",
+        "title": "One Seat Ride",
+        "event_date": "2030-07-01T08:00:00Z",
+        "location": "Munich",
+        "max_participants": 1,
+    })
+    first = client_no_auth.post("/api/rsvp", json=_payload())
+    second = client_no_auth.post(
+        "/api/rsvp",
+        json={**_payload(), "email": "second@example.com"},
+    )
+    assert first.status_code == 200
+    assert first.json()["status"] == "confirmed"
+    assert second.status_code == 200
+    assert second.json()["status"] == "waitlist"
+    assert second.json()["waitlist_position"] == 1
