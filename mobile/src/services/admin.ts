@@ -1,4 +1,9 @@
 import { APP_CONFIG } from "../config";
+import {
+    clear_admin_refresh_token,
+    load_admin_refresh_token,
+    save_admin_refresh_token,
+} from "./admin_session_store";
 
 export interface AdminEvent {
     id: number;
@@ -57,8 +62,20 @@ export class AdminOutcomeUnknownError extends Error {
 }
 
 let active_token: string | undefined;
+let active_refresh_token: string | undefined;
+let access_expires_at = 0;
 let session_generation = 0;
+let session_restoring = false;
+let restore_promise: Promise<void> | undefined;
+let refresh_promise: Promise<string> | undefined;
+let storage_task: Promise<void> = Promise.resolve();
 const session_listeners = new Set<() => void>();
+
+interface MobileSessionResponse {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+}
 
 function is_record(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -145,16 +162,56 @@ function parse_delivery_result(value: unknown): DeliveryResult {
     return value;
 }
 
-function publish_session(token?: string): void {
-    active_token = token;
-    session_generation += 1;
+function notify_session(): void {
     for (const listener of session_listeners) {
         listener();
     }
 }
 
+function publish_session(session?: MobileSessionResponse): void {
+    active_token = session?.access_token;
+    active_refresh_token = session?.refresh_token;
+    access_expires_at = session ? Date.now() + session.expires_in * 1_000 : 0;
+    session_generation += 1;
+    notify_session();
+}
+
+function persist_refresh_token(token?: string): Promise<void> {
+    const next = storage_task
+        .catch(() => undefined)
+        .then(() =>
+            token ? save_admin_refresh_token(token) : clear_admin_refresh_token(),
+        );
+    storage_task = next;
+    return next;
+}
+
+function parse_mobile_session(value: unknown): MobileSessionResponse {
+    if (
+        !is_record(value) ||
+        typeof value.access_token !== "string" ||
+        !value.access_token ||
+        typeof value.refresh_token !== "string" ||
+        !value.refresh_token ||
+        typeof value.expires_in !== "number" ||
+        !Number.isFinite(value.expires_in) ||
+        value.expires_in <= 0
+    ) {
+        throw new Error("Invalid administrator login response");
+    }
+    return {
+        access_token: value.access_token,
+        refresh_token: value.refresh_token,
+        expires_in: value.expires_in,
+    };
+}
+
 export function has_admin_session(): boolean {
     return active_token !== undefined;
+}
+
+export function admin_session_is_restoring(): boolean {
+    return session_restoring;
 }
 
 export function subscribe_admin_session(listener: () => void): () => void {
@@ -187,6 +244,112 @@ async function error_message(response: Response): Promise<string> {
     return `Request failed with ${response.status}`;
 }
 
+async function exchange_refresh_token(
+    refresh_token: string,
+): Promise<MobileSessionResponse> {
+    const response = await fetch(`${APP_CONFIG.api_url}/auth/mobile-refresh`, {
+        body: JSON.stringify({ refresh_token }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        signal: AbortSignal.timeout(20_000),
+    });
+    if (!response.ok) {
+        throw new AdminApiError(await error_message(response), response.status);
+    }
+    return parse_mobile_session(await response.json());
+}
+
+async function renew_admin_session(
+    refresh_token: string,
+    generation: number,
+): Promise<string> {
+    const session = await exchange_refresh_token(refresh_token);
+    if (generation !== session_generation) {
+        throw new AdminSessionChangedError();
+    }
+    await persist_refresh_token(session.refresh_token);
+    if (generation !== session_generation) {
+        throw new AdminSessionChangedError();
+    }
+    if (has_admin_session()) {
+        active_token = session.access_token;
+        active_refresh_token = session.refresh_token;
+        access_expires_at = Date.now() + session.expires_in * 1_000;
+    } else {
+        publish_session(session);
+    }
+    return session.access_token;
+}
+
+async function clear_local_admin_session(): Promise<void> {
+    publish_session();
+    await persist_refresh_token();
+}
+
+export function restore_admin_session(): Promise<void> {
+    if (APP_CONFIG.stage === "preview" || has_admin_session()) {
+        return Promise.resolve();
+    }
+    if (restore_promise) {
+        return restore_promise;
+    }
+    const generation = session_generation;
+    session_restoring = true;
+    notify_session();
+    restore_promise = (async () => {
+        try {
+            const token = await load_admin_refresh_token();
+            if (token && generation === session_generation) {
+                await renew_admin_session(token, generation);
+            }
+        } catch (error) {
+            if (
+                generation === session_generation &&
+                error instanceof AdminApiError &&
+                (error.status === 401 || error.status === 403)
+            ) {
+                await clear_local_admin_session();
+            }
+        } finally {
+            session_restoring = false;
+            restore_promise = undefined;
+            notify_session();
+        }
+    })();
+    return restore_promise;
+}
+
+async function ensure_admin_access(): Promise<string> {
+    if (!active_token) {
+        throw new AdminApiError("Not authenticated", 401);
+    }
+    if (Date.now() < access_expires_at - 60_000) {
+        return active_token;
+    }
+    if (!active_refresh_token) {
+        await clear_local_admin_session();
+        throw new AdminApiError("Administrator session expired", 401);
+    }
+    if (!refresh_promise) {
+        const generation = session_generation;
+        refresh_promise = renew_admin_session(active_refresh_token, generation)
+            .catch(async (error: unknown) => {
+                if (
+                    generation === session_generation &&
+                    error instanceof AdminApiError &&
+                    (error.status === 401 || error.status === 403)
+                ) {
+                    await clear_local_admin_session();
+                }
+                throw error;
+            })
+            .finally(() => {
+                refresh_promise = undefined;
+            });
+    }
+    return refresh_promise;
+}
+
 async function admin_request<T>(
     path: string,
     method: "GET" | "POST" = "GET",
@@ -196,10 +359,10 @@ async function admin_request<T>(
     if (APP_CONFIG.stage === "preview") {
         throw new AdminApiError("Management is disabled in the preview build", 403);
     }
-    const token = active_token;
     const generation = session_generation;
-    if (!token) {
-        throw new AdminApiError("Not authenticated", 401);
+    const token = await ensure_admin_access();
+    if (generation !== session_generation) {
+        throw new AdminSessionChangedError();
     }
 
     let response: Response;
@@ -224,7 +387,7 @@ async function admin_request<T>(
         throw new AdminSessionChangedError();
     }
     if (response.status === 401 || response.status === 403) {
-        publish_session();
+        await clear_local_admin_session();
         throw new AdminApiError("Administrator session expired", response.status);
     }
     if (method === "POST" && response.status >= 500) {
@@ -271,30 +434,34 @@ export async function login_admin(email: string, password: string): Promise<void
     if (!response.ok) {
         throw new AdminApiError(await error_message(response), response.status);
     }
-    const payload: unknown = await response.json();
-    if (
-        typeof payload !== "object" ||
-        payload === null ||
-        !("access_token" in payload) ||
-        typeof payload.access_token !== "string" ||
-        payload.access_token.length === 0
-    ) {
-        throw new Error("Invalid administrator login response");
-    }
+    const session = parse_mobile_session(await response.json());
     if (generation !== session_generation) {
         throw new AdminSessionChangedError();
     }
-    publish_session(payload.access_token);
+    await persist_refresh_token(session.refresh_token);
+    if (generation !== session_generation) {
+        throw new AdminSessionChangedError();
+    }
+    publish_session(session);
 }
 
 export async function logout_admin(): Promise<void> {
     const token = active_token;
-    publish_session();
-    if (!token || APP_CONFIG.stage === "preview") {
+    const refresh_token = active_refresh_token;
+    if (APP_CONFIG.stage === "preview") {
+        publish_session();
+        return;
+    }
+    await clear_local_admin_session();
+    if (!token && !refresh_token) {
         return;
     }
     const response = await fetch(`${APP_CONFIG.api_url}/auth/mobile-logout`, {
-        headers: { Authorization: `Bearer ${token}` },
+        body: refresh_token ? JSON.stringify({ refresh_token }) : undefined,
+        headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(refresh_token ? { "Content-Type": "application/json" } : {}),
+        },
         method: "POST",
         signal: AbortSignal.timeout(10_000),
     });

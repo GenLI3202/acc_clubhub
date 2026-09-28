@@ -4,6 +4,7 @@ import type { MobileLocale } from "../../../shared/mobile_content";
 import { translate } from "../i18n";
 import {
     cancel_admin_event,
+    admin_session_is_restoring,
     has_admin_session,
     list_admin_events,
     list_admin_rsvps,
@@ -46,6 +47,7 @@ function format_event_date(value: string | null, locale: MobileLocale): string {
 
 export function AdminPage({ locale, online, refresh_epoch }: AdminPageProps) {
     const [authenticated, set_authenticated] = useState(has_admin_session());
+    const [restoring, set_restoring] = useState(admin_session_is_restoring());
     const [email, set_email] = useState("");
     const [password, set_password] = useState("");
     const [events, set_events] = useState<AdminEvent[]>([]);
@@ -71,6 +73,10 @@ export function AdminPage({ locale, online, refresh_epoch }: AdminPageProps) {
         () =>
             subscribe_admin_session(() => {
                 const signed_in = has_admin_session();
+                set_restoring(admin_session_is_restoring());
+                if (signed_in === authenticated) {
+                    return;
+                }
                 set_authenticated(signed_in);
                 set_events([]);
                 set_selected_event(undefined);
@@ -81,7 +87,7 @@ export function AdminPage({ locale, online, refresh_epoch }: AdminPageProps) {
                 set_rsvp_offset(0);
                 set_reload((current) => current + 1);
             }),
-        [],
+        [authenticated],
     );
 
     useEffect(() => {
@@ -256,7 +262,11 @@ export function AdminPage({ locale, online, refresh_epoch }: AdminPageProps) {
                 </div>
             ) : null}
 
-            {!authenticated ? (
+            {!authenticated && restoring ? (
+                <p aria-live="polite" class="status-card">
+                    {translate(locale, "admin_restoring")}
+                </p>
+            ) : !authenticated ? (
                 <form class="form-card" onSubmit={sign_in}>
                     <label>
                         <span>{translate(locale, "email")}</span>

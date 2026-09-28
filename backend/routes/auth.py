@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRY_HOURS = 24
+MOBILE_REFRESH_EXPIRY_DAYS = 365
 DASHBOARD_SESSION_STATE_ID = "dashboard"
 
 
@@ -31,6 +32,12 @@ class EmailLoginRequest(BaseModel):
 
     email: EmailStr
     password: str
+
+
+class MobileRefreshRequest(BaseModel):
+    """Persisted mobile credential used to renew an administrator session."""
+
+    refresh_token: str
 
 
 def _get_session_secret() -> str:
@@ -88,6 +95,25 @@ def create_jwt_session(
     if email:
         payload["email"] = _normalize_email(email)
     return jwt.encode(payload, secret, algorithm=JWT_ALGORITHM)
+
+
+def create_mobile_refresh_token(email: str, session_id: str) -> str:
+    """Create a revocable refresh credential for one mobile installation."""
+    now = int(time.time())
+    return jwt.encode(
+        {
+            "admin_id": email,
+            "auth_provider": "email",
+            "email": _normalize_email(email),
+            "session_id": session_id,
+            "token_type": "mobile_refresh",
+            "jti": secrets.token_urlsafe(16),
+            "exp": now + MOBILE_REFRESH_EXPIRY_DAYS * 24 * 3600,
+            "iat": now,
+        },
+        _get_session_secret(),
+        algorithm=JWT_ALGORITHM,
+    )
 
 
 def activate_admin_session(db: Session, session_id: str, email: str) -> None:
@@ -192,6 +218,15 @@ def verify_jwt_session(token: str) -> dict:
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid session")
 
+    if payload.get("token_type") == "mobile_refresh":
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    return _verify_admin_identity(payload)
+
+
+def _verify_admin_identity(payload: dict) -> dict:
+    """Check the administrator identity in a signed session payload."""
+
     provider = payload.get("auth_provider")
     if provider == "email":
         email = payload.get("email")
@@ -200,6 +235,51 @@ def verify_jwt_session(token: str) -> dict:
     else:
         raise HTTPException(status_code=401, detail="Invalid session")
 
+    return payload
+
+
+def verify_mobile_refresh_token(token: str) -> dict:
+    """Verify a refresh credential without accepting an access token."""
+    try:
+        payload = jwt.decode(
+            token,
+            _get_session_secret(),
+            algorithms=[JWT_ALGORITHM],
+        )
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "INVALID_MOBILE_SESSION",
+                "message": "Mobile administrator session expired or invalid",
+            },
+        )
+    if payload.get("token_type") != "mobile_refresh":
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "INVALID_MOBILE_SESSION",
+                "message": "A mobile refresh credential is required",
+            },
+        )
+    return _verify_admin_identity(payload)
+
+
+def get_active_mobile_refresh(token: str, db: Session) -> dict:
+    """Verify the mobile credential and its active server-side session."""
+    try:
+        payload = verify_mobile_refresh_token(token)
+        verify_active_admin_session(payload, db)
+    except HTTPException as exc:
+        if exc.status_code != 401 or isinstance(exc.detail, dict):
+            raise
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "INVALID_MOBILE_SESSION",
+                "message": "Mobile administrator session expired or revoked",
+            },
+        ) from exc
     return payload
 
 
@@ -259,7 +339,7 @@ def mobile_login(
     response: Response,
     db: Session = Depends(get_db),
 ) -> dict:
-    """Issue a short-lived bearer session without setting a browser cookie."""
+    """Issue mobile access and persisted refresh credentials."""
     email = _normalize_email(payload.email)
     if not is_admin_email_allowed(email) or not is_dashboard_password_valid(
         payload.password,
@@ -284,6 +364,31 @@ def mobile_login(
     response.headers["Cache-Control"] = "no-store"
     return {
         "access_token": token,
+        "refresh_token": create_mobile_refresh_token(email, session_id),
+        "token_type": "bearer",
+        "expires_in": JWT_EXPIRY_HOURS * 3600,
+    }
+
+
+@router.post("/auth/mobile-refresh")
+def mobile_refresh(
+    payload: MobileRefreshRequest,
+    response: Response,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Renew a mobile session while its device credential remains active."""
+    session = get_active_mobile_refresh(payload.refresh_token, db)
+    email = session["email"]
+    session_id = session["session_id"]
+    response.headers["Cache-Control"] = "no-store"
+    return {
+        "access_token": create_jwt_session(
+            admin_id=email,
+            auth_provider="email",
+            email=email,
+            session_id=session_id,
+        ),
+        "refresh_token": create_mobile_refresh_token(email, session_id),
         "token_type": "bearer",
         "expires_in": JWT_EXPIRY_HOURS * 3600,
     }
@@ -291,10 +396,15 @@ def mobile_login(
 
 @router.post("/auth/mobile-logout")
 def mobile_logout(
-    admin: dict = Depends(get_mobile_admin),
+    request: Request,
+    payload: Optional[MobileRefreshRequest] = None,
     db: Session = Depends(get_db),
 ) -> dict:
-    """Revoke the active bearer session used by the mobile client."""
+    """Revoke a mobile session by refresh credential or bearer token."""
+    if payload is not None:
+        admin = get_active_mobile_refresh(payload.refresh_token, db)
+    else:
+        admin = get_mobile_admin(request, db)
     session_id = admin.get("session_id")
     if isinstance(session_id, str):
         clear_admin_session(db, session_id)
