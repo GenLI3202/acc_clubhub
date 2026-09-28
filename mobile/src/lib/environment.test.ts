@@ -9,7 +9,7 @@ describe("resolve_mobile_environment", () => {
             resolve_mobile_environment({
                 api_url: "https://acc-clubhub-events-ms.vercel.app/alternate-path",
                 content_base_url:
-                    "https://content.staging.example.org/mobile-content/v1",
+                    "https://content.staging.example.org/mobile-content/live/v1",
                 site_url: "https://www.staging.example.org",
                 stage: "staging",
             }),
@@ -19,7 +19,7 @@ describe("resolve_mobile_environment", () => {
     it("keeps staging URLs out of the production live-update channel", () => {
         const result = resolve_mobile_environment({
             api_url: "https://api.staging.example.org",
-            content_base_url: "https://www.staging.example.org/mobile-content/v1",
+            content_base_url: "https://www.staging.example.org/mobile-content/live/v1",
             site_url: "https://www.staging.example.org",
             stage: "staging",
         });

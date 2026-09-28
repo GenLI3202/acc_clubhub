@@ -24,7 +24,8 @@ production OpenAPI probe did not show these routes, so their deployment remains
 unverified. Authentication from a physical Android shell also remains untested.
 
 The mobile feed is generated from published Markdown using the existing
-recurrence resolver. It is bundled in the APK and refreshed from the website.
+recurrence resolver. A static snapshot is bundled in the APK; the website's
+live endpoint resolves recurring occurrences on each online request.
 An event slug links feed content to a live database row. This branch adds a
 website endpoint that returns exact published occurrence metadata, including
 capacity, deadline and official-ride status. The backend checks that endpoint

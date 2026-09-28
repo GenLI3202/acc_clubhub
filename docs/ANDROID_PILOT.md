@@ -15,6 +15,8 @@ upgrade an installed pilot that uses the release key.
 Run from `mobile/` after committing the exact source revision. Supply real
 HTTPS staging endpoints and external signing credentials through your secret
 manager; the shell variable names are shown here without values:
+The content URL must serve the dynamic `/mobile-content/live/v1` feed; the
+static `/mobile-content/v1` path is reserved for the packaged fallback.
 
 ```bash
 ACC_PILOT_API_URL=... \

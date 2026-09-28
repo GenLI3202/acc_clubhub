@@ -38,7 +38,7 @@ describe("load_content_feed", () => {
 
         expect(result).toEqual({ feed, source: "network" });
         expect(fetch_mock).toHaveBeenCalledWith(
-            "https://www.across-cc.de/mobile-content/v1/zh.json",
+            "https://www.across-cc.de/mobile-content/live/v1/zh.json",
             expect.objectContaining({ cache: "no-store" }),
         );
     });
@@ -55,7 +55,7 @@ describe("load_content_feed", () => {
 
         expect(result).toEqual({ feed, source: "cache" });
         expect(match).toHaveBeenCalledWith(
-            "https://www.across-cc.de/mobile-content/v1/en.json",
+            "https://www.across-cc.de/mobile-content/live/v1/en.json",
         );
     });
 

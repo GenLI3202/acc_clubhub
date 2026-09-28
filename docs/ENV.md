@@ -56,7 +56,7 @@ The production defaults are built in. Copy `mobile/.env.example` to
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
 | `VITE_API_URL` | No | FastAPI base URL used for live event status and registration | `https://acc-clubhub-events-ms.vercel.app` |
-| `VITE_CONTENT_BASE_URL` | No | Base URL for versioned, localized mobile content feeds | `https://www.across-cc.de/mobile-content/v1` |
+| `VITE_CONTENT_BASE_URL` | No | Base URL for live, localized mobile content feeds | `https://www.across-cc.de/mobile-content/live/v1` |
 | `VITE_SITE_URL` | No | Trusted website origin used for links and deep links | `https://www.across-cc.de` |
 | `VITE_APP_ENV` | No | `production` or `staging`; staging requires explicit non-production endpoints | `production` |
 

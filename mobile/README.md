@@ -82,7 +82,7 @@ Copy `.env.example` to `.env.local` only when an endpoint override is needed:
 
 ```text
 VITE_API_URL=https://acc-clubhub-events-ms.vercel.app
-VITE_CONTENT_BASE_URL=https://www.across-cc.de/mobile-content/v1
+VITE_CONTENT_BASE_URL=https://www.across-cc.de/mobile-content/live/v1
 VITE_SITE_URL=https://www.across-cc.de
 VITE_APP_ENV=production
 ```
@@ -96,8 +96,10 @@ The installed app does not connect to a developer computer. Content follows
 this publishing path:
 
 1. Editors update the existing Astro Markdown collections.
-2. The frontend deployment generates the sanitized, versioned feeds at
-   `/mobile-content/v1/{locale}.json`.
+2. The frontend deployment serves a sanitized, versioned live feed at
+   `/mobile-content/live/v1/{locale}.json`, resolving recurring activities
+   on each request. Its build also creates a static snapshot at
+   `/mobile-content/v1/{locale}.json` for the APK fallback.
 3. The app downloads the selected locale directly from the public website.
 4. A valid response replaces the last-known-good cache; failed requests keep
    cached or bundled content available.

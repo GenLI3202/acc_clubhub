@@ -21,7 +21,7 @@ to refresh the same content feeds independently of executable updates.
    rolled back and blocked.
 
 Content feeds continue to update separately from
-`https://www.across-cc.de/mobile-content/v1/{locale}.json`.
+`https://www.across-cc.de/mobile-content/live/v1/{locale}.json`.
 
 ## One-time signing setup
 

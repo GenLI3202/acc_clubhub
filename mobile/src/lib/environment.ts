@@ -6,7 +6,7 @@ export interface MobileEnvironment {
 }
 
 const PRODUCTION_API = "https://acc-clubhub-events-ms.vercel.app";
-const PRODUCTION_CONTENT = "https://www.across-cc.de/mobile-content/v1";
+const PRODUCTION_CONTENT = "https://www.across-cc.de/mobile-content/live/v1";
 const PRODUCTION_SITE = "https://www.across-cc.de";
 
 function normalize_https_url(value: string): string {
