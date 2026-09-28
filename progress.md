@@ -20,6 +20,10 @@
     移动界面版本升至 0.3.3，可通过签名热更新下发，无需重新安装 APK。
   - [X] 后端 271 项、移动端 73 项测试通过，移动端类型检查与生产构建通过；
     390px 浏览器验证静止和网络切换时刷新区域高度为 0，手动下拉触发一次内容请求。
+  - [X] [PR #190](https://github.com/GenLI3202/acc_clubhub/pull/190)
+    已合入 `master`；生产 API 的 `/auth/mobile-refresh` 已核验。
+    [签名热更新](https://github.com/GenLI3202/acc_clubhub/actions/runs/36468182527)
+    已发布 `git-e44a4b14…`，native 2/3 的 ZIP 校验和及 RSA 签名均通过核验。
   - [ ] 真机登录恢复和页面滚动行为待 Android 设备验收。
 
 - [X] **Android 活动信息表格窄屏排版修复** (2026-09-28)
