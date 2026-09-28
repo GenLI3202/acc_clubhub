@@ -60,6 +60,91 @@ let active_token: string | undefined;
 let session_generation = 0;
 const session_listeners = new Set<() => void>();
 
+function is_record(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function is_count(value: unknown): value is number {
+    return typeof value === "number" && Number.isInteger(value) && value >= 0;
+}
+
+function is_nullable_string(value: unknown): value is string | null {
+    return value === null || typeof value === "string";
+}
+
+function is_admin_event(value: unknown): value is AdminEvent {
+    if (!is_record(value)) {
+        return false;
+    }
+    return (
+        is_count(value.id) &&
+        typeof value.title === "string" &&
+        typeof value.slug === "string" &&
+        is_nullable_string(value.event_date) &&
+        is_nullable_string(value.location) &&
+        is_count(value.confirmed_count) &&
+        is_count(value.waitlist_count) &&
+        is_count(value.cancelled_count) &&
+        (value.max_participants === null || is_count(value.max_participants)) &&
+        is_nullable_string(value.cancelled_at)
+    );
+}
+
+function is_admin_rsvp(value: unknown): value is AdminRsvp {
+    if (!is_record(value)) {
+        return false;
+    }
+    return (
+        is_count(value.id) &&
+        typeof value.name === "string" &&
+        typeof value.email === "string" &&
+        typeof value.status === "string" &&
+        is_nullable_string(value.checked_in_at) &&
+        is_nullable_string(value.created_at)
+    );
+}
+
+function parse_event_page(value: unknown): { events: AdminEvent[]; total: number } {
+    if (
+        !is_record(value) ||
+        !Array.isArray(value.events) ||
+        !value.events.every(is_admin_event) ||
+        !is_count(value.total)
+    ) {
+        throw new Error("Invalid administrator event list");
+    }
+    return { events: value.events, total: value.total };
+}
+
+function parse_rsvp_page(value: unknown): { rsvps: AdminRsvp[]; total: number } {
+    if (
+        !is_record(value) ||
+        !Array.isArray(value.rsvps) ||
+        !value.rsvps.every(is_admin_rsvp) ||
+        !is_count(value.total)
+    ) {
+        throw new Error("Invalid administrator participant list");
+    }
+    return { rsvps: value.rsvps, total: value.total };
+}
+
+function parse_delivery_result(value: unknown): DeliveryResult {
+    if (!is_record(value)) {
+        throw new Error("Invalid administrator action response");
+    }
+    const counters = [value.sent, value.skipped, value.failed];
+    if (
+        (value.success !== true && !counters.every(is_count)) ||
+        counters.some((count) => count !== undefined && !is_count(count)) ||
+        (value.message !== undefined && typeof value.message !== "string") ||
+        (value.new_status !== undefined && typeof value.new_status !== "string") ||
+        (value.promoted !== undefined && typeof value.promoted !== "string")
+    ) {
+        throw new Error("Invalid administrator action response");
+    }
+    return value;
+}
+
 function publish_session(token?: string): void {
     active_token = token;
     session_generation += 1;
@@ -106,6 +191,7 @@ async function admin_request<T>(
     path: string,
     method: "GET" | "POST" = "GET",
     body?: object,
+    parse: (value: unknown) => T = (value) => value as T,
 ): Promise<T> {
     const token = active_token;
     const generation = session_generation;
@@ -144,14 +230,23 @@ async function admin_request<T>(
     if (!response.ok) {
         throw new AdminApiError(await error_message(response), response.status);
     }
-    let result: T;
+    let payload: unknown;
     try {
-        result = (await response.json()) as T;
+        payload = await response.json();
     } catch {
         if (method === "POST") {
             throw new AdminOutcomeUnknownError();
         }
         throw new Error("Invalid administrator response");
+    }
+    let result: T;
+    try {
+        result = parse(payload);
+    } catch (error) {
+        if (method === "POST") {
+            throw new AdminOutcomeUnknownError();
+        }
+        throw error;
     }
     if (generation !== session_generation) {
         throw new AdminSessionChangedError();
@@ -200,7 +295,12 @@ export function list_admin_events(offset: number): Promise<{
     events: AdminEvent[];
     total: number;
 }> {
-    return admin_request(`/api/admin/events/page?offset=${offset}&limit=20`);
+    return admin_request(
+        `/api/admin/events/page?offset=${offset}&limit=20`,
+        "GET",
+        undefined,
+        parse_event_page,
+    );
 }
 
 export function list_admin_rsvps(
@@ -209,6 +309,9 @@ export function list_admin_rsvps(
 ): Promise<{ rsvps: AdminRsvp[]; total: number }> {
     return admin_request(
         `/api/admin/events/${event_id}/rsvps/page?offset=${offset}&limit=20`,
+        "GET",
+        undefined,
+        parse_rsvp_page,
     );
 }
 
@@ -217,16 +320,24 @@ export function update_admin_rsvp(
     rsvp_id: number,
     action: "check-in" | "check-in/undo" | "cancel" | "restore",
 ): Promise<DeliveryResult> {
-    return admin_request(`/api/admin/events/${event_id}/rsvp/${action}`, "POST", {
-        rsvp_id,
-    });
+    return admin_request(
+        `/api/admin/events/${event_id}/rsvp/${action}`,
+        "POST",
+        { rsvp_id },
+        parse_delivery_result,
+    );
 }
 
 export function cancel_admin_event(
     event_id: number,
     reason: string,
 ): Promise<DeliveryResult> {
-    return admin_request(`/api/admin/events/${event_id}/cancel`, "POST", { reason });
+    return admin_request(
+        `/api/admin/events/${event_id}/cancel`,
+        "POST",
+        { reason },
+        parse_delivery_result,
+    );
 }
 
 export function reschedule_admin_event(
@@ -236,14 +347,19 @@ export function reschedule_admin_event(
     departure_time: string,
     expected_event_date: string,
 ): Promise<DeliveryResult> {
-    return admin_request(`/api/admin/events/${event_id}/reschedule`, "POST", {
-        departure_date,
-        departure_time,
-        expected_event_date,
-        reason,
-    });
+    return admin_request(
+        `/api/admin/events/${event_id}/reschedule`,
+        "POST",
+        { departure_date, departure_time, expected_event_date, reason },
+        parse_delivery_result,
+    );
 }
 
 export function notify_admin_event(event_id: number): Promise<DeliveryResult> {
-    return admin_request(`/api/admin/events/${event_id}/notify`, "POST");
+    return admin_request(
+        `/api/admin/events/${event_id}/notify`,
+        "POST",
+        undefined,
+        parse_delivery_result,
+    );
 }

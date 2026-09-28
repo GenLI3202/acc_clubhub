@@ -78,4 +78,34 @@ describe("administrator bearer session", () => {
         );
         expect(fetch_mock).toHaveBeenCalledTimes(2);
     });
+
+    it("rejects malformed private list data", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi
+                .fn()
+                .mockResolvedValueOnce(json_response({ access_token: "test-token" }))
+                .mockResolvedValueOnce(
+                    json_response({ events: [{ id: 1 }], total: 1 }),
+                ),
+        );
+        await login_admin("leader@example.test", "secret");
+        await expect(list_admin_events(0)).rejects.toThrow(
+            "Invalid administrator event list",
+        );
+    });
+
+    it("treats malformed success after a write as an unknown result", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi
+                .fn()
+                .mockResolvedValueOnce(json_response({ access_token: "test-token" }))
+                .mockResolvedValueOnce(json_response({ unexpected: true })),
+        );
+        await login_admin("leader@example.test", "secret");
+        await expect(notify_admin_event(1)).rejects.toBeInstanceOf(
+            AdminOutcomeUnknownError,
+        );
+    });
 });
