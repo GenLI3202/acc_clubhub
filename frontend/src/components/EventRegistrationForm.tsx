@@ -33,15 +33,8 @@ interface FormData {
 
 export function EventRegistrationForm({
     eventSlug,
-    eventTitle,
-    eventLocation,
-    eventDate,
-    eventType,
     maxParticipants,
     registrationDeadline,
-    wechatQrCode,
-    distanceKm,
-    routeKomootUrl,
     isACCOfficialRide,
     lang,
     apiUrl,
@@ -105,15 +98,6 @@ export function EventRegistrationForm({
                 body: JSON.stringify({
                     ...formData,
                     event_slug: eventSlug,
-                    event_title: eventTitle,
-                    event_location: eventLocation,
-                    event_date: eventDate,
-                    event_type: eventType,
-                    max_participants: maxParticipants,
-                    registration_deadline: registrationDeadline,
-                    wechat_qr_code: wechatQrCode,
-                    distance_km: distanceKm,
-                    route_komoot_url: routeKomootUrl,
                 }),
             });
 

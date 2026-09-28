@@ -182,7 +182,11 @@ def test_new_rsvp_triggers_alerts_after_commit(
     db: Session,
     sample_event: Event,
     monkeypatch: Any,
+    published_event,
 ) -> None:
+    sample_event.event_date = datetime(2030, 7, 1, tzinfo=timezone.utc)
+    db.commit()
+    published_event(sample_event)
     """Every active claimed leader receives one alert after commit."""
     leader_one = _add_rsvp(
         db,
@@ -277,7 +281,11 @@ def test_registration_alert_failure_does_not_rollback_rsvp(
     db: Session,
     sample_event: Event,
     monkeypatch: Any,
+    published_event,
 ) -> None:
+    sample_event.event_date = datetime(2030, 7, 1, tzinfo=timezone.utc)
+    db.commit()
+    published_event(sample_event)
     """A failed leader alert remains non-fatal after RSVP commit."""
 
     def fail_alerts(**_kwargs: Any) -> int:

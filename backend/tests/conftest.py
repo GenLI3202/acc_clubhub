@@ -4,20 +4,23 @@ Uses SQLite in-memory DB — no PostgreSQL triggers run here.
 Business logic that normally relies on triggers must be explicit in Python.
 """
 
+# Patch DATABASE_URL before importing app modules so they don't need Neon
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Patch DATABASE_URL before importing app modules so they don't need Neon
-import os
 os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 os.environ.setdefault("RESEND_API_KEY", "")
 os.environ.setdefault("ADMIN_SESSION_SECRET", "test-secret")
 
-from sqlalchemy.pool import StaticPool
-from models import Base, Event, RSVP  # noqa: E402
 from database import get_db  # noqa: E402
+from models import RSVP, Base, Event  # noqa: E402
+from services.event_schedule import as_utc  # noqa: E402
+from services.published_events import PublishedRegistrationEvent  # noqa: E402
+from sqlalchemy.pool import StaticPool
 
 SQLITE_URL = "sqlite:///:memory:"
 
@@ -29,6 +32,42 @@ engine = create_engine(
     poolclass=StaticPool,
 )
 TestingSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+@pytest.fixture()
+def published_event(monkeypatch):
+    """Serve one trusted published occurrence without network access."""
+    def publish(source: Event | dict) -> PublishedRegistrationEvent:
+        if isinstance(source, Event):
+            payload = {
+                "slug": source.slug,
+                "title": source.title,
+                "event_date": as_utc(source.event_date).isoformat(),
+                "location": source.location or "",
+                "event_type": source.event_type,
+                "max_participants": source.max_participants,
+                "registration_deadline": (
+                    as_utc(source.registration_deadline).isoformat()
+                    if source.registration_deadline else None
+                ),
+                "distance_km": (
+                    float(source.distance_km) if source.distance_km else None
+                ),
+            }
+        else:
+            payload = source
+        event = PublishedRegistrationEvent.model_validate(payload)
+
+        def lookup(slug: str) -> PublishedRegistrationEvent:
+            if slug != event.slug:
+                raise AssertionError(f"Unexpected published event lookup: {slug}")
+            return event
+
+        monkeypatch.setattr("routes.rsvp.fetch_published_event", lookup)
+        monkeypatch.setattr("routes.events.fetch_published_event", lookup)
+        return event
+
+    return publish
 
 
 @pytest.fixture(autouse=True)
@@ -73,7 +112,7 @@ def client(db):
 
 @pytest.fixture()
 def client_no_auth(db):
-    """FastAPI TestClient with DB override but NO admin-auth override (tests 401 paths)."""
+    """FastAPI TestClient with DB override and live admin auth."""
     from app import app
 
     def override_get_db():

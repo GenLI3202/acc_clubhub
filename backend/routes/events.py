@@ -3,19 +3,25 @@ ACC ClubHub Backend - Events API Routes
 Phase 4.3: Event management endpoints
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from datetime import datetime, timezone
 from typing import List, Optional
+
 from database import get_db
+from domain.exceptions import (
+    PublishedEventNotFoundError,
+    PublishedEventUnavailableError,
+)
+from fastapi import APIRouter, Depends, HTTPException, status
 from models import Event
 from pydantic import BaseModel, field_validator
-from services.event_schedule import event_input_as_utc
-from datetime import datetime, timezone
 from routes.auth import get_current_admin
 from services.event_counts import (
     get_available_spots,
     sync_event_current_participants,
 )
+from services.event_schedule import event_input_as_utc
+from services.published_events import fetch_published_event
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -111,7 +117,7 @@ def get_events(
     Returns:
     - List of events
     """
-    query = db.query(Event).filter(Event.is_public == True)
+    query = db.query(Event).filter(Event.is_public)
 
     # Apply filters
     if event_type:
@@ -140,13 +146,56 @@ def get_event(slug: str, db: Session = Depends(get_db)):
     Returns:
     - Event details with participant info
     """
-    event = db.query(Event).filter(Event.slug == slug).first()
-
-    if not event:
+    try:
+        published = fetch_published_event(slug)
+    except PublishedEventNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event with slug '{slug}' not found"
+            detail={
+                "error_code": "EVENT_NOT_PUBLISHED",
+                "message": "Published event not found",
+            },
         )
+    except PublishedEventUnavailableError:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error_code": "PUBLISHED_EVENT_UNAVAILABLE",
+                "message": "Published event state could not be verified",
+            },
+        )
+
+    event = db.query(Event).filter(Event.slug == slug).first()
+    if event is not None and not event.is_public:
+        raise HTTPException(
+            status_code=404,
+            detail={"error_code": "EVENT_NOT_PUBLIC", "message": "Event is not public"},
+        )
+    if event is None:
+        return {
+            "id": 0,
+            "slug": published.slug,
+            "title": published.title,
+            "description": published.description,
+            "event_date": published.event_date,
+            "location": published.location,
+            "event_type": published.event_type,
+            "max_participants": published.max_participants,
+            "current_participants": 0,
+            "registration_deadline": (
+                None
+                if published.registration_reopened
+                else published.registration_deadline
+            ),
+            "cancellation_reason": None,
+            "cancelled_at": None,
+            "previous_event_date": None,
+            "reschedule_reason": None,
+            "rescheduled_at": None,
+            "is_cancelled": False,
+            "available_spots": published.max_participants,
+            "is_public": True,
+        }
 
     return _event_response(db, event)
 

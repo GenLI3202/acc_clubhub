@@ -11,6 +11,15 @@
 
 ## Recent Updates
 
+- [X] **Issue #174 公开报名活动权威来源** (2026-09-28)
+  - [X] 网站新增已发布活动单条数据端点，后端以其活动日期、名额、截止时间、
+    官方骑行与外部报名状态为准；网页和安卓报名只提交活动 slug 与骑友资料。
+  - [X] 未发布、来源不可用、过期活动及未确认官方骑行保险的请求在写入前被拒绝；
+    首位报名者仍可创建活动行，未同步活动可获取实时公开状态。
+  - [X] 后端全量 257 项、前端 80 项及移动端 45 项测试通过；前端检查/构建和
+    移动端构建通过，本地 Astro 活动数据端点对已发布活动返回 200。
+  - [ ] 此合同尚未部署或经隔离 staging 写入验证；部署顺序须先网站后后端。
+
 - [X] **Issue #174 Android 测试构建隔离与签名准备** (2026-09-28)
   - [X] App/Android 版本升至 0.3.0/code 3；测试构建要求三项明确的非生产
     HTTPS 端点，显示测试标识并停用生产热更新。
@@ -689,7 +698,7 @@
 - [ ] Cancelled users cannot re-register via frontend OR be restored by admins, violating DB constraints and sync logic — high
 - [ ] Frontend npm audit reports production advisories in Astro / @astrojs/vercel and transitive dependencies — high; likely needs a planned Astro major-version upgrade
 - [ ] Public RSVP/subscription/login endpoints lack rate limiting or CAPTCHA — high
-- [ ] `POST /api/rsvp` accepts event metadata from public clients and can create/update event rows — high; preserve workflow only with server-side event allowlisting or admin sync
+- [ ] `POST /api/rsvp` published-content verification has passed local tests but is not deployed — high; deploy website endpoint before backend and validate staging registration
 - [ ] About responsive E2E tests still target the removed stamp-wall component — low
 
 ## Architecture Decisions

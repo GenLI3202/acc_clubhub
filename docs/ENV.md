@@ -16,6 +16,7 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to sign admin session cookies | `replace-with-a-long-random-secret` |
 | `ADMIN_EMAIL_ALLOWLIST` | Yes | Comma-separated emails allowed to access `/dashboard` by email login. For the current setup, configure only the shared ride leader admin account in Vercel. | `admin@example.com` |
 | `ADMIN_MAGIC_LINK_PASSWORD` | Yes | Shared password required before direct dashboard email login | `replace-with-dashboard-password` |
+| `PUBLIC_FRONTEND_URL` | Yes | Trusted HTTPS website origin for published event verification and registration links | `https://www.across-cc.de` |
 | `ADMIN_GITHUB_ALLOWLIST` | No | Optional fallback GitHub usernames allowed to access `/dashboard` | `genli3202,rideleader1` |
 | `GITHUB_CLIENT_ID` | No | Optional fallback GitHub OAuth App client ID | `Ov23lixxxxxxxxxxxxxx` |
 | `GITHUB_CLIENT_SECRET` | No | Optional fallback GitHub OAuth App client secret | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
@@ -29,6 +30,10 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
 - **Dashboard email login**: configure `ADMIN_EMAIL_ALLOWLIST` in the
   backend Vercel project with only the shared ride leader admin account.
   Configure `ADMIN_MAGIC_LINK_PASSWORD` in the same backend project.
+- **Published events**: deploy the website's
+  `/api/registration-events/{slug}.json` endpoint before updating the backend.
+  Point `PUBLIC_FRONTEND_URL` to that exact website origin. Public RSVP fails
+  closed if the website is unavailable or the slug is unpublished.
 - **GitHub OAuth**: GitHub Developer settings → OAuth Apps. Callback URL:
   `https://www.across-cc.de/auth/callback`
 

@@ -27,6 +27,27 @@ const fields = {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("submit_registration", () => {
+    it("sends rider data and slug without editable event metadata", async () => {
+        const fetch_mock = vi.fn().mockResolvedValue(
+            new Response(
+                JSON.stringify({ message: "registered", status: "confirmed" }),
+                {
+                    status: 200,
+                },
+            ),
+        );
+        vi.stubGlobal("fetch", fetch_mock);
+
+        await submit_registration(item, "en", fields);
+
+        const request = fetch_mock.mock.calls[0][1] as RequestInit;
+        expect(JSON.parse(request.body as string)).toEqual({
+            ...fields,
+            event_slug: "ride",
+            lang: "en",
+        });
+    });
+
     it("reports an unknown outcome after a network failure without retrying", async () => {
         const fetch_mock = vi.fn().mockRejectedValue(new TypeError("Network failed"));
         vi.stubGlobal("fetch", fetch_mock);

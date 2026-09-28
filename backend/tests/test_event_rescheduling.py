@@ -238,7 +238,9 @@ def test_reschedule_survives_sync_and_stale_registration(
     client: TestClient,
     db: Session,
     future_event: Event,
+    published_event,
 ) -> None:
+    published_event(future_event)
     client.post(
         f"/api/admin/events/{future_event.id}/reschedule",
         json={**payload(), "departure_date": "2030-07-07"},

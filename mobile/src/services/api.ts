@@ -87,23 +87,13 @@ export async function submit_registration(
     locale: MobileLocale,
     fields: RegistrationFields,
 ): Promise<RegistrationResult> {
-    const komoot_link = item.links.find((link) => link.kind === "komoot");
     let response: Response;
     try {
         response = await fetch(`${APP_CONFIG.api_url}/api/rsvp`, {
             body: JSON.stringify({
                 ...fields,
-                event_date: item.metadata.event_date,
-                event_location: item.metadata.location ?? "",
                 event_slug: item.slug,
-                event_title: item.title,
-                event_type: item.metadata.event_type ?? "social-ride",
                 lang: locale,
-                max_participants: item.metadata.max_participants,
-                registration_deadline: item.metadata.registration_deadline,
-                route_komoot_url: komoot_link?.url,
-                distance_km: item.metadata.distance_km,
-                wechat_qr_code: item.metadata.wechat_qr_code,
             }),
             headers: {
                 Accept: "application/json",

@@ -25,14 +25,16 @@ unverified. Authentication from a physical Android shell also remains untested.
 
 The mobile feed is generated from published Markdown using the existing
 recurrence resolver. It is bundled in the APK and refreshed from the website.
-An event slug links feed content to a live database row. The current public
-registration route may create a row from client-supplied metadata and may
-overwrite existing event fields. This prevents the database from being an
-authoritative source for capacity and deadlines until a trusted content sync
-contract is implemented and deployed. Unpublished planner records must remain
-private. The mobile client currently disables registration when an event is
-not present in the public API, so first registration to a newly published event
-requires that trusted sync path before this gate can pass.
+An event slug links feed content to a live database row. This branch adds a
+website endpoint that returns exact published occurrence metadata, including
+capacity, deadline and official-ride status. The backend checks that endpoint
+before public RSVP or live event detail, rejects unpublished and unavailable
+content, and uses only the published metadata for event creation or updates.
+Newly published events can return live status before the first RSVP creates a
+database row. Website and Android requests now send only rider data and slug;
+legacy metadata fields are accepted but ignored. Deploy the website endpoint
+before the backend change. The endpoint and backend contract are verified
+locally but are not deployed, and no staging write path has been exercised.
 
 Build prerequisites: Node 22+, JDK 21, Android SDK Platform/Build Tools 36.
 The working Python 3.13 test environment is `/private/tmp/acc-issue174-venv`.
