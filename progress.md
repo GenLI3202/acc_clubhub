@@ -24,6 +24,10 @@
   - [X] 移动端 64 项及后端 269 项测试通过；TypeScript、格式检查和 Android
     联网 APK 构建通过。产物为 `mobile/artifacts/acc-clubhub-0.3.0-connected.apk`，
     同名 JSON 记录源码、签名、环境和校验和。
+  - [X] 从干净源码 `a21efd1e` 重建联网 APK 并验签；APK SHA-256 为
+    `8800f71ee626ebdff22d6dd26d62352a95e11d82b0ec1100f4a5f8cc11a69c64`。
+    native 2/3 热更新清单均通过同一公钥的 RSA/SHA-256 核验；打包负向测试
+    确认 preview、脏源码及错误 revision 均被拒绝。产物只在本地，尚未上传。
   - [X] 发布工作流新增只读线上就绪检查；本次检查准确拒绝发布：三语动态 feed
     与已发布索引均为 404，线上 API 缺少 `/auth/mobile-login`。
   - [ ] 网站、API、签名热更新仍未发布；线上渠道仍为 2026-09-08 的 native 2
