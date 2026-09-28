@@ -3,10 +3,11 @@ import { translate } from "../i18n";
 import {
     format_item_date,
     format_item_type,
-    registration_time_is_open,
+    registration_live_is_open,
     split_event_items,
     type AppView,
 } from "./content";
+import type { EventLiveState } from "../services/api";
 
 export interface PageHeroContent {
     action_label?: string;
@@ -51,8 +52,14 @@ function create_event_hero(
     items: MobileContentItem[],
     locale: MobileLocale,
     site_url: string,
+    live_events: Record<string, EventLiveState>,
 ): PageHeroContent {
-    const item = select_hero_item(split_event_items(items).upcoming, "event");
+    const item = select_hero_item(
+        split_event_items(items, live_events).upcoming.filter(
+            (candidate) => !live_events[candidate.slug]?.is_cancelled,
+        ),
+        "event",
+    );
     if (!item) {
         return {
             description: translate(locale, "events_intro"),
@@ -64,11 +71,12 @@ function create_event_hero(
     }
     const date = format_item_date(item, locale);
     const location = item.metadata.location;
+    const live_event = live_events[item.slug];
+    const registration_open = live_event
+        ? registration_live_is_open(item, { kind: "live", value: live_event })
+        : false;
     return {
-        action_label: translate(
-            locale,
-            registration_time_is_open(item) ? "register" : "details",
-        ),
+        action_label: translate(locale, registration_open ? "register" : "details"),
         action_target: "content",
         description: item.description,
         eyebrow: format_item_type(item, locale),
@@ -85,9 +93,10 @@ export function create_page_hero(
     items: MobileContentItem[],
     locale: MobileLocale,
     site_url: string,
+    live_events: Record<string, EventLiveState> = {},
 ): PageHeroContent {
     if (view === "events") {
-        return create_event_hero(items, locale, site_url);
+        return create_event_hero(items, locale, site_url, live_events);
     }
     if (view === "about") {
         return {

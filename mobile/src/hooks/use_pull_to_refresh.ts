@@ -47,6 +47,7 @@ export function use_pull_to_refresh({
         }
 
         let start_y: number | undefined;
+        let start_x: number | undefined;
         let tracking = false;
 
         const clear_pull = (): void => {
@@ -57,6 +58,7 @@ export function use_pull_to_refresh({
         const cancel_pull = (): void => {
             tracking = false;
             start_y = undefined;
+            start_x = undefined;
             clear_pull();
         };
 
@@ -65,16 +67,29 @@ export function use_pull_to_refresh({
                 return;
             }
             start_y = event.touches[0]?.clientY;
-            tracking = start_y !== undefined;
+            start_x = event.touches[0]?.clientX;
+            tracking = start_y !== undefined && start_x !== undefined;
         };
 
         const handle_touch_move = (event: TouchEvent): void => {
-            if (!tracking || start_y === undefined || !page_is_at_top()) {
+            if (
+                !tracking ||
+                start_x === undefined ||
+                start_y === undefined ||
+                !page_is_at_top()
+            ) {
                 cancel_pull();
                 return;
             }
             const current_y = event.touches[0]?.clientY;
-            if (current_y === undefined) {
+            const current_x = event.touches[0]?.clientX;
+            if (current_y === undefined || current_x === undefined) {
+                cancel_pull();
+                return;
+            }
+            const horizontal_distance = Math.abs(current_x - start_x);
+            const vertical_distance = Math.abs(current_y - start_y);
+            if (horizontal_distance > 10 && horizontal_distance > vertical_distance) {
                 cancel_pull();
                 return;
             }

@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { useEffect, useState } from "preact/hooks";
 
 import type { MobileLocale } from "../../../shared/mobile_content";
@@ -12,6 +13,9 @@ import {
 } from "../services/live_update";
 
 export function AppUpdates({ locale }: { locale: MobileLocale }) {
+    const is_ios = Capacitor.getPlatform() === "ios";
+    const supports_live_updates =
+        APP_CONFIG.live_update.enabled && Capacitor.getPlatform() === "android";
     const [status, set_status] = useState<LiveUpdateCheckStatus>("skipped");
     const [checking, set_checking] = useState(false);
     const [confirming, set_confirming] = useState(false);
@@ -55,7 +59,8 @@ export function AppUpdates({ locale }: { locale: MobileLocale }) {
             set_checking(false);
         }
     };
-    const ready = status === "downloaded" || status === "pending";
+    const ready =
+        supports_live_updates && (status === "downloaded" || status === "pending");
 
     return (
         <section class="form-card" aria-label={translate(locale, "app_updates")}>
@@ -71,16 +76,18 @@ export function AppUpdates({ locale }: { locale: MobileLocale }) {
             <p aria-live="polite">
                 {translate(
                     locale,
-                    ready
-                        ? "update_ready"
-                        : status === "current"
-                          ? "update_current"
-                          : status === "unavailable"
-                            ? "update_unavailable"
-                            : "update_intro",
+                    is_ios
+                        ? "update_ios"
+                        : ready
+                          ? "update_ready"
+                          : status === "current"
+                            ? "update_current"
+                            : status === "unavailable"
+                              ? "update_unavailable"
+                              : "update_intro",
                 )}
             </p>
-            {APP_CONFIG.live_update.enabled ? (
+            {supports_live_updates ? (
                 <button
                     class="secondary-button"
                     disabled={checking}
@@ -89,9 +96,9 @@ export function AppUpdates({ locale }: { locale: MobileLocale }) {
                 >
                     {translate(locale, checking ? "update_checking" : "update_check")}
                 </button>
-            ) : (
+            ) : !is_ios ? (
                 <p>{translate(locale, "update_disabled")}</p>
-            )}
+            ) : null}
             {ready ? (
                 <>
                     {confirming ? (

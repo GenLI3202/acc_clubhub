@@ -9,7 +9,7 @@ const environment = resolve_mobile_environment({
     stage: import.meta.env.VITE_APP_ENV,
 });
 
-export const APP_VERSION = "0.3.3";
+export const APP_VERSION = "0.3.7";
 
 export const APP_CONFIG = {
     ...environment,

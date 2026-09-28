@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
 import { normalize_komoot_embed_url } from "../../../shared/komoot_embed";
@@ -19,17 +19,14 @@ import {
     open_external_url,
     share_content,
 } from "../services/native";
-import { translate } from "../i18n";
+import { translate, translate_cancellation_reason, translate_link } from "../i18n";
 import { RegistrationForm } from "./RegistrationForm";
 
 interface ContentDetailProps {
-    favorite: boolean;
     item: MobileContentItem;
     locale: MobileLocale;
-    on_back: () => void;
     on_message: (message: string) => void;
     on_registered: () => void;
-    on_toggle_favorite: (item: MobileContentItem) => void;
     online: boolean;
     refresh_epoch: number;
 }
@@ -68,16 +65,14 @@ const ALLOWED_BODY_TAGS = [
 ];
 
 export function ContentDetail({
-    favorite,
     item,
     locale,
-    on_back,
     on_message,
     on_registered,
-    on_toggle_favorite,
     online,
     refresh_epoch,
 }: ContentDetailProps) {
+    const registration_section = useRef<HTMLElement>(null);
     const [live_state, set_live_state] = useState<LiveState>({ kind: "idle" });
     const [registration_result, set_registration_result] =
         useState<RegistrationResult>();
@@ -188,6 +183,10 @@ export function ContentDetail({
         online &&
         live_state.kind === "live" &&
         registration_live_is_open(item, live_state);
+    const cancellation_reason = translate_cancellation_reason(
+        locale,
+        live_event?.cancellation_reason ?? null,
+    );
     const date = format_item_date(item, locale, live_event?.event_date);
 
     const handle_body_click = (event: MouseEvent): void => {
@@ -213,21 +212,21 @@ export function ContentDetail({
 
     return (
         <article class="detail-view">
-            <div class="detail-view__toolbar">
-                <button class="text-button" onClick={on_back} type="button">
-                    ← {translate(locale, "back")}
-                </button>
-                <button
-                    aria-label={translate(locale, favorite ? "unfavorite" : "favorite")}
-                    aria-pressed={favorite}
-                    class="icon-button"
-                    onClick={() => on_toggle_favorite(item)}
-                    type="button"
-                >
-                    <span aria-hidden="true">{favorite ? "★" : "☆"}</span>
-                </button>
+            <div class="detail-view__intro">
+                <span class="eyebrow">
+                    {item.type === "event" ? format_item_type(item, locale) : date}
+                </span>
+                <h1>{item.title}</h1>
+                {item.type === "event" ? <p class="detail-view__date">{date}</p> : null}
+                {live_event?.is_cancelled ? (
+                    <div class="status-card status-card--error" role="status">
+                        <strong>{translate(locale, "cancelled")}</strong>
+                        {cancellation_reason ? (
+                            <span>{cancellation_reason}</span>
+                        ) : null}
+                    </div>
+                ) : null}
             </div>
-
             {item.cover_image ? (
                 <img
                     alt={item.title}
@@ -236,16 +235,24 @@ export function ContentDetail({
                 />
             ) : null}
             <div class="detail-view__heading">
-                <span class="eyebrow">
-                    {item.type === "event"
-                        ? `${format_item_type(item, locale)} · ${date}`
-                        : date}
-                </span>
-                <h1>{item.title}</h1>
                 <p>{item.description}</p>
                 <div class="detail-view__facts">
                     {item.metadata.location ? (
-                        <span>⌖ {item.metadata.location}</span>
+                        <span>
+                            <svg
+                                aria-hidden="true"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.8"
+                                viewBox="0 0 24 24"
+                            >
+                                <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+                                <circle cx="12" cy="10" r="2.5" />
+                            </svg>
+                            {item.metadata.location}
+                        </span>
                     ) : null}
                     {item.metadata.distance_km ? (
                         <span>↔ {item.metadata.distance_km} km</span>
@@ -254,6 +261,28 @@ export function ContentDetail({
                         <span>↗ {item.metadata.elevation_m} m</span>
                     ) : null}
                 </div>
+                {item.type === "event" &&
+                registration_open &&
+                !registration_result &&
+                APP_CONFIG.stage !== "preview" ? (
+                    <button
+                        aria-controls={
+                            registration_link ? undefined : "event-registration"
+                        }
+                        class="primary-button detail-view__register-shortcut"
+                        onClick={() =>
+                            registration_link
+                                ? run_action(() => open_external_url(registration_link))
+                                : registration_section.current?.scrollIntoView({
+                                      behavior: "smooth",
+                                      block: "start",
+                                  })
+                        }
+                        type="button"
+                    >
+                        {translate(locale, "register")} {registration_link ? "↗" : "↓"}
+                    </button>
+                ) : null}
             </div>
 
             <div class="action-row">
@@ -292,22 +321,19 @@ export function ContentDetail({
                             }
                             type="button"
                         >
-                            {translate(locale, "open_link")} {link.kind} ↗
+                            {translate_link(locale, link.kind)}{" "}
+                            <span aria-hidden="true">↗</span>
                         </button>
                     ))}
                 </div>
             ) : null}
 
-            {item.type === "event" ? (
-                <section class="registration-section">
-                    {live_event?.is_cancelled ? (
-                        <div class="status-card status-card--error">
-                            <strong>{translate(locale, "cancelled")}</strong>
-                            {live_event.cancellation_reason ? (
-                                <span>{live_event.cancellation_reason}</span>
-                            ) : null}
-                        </div>
-                    ) : null}
+            {item.type === "event" && !live_event?.is_cancelled ? (
+                <section
+                    class="registration-section"
+                    id="event-registration"
+                    ref={registration_section}
+                >
                     {live_event?.available_spots === 0 ? (
                         <div class="status-card">{translate(locale, "event_full")}</div>
                     ) : null}

@@ -1,3 +1,4 @@
+import { App } from "@capacitor/app";
 import { LiveUpdate } from "@capawesome/capacitor-live-update";
 import { Capacitor, CapacitorHttp } from "@capacitor/core";
 
@@ -38,6 +39,9 @@ export async function apply_live_update(): Promise<void> {
 }
 
 export async function get_native_version(): Promise<string | undefined> {
+    if (Capacitor.getPlatform() === "ios") {
+        return (await App.getInfo()).version;
+    }
     if (Capacitor.getPlatform() !== "android") {
         return undefined;
     }

@@ -1,7 +1,7 @@
 {
     "name": "acc-clubhub-mobile",
     "private": true,
-    "version": "0.3.0",
+    "version": "0.3.7",
     "type": "module",
     "scripts": {
         "android:debug": "node scripts/build_android.mjs",

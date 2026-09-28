@@ -13,6 +13,7 @@
     --color-surface: #ffffff;
     --font-body:
         Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --glass-filter: blur(1.85rem) saturate(180%);
     --radius-large: 1.5rem;
     --radius-medium: 1rem;
     --radius-small: 0.7rem;
