@@ -1,4 +1,4 @@
-import type { MobileLocale } from "../../shared/mobile_content";
+import type { MobileContentLink, MobileLocale } from "../../shared/mobile_content";
 
 const COPY = {
     de: {
@@ -9,6 +9,9 @@ const COPY = {
         update_current: "Die neueste veröffentlichte Version ist installiert.",
         update_unavailable: "Update nicht verfügbar. Bitte später erneut versuchen.",
         update_intro: "Kompatible Updates werden automatisch heruntergeladen.",
+        update_ios:
+            "App-Updates erhältst du über TestFlight oder den App Store. " +
+            "Inhalte aktualisierst du durch Herunterziehen.",
         update_checking: "Wird geprüft …",
         update_check: "Nach Updates suchen",
         update_disabled: "Dieser Build erhält keine Online-Updates.",
@@ -99,12 +102,23 @@ const COPY = {
         no_content: "Keine passenden Inhalte gefunden.",
         notes: "Notizen (optional)",
         open_link: "Öffnen",
+        link_website: "Auf Website ansehen",
+        link_komoot: "Route in Komoot öffnen",
+        link_strava: "Auf Strava ansehen",
+        link_video: "Video ansehen",
+        link_xiaohongshu: "Auf Xiaohongshu ansehen",
         privacy: "Datenschutz",
         privacy_accept: "Ich akzeptiere die Datenschutzerklärung.",
         partners: "Partner",
         partners_intro:
             "Über Berge, durch Täler, ohne Grenzen. Mit den richtigen Partnern kommt man weiter.",
         primary_navigation: "Hauptnavigation",
+        nav_events: "Touren",
+        nav_media: "Medien",
+        nav_gear: "Gear",
+        nav_training: "Training",
+        nav_about: "ACC",
+        nav_manage: "Admin",
         pull_to_refresh: "Zum Aktualisieren ziehen",
         refresh: "Inhalte aktualisieren",
         refreshing: "Inhalte werden aktualisiert",
@@ -145,6 +159,9 @@ const COPY = {
         update_current: "You have the latest published version.",
         update_unavailable: "Update unavailable. Please try again later.",
         update_intro: "Compatible updates download automatically.",
+        update_ios:
+            "App updates are delivered through TestFlight or the App Store. " +
+            "Pull down to refresh content.",
         update_checking: "Checking …",
         update_check: "Check for updates",
         update_disabled: "This build does not receive online updates.",
@@ -233,12 +250,23 @@ const COPY = {
         no_content: "No matching content found.",
         notes: "Notes (optional)",
         open_link: "Open",
+        link_website: "View on website",
+        link_komoot: "Open route in Komoot",
+        link_strava: "View on Strava",
+        link_video: "Watch video",
+        link_xiaohongshu: "View on Xiaohongshu",
         privacy: "Privacy",
         privacy_accept: "I accept the privacy policy.",
         partners: "Partners",
         partners_intro:
             "Across mountains, across paths, across borders. The right partners make the distance possible.",
         primary_navigation: "Primary navigation",
+        nav_events: "Events",
+        nav_media: "Media",
+        nav_gear: "Gear",
+        nav_training: "Train",
+        nav_about: "About",
+        nav_manage: "Admin",
         pull_to_refresh: "Pull to refresh",
         refresh: "Refresh content",
         refreshing: "Refreshing content",
@@ -279,6 +307,7 @@ const COPY = {
         update_current: "当前已是最新发布版本。",
         update_unavailable: "暂时无法更新，请稍后重试。",
         update_intro: "兼容的功能更新会自动下载。",
+        update_ios: "应用更新通过 TestFlight 或 App Store 安装。下拉页面可刷新内容。",
         update_checking: "正在检查…",
         update_check: "检查更新",
         update_disabled: "此版本未开启远程更新。",
@@ -364,11 +393,22 @@ const COPY = {
         no_content: "没有找到匹配内容。",
         notes: "备注（可选）",
         open_link: "打开",
+        link_website: "查看官网详情与评论",
+        link_komoot: "在 Komoot 查看路线",
+        link_strava: "在 Strava 查看",
+        link_video: "观看视频",
+        link_xiaohongshu: "在小红书查看",
         privacy: "隐私政策",
         privacy_accept: "我同意隐私政策。",
         partners: "合作伙伴",
         partners_intro: "跨山，越路，无边界。身边有好伙伴，才走得更远。",
         primary_navigation: "主要导航",
+        nav_events: "活动",
+        nav_media: "影像",
+        nav_gear: "装备",
+        nav_training: "训练",
+        nav_about: "关于",
+        nav_manage: "管理",
         pull_to_refresh: "下拉刷新",
         refresh: "刷新内容",
         refreshing: "正在刷新内容",
@@ -402,6 +442,14 @@ const COPY = {
 
 export type CopyKey = keyof (typeof COPY)["en"];
 
+const LINK_LABEL_KEYS: Record<MobileContentLink["kind"], CopyKey> = {
+    website: "link_website",
+    komoot: "link_komoot",
+    strava: "link_strava",
+    video: "link_video",
+    xiaohongshu: "link_xiaohongshu",
+};
+
 export function translate(
     locale: MobileLocale,
     key: CopyKey,
@@ -412,4 +460,26 @@ export function translate(
         value = value.replaceAll(`{${name}}`, String(replacement));
     }
     return value;
+}
+
+export function translate_link(
+    locale: MobileLocale,
+    kind: MobileContentLink["kind"],
+): string {
+    return translate(locale, LINK_LABEL_KEYS[kind]);
+}
+
+const CANCELLATION_REASON_KEYS: Record<string, CopyKey> = {
+    weather: "admin_reason_weather",
+    insufficient_staff: "admin_reason_insufficient_staff",
+    unsafe_conditions: "admin_reason_unsafe_conditions",
+    other: "admin_reason_other",
+};
+
+export function translate_cancellation_reason(
+    locale: MobileLocale,
+    reason: string | null,
+): string | undefined {
+    const key = reason ? CANCELLATION_REASON_KEYS[reason] : undefined;
+    return key ? translate(locale, key) : undefined;
 }

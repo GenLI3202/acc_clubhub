@@ -117,7 +117,7 @@ export async function get_public_event_statuses(): Promise<EventLiveState[]> {
         `${APP_CONFIG.api_url}/api/events?limit=100&upcoming_only=true`,
         {
             headers: { Accept: "application/json" },
-            signal: AbortSignal.timeout(8_000),
+            signal: AbortSignal.timeout(20_000),
         },
     );
     if (!response.ok) {

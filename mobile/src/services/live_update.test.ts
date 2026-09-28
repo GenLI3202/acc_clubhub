@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
     enabled: true,
     get: vi.fn(),
+    get_app_info: vi.fn(),
     platform: vi.fn(),
     plugin: {
         getVersionCode: vi.fn(),
@@ -22,6 +23,7 @@ vi.mock("@capacitor/core", () => ({
     CapacitorHttp: { get: mocks.get },
 }));
 vi.mock("@capawesome/capacitor-live-update", () => ({ LiveUpdate: mocks.plugin }));
+vi.mock("@capacitor/app", () => ({ App: { getInfo: mocks.get_app_info } }));
 vi.mock("../config", () => ({
     APP_CONFIG: {
         live_update: {
@@ -64,7 +66,16 @@ beforeEach(() => {
     mocks.get.mockResolvedValue({ status: 200, data: manifest() });
 });
 
-describe("Android live updates", () => {
+describe("Native app updates", () => {
+    it("reads the iOS version without invoking the Android update channel", async () => {
+        mocks.platform.mockReturnValue("ios");
+        mocks.get_app_info.mockResolvedValue({ version: "0.3.3" });
+        const { get_native_version } = await import("./live_update");
+        expect(await get_native_version()).toBe("0.3.3");
+        expect(mocks.plugin.getVersionName).not.toHaveBeenCalled();
+        expect(mocks.get).not.toHaveBeenCalled();
+    });
+
     it("marks the loaded Android bundle ready before checking updates", async () => {
         const { initialize_live_updates } = await import("./live_update");
         await initialize_live_updates();

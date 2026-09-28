@@ -15,6 +15,7 @@ import { ContentDetail } from "./components/ContentDetail";
 import { PageHero } from "./components/PageHero";
 import { SubscribeForm } from "./components/SubscribeForm";
 import { APP_CONFIG } from "./config";
+import { use_edge_swipe_back } from "./hooks/use_edge_swipe_back";
 import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
 import {
@@ -89,6 +90,37 @@ export function App() {
     const [live_events, set_live_events] = useState<Record<string, EventLiveState>>({});
     const current_feed = useRef<MobileContentFeed>();
     const feed_request_id = useRef(0);
+    const list_scroll_y = useRef(0);
+    const app_header_ref = useRef<HTMLElement>(null);
+    const close_item = useCallback((): void => {
+        set_selected_item(undefined);
+        window.requestAnimationFrame(() => window.scrollTo(0, list_scroll_y.current));
+    }, []);
+    use_edge_swipe_back(Boolean(selected_item), close_item);
+
+    useEffect(() => {
+        const header = app_header_ref.current;
+        if (!header) {
+            return;
+        }
+        const update_header = (): void => {
+            const scroll_y = Math.max(0, window.scrollY);
+            header.classList.toggle("app-header--scrolled", scroll_y > 12);
+            if (!selected_item && active_view !== "manage") {
+                const opacity = Math.max(0, 1 - scroll_y / 44);
+                header.style.opacity = String(opacity);
+                header.style.pointerEvents = opacity < 0.1 ? "none" : "";
+            } else {
+                header.style.opacity = "";
+                header.style.pointerEvents = "";
+            }
+        };
+        update_header();
+        window.addEventListener("scroll", update_header, { passive: true });
+        return (): void => {
+            window.removeEventListener("scroll", update_header);
+        };
+    }, [active_view, selected_item]);
 
     const load_feed = useCallback(
         async (
@@ -276,7 +308,7 @@ export function App() {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("backButton", () => {
             if (selected_item) {
-                set_selected_item(undefined);
+                close_item();
             }
         }).then((listener) => {
             remove_listener = async (): Promise<void> => listener.remove();
@@ -284,7 +316,7 @@ export function App() {
         return (): void => {
             void remove_listener?.();
         };
-    }, [selected_item]);
+    }, [close_item, selected_item]);
 
     const all_items = useMemo(
         () => sort_mobile_items(feed?.items ?? [], live_events),
@@ -344,8 +376,15 @@ export function App() {
         };
     }, [active_view, feed, live_refresh_epoch]);
     const hero_content = useMemo(
-        () => create_page_hero(active_view, scoped_items, locale, APP_CONFIG.site_url),
-        [active_view, locale, scoped_items],
+        () =>
+            create_page_hero(
+                active_view,
+                scoped_items,
+                locale,
+                APP_CONFIG.site_url,
+                live_events,
+            ),
+        [active_view, live_events, locale, scoped_items],
     );
 
     const select_view = (view: AppView): void => {
@@ -356,8 +395,9 @@ export function App() {
     };
 
     const open_item = (item: MobileContentItem): void => {
+        list_scroll_y.current = window.scrollY;
         set_selected_item(item);
-        window.scrollTo(0, 0);
+        window.requestAnimationFrame(() => window.scrollTo(0, 0));
     };
 
     const toggle_favorite = (item: MobileContentItem): void => {
@@ -391,25 +431,57 @@ export function App() {
     return (
         <div class="app-shell">
             <header
-                class={`app-header${selected_item || active_view === "manage" ? "" : " app-header--hero"}`}
+                class={`app-header${selected_item ? " app-header--detail" : active_view === "manage" ? "" : " app-header--hero"}`}
+                ref={app_header_ref}
             >
-                <button
-                    aria-label={translate(locale, "events")}
-                    class="brand-button"
-                    onClick={() => select_view("events")}
-                    type="button"
-                >
-                    <img alt="ACC ClubHub" src="/app-logo.png" />
-                    <span>{translate(locale, "app_name")}</span>
-                </button>
-                <button
-                    aria-label={translate(locale, "website")}
-                    class="text-button"
-                    onClick={() => open_site_page("")}
-                    type="button"
-                >
-                    {translate(locale, "website")} ↗
-                </button>
+                {selected_item ? (
+                    <button
+                        aria-label={`${translate(locale, "back")}: ${translate(locale, active_view)}`}
+                        class="detail-back-button"
+                        onClick={close_item}
+                        type="button"
+                    >
+                        <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                        <span>{translate(locale, active_view)}</span>
+                    </button>
+                ) : (
+                    <button
+                        aria-label={translate(locale, "events")}
+                        class="brand-button"
+                        onClick={() => select_view("events")}
+                        type="button"
+                    >
+                        <img alt="ACC ClubHub" src="/app-logo.png" />
+                        <span>{translate(locale, "app_name")}</span>
+                    </button>
+                )}
+                {selected_item ? (
+                    <button
+                        aria-label={translate(
+                            locale,
+                            favorites.has(selected_item.id) ? "unfavorite" : "favorite",
+                        )}
+                        aria-pressed={favorites.has(selected_item.id)}
+                        class="icon-button header-favorite-button"
+                        onClick={() => toggle_favorite(selected_item)}
+                        type="button"
+                    >
+                        <span aria-hidden="true">
+                            {favorites.has(selected_item.id) ? "★" : "☆"}
+                        </span>
+                    </button>
+                ) : (
+                    <button
+                        aria-label={translate(locale, "website")}
+                        class="text-button"
+                        onClick={() => open_site_page("")}
+                        type="button"
+                    >
+                        {translate(locale, "website")} ↗
+                    </button>
+                )}
                 <label class="language-picker">
                     <span class="sr-only">{translate(locale, "language")}</span>
                     <select
@@ -482,16 +554,13 @@ export function App() {
             <main class={`app-main${selected_item ? " app-main--detail" : ""}`}>
                 {selected_item ? (
                     <ContentDetail
-                        favorite={favorites.has(selected_item.id)}
                         item={selected_item}
                         locale={locale}
                         refresh_epoch={live_refresh_epoch}
-                        on_back={() => set_selected_item(undefined)}
                         on_message={show_message}
                         on_registered={() =>
                             set_live_refresh_epoch((current) => current + 1)
                         }
-                        on_toggle_favorite={toggle_favorite}
                         online={online}
                     />
                 ) : (
