@@ -55,7 +55,9 @@ events and a mail sink for every write or notification. Compare resulting API
 and website state, and record email sent/skipped/failed counts separately.
 Collect rider and admin feedback and triage blockers before distribution.
 
-The debug APK can test installation and UI, but it is not the signed pilot.
+The debug APK is a read-only preview of public production content. It can test
+installation and browsing, but disables registration, subscription, and admin
+writes, and is not the signed staging pilot.
 Until a signing custodian, staging environment, prior pilot APK, and Android
 device evidence are available, this gate remains pending. iOS TestFlight and
 store artifacts are separate later gates under issue #174.

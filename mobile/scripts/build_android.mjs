@@ -6,6 +6,22 @@ import { fileURLToPath } from "node:url";
 const script_directory = dirname(fileURLToPath(import.meta.url));
 const mobile_directory = resolve(script_directory, "..");
 const android_directory = resolve(mobile_directory, "android");
+const preview_environment = {
+    ...process.env,
+    VITE_API_URL: "https://acc-clubhub-events-ms.vercel.app",
+    VITE_CONTENT_BASE_URL: "https://www.across-cc.de/mobile-content/live/v1",
+    VITE_SITE_URL: "https://www.across-cc.de",
+    VITE_APP_ENV: "preview",
+};
+
+const sync_result = spawnSync("npm", ["run", "sync"], {
+    cwd: mobile_directory,
+    env: preview_environment,
+    stdio: "inherit",
+});
+if (sync_result.status !== 0) {
+    process.exit(sync_result.status ?? 1);
+}
 
 async function first_existing_directory(candidates) {
     for (const candidate of candidates.filter(Boolean)) {
@@ -78,7 +94,7 @@ const wrapper = resolve(
 const result = spawnSync(wrapper, ["-p", android_directory, "assembleDebug"], {
     cwd: mobile_directory,
     env: {
-        ...process.env,
+        ...preview_environment,
         ...(android_home
             ? { ANDROID_HOME: android_home, ANDROID_SDK_ROOT: android_home }
             : {}),

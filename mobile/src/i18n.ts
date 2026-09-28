@@ -4,6 +4,7 @@ const COPY = {
     de: {
         manage: "Verwalten",
         staging_build: "Testversion · Staging",
+        preview_build: "Lesevorschau · Anmeldung und Verwaltung deaktiviert",
         admin_password: "Passwort",
         admin_login: "Als Admin anmelden",
         admin_logout: "Abmelden",
@@ -123,6 +124,7 @@ const COPY = {
     en: {
         manage: "Manage",
         staging_build: "Test build · Staging",
+        preview_build: "Read-only preview · Registration and management disabled",
         admin_password: "Password",
         admin_login: "Admin sign in",
         admin_logout: "Sign out",
@@ -240,6 +242,7 @@ const COPY = {
     zh: {
         manage: "管理",
         staging_build: "测试版 · 测试环境",
+        preview_build: "只读预览版 · 报名和管理操作已禁用",
         admin_password: "密码",
         admin_login: "管理员登录",
         admin_logout: "退出登录",

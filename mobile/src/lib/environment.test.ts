@@ -3,6 +3,11 @@ import { describe, expect, it } from "vitest";
 import { resolve_mobile_environment } from "./environment";
 
 describe("resolve_mobile_environment", () => {
+    it("allows a read-only preview using public production feeds", () => {
+        const result = resolve_mobile_environment({ stage: "preview" });
+        expect(result.stage).toBe("preview");
+        expect(result.api_url).toBe("https://acc-clubhub-events-ms.vercel.app");
+    });
     it("requires separate explicit endpoints for a staging build", () => {
         expect(() => resolve_mobile_environment({ stage: "staging" })).toThrow();
         expect(() =>

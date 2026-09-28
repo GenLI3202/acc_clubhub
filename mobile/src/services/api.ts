@@ -135,6 +135,9 @@ export async function submit_registration(
     locale: MobileLocale,
     fields: RegistrationFields,
 ): Promise<RegistrationResult> {
+    if (APP_CONFIG.stage === "preview") {
+        throw new ApiError("Registration is disabled in the preview build", 403);
+    }
     let response: Response;
     try {
         response = await fetch(`${APP_CONFIG.api_url}/api/rsvp`, {
@@ -182,6 +185,9 @@ export async function submit_subscription(
     name: string,
     email: string,
 ): Promise<void> {
+    if (APP_CONFIG.stage === "preview") {
+        throw new ApiError("Subscription is disabled in the preview build", 403);
+    }
     const response = await fetch(`${APP_CONFIG.api_url}/api/subscribe`, {
         body: JSON.stringify({
             email,

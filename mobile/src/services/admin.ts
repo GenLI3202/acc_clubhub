@@ -193,6 +193,9 @@ async function admin_request<T>(
     body?: object,
     parse: (value: unknown) => T = (value) => value as T,
 ): Promise<T> {
+    if (APP_CONFIG.stage === "preview") {
+        throw new AdminApiError("Management is disabled in the preview build", 403);
+    }
     const token = active_token;
     const generation = session_generation;
     if (!token) {
@@ -255,6 +258,9 @@ async function admin_request<T>(
 }
 
 export async function login_admin(email: string, password: string): Promise<void> {
+    if (APP_CONFIG.stage === "preview") {
+        throw new AdminApiError("Management is disabled in the preview build", 403);
+    }
     const generation = session_generation;
     const response = await fetch(`${APP_CONFIG.api_url}/auth/mobile-login`, {
         body: JSON.stringify({ email, password }),
@@ -284,7 +290,7 @@ export async function login_admin(email: string, password: string): Promise<void
 export async function logout_admin(): Promise<void> {
     const token = active_token;
     publish_session();
-    if (!token) {
+    if (!token || APP_CONFIG.stage === "preview") {
         return;
     }
     const response = await fetch(`${APP_CONFIG.api_url}/auth/mobile-logout`, {

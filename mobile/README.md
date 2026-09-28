@@ -63,6 +63,12 @@ The Android command writes the installable test package to:
 mobile/artifacts/acc-clubhub-0.3.0-debug.apk
 ```
 
+`android:debug` always embeds a read-only preview configuration, even if a
+local environment file contains other endpoints. It reads public production
+content and event status, but hides registration, subscription, and management
+forms and blocks their API writes. The debug key and this preview behavior do
+not qualify it as the signed staging pilot.
+
 The signed staging pilot requires external signing credentials and three
 staging endpoints. See [the Android pilot runbook](../docs/ANDROID_PILOT.md).
 
@@ -87,8 +93,8 @@ VITE_SITE_URL=https://www.across-cc.de
 VITE_APP_ENV=production
 ```
 
-The defaults match production, so no environment file is required for the
-standard test build.
+The defaults match production for regular web development builds. The Android
+debug command overrides them with the read-only preview stage.
 
 ## Independent content synchronization
 

@@ -2,6 +2,7 @@ import DOMPurify from "dompurify";
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
+import { APP_CONFIG } from "../config";
 import { format_item_date, registration_live_is_open } from "../lib/content";
 import {
     get_event_status,
@@ -292,7 +293,9 @@ export function ContentDetail({
                                 : translate(locale, "registration_success")}
                         </p>
                     ) : null}
-                    {registration_link && registration_open ? (
+                    {registration_link &&
+                    registration_open &&
+                    APP_CONFIG.stage !== "preview" ? (
                         <button
                             class="primary-button"
                             onClick={() =>
@@ -303,7 +306,10 @@ export function ContentDetail({
                             {translate(locale, "register")} ↗
                         </button>
                     ) : null}
-                    {!registration_link && registration_open && !registration_result ? (
+                    {!registration_link &&
+                    registration_open &&
+                    !registration_result &&
+                    APP_CONFIG.stage !== "preview" ? (
                         <RegistrationForm
                             item={item}
                             locale={locale}

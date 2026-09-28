@@ -419,6 +419,11 @@ export function App() {
                     {translate(locale, "staging_build")}
                 </div>
             ) : null}
+            {APP_CONFIG.stage === "preview" ? (
+                <div class="connection-banner" role="status">
+                    {translate(locale, "preview_build")}
+                </div>
+            ) : null}
 
             <div
                 aria-hidden={pull_refresh.state === "idle" ? "true" : undefined}
@@ -486,11 +491,17 @@ export function App() {
                             />
                         ) : null}
                         {active_view === "manage" ? (
-                            <AdminPage
-                                locale={locale}
-                                online={online}
-                                refresh_epoch={live_refresh_epoch}
-                            />
+                            APP_CONFIG.stage === "preview" ? (
+                                <section class="page-content">
+                                    <p>{translate(locale, "preview_build")}</p>
+                                </section>
+                            ) : (
+                                <AdminPage
+                                    locale={locale}
+                                    online={online}
+                                    refresh_epoch={live_refresh_epoch}
+                                />
+                            )
                         ) : active_view === "about" ? (
                             <section class="page-content about-view">
                                 <div class="section-heading">
@@ -571,7 +582,9 @@ export function App() {
                                         {translate(locale, "website")} <span>↗</span>
                                     </button>
                                 </div>
-                                <SubscribeForm locale={locale} online={online} />
+                                {APP_CONFIG.stage !== "preview" ? (
+                                    <SubscribeForm locale={locale} online={online} />
+                                ) : null}
                             </section>
                         ) : (
                             <section class="page-content">

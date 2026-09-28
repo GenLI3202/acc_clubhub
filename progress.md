@@ -11,6 +11,16 @@
 
 ## Recent Updates
 
+- [X] **Issue #174 Android 调试包写入隔离** (2026-09-28)
+  - [X] `android:debug` 固定构建只读 preview；生产公开内容及活动状态可浏览，
+    报名、订阅、管理界面隐藏或说明禁用，服务层在任何生产写请求之前拒绝。
+  - [X] 三语只读标识、环境及写入阻断单测通过；移动端全量 55 项测试、
+    TypeScript、Prettier、Astro/Vite 和 Android 构建通过。
+  - [X] 重建 APK 后核验内嵌只读提示及写入拦截；包名
+    `de.acrosscc.clubhub`、0.3.0/code 3、v2 调试签名有效，SHA-256 为
+    `daf6e8906ed8361e5cadc93d8af1f40a76089d54b5b9c225965a275dc2ceeb94`。
+  - [ ] 签名 staging pilot、真机及真实 staging 写入验收未完成。
+
 - [X] **Issue #174 本地跨服务隔离联测** (2026-09-28)
   - [X] 实际本地 Astro 动态 feed 提供 `afterwork-ride-2026-10-01`；FastAPI
     使用内存 SQLite 和邮件替身，从网站单条/批量已发布契约验证活动。

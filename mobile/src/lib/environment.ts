@@ -2,7 +2,7 @@ export interface MobileEnvironment {
     api_url: string;
     content_base_url: string;
     site_url: string;
-    stage: "production" | "staging";
+    stage: "production" | "staging" | "preview";
 }
 
 const PRODUCTION_API = "https://acc-clubhub-events-ms.vercel.app";
@@ -24,8 +24,8 @@ export function resolve_mobile_environment(values: {
     stage?: string;
 }): MobileEnvironment {
     const stage = values.stage ?? "production";
-    if (stage !== "production" && stage !== "staging") {
-        throw new Error("VITE_APP_ENV must be production or staging");
+    if (stage !== "production" && stage !== "staging" && stage !== "preview") {
+        throw new Error("VITE_APP_ENV must be production, staging or preview");
     }
     if (stage === "staging") {
         if (!values.api_url || !values.content_base_url || !values.site_url) {
