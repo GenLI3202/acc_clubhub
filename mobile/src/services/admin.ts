@@ -255,10 +255,12 @@ async function admin_request<T>(
 }
 
 export async function login_admin(email: string, password: string): Promise<void> {
+    const generation = session_generation;
     const response = await fetch(`${APP_CONFIG.api_url}/auth/mobile-login`, {
         body: JSON.stringify({ email, password }),
         headers: { "Content-Type": "application/json" },
         method: "POST",
+        signal: AbortSignal.timeout(20_000),
     });
     if (!response.ok) {
         throw new AdminApiError(await error_message(response), response.status);
@@ -273,6 +275,9 @@ export async function login_admin(email: string, password: string): Promise<void
     ) {
         throw new Error("Invalid administrator login response");
     }
+    if (generation !== session_generation) {
+        throw new AdminSessionChangedError();
+    }
     publish_session(payload.access_token);
 }
 
@@ -285,6 +290,7 @@ export async function logout_admin(): Promise<void> {
     const response = await fetch(`${APP_CONFIG.api_url}/auth/mobile-logout`, {
         headers: { Authorization: `Bearer ${token}` },
         method: "POST",
+        signal: AbortSignal.timeout(10_000),
     });
     if (!response.ok && response.status !== 401) {
         throw new AdminApiError(await error_message(response), response.status);

@@ -36,6 +36,10 @@ database row. Website and Android requests now send only rider data and slug;
 legacy metadata fields are accepted but ignored. Deploy the website endpoint
 before the backend change. The endpoint and backend contract are verified
 locally but are not deployed, and no staging write path has been exercised.
+Read-only production checks on 2026-09-28 returned HTTP 404 for both the
+new `/api/registration-events/{slug}.json` route and the dynamic
+`/mobile-content/live/v1/en.json` feed. The current debug APK therefore
+falls back to bundled content when it cannot reach the new live feed.
 
 Build prerequisites: Node 22+, JDK 21, Android SDK Platform/Build Tools 36.
 The working Python 3.13 test environment is `/private/tmp/acc-issue174-venv`.

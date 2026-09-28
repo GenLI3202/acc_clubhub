@@ -65,6 +65,21 @@ describe("administrator bearer session", () => {
         expect(has_admin_session()).toBe(false);
     });
 
+    it("discards a login response that arrives after a session change", async () => {
+        let resolve_login: ((response: Response) => void) | undefined;
+        const pending = new Promise<Response>((resolve) => {
+            resolve_login = resolve;
+        });
+        vi.stubGlobal("fetch", vi.fn().mockReturnValueOnce(pending));
+
+        const login = login_admin("leader@example.test", "secret");
+        await logout_admin();
+        resolve_login?.(json_response({ access_token: "late-token" }));
+
+        await expect(login).rejects.toBeInstanceOf(AdminSessionChangedError);
+        expect(has_admin_session()).toBe(false);
+    });
+
     it("does not retry an uncertain notification write", async () => {
         const fetch_mock = vi
             .fn()
