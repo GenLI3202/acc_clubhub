@@ -11,6 +11,14 @@
 
 ## Recent Updates
 
+- [X] **Issue #174 Android 对齐核对与执行 Prompt** (2026-09-28)
+  - [X] 基于源码 `3eb11148` 和 issue 正文核对，记录管理员功能缺失、
+    实时状态/报名契约缺口和 Android pilot 验收待办。
+  - [X] 生成 `docs/issue_174_android_goal_prompt.md`，包含证据和可复制的
+    `/goal` 执行指令；本次未启动实现、部署或修改远端 issue。
+  - [X] 本地移动端 34 项测试及 TypeScript 检查通过。
+  - [ ] 手机已安装版本、生产 API 能力及真机验收本次未验证。
+
 - [X] **iOS 签名发布流程准备** (2026-09-10)
   - [X] 增加 `ios:check` 与 `ios:release`，检查 Xcode 26+、iOS SDK、团队 ID 和构建号，
     构建共享内容与 UI 后进行签名归档和 App Store Connect IPA 导出；不自动上传。
