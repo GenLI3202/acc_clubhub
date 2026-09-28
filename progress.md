@@ -25,10 +25,10 @@
   - [ ] 真实 Android 列表/详情一致性仍需 staging 设备验证。
 
 - [X] **Issue #174 最新源码 Android debug 构建** (2026-09-28)
-  - [X] 以 `a849a056` 重新执行前端内容打包、Capacitor 同步和 Android
+  - [X] 以 `8b2c7e37` 重新执行前端内容打包、Capacitor 同步和 Android
     debug 构建；APK 位于 `mobile/artifacts/acc-clubhub-0.3.0-debug.apk`。
   - [X] APK v2 签名验签通过，包名 `de.acrosscc.clubhub`，版本 0.3.0/code 3，
-    SHA-256 `1b0ba259e09841fb2fdfa901d8a6573ddffd9d44de82d27aa22afee32d849fa5`；
+    SHA-256 `565427804c4f14fa0def0c64208d6bd390affc900ca36a19902419078e428c34`；
     证书 SHA-256 `3715b4e94d5ceef43256d247595bfd7abd3a3915654e9d223e0a4ed6c616eac9`。
   - [ ] `adb devices -l` 仍无设备，且缺少 staging/签名材料；不能将 debug 包
     视为正式 pilot 验收。
