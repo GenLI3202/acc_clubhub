@@ -3,6 +3,7 @@ from http.cookies import SimpleCookie
 import pytest
 from fastapi import HTTPException, Response
 from routes import auth
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def test_is_admin_email_allowed_matches_case_insensitively(monkeypatch):
@@ -163,3 +164,22 @@ def test_mobile_login_rejects_wrong_password(monkeypatch, client_no_auth):
     )
     assert response.status_code == 403
     assert response.json()["detail"]["error_code"] == "INVALID_CREDENTIALS"
+
+
+@pytest.mark.parametrize("operation", ["activate", "clear", "verify"])
+def test_admin_session_store_failure_fails_closed(monkeypatch, db, operation):
+    """A session-store outage cannot issue, retain, or validate a token."""
+    def fail_query(*_args):
+        raise SQLAlchemyError("session store offline")
+
+    monkeypatch.setattr(db, "query", fail_query)
+    with pytest.raises(HTTPException) as error:
+        if operation == "activate":
+            auth.activate_admin_session(db, "session-one", "leader@example.com")
+        elif operation == "clear":
+            auth.clear_admin_session(db, "session-one")
+        else:
+            auth.verify_active_admin_session({"session_id": "session-one"}, db)
+
+    assert error.value.status_code == 503
+    assert error.value.detail["error_code"] == "ADMIN_SESSION_UNAVAILABLE"

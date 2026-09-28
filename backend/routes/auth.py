@@ -104,7 +104,13 @@ def activate_admin_session(db: Session, session_id: str, email: str) -> None:
     except SQLAlchemyError as exc:
         db.rollback()
         logger.warning("Admin single-session state unavailable: %s", exc)
-        return
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error_code": "ADMIN_SESSION_UNAVAILABLE",
+                "message": "Administrator session state unavailable",
+            },
+        ) from exc
 
     if state is None:
         state = AdminSessionState(
@@ -135,7 +141,13 @@ def clear_admin_session(db: Session, session_id: str) -> None:
     except SQLAlchemyError as exc:
         db.rollback()
         logger.warning("Admin single-session state unavailable: %s", exc)
-        return
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error_code": "ADMIN_SESSION_UNAVAILABLE",
+                "message": "Administrator session state unavailable",
+            },
+        ) from exc
 
     if state is not None and state.active_session_id == session_id:
         db.delete(state)
@@ -158,7 +170,13 @@ def verify_active_admin_session(payload: dict, db: Session) -> None:
     except SQLAlchemyError as exc:
         db.rollback()
         logger.warning("Admin single-session state unavailable: %s", exc)
-        return
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error_code": "ADMIN_SESSION_UNAVAILABLE",
+                "message": "Administrator session state unavailable",
+            },
+        ) from exc
 
     if state is None or state.active_session_id != session_id:
         raise HTTPException(status_code=401, detail="Session superseded")
