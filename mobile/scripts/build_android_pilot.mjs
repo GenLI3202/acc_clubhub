@@ -22,6 +22,26 @@ if (missing.length) {
     throw new Error(`Pilot build requires: ${missing.join(", ")}`);
 }
 
+const production_hosts = new Set([
+    "acc-clubhub-events-ms.vercel.app",
+    "www.across-cc.de",
+]);
+for (const name of [
+    "ACC_PILOT_API_URL",
+    "ACC_PILOT_CONTENT_BASE_URL",
+    "ACC_PILOT_SITE_URL",
+]) {
+    const endpoint = new URL(process.env[name]);
+    if (
+        endpoint.protocol !== "https:" ||
+        endpoint.username ||
+        endpoint.password ||
+        production_hosts.has(endpoint.hostname)
+    ) {
+        throw new Error(`${name} must be a non-production HTTPS URL`);
+    }
+}
+
 const signing_file = resolve(process.env.ACC_PILOT_KEYSTORE);
 if (!existsSync(signing_file)) {
     throw new Error("Pilot signing keystore does not exist");
