@@ -9,13 +9,12 @@ import io
 import logging
 from datetime import date, datetime, timezone
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import AwareDatetime, BaseModel, Field, field_validator
-from sqlalchemy import case, func, inspect
-from sqlalchemy.orm import Session
+
 from database import get_db
 from domain.exceptions import InvalidDepartureTimeError
-from models import Event, RSVP, Subscriber
+from fastapi import APIRouter, Depends, HTTPException
+from models import RSVP, Event, Subscriber
+from pydantic import AwareDatetime, BaseModel, Field, field_validator
 from routes.auth import get_current_admin
 from services.email import (
     send_broadcast_email,
@@ -25,13 +24,16 @@ from services.email import (
     send_registrant_notification_email,
 )
 from services.event_cancellation import EventCancellationReason
-from services.event_schedule import (
-    MUNICH, as_utc, departure_in_munich, event_input_as_utc,
-)
 from services.event_counts import (
     count_confirmed_rsvps,
     get_available_spots,
     sync_event_current_participants,
+)
+from services.event_schedule import (
+    MUNICH,
+    as_utc,
+    departure_in_munich,
+    event_input_as_utc,
 )
 from services.registration_alerts import find_active_ride_leader_rsvp_by_email
 from services.ride_leader_credits import (
@@ -45,6 +47,8 @@ from services.ride_leader_credits import (
     serialize_ride_leader_snapshot,
     unmark_rsvp_as_ride_leader,
 )
+from sqlalchemy import case, func, inspect
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +114,35 @@ class RescheduleEventRequest(BaseModel):
     # Older clients omit the date when changing only the departure clock time.
     departure_date: date | None = None
     expected_event_date: AwareDatetime
+
+
+class AdminEventPageResponse(BaseModel):
+    """Bounded administrator event overview."""
+
+    events: list[dict]
+    total: int
+    offset: int
+    limit: int
+
+
+class AdminRsvpSummary(BaseModel):
+    """Administrator participant row."""
+
+    id: int
+    name: str
+    email: str
+    status: str
+    checked_in_at: datetime | None
+    created_at: datetime | None
+
+
+class AdminRsvpPageResponse(BaseModel):
+    """Bounded administrator participant overview."""
+
+    rsvps: list[AdminRsvpSummary]
+    total: int
+    offset: int
+    limit: int
 
 
 def _get_missing_schema_columns(db: Session) -> list[str]:
@@ -184,7 +217,11 @@ def _sync_occurrence_rows(
     return SyncOccurrencesResponse(created=created, updated=updated)
 
 
-def _serialize_admin_events(db: Session) -> list[dict]:
+def _serialize_admin_events(
+    db: Session,
+    offset: int = 0,
+    limit: int | None = None,
+) -> list[dict]:
     """Return event rows with RSVP counts using two aggregate queries."""
     count_rows = db.query(
         RSVP.event_id.label("event_id"),
@@ -207,7 +244,10 @@ def _serialize_admin_events(db: Session) -> list[dict]:
         for row in count_rows
     }
 
-    events = db.query(Event).order_by(Event.event_date.desc()).all()
+    event_query = db.query(Event).order_by(Event.event_date.desc(), Event.id.desc())
+    if limit is not None:
+        event_query = event_query.offset(offset).limit(limit)
+    events = event_query.all()
     result: list[dict] = []
     for event in events:
         counts = counts_by_event_id.get(event.id, {})
@@ -318,6 +358,27 @@ def list_events(
     return _serialize_admin_events(db)
 
 
+@router.get("/api/admin/events/page", response_model=AdminEventPageResponse)
+def list_events_page(
+    offset: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> AdminEventPageResponse:
+    """List a bounded page of events for the mobile administrator view."""
+    if offset < 0 or not 1 <= limit <= 100:
+        raise HTTPException(
+            status_code=422,
+            detail={"error_code": "INVALID_PAGE", "message": "Invalid page range"},
+        )
+    return AdminEventPageResponse(
+        events=_serialize_admin_events(db, offset, limit),
+        total=db.query(Event).count(),
+        offset=offset,
+        limit=limit,
+    )
+
+
 @router.post("/api/admin/events/overview")
 def get_events_overview(
     occurrences: List[SyncOccurrenceRequest],
@@ -344,6 +405,53 @@ def get_events_overview(
 
 
 # ── Admin RSVP List ────────────────────────────────────────────
+
+@router.get(
+    "/api/admin/events/{event_id}/rsvps/page",
+    response_model=AdminRsvpPageResponse,
+)
+def get_event_rsvps_page(
+    event_id: int,
+    offset: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+) -> AdminRsvpPageResponse:
+    """List a bounded page of participants for an existing event."""
+    if offset < 0 or not 1 <= limit <= 100:
+        raise HTTPException(
+            status_code=422,
+            detail={"error_code": "INVALID_PAGE", "message": "Invalid page range"},
+        )
+    if db.query(Event.id).filter(Event.id == event_id).first() is None:
+        raise HTTPException(
+            status_code=404,
+            detail={"error_code": "EVENT_NOT_FOUND", "message": "Event not found"},
+        )
+    query = db.query(RSVP).filter(RSVP.event_id == event_id)
+    rows = (
+        query.order_by(RSVP.created_at, RSVP.id)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return AdminRsvpPageResponse(
+        rsvps=[
+            AdminRsvpSummary(
+                id=row.id,
+                name=row.name,
+                email=row.email,
+                status=row.status,
+                checked_in_at=row.checked_in_at,
+                created_at=row.created_at,
+            )
+            for row in rows
+        ],
+        total=query.count(),
+        offset=offset,
+        limit=limit,
+    )
+
 
 @router.get("/api/admin/events/{event_id}/rsvps")
 def get_event_rsvps(
@@ -390,7 +498,9 @@ def get_event_rsvps(
             "location": event.location,
             "max_participants": event.max_participants,
             "current_participants": confirmed_count,
-            "distance_km": float(event.distance_km) if event.distance_km is not None else None,
+            "distance_km": (
+                float(event.distance_km) if event.distance_km is not None else None
+            ),
             "reschedule_reason": event.reschedule_reason,
             "previous_event_date": (
                 event.previous_event_date.isoformat()
