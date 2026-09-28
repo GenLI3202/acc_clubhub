@@ -1,6 +1,7 @@
 dist/
 node_modules/
 .gradle-user-home/
+artifacts/
 artifacts/*.apk
 artifacts/ios-simulator/
 artifacts/ios-release/
