@@ -267,7 +267,9 @@ class TestCancelledEventContract:
         client_no_auth: TestClient,
         db: Session,
         sample_event: Event,
+        published_event,
     ) -> None:
+        published_event(sample_event)
         sample_event.cancellation_reason = "other"
         sample_event.cancelled_at = sample_event.updated_at
         db.commit()

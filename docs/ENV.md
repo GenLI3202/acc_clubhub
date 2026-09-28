@@ -31,7 +31,8 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
   backend Vercel project with only the shared ride leader admin account.
   Configure `ADMIN_MAGIC_LINK_PASSWORD` in the same backend project.
 - **Published events**: deploy the website's
-  `/api/registration-events/{slug}.json` endpoint before updating the backend.
+  `/api/registration-events/{slug}.json` and
+  `/api/registration-events/index.json` endpoints before updating the backend.
   Point `PUBLIC_FRONTEND_URL` to that exact website origin. Public RSVP fails
   closed if the website is unavailable or the slug is unpublished.
 - **GitHub OAuth**: GitHub Developer settings → OAuth Apps. Callback URL:

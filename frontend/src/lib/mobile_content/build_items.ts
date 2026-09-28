@@ -7,6 +7,7 @@ import {
     type MobileLocale,
 } from "../../../../shared/mobile_content";
 import { resolveRecurringEvents } from "../events/recurringEvents";
+import { effective_registration_deadline } from "../events/event_schedule";
 import {
     normalize_public_url,
     sanitize_mobile_markdown,
@@ -282,7 +283,11 @@ export async function build_mobile_items(
                           timezone: entry.data.recurring.timezone,
                       }
                     : undefined,
-                registration_deadline: entry.data.registrationDeadline,
+                registration_deadline: effective_registration_deadline(
+                    entry.data.date,
+                    entry.data.registrationDeadline,
+                    entry.data.registrationReopened === true,
+                ),
                 registration_link: normalize_public_url(
                     entry.data.registrationLink,
                     site_url,

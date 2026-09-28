@@ -1,4 +1,5 @@
 import type { Locale } from "../i18n";
+import { parse_event_datetime } from "./event_datetime";
 
 export function format_departure(value: string, lang: Locale = "en"): string {
     return new Date(value).toLocaleString(
@@ -24,6 +25,24 @@ export function departure_day(value: string): string {
     const part = (type: string): string =>
         parts.find((item) => item.type === type)!.value;
     return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+export function effective_registration_deadline(
+    event_date: string,
+    explicit_deadline: string | Date | null | undefined,
+    reopened: boolean,
+): string | null {
+    if (reopened) {
+        return null;
+    }
+    if (explicit_deadline) {
+        return new Date(explicit_deadline).toISOString();
+    }
+    const previous_day = new Date(`${departure_day(event_date)}T00:00:00Z`);
+    previous_day.setUTCDate(previous_day.getUTCDate() - 1);
+    return parse_event_datetime(
+        `${previous_day.toISOString().slice(0, 10)}T22:00:00`,
+    ).toISOString();
 }
 
 export const SCHEDULE_NOTICE = {

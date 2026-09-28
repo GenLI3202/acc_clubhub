@@ -65,6 +65,10 @@ def published_event(monkeypatch):
 
         monkeypatch.setattr("routes.rsvp.fetch_published_event", lookup)
         monkeypatch.setattr("routes.events.fetch_published_event", lookup)
+        monkeypatch.setattr(
+            "routes.events.fetch_published_events",
+            lambda: {event.slug: event},
+        )
         return event
 
     return publish

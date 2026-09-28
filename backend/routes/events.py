@@ -19,8 +19,12 @@ from services.event_counts import (
     get_available_spots,
     sync_event_current_participants,
 )
-from services.event_schedule import event_input_as_utc
-from services.published_events import fetch_published_event
+from services.event_schedule import as_utc, event_input_as_utc
+from services.published_events import (
+    PublishedRegistrationEvent,
+    fetch_published_event,
+    fetch_published_events,
+)
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -60,7 +64,11 @@ class EventListResponse(BaseModel):
     page_size: int
 
 
-def _event_response(db: Session, event: Event) -> dict:
+def _event_response(
+    db: Session,
+    event: Event,
+    published: PublishedRegistrationEvent | None = None,
+) -> dict:
     """
     Serialize an event with participant count reconciled from RSVP rows.
 
@@ -72,17 +80,33 @@ def _event_response(db: Session, event: Event) -> dict:
         Event response dictionary.
     """
     confirmed_count = sync_event_current_participants(db, event)
+    event_date = (
+        event.event_date
+        if published is None or event.rescheduled_at is not None
+        else published.event_date
+    )
+    max_participants = (
+        published.max_participants if published is not None
+        else event.max_participants
+    )
+    deadline = (
+        None if published.registration_reopened else published.registration_deadline
+    ) if published is not None else event.registration_deadline
     return {
         "id": event.id,
         "slug": event.slug,
-        "title": event.title,
-        "description": event.description,
-        "event_date": event.event_date,
-        "location": event.location,
-        "event_type": event.event_type,
-        "max_participants": event.max_participants,
+        "title": published.title if published is not None else event.title,
+        "description": (
+            published.description if published is not None else event.description
+        ),
+        "event_date": event_date,
+        "location": published.location if published is not None else event.location,
+        "event_type": (
+            published.event_type if published is not None else event.event_type
+        ),
+        "max_participants": max_participants,
         "current_participants": confirmed_count,
-        "registration_deadline": event.registration_deadline,
+        "registration_deadline": deadline,
         "cancellation_reason": event.cancellation_reason,
         "cancelled_at": event.cancelled_at,
         "previous_event_date": event.previous_event_date,
@@ -90,7 +114,7 @@ def _event_response(db: Session, event: Event) -> dict:
         "rescheduled_at": event.rescheduled_at,
         "is_cancelled": event.cancelled_at is not None,
         "available_spots": get_available_spots(
-            event.max_participants,
+            max_participants,
             confirmed_count,
         ),
         "is_public": event.is_public,
@@ -117,22 +141,42 @@ def get_events(
     Returns:
     - List of events
     """
-    query = db.query(Event).filter(Event.is_public)
-
-    # Apply filters
+    if skip < 0 or not 1 <= limit <= 100:
+        raise HTTPException(
+            status_code=422,
+            detail={"error_code": "INVALID_PAGE", "message": "Invalid page range"},
+        )
+    try:
+        published_events = fetch_published_events()
+    except PublishedEventUnavailableError:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error_code": "PUBLISHED_EVENT_UNAVAILABLE",
+                "message": "Published event state could not be verified",
+            },
+        )
+    if not published_events:
+        return []
+    events = db.query(Event).filter(
+        Event.is_public,
+        Event.slug.in_(published_events),
+    ).all()
+    responses = [
+        _event_response(db, event, published_events[event.slug])
+        for event in events
+    ]
     if event_type:
-        query = query.filter(Event.event_type == event_type)
-
+        responses = [
+            item for item in responses if item["event_type"] == event_type
+        ]
     if upcoming_only:
-        query = query.filter(Event.event_date >= datetime.now(timezone.utc))
-
-    # Order by date (soonest first)
-    query = query.order_by(Event.event_date.asc())
-
-    # Apply pagination
-    events = query.offset(skip).limit(limit).all()
-
-    return [_event_response(db, event) for event in events]
+        now = datetime.now(timezone.utc)
+        responses = [
+            item for item in responses if as_utc(item["event_date"]) >= now
+        ]
+    responses.sort(key=lambda item: as_utc(item["event_date"]))
+    return responses[skip:skip + limit]
 
 
 @router.get("/api/events/{slug}", response_model=EventResponse)
@@ -197,7 +241,7 @@ def get_event(slug: str, db: Session = Depends(get_db)):
             "is_public": True,
         }
 
-    return _event_response(db, event)
+    return _event_response(db, event, published)
 
 
 @router.get("/api/events/{event_id}/details", response_model=EventResponse)
@@ -211,15 +255,21 @@ def get_event_by_id(event_id: int, db: Session = Depends(get_db)):
     Returns:
     - Event details with participant info
     """
-    event = db.query(Event).filter(Event.id == event_id).first()
+    event = db.query(Event).filter(
+        Event.id == event_id,
+        Event.is_public,
+    ).first()
 
     if not event:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event with id {event_id} not found"
+            detail={
+                "error_code": "EVENT_NOT_PUBLIC",
+                "message": "Event not found",
+            },
         )
 
-    return _event_response(db, event)
+    return get_event(event.slug, db)
 
 
 class EventCreate(BaseModel):

@@ -48,6 +48,7 @@ class RSVPCreate(BaseModel):
     name: str
     notes: Optional[str] = None
     privacy_accepted: bool = False
+    insurance_accepted: bool = False
     subscribe: bool = False  # 勾选"订阅 ACC 活动通知"
     lang: str = "zh"  # User's locale for email notifications
 
@@ -131,181 +132,25 @@ def create_rsvp(
     rsvp_data: RSVPCreate,
     db: Session = Depends(get_db),
 ) -> RSVPResponse:
-    """
-    创建活动报名 (Email-based, 无需登录)
-
-    Args:
-        event_id: 活动 ID
-        rsvp_data: 报名信息 (email, name, notes, subscribe)
-
-    Returns:
-        RSVPResponse with status and optional waitlist position
-    """
-    if not rsvp_data.privacy_accepted:
+    """Register for an existing public event through the published slug contract."""
+    event = db.query(Event).filter(Event.id == event_id, Event.is_public).first()
+    if event is None:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please accept the privacy policy",
+            status_code=404,
+            detail={"error_code": "EVENT_NOT_PUBLIC", "message": "Event not found"},
         )
-
-    # 1. 查询活动 (行锁防止并发超额)
-    event = db.query(Event).filter(
-        Event.id == event_id,
-    ).with_for_update().first()
-    if not event:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event with id {event_id} not found",
-        )
-
-    if event.cancelled_at is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={
-                "error_code": "EVENT_CANCELLED",
-                "message": "This event has been cancelled",
-                "cancellation_reason": event.cancellation_reason,
-            },
-        )
-
-    # 2. 检查报名截止时间
-    if (
-        event.registration_deadline
-        and event.registration_deadline < datetime.now(timezone.utc)
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Registration deadline has passed",
-        )
-
-    # 3. 检查是否已报名
-    existing = db.query(RSVP).filter(
-        RSVP.event_id == event_id,
-        RSVP.email == rsvp_data.email,
-    ).first()
-    if existing:
-        if existing.status == "cancelled":
-            # Allow re-registration: reactivate the cancelled record
-            pass
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="This email is already registered for this event",
-            )
-
-    # 4. 检查席位
-    rsvp_status = "confirmed"
-    waitlist_pos = None
-
-    if event.max_participants is not None:
-        confirmed_count = count_confirmed_rsvps(db, event_id)
-        spots = event.max_participants - confirmed_count
-        if spots <= 0:
-            rsvp_status = "waitlist"
-            waitlist_pos = db.query(RSVP).filter(
-                RSVP.event_id == event_id,
-                RSVP.status == "waitlist",
-            ).count() + 1
-
-    # 5. 创建 or reactivate RSVP
-    if existing and existing.status == "cancelled":
-        existing.status = rsvp_status
-        existing.name = rsvp_data.name
-        existing.notes = rsvp_data.notes
-        existing.privacy_accepted = rsvp_data.privacy_accepted
-        existing.view_token = secrets.token_urlsafe(32)
-        existing.cancel_reason = None
-        existing.checked_in_at = None
-        new_rsvp = existing
-    else:
-        new_rsvp = RSVP(
-            event_id=event_id,
+    return create_rsvp_v2(
+        RSVPCreateV2(
             email=rsvp_data.email,
             name=rsvp_data.name,
-            status=rsvp_status,
             notes=rsvp_data.notes,
             privacy_accepted=rsvp_data.privacy_accepted,
-            view_token=secrets.token_urlsafe(32),
-        )
-        db.add(new_rsvp)
-
-    db.flush()
-    sync_event_current_participants(db, event)
-
-    # 6. 处理订阅
-    new_subscriber = False
-    sub = None
-    if rsvp_data.subscribe:
-        sub, new_subscriber = _ensure_subscriber(
-            db, rsvp_data.email, rsvp_data.name, rsvp_data.lang,
-        )
-
-    db.commit()
-    db.refresh(new_rsvp)
-
-    # Send subscription confirmation if brand-new subscriber
-    if new_subscriber and sub is not None:
-        try:
-            send_subscription_confirmation_email(
-                email=rsvp_data.email,
-                name=rsvp_data.name,
-                lang=rsvp_data.lang,
-                unsubscribe_token=sub.unsubscribe_token,
-            )
-        except Exception as email_err:
-            logger.error("Subscription confirmation email failed: %s", email_err)
-
-    # 7. 发送邮件通知
-    if rsvp_status == "confirmed":
-        send_confirmation_email(
-            user_email=rsvp_data.email,
-            user_name=rsvp_data.name,
-            event_title=event.title,
-            event_date=event.event_date,
-            event_location=event.location,
-            event_id=event.id,
-            lang="en",
+            insurance_accepted=rsvp_data.insurance_accepted,
+            subscribe=rsvp_data.subscribe,
+            lang=rsvp_data.lang,
             event_slug=event.slug,
-            view_token=new_rsvp.view_token,
-        )
-    else:
-        send_waitlist_email(
-            user_email=rsvp_data.email,
-            user_name=rsvp_data.name,
-            event_title=event.title,
-            waitlist_position=waitlist_pos or 0,
-            lang="en",
-            event_slug=event.slug,
-            view_token=new_rsvp.view_token,
-        )
-
-    try:
-        send_registration_alerts(
-            db=db,
-            event_id=event.id,
-            event_title=event.title,
-            event_date=event.event_date,
-            participant_name=rsvp_data.name,
-            participant_email=str(rsvp_data.email),
-            registration_status=rsvp_status,
-            confirmed_count=event.current_participants or 0,
-            max_participants=event.max_participants,
-        )
-    except Exception as email_err:
-        logger.error(
-            "Ride leader registration alerts failed: %s",
-            email_err,
-            exc_info=True,
-        )
-
-    return RSVPResponse(
-        success=True,
-        message=(
-            "报名成功！" if rsvp_status == "confirmed"
-            else "已加入等待名单"
         ),
-        rsvp_id=new_rsvp.id,
-        status=rsvp_status,
-        waitlist_position=waitlist_pos,
+        db,
     )
 
 

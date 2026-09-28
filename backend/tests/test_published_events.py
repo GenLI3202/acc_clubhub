@@ -52,3 +52,25 @@ def test_fetch_published_event_rejects_missing_or_wrong_slug(monkeypatch):
     )
     with pytest.raises(PublishedEventUnavailableError):
         published_events.fetch_published_event("unpublished")
+
+
+def test_fetch_published_events_validates_index(monkeypatch):
+    def fake_get(url: str, **_kwargs):
+        assert url.endswith("/api/registration-events/index.json")
+        return httpx.Response(200, json={"events": [{
+            "slug": "ride-1",
+            "title": "Ride",
+            "event_date": "2030-07-01T08:00:00Z",
+            "location": "Munich",
+        }]})
+
+    monkeypatch.setattr(published_events.httpx, "get", fake_get)
+    assert set(published_events.fetch_published_events()) == {"ride-1"}
+
+    monkeypatch.setattr(
+        published_events.httpx,
+        "get",
+        lambda _url, **_kwargs: httpx.Response(200, json={"events": "bad"}),
+    )
+    with pytest.raises(PublishedEventUnavailableError):
+        published_events.fetch_published_events()

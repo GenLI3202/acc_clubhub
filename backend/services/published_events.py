@@ -52,6 +52,48 @@ class PublishedRegistrationEvent(BaseModel):
         return value
 
 
+class PublishedEventIndex(BaseModel):
+    """Current published occurrence metadata for bounded public lists."""
+
+    events: list[PublishedRegistrationEvent]
+
+
+def fetch_published_events() -> dict[str, PublishedRegistrationEvent]:
+    """Read current public occurrence metadata from the website.
+
+    Returns:
+        Published event metadata keyed by exact occurrence slug.
+
+    Raises:
+        PublishedEventUnavailableError: The source or contract is unavailable.
+    """
+    base_url = settings.PUBLIC_FRONTEND_URL.rstrip("/")
+    if not base_url.startswith("https://"):
+        raise PublishedEventUnavailableError("Published event source must use HTTPS")
+    try:
+        response = httpx.get(
+            f"{base_url}/api/registration-events/index.json",
+            timeout=5.0,
+            follow_redirects=False,
+        )
+    except httpx.HTTPError as exc:
+        raise PublishedEventUnavailableError(
+            "Published event index unavailable",
+        ) from exc
+    if response.status_code != 200:
+        raise PublishedEventUnavailableError("Published event index unavailable")
+    try:
+        index = PublishedEventIndex.model_validate(response.json())
+    except (ValidationError, ValueError) as exc:
+        raise PublishedEventUnavailableError(
+            "Invalid published event index contract",
+        ) from exc
+    events = {event.slug: event for event in index.events}
+    if len(events) != len(index.events):
+        raise PublishedEventUnavailableError("Duplicate published event slug")
+    return events
+
+
 def fetch_published_event(slug: str) -> PublishedRegistrationEvent:
     """Get one currently published event from the configured website.
 

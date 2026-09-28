@@ -31,6 +31,10 @@ website endpoint that returns exact published occurrence metadata, including
 capacity, deadline and official-ride status. The backend checks that endpoint
 before public RSVP or live event detail, rejects unpublished and unavailable
 content, and uses only the published metadata for event creation or updates.
+The batch published index applies the same rule to the public event list; the
+legacy numeric RSVP and detail routes use the published slug contract too.
+The website, feed and API use the same previous-day 22:00 Munich default
+deadline unless registration is explicitly reopened.
 Newly published events can return live status before the first RSVP creates a
 database row. Website and Android requests now send only rider data and slug;
 legacy metadata fields are accepted but ignored. Deploy the website endpoint

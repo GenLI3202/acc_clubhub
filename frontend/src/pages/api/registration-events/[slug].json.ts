@@ -1,7 +1,9 @@
-import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 
-import { resolveRecurringEvents } from "../../../lib/events/recurringEvents";
+import {
+    get_published_occurrences,
+    serialize_published_occurrence,
+} from "../../../lib/events/published_occurrences";
 
 export const prerender = false;
 
@@ -11,11 +13,7 @@ export const GET: APIRoute = async ({ params }) => {
         return new Response(null, { status: 404 });
     }
 
-    const published = await getCollection(
-        "events",
-        ({ data }) => data.status === "published",
-    );
-    const occurrences = resolveRecurringEvents(published);
+    const occurrences = await get_published_occurrences();
     const match = ["en", "zh", "de"]
         .map((locale) =>
             occurrences.find(
@@ -37,26 +35,8 @@ export const GET: APIRoute = async ({ params }) => {
         );
     }
 
-    const event = match.data;
     return new Response(
-        JSON.stringify({
-            slug: event.slug,
-            title: event.title,
-            description: event.description ?? null,
-            event_date: new Date(event.date).toISOString(),
-            location: event.location,
-            event_type: event.eventType ?? "social-ride",
-            max_participants: event.maxParticipants ?? null,
-            registration_deadline: event.registrationDeadline
-                ? new Date(event.registrationDeadline).toISOString()
-                : null,
-            registration_reopened: event.registrationReopened === true,
-            registration_link: event.registrationLink ?? null,
-            distance_km: event.distanceKm ?? null,
-            route_komoot_url: event.routeKomootUrl ?? null,
-            wechat_qr_code: event.wechatQrCode ?? null,
-            acc_official_ride: event.ACCOfficialRide === true,
-        }),
+        JSON.stringify(serialize_published_occurrence(match)),
         {
             headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
         },

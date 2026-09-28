@@ -5,13 +5,11 @@
 import ArticleLayout from '../../../layouts/ArticleLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { t, type Locale } from '../../../lib/i18n';
-import { getTodayAtMidnight } from '../../../lib/events/eventHelpers';
 import { resolveEventEntryBySlug } from '../../../lib/events/recurringEvents';
 import { get_cancellation_notice } from '../../../lib/events/eventCancellation';
 import {
-  departure_day, format_departure, SCHEDULE_NOTICE,
+  effective_registration_deadline, format_departure, SCHEDULE_NOTICE,
 } from '../../../lib/events/event_schedule';
-import { parse_event_datetime } from '../../../lib/events/event_datetime';
 import { EventRegistrationForm } from '../../../components/EventRegistrationForm';
 import '../../../components/EventRegistrationForm.css';
 import RegistrationManagement from '../../../components/events/registration_management';
@@ -22,7 +20,10 @@ export const prerender = false;
 
 // SSR: fetch content collection per request
 const { lang, slug } = Astro.params as { lang: Locale; slug: string };
-const allEvents = await getCollection('events');
+const allEvents = await getCollection(
+  'events',
+  ({ data }) => data.status === 'published',
+);
 const entry = resolveEventEntryBySlug(allEvents, slug, lang);
 
 if (!entry) {
@@ -98,26 +99,21 @@ const eventTypeLabel = epicRideSlugs.has(entry.data.slug)
 
 const effective_event_date = updated_departure ?? entry.data.date;
 const schedule_copy = SCHEDULE_NOTICE[lang];
-const isPastEvent = new Date(effective_event_date) < getTodayAtMidnight();
+const isPastEvent = new Date(effective_event_date).getTime() <= Date.now();
 const registrationReopened = entry.data.registrationReopened === true;
 const showRegistrationForm = (
-  (!isPastEvent || registrationReopened)
+  !isPastEvent
   && !entry.data.registrationLink
   && !isEventCancelled
 );
 const cancellationNotice = get_cancellation_notice(cancellationReason, lang);
 
 // Effective registration deadline: explicit value in frontmatter, or default to day before event at 22:00
-const rawDeadline = entry.data.registrationDeadline;
-const effectiveDeadline = rawDeadline
-  ? String(rawDeadline)
-  : (() => {
-      const d = new Date(`${departure_day(entry.data.date)}T00:00:00Z`);
-      d.setUTCDate(d.getUTCDate() - 1);
-      return parse_event_datetime(
-        `${d.toISOString().slice(0, 10)}T22:00:00`,
-      ).toISOString();
-    })();
+const effectiveDeadline = effective_registration_deadline(
+  entry.data.date,
+  entry.data.registrationDeadline,
+  registrationReopened,
+);
 
 const endedLabels: Record<string, string> = {
   zh: '该活动已结束，报名通道已关闭。',
@@ -179,7 +175,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
       {cancellationNotice}
     </div>
   )}
-  {isPastEvent && !registrationReopened && !isEventCancelled && (
+  {isPastEvent && !isEventCancelled && (
     <div slot="before-comments" class="event-ended-notice">
       {endedLabels[lang] ?? endedLabels.en}
     </div>
@@ -206,7 +202,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
     </div>
   )}
   <!-- Floating subscribe banner: only on past events (active events have the form checkbox) -->
-  {isPastEvent && !registrationReopened && <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />}
+  {isPastEvent && <SubscribeFloatingBanner lang={lang} apiUrl={apiUrl} />}
 </ArticleLayout>
 
 <!-- Client-side script to hydrate registration form -->
