@@ -1,7 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { MobileContentItem } from "../../../shared/mobile_content";
-import { ApiError, IndeterminateRegistrationError, submit_registration } from "./api";
+import {
+    ApiError,
+    get_event_status,
+    IndeterminateRegistrationError,
+    submit_registration,
+} from "./api";
 
 const item: MobileContentItem = {
     body_html: "",
@@ -26,6 +31,46 @@ const fields = {
 
 afterEach(() => vi.unstubAllGlobals());
 
+describe("get_event_status", () => {
+    it("rejects malformed live data instead of opening registration", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi.fn().mockResolvedValue(
+                new Response(JSON.stringify({ slug: "ride", is_public: true }), {
+                    status: 200,
+                }),
+            ),
+        );
+        await expect(get_event_status("ride")).rejects.toBeInstanceOf(ApiError);
+    });
+
+    it("accepts a matching FastAPI event status", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi.fn().mockResolvedValue(
+                new Response(
+                    JSON.stringify({
+                        available_spots: 2,
+                        cancellation_reason: null,
+                        current_participants: 1,
+                        event_date: "2030-07-01T08:00:00Z",
+                        is_cancelled: false,
+                        is_public: true,
+                        max_participants: 3,
+                        registration_deadline: null,
+                        slug: "ride",
+                    }),
+                    { status: 200 },
+                ),
+            ),
+        );
+        await expect(get_event_status("ride")).resolves.toMatchObject({
+            kind: "live",
+            value: { slug: "ride", available_spots: 2 },
+        });
+    });
+});
+
 describe("submit_registration", () => {
     it("sends rider data and slug without editable event metadata", async () => {
         const fetch_mock = vi.fn().mockResolvedValue(
@@ -40,7 +85,7 @@ describe("submit_registration", () => {
 
         await submit_registration(item, "en", fields);
 
-        const request = fetch_mock.mock.calls[0][1] as RequestInit;
+        const request = fetch_mock.mock.calls[0]?.[1] as RequestInit;
         expect(JSON.parse(request.body as string)).toEqual({
             ...fields,
             event_slug: "ride",

@@ -48,6 +48,32 @@ export class IndeterminateRegistrationError extends Error {
     }
 }
 
+function is_event_live_state(value: unknown): value is EventLiveState {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+    const event = value as Record<string, unknown>;
+    const nullable_number = (field: unknown): boolean =>
+        field === null ||
+        (typeof field === "number" && Number.isInteger(field) && field >= 0);
+    return (
+        typeof event.slug === "string" &&
+        typeof event.event_date === "string" &&
+        Number.isFinite(new Date(event.event_date).getTime()) &&
+        typeof event.is_public === "boolean" &&
+        typeof event.is_cancelled === "boolean" &&
+        Number.isInteger(event.current_participants) &&
+        (event.current_participants as number) >= 0 &&
+        nullable_number(event.available_spots) &&
+        nullable_number(event.max_participants) &&
+        (event.registration_deadline === null ||
+            (typeof event.registration_deadline === "string" &&
+                Number.isFinite(new Date(event.registration_deadline).getTime()))) &&
+        (event.cancellation_reason === null ||
+            typeof event.cancellation_reason === "string")
+    );
+}
+
 async function response_error(response: Response): Promise<ApiError> {
     let message = `Request failed with ${response.status}`;
     try {
@@ -68,7 +94,10 @@ async function response_error(response: Response): Promise<ApiError> {
 export async function get_event_status(slug: string): Promise<EventStatusResult> {
     const response = await fetch(
         `${APP_CONFIG.api_url}/api/events/${encodeURIComponent(slug)}`,
-        { headers: { Accept: "application/json" } },
+        {
+            headers: { Accept: "application/json" },
+            signal: AbortSignal.timeout(8_000),
+        },
     );
     if (response.status === 404) {
         return { kind: "not_synced" };
@@ -76,10 +105,11 @@ export async function get_event_status(slug: string): Promise<EventStatusResult>
     if (!response.ok) {
         throw await response_error(response);
     }
-    return {
-        kind: "live",
-        value: (await response.json()) as EventLiveState,
-    };
+    const payload: unknown = await response.json();
+    if (!is_event_live_state(payload) || payload.slug !== slug) {
+        throw new ApiError("Invalid event status response", 502);
+    }
+    return { kind: "live", value: payload };
 }
 
 export async function submit_registration(
