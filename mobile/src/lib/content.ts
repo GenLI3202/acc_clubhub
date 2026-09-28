@@ -39,6 +39,47 @@ const TYPE_LABELS: Record<MobileLocale, Record<MobileContentItem["type"], string
     },
 };
 
+const EVENT_TYPE_LABELS: Record<MobileLocale, Record<string, string>> = {
+    de: {
+        "social-ride": "Social Ride",
+        "training-camp": "Trainingslager",
+        race: "Rennen",
+        workshop: "Workshop",
+    },
+    en: {
+        "social-ride": "Social Ride",
+        "training-camp": "Training Camp",
+        race: "Race",
+        workshop: "Workshop",
+    },
+    zh: {
+        "social-ride": "休闲骑",
+        "training-camp": "训练营",
+        race: "比赛",
+        workshop: "工作坊",
+    },
+};
+
+const EPIC_RIDE_SLUGS = new Set([
+    "hahntennjoch-epic-ride",
+    "acc-epic-ride-munich-linden-loop-2026-09-05",
+    "acc-epic-ride-rosenheim-kufstein-loop-2026-09-12",
+]);
+
+const BERLIN_DAY_FORMAT = new Intl.DateTimeFormat("en", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+});
+
+function berlin_calendar_day(date: Date): string {
+    const parts = Object.fromEntries(
+        BERLIN_DAY_FORMAT.formatToParts(date).map((part) => [part.type, part.value]),
+    );
+    return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
 export function filter_items_for_view(
     items: MobileContentItem[],
     view: AppView,
@@ -107,7 +148,36 @@ export function format_item_type(
     item: MobileContentItem,
     locale: MobileLocale,
 ): string {
+    if (item.type === "event") {
+        if (EPIC_RIDE_SLUGS.has(item.slug)) {
+            return "Epic Ride";
+        }
+        const event_type = item.metadata.event_type;
+        if (event_type) {
+            return EVENT_TYPE_LABELS[locale][event_type] ?? event_type;
+        }
+    }
     return TYPE_LABELS[locale][item.type];
+}
+
+export function split_event_items(
+    items: MobileContentItem[],
+    live_events: Record<string, EventLiveState> = {},
+    now: Date = new Date(),
+): { upcoming: MobileContentItem[]; past: MobileContentItem[] } {
+    const today = berlin_calendar_day(now);
+    const upcoming: MobileContentItem[] = [];
+    const past: MobileContentItem[] = [];
+    for (const item of items) {
+        const raw_date = live_events[item.slug]?.event_date ?? item.metadata.event_date;
+        const date = raw_date ? new Date(raw_date) : undefined;
+        const day =
+            date && !Number.isNaN(date.getTime())
+                ? berlin_calendar_day(date)
+                : undefined;
+        (day && day >= today ? upcoming : past).push(item);
+    }
+    return { upcoming, past };
 }
 
 export function sort_mobile_items(
