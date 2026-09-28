@@ -41,6 +41,7 @@ const checks = [
         const contract = await read_json(`${api_url}/openapi.json`);
         for (const [path, method] of [
             ["/auth/mobile-login", "post"],
+            ["/auth/mobile-refresh", "post"],
             ["/auth/mobile-logout", "post"],
             ["/api/rsvp", "post"],
             ["/api/events", "get"],

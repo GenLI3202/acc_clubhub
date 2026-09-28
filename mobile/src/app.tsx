@@ -25,6 +25,7 @@ import {
 } from "./lib/content";
 import { create_page_hero, section_title } from "./lib/page_hero";
 import { get_public_event_statuses, type EventLiveState } from "./services/api";
+import { restore_admin_session } from "./services/admin";
 import {
     ContentUpdateRequiredError,
     load_content_feed,
@@ -82,7 +83,6 @@ export function App() {
     const [favorites, set_favorites] = useState<Set<string>>(new Set());
     const [query, set_query] = useState("");
     const [online, set_online] = useState(navigator.onLine);
-    const [app_active, set_app_active] = useState(true);
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
     const [live_refresh_epoch, set_live_refresh_epoch] = useState(0);
@@ -97,9 +97,7 @@ export function App() {
         ): Promise<void> => {
             const request_id = feed_request_id.current + 1;
             feed_request_id.current = request_id;
-            if (options.background) {
-                set_refreshing(true);
-            } else {
+            if (!options.background) {
                 set_loading(true);
                 set_error(undefined);
                 set_live_refresh_epoch((current) => current + 1);
@@ -118,6 +116,9 @@ export function App() {
                     current_feed.current = result.feed;
                     set_feed(result.feed);
                     set_source(result.source);
+                }
+                if (options.background) {
+                    set_live_refresh_epoch((current) => current + 1);
                 }
                 set_error(undefined);
                 if (options.announce && result.source === "network") {
@@ -141,7 +142,6 @@ export function App() {
             } finally {
                 if (request_id === feed_request_id.current) {
                     set_loading(false);
-                    set_refreshing(false);
                 }
             }
         },
@@ -151,15 +151,21 @@ export function App() {
     const pull_refresh = use_pull_to_refresh({
         disabled: !online || loading,
         on_refresh: async (): Promise<void> => {
-            await load_feed(locale, {
-                announce: true,
-                background: Boolean(feed),
-            });
+            set_refreshing(true);
+            try {
+                await load_feed(locale, {
+                    announce: true,
+                    background: Boolean(feed),
+                });
+            } finally {
+                set_refreshing(false);
+            }
         },
         refreshing,
     });
 
     useEffect(() => {
+        void restore_admin_session();
         void Promise.all([load_locale(), load_favorites()]).then(
             ([saved_locale, saved_favorites]) => {
                 if (saved_locale) {
@@ -188,10 +194,7 @@ export function App() {
             previous_connection = status.connected;
             set_online(status.connected);
             if (reconnected) {
-                void load_feed(locale, {
-                    announce: true,
-                    background: true,
-                });
+                void restore_admin_session();
                 void check_for_live_update();
             }
         }).then((listener) => {
@@ -200,15 +203,13 @@ export function App() {
         return (): void => {
             void remove_listener?.();
         };
-    }, [load_feed, locale]);
+    }, []);
 
     useEffect(() => {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("appStateChange", (state) => {
-            set_app_active(state.isActive);
             if (state.isActive) {
-                set_live_refresh_epoch((current) => current + 1);
-                void load_feed(locale, { background: true });
+                void restore_admin_session();
                 void check_for_live_update();
             }
         }).then((listener) => {
@@ -217,19 +218,7 @@ export function App() {
         return (): void => {
             void remove_listener?.();
         };
-    }, [load_feed, locale]);
-
-    useEffect(() => {
-        if (!online || !app_active) {
-            return;
-        }
-        const timer = window.setInterval(() => {
-            if (document.visibilityState === "visible") {
-                void load_feed(locale, { background: true });
-            }
-        }, 60_000);
-        return (): void => window.clearInterval(timer);
-    }, [app_active, load_feed, locale, online]);
+    }, []);
 
     useEffect(() => {
         const handle_link = (link: ContentDeepLink): void => {
@@ -324,7 +313,6 @@ export function App() {
     );
     useEffect(() => {
         if (active_view !== "events" || !online || !feed) {
-            set_live_events({});
             return;
         }
         let active = true;
@@ -354,7 +342,7 @@ export function App() {
         return (): void => {
             active = false;
         };
-    }, [active_view, feed, live_refresh_epoch, online]);
+    }, [active_view, feed, live_refresh_epoch]);
     const hero_content = useMemo(
         () => create_page_hero(active_view, scoped_items, locale, APP_CONFIG.site_url),
         [active_view, locale, scoped_items],

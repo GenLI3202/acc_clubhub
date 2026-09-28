@@ -164,14 +164,10 @@ export function ContentDetail({
                 });
         };
         refresh();
-        const timer = window.setInterval(() => {
-            if (document.visibilityState === "visible") refresh();
-        }, 30_000);
         return (): void => {
             active = false;
-            window.clearInterval(timer);
         };
-    }, [item.slug, item.type, online, refresh_epoch, registration_refresh]);
+    }, [item.slug, item.type, refresh_epoch, registration_refresh]);
 
     useEffect(() => {
         set_registration_result(undefined);
