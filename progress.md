@@ -11,6 +11,15 @@
 
 ## Recent Updates
 
+- [X] **Issue #174 最新源码 Android debug 构建** (2026-09-28)
+  - [X] 以 `a849a056` 重新执行前端内容打包、Capacitor 同步和 Android
+    debug 构建；APK 位于 `mobile/artifacts/acc-clubhub-0.3.0-debug.apk`。
+  - [X] APK v2 签名验签通过，包名 `de.acrosscc.clubhub`，版本 0.3.0/code 3，
+    SHA-256 `1b0ba259e09841fb2fdfa901d8a6573ddffd9d44de82d27aa22afee32d849fa5`；
+    证书 SHA-256 `3715b4e94d5ceef43256d247595bfd7abd3a3915654e9d223e0a4ed6c616eac9`。
+  - [ ] `adb devices -l` 仍无设备，且缺少 staging/签名材料；不能将 debug 包
+    视为正式 pilot 验收。
+
 - [X] **Issue #174 周期活动在线内容刷新** (2026-09-28)
   - [X] 将内容生成抽为共享函数，保留 APK 静态快照，新增每次请求重新解析周期
     场次的在线 feed；App 默认在线 URL 指向动态端点，离线仍可回退快照。
@@ -41,10 +50,8 @@
     已单独验证生产 API 主机在构建前被拒绝。
   - [X] 44 项移动端测试、类型检查、前端构建、Capacitor 同步及 Android debug
     APK 构建通过；APK v2 验签通过，包名 `de.acrosscc.clubhub`，版本 0.3.0/code 3。
-  - [X] 提交后重建并验签 debug APK，源码 `c8e73c6c`，SHA-256
-    `6e31fe24b9ddc2e4cc1c03e162ca30787d2f12f7cb1a679720cfaf034ffed836`，
-    签名证书 SHA-256 `3715b4e94d5ceef43256d247595bfd7abd3a3915654e9d223e0a4ed6c616eac9`；
-    本地产物和校验清单位于 `mobile/artifacts/`，仅为 debug 测试包。
+  - [X] 本地产物和校验清单位于 `mobile/artifacts/`，仅为 debug 测试包；
+    最新源码对应的哈希和签名见上方构建记录。
   - [ ] ADB 未发现连接设备；正式 pilot 签名保管人/密钥、隔离 staging API/邮件
     环境及上一 pilot 包未提供，真机安装、升级和报名/管理验收尚不能完成。
 
