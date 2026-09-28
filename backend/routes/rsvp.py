@@ -163,7 +163,10 @@ def create_rsvp_v2(
     if not data.privacy_accepted:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please accept the privacy policy",
+            detail={
+                "error_code": "PRIVACY_REQUIRED",
+                "message": "Please accept the privacy policy",
+            },
         )
 
     try:
@@ -293,7 +296,10 @@ def create_rsvp_v2(
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="This email is already registered for this event",
+                detail={
+                    "error_code": "DUPLICATE_REGISTRATION",
+                    "message": "This email is already registered for this event",
+                },
             )
 
     # 4. Determine status (confirmed vs waitlist)

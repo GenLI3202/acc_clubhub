@@ -300,3 +300,27 @@ def test_public_list_and_detail_use_published_capacity_and_date(
         assert item["available_spots"] == 1
         assert item["event_date"].startswith("2030-07-01T08:00:00")
         assert item["registration_deadline"].startswith("2030-06-30T20:00:00")
+
+
+def test_public_registration_errors_have_machine_codes(
+    client_no_auth: TestClient,
+    published_event,
+) -> None:
+    """Privacy and duplicate errors keep stable codes for both clients."""
+    published_event({
+        "slug": "trusted-ride",
+        "title": "Trusted Ride",
+        "event_date": "2030-07-01T08:00:00Z",
+        "location": "Munich",
+    })
+    missing_privacy = client_no_auth.post(
+        "/api/rsvp",
+        json={**_payload(), "privacy_accepted": False},
+    )
+    assert missing_privacy.status_code == 400
+    assert missing_privacy.json()["detail"]["error_code"] == "PRIVACY_REQUIRED"
+
+    assert client_no_auth.post("/api/rsvp", json=_payload()).status_code == 200
+    duplicate = client_no_auth.post("/api/rsvp", json=_payload())
+    assert duplicate.status_code == 400
+    assert duplicate.json()["detail"]["error_code"] == "DUPLICATE_REGISTRATION"

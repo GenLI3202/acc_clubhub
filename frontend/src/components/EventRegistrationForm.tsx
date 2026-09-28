@@ -115,6 +115,15 @@ export function EventRegistrationForm({
                         detail.cancellation_reason,
                         lang,
                     ));
+                } else if (detail?.error_code === 'DUPLICATE_REGISTRATION') {
+                    throw new Error(t(lang, 'event.errorDuplicate'));
+                } else if (
+                    detail?.error_code === 'REGISTRATION_DEADLINE_PASSED'
+                    || detail?.error_code === 'EVENT_PAST'
+                ) {
+                    throw new Error(t(lang, 'event.errorDeadline'));
+                } else if (detail?.error_code === 'INSURANCE_REQUIRED') {
+                    throw new Error(t(lang, 'event.errorInsurance'));
                 } else if (
                     typeof detail === 'string'
                     && detail.includes('already registered')
