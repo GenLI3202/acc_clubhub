@@ -12,6 +12,7 @@ export const prerender = true;
 // the whole page without interacting.
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import AcrossWordmark from "../../assets/brand/across_wordmark.svg";
 import { locales, t, type Locale } from '../../lib/i18n';
 import { MEMBERS } from '../../lib/about/members';
 
@@ -95,23 +96,13 @@ const phNote = t(lang, 'about.placeholderNote');
           foot of the page. ACROSS sits above it because naming the shared
           word is the one thing the Chinese can't do for itself. */}
       <div class="roads-intro" data-reveal>
-        {/* The viewport trims only the approved image's surrounding whitespace. */}
         <h2 class="roads-word" id="roads-heading">
           <span class="sr-only">Across</span>
-          <svg
+          <AcrossWordmark
             class="roads-mark"
-            viewBox="64 106 1152 196"
-            width="1152"
-            height="196"
             aria-hidden="true"
             focusable="false"
-          >
-            <image
-              href="/images/about/across_alpine_wordmark.jpg"
-              width="1280"
-              height="426"
-            />
-          </svg>
+          />
         </h2>
         <p class="roads-name">
           <span>穿</span><i aria-hidden="true">·</i><span>越</span><i aria-hidden="true">·</i><span>无疆</span>
@@ -1111,13 +1102,6 @@ const phNote = t(lang, 'about.placeholderNote');
     max-width: 100%;
     height: auto;
     margin: 0 auto;
-    overflow: hidden;
-    border-radius: var(--radius-sm);
-    mix-blend-mode: multiply;
-  }
-  :global(:root.dark) .roads-mark {
-    /* Retain the approved photograph's light ground and original colors. */
-    mix-blend-mode: normal;
   }
   .sr-only {
     position: absolute;
