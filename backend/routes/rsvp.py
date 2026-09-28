@@ -10,11 +10,13 @@ from typing import Optional
 from urllib.parse import urlparse
 
 from database import get_db
+from domain.exceptions import (
+    PublishedEventNotFoundError,
+    PublishedEventUnavailableError,
+)
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from models import RSVP, Event, Subscriber
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from services.event_schedule import as_utc, event_input_as_utc
-from services.rsvp_cancellation import cancel_registration
 from services.email import (
     send_confirmation_email,
     send_subscription_confirmation_email,
@@ -24,7 +26,10 @@ from services.event_counts import (
     count_confirmed_rsvps,
     sync_event_current_participants,
 )
+from services.event_schedule import as_utc, event_input_as_utc
+from services.published_events import fetch_published_event
 from services.registration_alerts import send_registration_alerts
+from services.rsvp_cancellation import cancel_registration
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
@@ -43,6 +48,7 @@ class RSVPCreate(BaseModel):
     name: str
     notes: Optional[str] = None
     privacy_accepted: bool = False
+    insurance_accepted: bool = False
     subscribe: bool = False  # 勾选"订阅 ACC 活动通知"
     lang: str = "zh"  # User's locale for email notifications
 
@@ -58,21 +64,22 @@ class RSVPResponse(BaseModel):
 
 
 class RSVPCreateV2(BaseModel):
-    """CMS-driven RSVP request — includes event metadata for auto-creation"""
+    """Public RSVP request; published content supplies event metadata."""
 
     # User info
     email: EmailStr
     name: str
     notes: Optional[str] = None
     privacy_accepted: bool = False
+    insurance_accepted: bool = False
     subscribe: bool = False
     lang: str = "zh"
 
-    # Event metadata (from markdown frontmatter)
+    # Legacy metadata is accepted for older clients but never trusted.
     event_slug: str
-    event_title: str
+    event_title: str | None = None
     event_location: str = ""
-    event_date: datetime
+    event_date: datetime | None = None
     event_type: str = "social-ride"
     max_participants: Optional[int] = None
     registration_deadline: Optional[datetime] = None
@@ -125,179 +132,25 @@ def create_rsvp(
     rsvp_data: RSVPCreate,
     db: Session = Depends(get_db),
 ) -> RSVPResponse:
-    """
-    创建活动报名 (Email-based, 无需登录)
-
-    Args:
-        event_id: 活动 ID
-        rsvp_data: 报名信息 (email, name, notes, subscribe)
-
-    Returns:
-        RSVPResponse with status and optional waitlist position
-    """
-    if not rsvp_data.privacy_accepted:
+    """Register for an existing public event through the published slug contract."""
+    event = db.query(Event).filter(Event.id == event_id, Event.is_public).first()
+    if event is None:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please accept the privacy policy",
+            status_code=404,
+            detail={"error_code": "EVENT_NOT_PUBLIC", "message": "Event not found"},
         )
-
-    # 1. 查询活动 (行锁防止并发超额)
-    event = db.query(Event).filter(
-        Event.id == event_id,
-    ).with_for_update().first()
-    if not event:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Event with id {event_id} not found",
-        )
-
-    if event.cancelled_at is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={
-                "error_code": "EVENT_CANCELLED",
-                "message": "This event has been cancelled",
-                "cancellation_reason": event.cancellation_reason,
-            },
-        )
-
-    # 2. 检查报名截止时间
-    if (
-        event.registration_deadline
-        and event.registration_deadline < datetime.now(timezone.utc)
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Registration deadline has passed",
-        )
-
-    # 3. 检查是否已报名
-    existing = db.query(RSVP).filter(
-        RSVP.event_id == event_id,
-        RSVP.email == rsvp_data.email,
-    ).first()
-    if existing:
-        if existing.status == "cancelled":
-            # Allow re-registration: reactivate the cancelled record
-            pass
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="This email is already registered for this event",
-            )
-
-    # 4. 检查席位
-    rsvp_status = "confirmed"
-    waitlist_pos = None
-
-    if event.max_participants is not None:
-        confirmed_count = count_confirmed_rsvps(db, event_id)
-        spots = event.max_participants - confirmed_count
-        if spots <= 0:
-            rsvp_status = "waitlist"
-            waitlist_pos = db.query(RSVP).filter(
-                RSVP.event_id == event_id,
-                RSVP.status == "waitlist",
-            ).count() + 1
-
-    # 5. 创建 or reactivate RSVP
-    if existing and existing.status == "cancelled":
-        existing.status = rsvp_status
-        existing.name = rsvp_data.name
-        existing.notes = rsvp_data.notes
-        existing.privacy_accepted = rsvp_data.privacy_accepted
-        existing.view_token = secrets.token_urlsafe(32)
-        existing.cancel_reason = None
-        existing.checked_in_at = None
-        new_rsvp = existing
-    else:
-        new_rsvp = RSVP(
-            event_id=event_id,
+    return create_rsvp_v2(
+        RSVPCreateV2(
             email=rsvp_data.email,
             name=rsvp_data.name,
-            status=rsvp_status,
             notes=rsvp_data.notes,
             privacy_accepted=rsvp_data.privacy_accepted,
-            view_token=secrets.token_urlsafe(32),
-        )
-        db.add(new_rsvp)
-
-    db.flush()
-    sync_event_current_participants(db, event)
-
-    # 6. 处理订阅
-    new_subscriber = False
-    sub = None
-    if rsvp_data.subscribe:
-        sub, new_subscriber = _ensure_subscriber(db, rsvp_data.email, rsvp_data.name, rsvp_data.lang)
-
-    db.commit()
-    db.refresh(new_rsvp)
-
-    # Send subscription confirmation if brand-new subscriber
-    if new_subscriber and sub is not None:
-        try:
-            send_subscription_confirmation_email(
-                email=rsvp_data.email,
-                name=rsvp_data.name,
-                lang=rsvp_data.lang,
-                unsubscribe_token=sub.unsubscribe_token,
-            )
-        except Exception as email_err:
-            logger.error("Subscription confirmation email failed: %s", email_err)
-
-    # 7. 发送邮件通知
-    if rsvp_status == "confirmed":
-        send_confirmation_email(
-            user_email=rsvp_data.email,
-            user_name=rsvp_data.name,
-            event_title=event.title,
-            event_date=event.event_date,
-            event_location=event.location,
-            event_id=event.id,
-            lang="en",
+            insurance_accepted=rsvp_data.insurance_accepted,
+            subscribe=rsvp_data.subscribe,
+            lang=rsvp_data.lang,
             event_slug=event.slug,
-            view_token=new_rsvp.view_token,
-        )
-    else:
-        send_waitlist_email(
-            user_email=rsvp_data.email,
-            user_name=rsvp_data.name,
-            event_title=event.title,
-            waitlist_position=waitlist_pos or 0,
-            lang="en",
-            event_slug=event.slug,
-            view_token=new_rsvp.view_token,
-        )
-
-    try:
-        send_registration_alerts(
-            db=db,
-            event_id=event.id,
-            event_title=event.title,
-            event_date=event.event_date,
-            participant_name=rsvp_data.name,
-            participant_email=str(rsvp_data.email),
-            registration_status=rsvp_status,
-            confirmed_count=event.current_participants or 0,
-            max_participants=event.max_participants,
-        )
-    except Exception as email_err:
-        logger.error(
-            "Ride leader registration alerts failed: %s",
-            email_err,
-            exc_info=True,
-        )
-
-    return RSVPResponse(
-        success=True,
-        message=(
-            "报名成功！" if rsvp_status == "confirmed"
-            else "已加入等待名单"
         ),
-        rsvp_id=new_rsvp.id,
-        status=rsvp_status,
-        waitlist_position=waitlist_pos,
+        db,
     )
 
 
@@ -306,22 +159,64 @@ def create_rsvp_v2(
     data: RSVPCreateV2,
     db: Session = Depends(get_db),
 ) -> RSVPResponse:
-    """
-    CMS-driven RSVP — slug-based, auto-creates event record if absent.
-
-    Frontend passes event metadata from markdown frontmatter so no
-    manual DB pre-seeding is required per new event.
-    """
+    """Register by slug using verified published event metadata."""
     if not data.privacy_accepted:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please accept the privacy policy",
+            detail={
+                "error_code": "PRIVACY_REQUIRED",
+                "message": "Please accept the privacy policy",
+            },
         )
 
-    # 1. Get or auto-create event by slug (row lock for concurrency safety)
+    try:
+        published = fetch_published_event(data.event_slug)
+    except PublishedEventNotFoundError:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_PUBLISHED",
+                "message": "Event is not currently published",
+            },
+        )
+    except PublishedEventUnavailableError:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error_code": "PUBLISHED_EVENT_UNAVAILABLE",
+                "message": "Published event state could not be verified",
+            },
+        )
+    if published.registration_link:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EXTERNAL_REGISTRATION",
+                "message": "Use the published registration link for this event",
+            },
+        )
+    if published.acc_official_ride and not data.insurance_accepted:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error_code": "INSURANCE_REQUIRED",
+                "message": "Please accept the ACC insurance notice",
+            },
+        )
+
+    # Get or auto-create event from published content under a row lock.
     event = db.query(Event).filter(
         Event.slug == data.event_slug,
     ).with_for_update().first()
+
+    if event and not event.is_public:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error_code": "EVENT_NOT_PUBLIC",
+                "message": "Event is not public",
+            },
+        )
 
     if event and event.cancelled_at is not None:
         raise HTTPException(
@@ -333,46 +228,63 @@ def create_rsvp_v2(
             },
         )
 
-    event_date_dt = data.event_date
-    reg_deadline = data.registration_deadline
+    effective_date = (
+        event.event_date
+        if event is not None and event.rescheduled_at is not None
+        else published.event_date
+    )
+    if as_utc(effective_date) <= datetime.now(timezone.utc):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error_code": "EVENT_PAST",
+                "message": "Registration is closed for past events",
+            },
+        )
+
+    event_date_dt = published.event_date
+    reg_deadline = (
+        None if published.registration_reopened else published.registration_deadline
+    )
+    if reg_deadline is not None and as_utc(reg_deadline) < datetime.now(
+        timezone.utc,
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error_code": "REGISTRATION_DEADLINE_PASSED",
+                "message": "Registration deadline has passed",
+            },
+        )
 
     if not event:
         event = Event(
             slug=data.event_slug,
-            title=data.event_title,
-            location=data.event_location,
+            title=published.title,
+            location=published.location,
             event_date=event_date_dt,
-            event_type=data.event_type,
-            max_participants=data.max_participants,
+            event_type=published.event_type,
+            max_participants=published.max_participants,
             registration_deadline=reg_deadline,
-            distance_km=data.distance_km,
+            distance_km=published.distance_km,
+            description=published.description,
         )
         db.add(event)
         db.flush()  # populate event.id before RSVP insert
     else:
-        # Sync metadata even if event exists (Markdown is source of truth)
-        event.title = data.event_title
-        event.location = data.event_location
+        # Published CMS content owns metadata; public request values are ignored.
+        event.title = published.title
+        event.location = published.location
         if event.rescheduled_at is None:
             event.event_date = event_date_dt
-        event.event_type = data.event_type
-        event.max_participants = data.max_participants
+        event.event_type = published.event_type
+        event.max_participants = published.max_participants
         event.registration_deadline = reg_deadline
-        if data.distance_km is not None:
-            event.distance_km = data.distance_km
+        event.description = published.description
+        if published.distance_km is not None:
+            event.distance_km = published.distance_km
 
-    # 2. Check registration deadline (guard against naive vs aware mismatch)
-    if event.registration_deadline is not None:
-        deadline = event.registration_deadline
-        if deadline.tzinfo is None:
-            deadline = deadline.replace(tzinfo=timezone.utc)
-        if deadline < datetime.now(timezone.utc):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Registration deadline has passed",
-            )
-
-    # 3. Check for duplicate registration
+    # Check for duplicate registration.
     existing = db.query(RSVP).filter(
         RSVP.event_id == event.id,
         RSVP.email == data.email,
@@ -384,7 +296,10 @@ def create_rsvp_v2(
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="This email is already registered for this event",
+                detail={
+                    "error_code": "DUPLICATE_REGISTRATION",
+                    "message": "This email is already registered for this event",
+                },
             )
 
     # 4. Determine status (confirmed vs waitlist)
@@ -461,8 +376,8 @@ def create_rsvp_v2(
                 lang=data.lang,
                 event_slug=event.slug,
                 view_token=new_rsvp.view_token,
-                wechat_qr_code=data.wechat_qr_code,
-                route_komoot_url=data.route_komoot_url,
+                wechat_qr_code=published.wechat_qr_code,
+                route_komoot_url=published.route_komoot_url,
             )
         else:
             send_waitlist_email(

@@ -11,6 +11,206 @@
 
 ## Recent Updates
 
+- [X] **Android 联网基础包与远程功能更新** (2026-09-28)
+  - [X] 用户确认手机为只读 0.3.0；新增 `android:connected`，保留同一调试
+    签名及 native code 3，启用生产内容、报名、管理与签名 OTA，界面版本 0.3.1。
+    只读预览须覆盖安装一次此基础包，后续兼容界面变更可远程更新。
+  - [X] 比对 0.2.0 发布源码确认插件、公钥及 Capacitor 配置一致；OTA 按实际
+    native code 2/3 选择独立清单，保留 code 2 的 `latest.json` 旧客户端入口。
+  - [X] 关于页增加版本、检查更新及确认后应用；更新下载不强制中断当前操作。
+    打包校验生产环境、干净源码 revision 和 RSA 签名，记录 APK 签名与 SHA。
+  - [X] 前台在线每 60 秒刷新内容，详情每 30 秒刷新状态；Playwright 隔离响应
+    验证报名草稿保留、取消后关闭报名、更新页与管理登录入口，无浏览器脚本错误。
+  - [X] 移动端 64 项及后端 269 项测试通过；TypeScript、格式检查和 Android
+    联网 APK 构建通过。产物为 `mobile/artifacts/acc-clubhub-0.3.0-connected.apk`，
+    同名 JSON 记录源码、签名、环境和校验和。
+  - [X] 从干净源码 `a21efd1e` 重建联网 APK 并验签；APK SHA-256 为
+    `8800f71ee626ebdff22d6dd26d62352a95e11d82b0ec1100f4a5f8cc11a69c64`。
+    native 2/3 热更新清单均通过同一公钥的 RSA/SHA-256 核验；打包负向测试
+    确认 preview、脏源码及错误 revision 均被拒绝。产物只在本地，尚未上传。
+  - [X] 发布工作流新增只读线上就绪检查；本次检查准确拒绝发布：三语动态 feed
+    与已发布索引均为 404，线上 API 缺少 `/auth/mobile-login`。
+  - [ ] 网站、API、签名热更新仍未发布；线上渠道仍为 2026-09-08 的 native 2
+    旧包。按网站→API→只读就绪检查→热更新的顺序发布后，才可验收手机完整功能。
+  - [X] 用户已明确授权推送、合并及生产发布；合入最新主分支并保留近期活动内容。
+  - [ ] 未执行真实报名、管理写入或邮件测试，真机覆盖安装与应用更新仍待验证。
+
+- [X] **Issue #174 Android 调试包写入隔离** (2026-09-28)
+  - [X] `android:debug` 固定构建只读 preview；生产公开内容及活动状态可浏览，
+    报名、订阅、管理界面隐藏或说明禁用，服务层在任何生产写请求之前拒绝。
+  - [X] 三语只读标识、环境及写入阻断单测通过；移动端全量 55 项测试、
+    TypeScript、Prettier、Astro/Vite 和 Android 构建通过。
+  - [X] 重建 APK 后核验内嵌只读提示及写入拦截；包名
+    `de.acrosscc.clubhub`、0.3.0/code 3、v2 调试签名有效，SHA-256 为
+    `daf6e8906ed8361e5cadc93d8af1f40a76089d54b5b9c225965a275dc2ceeb94`。
+  - [ ] 签名 staging pilot、真机及真实 staging 写入验收未完成。
+
+- [X] **Issue #174 本地跨服务隔离联测** (2026-09-28)
+  - [X] 实际本地 Astro 动态 feed 提供 `afterwork-ride-2026-10-01`；FastAPI
+    使用内存 SQLite 和邮件替身，从网站单条/批量已发布契约验证活动。
+  - [X] 首次详情返回未建档 `id=0`，报名 confirmed 并创建 1 条活动/报名；
+    公共列表及管理员分页列表各显示 1 条，Bearer 退出后管理员请求返回 401。
+  - [ ] 该联测不证明部署、真实邮件、Android 原生网络栈或 PostgreSQL 并发。
+
+- [X] **Issue #174 已发布名额与候补回归** (2026-09-28)
+  - [X] 隔离测试证明已发布容量 1 人时首位 confirmed、次位 waitlist 且位置 1；
+    后端全量 269 项测试通过。
+  - [ ] 本机无 PostgreSQL/Docker 工具，真实并发首位建档与满额竞争仍待
+    隔离 PostgreSQL 环境验证。
+
+- [X] **Issue #174 报名错误契约与网站文案** (2026-09-28)
+  - [X] 公开报名的隐私拒绝和重复报名返回稳定 `error_code`，网站按代码显示
+    本地化重复、截止及官方骑行保险文案，保留旧响应的兼容处理。
+  - [X] 后端全量 268 项、前端 82 项测试及 Astro 检查/构建通过。
+
+- [X] **Issue #174 管理会话状态故障关闭** (2026-09-28)
+  - [X] 审查发现单活跃会话表查询失败时原代码会继续处理；登录激活、
+    退出撤销和受保护请求校验现均返回 `ADMIN_SESSION_UNAVAILABLE` 503。
+  - [X] 数据库故障注入覆盖三条路径，后端全量 267 项测试及 Ruff 通过。
+  - [ ] 移动原生壳的会话失效、网站/App 相互登录仍待 staging 真机验证。
+
+- [X] **Issue #174 公开活动发布与报名规则一致性** (2026-09-28)
+  - [X] 网页详情隐藏草稿，已结束活动不再因历史 reopening 标记显示报名；
+    网页、feed 和 API 共用前一天慕尼黑时间 22:00 默认截止规则。
+  - [X] 旧数据库 ID 报名/详情路径同样核验已发布状态；公开活动列表从网站
+    批量已发布索引筛选，并叠加最新日期、截止时间和名额，保留管理员改期。
+  - [X] 本地已发布索引返回 23 个活动、排除草稿；抽样记录与单条契约完全一致，
+    草稿网页详情重定向。后端全量 264 项、前端 82 项、移动端 52 项测试及
+    前端/移动端构建通过。
+  - [ ] 新索引与后端筛选均未部署或经 staging 写入验证；网站须先于后端部署。
+
+- [X] **Issue #174 管理登录迟到响应防护** (2026-09-28)
+  - [X] 管理员登录/退出增加请求超时，登录响应若在退出或会话变化后才到达，
+    不恢复已清除的管理令牌。移动端 52 项测试、TypeScript 和 Prettier 通过。
+  - [X] 只读生产探测：新的动态 feed 与已发布活动契约目前均返回 HTTP 404，
+    本地实现尚未部署；真机及 staging 写入没有假定为通过。
+
+- [X] **Issue #174 管理端响应契约校验** (2026-09-28)
+  - [X] App 对管理员分页活动、名单和写操作结果做运行时字段校验；格式异常
+    的写入成功响应按结果未知处理，不显示假成功或自动重试。
+  - [X] 移动端 51 项测试、TypeScript、Prettier 和 Vite 构建通过。
+
+- [X] **Issue #174 活动列表实时状态** (2026-09-28)
+  - [X] 活动列表读取最多 100 条公开、未过期数据库状态，仅对已发布 feed 中的
+    slug 叠加实时日期、取消标识和剩余名额，并按改期后日期排序；报名成功、
+    恢复前台及刷新后更新。
+  - [X] 列表响应校验失败时不采信错误数据，详情继续逐活动向服务端验证。
+    移动端 49 项测试、TypeScript、Prettier 和 Vite 构建通过。
+  - [ ] 真实 Android 列表/详情一致性仍需 staging 设备验证。
+
+- [X] **Issue #174 最新源码 Android debug 构建** (2026-09-28)
+  - [X] 以 `b552904c` 重新执行前端内容打包、Capacitor 同步和 Android
+    debug 构建；APK 位于 `mobile/artifacts/acc-clubhub-0.3.0-debug.apk`。
+  - [X] APK v2 签名验签通过，包名 `de.acrosscc.clubhub`，版本 0.3.0/code 3，
+    SHA-256 `b084f332b0638c070f5ab75d790c3acd2420fe5de32f7868a7182e0df992ae8d`；
+    证书 SHA-256 `3715b4e94d5ceef43256d247595bfd7abd3a3915654e9d223e0a4ed6c616eac9`。
+  - [ ] `adb devices -l` 仍无设备，且缺少 staging/签名材料；不能将 debug 包
+    视为正式 pilot 验收。
+
+- [X] **Issue #174 周期活动在线内容刷新** (2026-09-28)
+  - [X] 将内容生成抽为共享函数，保留 APK 静态快照，新增每次请求重新解析周期
+    场次的在线 feed；App 默认在线 URL 指向动态端点，离线仍可回退快照。
+  - [X] 本地动态英文 feed 返回 200；静态构建三语各 73 条内容/21 个活动，
+    跨语言 ID 零缺口，缺失翻译回退中文原文和中文网页；前端构建及移动端
+    47 项测试通过。
+  - [ ] 新端点尚未部署，跨周线上刷新及已安装 APK 的表现仍待 staging/真机验收。
+
+- [X] **Issue #174 移动端实时活动响应校验** (2026-09-28)
+  - [X] Android 客户端校验活动状态响应的 slug、日期、可见/取消状态和人数
+    字段；响应格式异常时不开放报名，实时读取限定 8 秒超时。
+  - [X] 移动端 47 项测试、TypeScript、Prettier 与 Vite 构建通过。
+
+- [X] **Issue #174 公开报名活动权威来源** (2026-09-28)
+  - [X] 网站新增已发布活动单条数据端点，后端以其活动日期、名额、截止时间、
+    官方骑行与外部报名状态为准；网页和安卓报名只提交活动 slug 与骑友资料。
+  - [X] 未发布、来源不可用、过期活动及未确认官方骑行保险的请求在写入前被拒绝；
+    首位报名者仍可创建活动行，未同步活动可获取实时公开状态。
+  - [X] 后端全量 257 项、前端 80 项及移动端 45 项测试通过；前端检查/构建和
+    移动端构建通过，本地 Astro 活动数据端点对已发布活动返回 200。
+  - [ ] 此合同尚未部署或经隔离 staging 写入验证；部署顺序须先网站后后端。
+
+- [X] **Issue #174 Android 测试构建隔离与签名准备** (2026-09-28)
+  - [X] App/Android 版本升至 0.3.0/code 3；测试构建要求三项明确的非生产
+    HTTPS 端点，显示测试标识并停用生产热更新。
+  - [X] 增加外部密钥签名的 pilot 打包脚本和安装/验收说明；脚本拒绝缺失密钥、
+    仓库内密钥、未提交工作区和生产主机，产物将包含签名与源码校验清单；
+    已单独验证生产 API 主机在构建前被拒绝。
+  - [X] 44 项移动端测试、类型检查、前端构建、Capacitor 同步及 Android debug
+    APK 构建通过；APK v2 验签通过，包名 `de.acrosscc.clubhub`，版本 0.3.0/code 3。
+  - [X] 本地产物和校验清单位于 `mobile/artifacts/`，仅为 debug 测试包；
+    最新源码对应的哈希和签名见上方构建记录。
+  - [ ] ADB 未发现连接设备；正式 pilot 签名保管人/密钥、隔离 staging API/邮件
+    环境及上一 pilot 包未提供，真机安装、升级和报名/管理验收尚不能完成。
+
+
+- [X] **Issue #174 Android 管理界面接入** (2026-09-28)
+  - [X] App 增加可见的“管理”入口和常驻官网入口；保留原有五个内容分区。
+  - [X] 管理页接入移动 Bearer 登录/退出、有界活动和报名名单、签到/撤销、
+    个人报名取消/恢复、活动改期/取消和提醒邮件操作，影响性操作均需确认。
+  - [X] 令牌仅保存在 JS 内存，未授权会清空私人状态，迟到响应不会重显名单；
+    写入结果不确定时不自动重试，数据和邮件结果分别展示。
+  - [X] 移动端 42 项测试、TypeScript 和生产构建通过，覆盖会话撤销与迟到响应。
+  - [X] Android 手机尺寸 Chromium 模拟 API 验证登录、名单、签到、退出后私人
+    名单清除；未连接真实后端，不能代替 Android 原生壳验收。
+  - [ ] 管理 UI 的 Android 原生壳集成验收仍待完成；新后端接口尚未部署。
+
+
+- [X] **Issue #174 管理端有界列表接口** (2026-09-28)
+  - [X] 新增保留网站旧接口的管理员活动和报名名单分页接口，
+    每次请求仍使用既有管理员会话鉴权，报名名单不返回所有权 token。
+  - [X] 隔离 SQLite 测试验证分页边界、权限及返回字段；相关 14 项及后端
+    全量 248 项测试通过。
+  - [ ] 移动端管理界面尚未接入这些接口；真机权限与名单显示待验。
+
+
+- [X] **Issue #174 管理员移动认证契约** (2026-09-28)
+  - [X] 只读确认生产公开活动、OpenAPI 与英文 feed 均返回 200；
+    当前线上 OpenAPI 尚无移动 Bearer 登录/退出接口。
+  - [X] 新增复用网站单活跃会话政策的 Bearer 登录/退出与受保护请求支持；
+    登录不设置 Cookie，退出撤销活跃会话。
+  - [X] 隔离 SQLite 测试覆盖移动请求往返、退出、网站登录顶替移动会话和错误密码，
+    相关 11 项、全量 245 项后端测试及新增文件 Ruff lint 通过。
+  - [X] 基线、内容与认证契约、设备/账号缺口记录在 `docs/issue_174_baseline.md`。
+  - [ ] 移动 UI 与 Android 原生壳认证、部署和失效实测仍待完成。
+
+
+- [X] **Issue #174 Android 骑友报名状态防护** (2026-09-28)
+  - [X] 移动端报名只在实时公开状态确认后开放；详情以服务端日期和截止时间判断，
+    刷新内容、回到前台或报名成功后重新读取活动状态。
+  - [X] 官方活动 feed 包含保险标记，App 增加三语保险确认；网络超时/服务端错误
+    显示结果未确认并阻止自动重复提交，候补位置独立显示。
+  - [X] 移动端 39 项测试、TypeScript、前端 feed 测试及移动端生产构建通过。
+  - [ ] 未同步新活动当前暂不可从 App 报名；需完成可信服务端活动同步后再验收。
+
+
+- [X] **Issue #174 Android 对齐核对与执行 Prompt** (2026-09-28)
+  - [X] 基于源码 `3eb11148` 和 issue 正文核对，记录管理员功能缺失、
+    实时状态/报名契约缺口和 Android pilot 验收待办。
+  - [X] 生成 `docs/issue_174_android_goal_prompt.md`，包含证据和可复制的
+    `/goal` 执行指令；本次未启动实现、部署或修改远端 issue。
+  - [X] 本地移动端 34 项测试及 TypeScript 检查通过。
+  - [ ] 手机已安装版本、生产 API 能力及真机验收本次未验证。
+
+- [X] **iOS 签名发布流程准备** (2026-09-10)
+  - [X] 增加 `ios:check` 与 `ios:release`，检查 Xcode 26+、iOS SDK、团队 ID 和构建号，
+    构建共享内容与 UI 后进行签名归档和 App Store Connect IPA 导出；不自动上传。
+  - [X] 发布产物按构建号隔离并忽略，补充环境变量、TestFlight 操作和真机验收说明。
+  - [X] 共享前端生产构建、TypeScript 检查及 Capacitor iOS 同步通过，7 个插件已同步。
+  - [X] 发布脚本语法检查通过；环境检查正确提示本机缺少 Xcode 和签名构建参数。
+  - [ ] 真机包及原生验收尚未完成；打开 App Store 时遇到 Mac 锁屏，需用户解锁，
+    然后安装完整 Xcode 并配置 Apple Developer 账号。
+
+- [X] **iOS 内容同步与功能更新分离** (2026-09-10)
+  - [X] iOS 跳过可执行热更新通道，功能更新通过 TestFlight/App Store 构建发布。
+  - [X] Android 保留签名热更新；两端继续共用 UI、内容 feed 和报名后台。
+  - [X] 移动端 34 项单元测试通过，包含 iOS/Web 不下载或激活热更新的回归检查。
+
+- [X] **iOS 同内容安装与分发可行性评估** (2026-09-10)
+  - [X] 确认现有 Capacitor iOS 工程可复用 Android 的 Preact UI、三语内容 feed 和报名 API。
+  - [X] 建议先 TestFlight 真机测试，再 App Store 正式分发；俱乐部链接分发可申请 Unlisted App。
+  - [X] 核对 Apple 官方分发与审核要求；内容数据继续同步，改变功能的代码更新需走审核发布。
+  - [ ] 当前 xcodebuild 指向 Command Line Tools；需配置完整 Xcode、开发者团队和签名。
+  - [ ] 尚未生成 iPhone 可安装包；待验证 iOS 原生插件、安全区、报名、离线与深链接。
 - [X] **保留 Android 0.2.0 内容同步回退** (2026-09-28)
   - [X] 生产新动态 feed 返回 500，而旧 `/mobile-content/v1` 返回最新网站内容；动态生成失败时继续返回已发布网站快照，避免新通道影响既有同步能力。
   - [X] 本地生产函数返回 live 200/76 条内容；三项故障注入测试覆盖旧通道回退、双通道不可用及无效语言。生产动态故障原因仍待运行日志定位，未假定完全解决。
@@ -643,7 +843,7 @@
 - [ ] Cancelled users cannot re-register via frontend OR be restored by admins, violating DB constraints and sync logic — high
 - [ ] Frontend npm audit reports production advisories in Astro / @astrojs/vercel and transitive dependencies — high; likely needs a planned Astro major-version upgrade
 - [ ] Public RSVP/subscription/login endpoints lack rate limiting or CAPTCHA — high
-- [ ] `POST /api/rsvp` accepts event metadata from public clients and can create/update event rows — high; preserve workflow only with server-side event allowlisting or admin sync
+- [ ] `POST /api/rsvp` published-content verification has passed local tests but is not deployed — high; deploy website endpoint before backend and validate staging registration
 - [ ] About responsive E2E tests still target the removed stamp-wall component — low
 
 ## Architecture Decisions

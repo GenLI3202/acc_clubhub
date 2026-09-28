@@ -50,6 +50,20 @@ export function release_manifest_url(
     return `${release_asset_base_url(repository, release_tag)}${asset_name}`;
 }
 
+export function native_manifest_url(
+    legacy_url: string,
+    native_version_code: string,
+    legacy_native_version_code: string,
+): string {
+    if (!/^\d+$/.test(native_version_code)) {
+        throw new Error("Invalid native version code.");
+    }
+    if (native_version_code === legacy_native_version_code) {
+        return legacy_url;
+    }
+    return new URL(`latest-native-${native_version_code}.json`, legacy_url).href;
+}
+
 export function parse_live_update_manifest(
     input: unknown,
     expected_native_version_code: string,

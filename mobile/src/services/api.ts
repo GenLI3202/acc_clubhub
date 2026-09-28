@@ -18,6 +18,7 @@ export type EventStatusResult =
 
 export interface RegistrationFields {
     email: string;
+    insurance_accepted: boolean;
     name: string;
     notes: string;
     privacy_accepted: boolean;
@@ -40,6 +41,39 @@ export class ApiError extends Error {
     }
 }
 
+export class IndeterminateRegistrationError extends Error {
+    public constructor() {
+        super("Registration result could not be confirmed");
+        this.name = "IndeterminateRegistrationError";
+    }
+}
+
+function is_event_live_state(value: unknown): value is EventLiveState {
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+    const event = value as Record<string, unknown>;
+    const nullable_number = (field: unknown): boolean =>
+        field === null ||
+        (typeof field === "number" && Number.isInteger(field) && field >= 0);
+    return (
+        typeof event.slug === "string" &&
+        typeof event.event_date === "string" &&
+        Number.isFinite(new Date(event.event_date).getTime()) &&
+        typeof event.is_public === "boolean" &&
+        typeof event.is_cancelled === "boolean" &&
+        Number.isInteger(event.current_participants) &&
+        (event.current_participants as number) >= 0 &&
+        nullable_number(event.available_spots) &&
+        nullable_number(event.max_participants) &&
+        (event.registration_deadline === null ||
+            (typeof event.registration_deadline === "string" &&
+                Number.isFinite(new Date(event.registration_deadline).getTime()))) &&
+        (event.cancellation_reason === null ||
+            typeof event.cancellation_reason === "string")
+    );
+}
+
 async function response_error(response: Response): Promise<ApiError> {
     let message = `Request failed with ${response.status}`;
     try {
@@ -60,7 +94,10 @@ async function response_error(response: Response): Promise<ApiError> {
 export async function get_event_status(slug: string): Promise<EventStatusResult> {
     const response = await fetch(
         `${APP_CONFIG.api_url}/api/events/${encodeURIComponent(slug)}`,
-        { headers: { Accept: "application/json" } },
+        {
+            headers: { Accept: "application/json" },
+            signal: AbortSignal.timeout(8_000),
+        },
     );
     if (response.status === 404) {
         return { kind: "not_synced" };
@@ -68,10 +105,29 @@ export async function get_event_status(slug: string): Promise<EventStatusResult>
     if (!response.ok) {
         throw await response_error(response);
     }
-    return {
-        kind: "live",
-        value: (await response.json()) as EventLiveState,
-    };
+    const payload: unknown = await response.json();
+    if (!is_event_live_state(payload) || payload.slug !== slug) {
+        throw new ApiError("Invalid event status response", 502);
+    }
+    return { kind: "live", value: payload };
+}
+
+export async function get_public_event_statuses(): Promise<EventLiveState[]> {
+    const response = await fetch(
+        `${APP_CONFIG.api_url}/api/events?limit=100&upcoming_only=true`,
+        {
+            headers: { Accept: "application/json" },
+            signal: AbortSignal.timeout(8_000),
+        },
+    );
+    if (!response.ok) {
+        throw await response_error(response);
+    }
+    const payload: unknown = await response.json();
+    if (!Array.isArray(payload) || !payload.every(is_event_live_state)) {
+        throw new ApiError("Invalid event list response", 502);
+    }
+    return payload;
 }
 
 export async function submit_registration(
@@ -79,32 +135,49 @@ export async function submit_registration(
     locale: MobileLocale,
     fields: RegistrationFields,
 ): Promise<RegistrationResult> {
-    const komoot_link = item.links.find((link) => link.kind === "komoot");
-    const response = await fetch(`${APP_CONFIG.api_url}/api/rsvp`, {
-        body: JSON.stringify({
-            ...fields,
-            event_date: item.metadata.event_date,
-            event_location: item.metadata.location ?? "",
-            event_slug: item.slug,
-            event_title: item.title,
-            event_type: item.metadata.event_type ?? "social-ride",
-            lang: locale,
-            max_participants: item.metadata.max_participants,
-            registration_deadline: item.metadata.registration_deadline,
-            route_komoot_url: komoot_link?.url,
-            distance_km: item.metadata.distance_km,
-            wechat_qr_code: item.metadata.wechat_qr_code,
-        }),
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-    });
+    if (APP_CONFIG.stage === "preview") {
+        throw new ApiError("Registration is disabled in the preview build", 403);
+    }
+    let response: Response;
+    try {
+        response = await fetch(`${APP_CONFIG.api_url}/api/rsvp`, {
+            body: JSON.stringify({
+                ...fields,
+                event_slug: item.slug,
+                lang: locale,
+            }),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            signal: AbortSignal.timeout(20_000),
+        });
+    } catch {
+        throw new IndeterminateRegistrationError();
+    }
+    if (response.status >= 500) {
+        throw new IndeterminateRegistrationError();
+    }
     if (!response.ok) {
         throw await response_error(response);
     }
-    return (await response.json()) as RegistrationResult;
+    try {
+        const payload: unknown = await response.json();
+        if (
+            typeof payload === "object" &&
+            payload !== null &&
+            "status" in payload &&
+            (payload.status === "confirmed" || payload.status === "waitlist") &&
+            "message" in payload &&
+            typeof payload.message === "string"
+        ) {
+            return payload as RegistrationResult;
+        }
+    } catch {
+        // The server may have committed the registration despite an invalid response.
+    }
+    throw new IndeterminateRegistrationError();
 }
 
 export async function submit_subscription(
@@ -112,6 +185,9 @@ export async function submit_subscription(
     name: string,
     email: string,
 ): Promise<void> {
+    if (APP_CONFIG.stage === "preview") {
+        throw new ApiError("Subscription is disabled in the preview build", 403);
+    }
     const response = await fetch(`${APP_CONFIG.api_url}/api/subscribe`, {
         body: JSON.stringify({
             email,

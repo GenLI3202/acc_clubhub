@@ -17,19 +17,22 @@ WebView.
 - Photography-led section heroes using the website's artwork and localized copy
 - Local search and favorites
 - Live event status and email-based registration
+- Administrator login, paged event/participant lists, check-in, registration
+  cancellation/restoration, event rescheduling/cancellation, and reminders
 - Event-update subscription
 - Native share sheet and calendar editor
 - Custom-scheme and website deep-link handling
 - External-browser isolation for hosted and third-party links
 
-Admin dashboards, magic-link login, unsubscribe tokens, and other private pages
-are intentionally not exposed in the app.
+Complex season planning and content publishing remain in the website dashboard.
+The mobile administrator session is held in memory and uses the same
+single-active-session policy as the website.
 
 ## Requirements
 
 - Node.js 22 or newer
 - Android: JDK 21, Android SDK Platform 36, and Build Tools 36
-- iOS: a full Xcode installation with an iOS Simulator runtime
+- iOS: Xcode 26+ with iOS platform support and an iOS Simulator runtime
 
 The application id and bundle id are `de.acrosscc.clubhub`. Confirm this id
 before creating permanent store records or signing credentials.
@@ -45,7 +48,10 @@ npm test
 npm run build
 npm run sync
 npm run android:debug
+npm run android:connected
+npm run android:pilot
 npm run ios:simulator
+npm run ios:check
 ```
 
 `npm run build` first builds the Astro frontend, copies the three generated
@@ -55,12 +61,38 @@ Preact application.
 The Android command writes the installable test package to:
 
 ```text
-mobile/artifacts/acc-clubhub-0.2.0-debug.apk
+mobile/artifacts/acc-clubhub-0.3.0-debug.apk
 ```
+
+`android:debug` always embeds a read-only preview configuration, even if a
+local environment file contains other endpoints. It reads public production
+content and event status, but hides registration, subscription, and management
+forms and blocks their API writes. The debug key and this preview behavior do
+not qualify it as the signed staging pilot.
+
+`android:connected` builds `artifacts/acc-clubhub-0.3.0-connected.apk` with
+production content, registration, administration, and signed remote updates
+enabled. It uses the same local debug signing identity as the preview APK, so
+it can replace that APK without uninstalling. It is a connected internal build,
+not a Play-signed release. Both commands emit a JSON artifact record with the
+source revision, endpoints, APK checksum, and verified signing digest.
+
+The connected app displays interface version 0.3.1; its unchanged native base
+is 0.3.0/code 3. A preview installation needs this one replacement because its
+remote updates were disabled. Future compatible UI changes use the OTA channel.
+
+The signed staging pilot requires external signing credentials and three
+staging endpoints. See [the Android pilot runbook](../docs/ANDROID_PILOT.md).
 
 The iOS simulator command uses unsigned simulator output under
 `mobile/artifacts/ios-simulator/`. TestFlight still requires an Apple Developer
 team, signing certificate, provisioning, and App Store Connect app record.
+
+## Signed iOS release
+
+The iOS build uses the same UI, bundled content, remote feeds, and API as Android.
+See [the release instructions](../docs/IOS_RELEASE.md) for signing, IPA export,
+TestFlight distribution, and the device acceptance checklist.
 
 ## Runtime configuration
 
@@ -68,12 +100,13 @@ Copy `.env.example` to `.env.local` only when an endpoint override is needed:
 
 ```text
 VITE_API_URL=https://acc-clubhub-events-ms.vercel.app
-VITE_CONTENT_BASE_URL=https://www.across-cc.de/mobile-content/v1
+VITE_CONTENT_BASE_URL=https://www.across-cc.de/mobile-content/live/v1
 VITE_SITE_URL=https://www.across-cc.de
+VITE_APP_ENV=production
 ```
 
-The defaults match production, so no environment file is required for the
-standard test build.
+The defaults match production for regular web development builds. The Android
+debug command overrides them with the read-only preview stage.
 
 ## Independent content synchronization
 
@@ -81,8 +114,10 @@ The installed app does not connect to a developer computer. Content follows
 this publishing path:
 
 1. Editors update the existing Astro Markdown collections.
-2. The frontend deployment generates the sanitized, versioned feeds at
-   `/mobile-content/v1/{locale}.json`.
+2. The frontend deployment serves a sanitized, versioned live feed at
+   `/mobile-content/live/v1/{locale}.json`, resolving recurring activities
+   on each request. Its build also creates a static snapshot at
+   `/mobile-content/v1/{locale}.json` for the APK fallback.
 3. The app downloads the selected locale directly from the public website.
 4. A valid response replaces the last-known-good cache; failed requests keep
    cached or bundled content available.
@@ -91,14 +126,21 @@ The app refreshes on launch, when returning to the foreground, after a network
 reconnection, or when the page is pulled down from the top. Normal content
 changes do not require a new APK. The frontend version containing the feed
 route must be deployed before network synchronization can succeed.
+While the app is visible and online, content refreshes every 60 seconds and
+event details refresh every 30 seconds. In-progress registration fields survive
+successful status refreshes; a cancellation or closed registration disables
+submission. Website content edits still need to be published on the website.
 
 ## Online app updates
 
-Version 0.2.0 includes a native live-update client. After a mobile or shared-code
+Android versions 0.2.0 and 0.3.0 have a compatible native live-update client.
+After a mobile or shared-code
 change is merged to `master`, GitHub Actions builds and signs the web bundle and
 publishes it to the `mobile-live-production` release. Installed apps check that
 channel on launch, foreground resume, and network reconnection. A valid update
-is downloaded silently and becomes active the next time the app is opened.
+is downloaded silently and becomes active on the next cold launch. About →
+App updates shows the interface/base versions, checks for updates, and lets the
+user explicitly apply a downloaded update after confirming a reload.
 
 The app only accepts bundles from the configured repository and native version,
 and verifies them with the RSA public key embedded in the installed binary. A
@@ -108,7 +150,9 @@ setup, publishing, and rollback operations.
 
 Changes to native plugins, system permissions, entitlements, icons, splash
 screens, or Android/iOS code still require a new APK or IPA. Content, layout,
-navigation, CSS, images, and binary-compatible JavaScript changes do not.
+navigation, CSS, images, and binary-compatible JavaScript changes do not on Android.
+iOS skips executable live updates and receives UI/functionality changes through
+TestFlight or App Store builds. Both platforms refresh the same content feeds.
 
 ## Deep-link verification
 

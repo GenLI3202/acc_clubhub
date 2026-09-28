@@ -15,7 +15,7 @@ from services.recurring_events import parse_datetime
 
 @pytest.mark.parametrize("lang", ["zh", "en", "de"])
 def test_registration_confirmation_uses_planned_munich_departure(
-    client_no_auth: TestClient, lang: str,
+    client_no_auth: TestClient, published_event, lang: str,
 ) -> None:
     path = (
         Path(__file__).resolve().parents[2] / "frontend/src/content/events" / lang
@@ -25,6 +25,11 @@ def test_registration_confirmation_uses_planned_munich_departure(
     timestamp = parse_datetime(metadata["date"], "Europe/Berlin")
     utc = timestamp.astimezone(timezone.utc).isoformat()
     assert utc == "2026-09-06T07:30:00+00:00"
+    future_utc = utc.replace("2026-", "2030-", 1)
+    published_event({
+        "slug": metadata["slug"], "title": metadata["title"],
+        "location": metadata["location"], "event_date": future_utc,
+    })
 
     with patch("resend.Emails.send", return_value={"id": "test"}) as send:
         with patch("services.email.settings") as settings:
@@ -34,12 +39,12 @@ def test_registration_confirmation_uses_planned_munich_departure(
                 "email": "timezone-test@example.com", "name": "Test Rider",
                 "privacy_accepted": True, "lang": lang,
                 "event_slug": metadata["slug"], "event_title": metadata["title"],
-                "event_location": metadata["location"], "event_date": utc,
+                "event_location": metadata["location"], "event_date": future_utc,
             })
     assert response.status_code == 200
     message = send.call_args.args[0]
     for part in ("html", "text"):
-        assert "2026-09-06 09:30 CEST" in message[part]
+        assert "2030-09-06 09:30 CEST" in message[part]
         assert "11:30" not in message[part]
 
 

@@ -1,10 +1,12 @@
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
 import { format_item_date, format_item_type } from "../lib/content";
 import { translate } from "../i18n";
+import type { EventLiveState } from "../services/api";
 
 interface ContentCardProps {
     favorite: boolean;
     item: MobileContentItem;
+    live_event?: EventLiveState;
     locale: MobileLocale;
     on_open: (item: MobileContentItem) => void;
     on_toggle_favorite: (item: MobileContentItem) => void;
@@ -13,11 +15,12 @@ interface ContentCardProps {
 export function ContentCard({
     favorite,
     item,
+    live_event,
     locale,
     on_open,
     on_toggle_favorite,
 }: ContentCardProps) {
-    const date = format_item_date(item, locale);
+    const date = format_item_date(item, locale, live_event?.event_date);
     const location = item.metadata.location ?? item.metadata.region;
 
     return (
@@ -46,6 +49,17 @@ export function ContentCard({
                         {date ? ` · ${date}` : ""}
                     </span>
                     <strong>{item.title}</strong>
+                    {live_event?.is_cancelled ? (
+                        <span>{translate(locale, "cancelled")}</span>
+                    ) : live_event?.available_spots !== null &&
+                      live_event?.available_spots !== undefined ? (
+                        <span>
+                            {translate(locale, "spots_left").replace(
+                                "{count}",
+                                String(live_event.available_spots),
+                            )}
+                        </span>
+                    ) : null}
                     {location ? <span>{location}</span> : null}
                     <span class="content-card__description">{item.description}</span>
                 </span>

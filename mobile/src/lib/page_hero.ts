@@ -23,6 +23,7 @@ const STATIC_IMAGE_PATHS: Record<AppView, string> = {
     about: "/images/about/hero.webp",
     events: "/images/media/adventure/rad-race-120-2025/gallery/2026-group-turn.jpg",
     gear: "/images/shared/stock/bike-fitting.jpg",
+    manage: "/images/about/hero.webp",
     media: "/images/media/video/alps-summer-2025/cover.jpg",
     training: "/images/media/adventure/rad-race-120-2025/gallery/2025-sonntag.jpg",
 };
@@ -96,6 +97,15 @@ export function create_page_hero(
             image_url: site_asset(site_url, STATIC_IMAGE_PATHS.about),
             meta: "München · founded 2023",
             title: "Across Cycling Club",
+            view,
+        };
+    }
+    if (view === "manage") {
+        return {
+            description: translate(locale, "manage"),
+            eyebrow: "ACC · ADMIN",
+            image_url: site_asset(site_url, STATIC_IMAGE_PATHS.manage),
+            title: translate(locale, "manage"),
             view,
         };
     }

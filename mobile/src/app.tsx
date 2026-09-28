@@ -8,6 +8,8 @@ import type {
     MobileLocale,
 } from "../../shared/mobile_content";
 import { BottomNavigation } from "./components/BottomNavigation";
+import { AdminPage } from "./components/AdminPage";
+import { AppUpdates } from "./components/AppUpdates";
 import { ContentCard } from "./components/ContentCard";
 import { ContentDetail } from "./components/ContentDetail";
 import { PageHero } from "./components/PageHero";
@@ -17,6 +19,7 @@ import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
 import { filter_items_for_view, sort_mobile_items, type AppView } from "./lib/content";
 import { create_page_hero, section_title } from "./lib/page_hero";
+import { get_public_event_statuses, type EventLiveState } from "./services/api";
 import {
     ContentUpdateRequiredError,
     load_content_feed,
@@ -74,8 +77,11 @@ export function App() {
     const [favorites, set_favorites] = useState<Set<string>>(new Set());
     const [query, set_query] = useState("");
     const [online, set_online] = useState(navigator.onLine);
+    const [app_active, set_app_active] = useState(true);
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
+    const [live_refresh_epoch, set_live_refresh_epoch] = useState(0);
+    const [live_events, set_live_events] = useState<Record<string, EventLiveState>>({});
     const current_feed = useRef<MobileContentFeed>();
     const feed_request_id = useRef(0);
 
@@ -91,6 +97,7 @@ export function App() {
             } else {
                 set_loading(true);
                 set_error(undefined);
+                set_live_refresh_epoch((current) => current + 1);
             }
 
             try {
@@ -193,7 +200,9 @@ export function App() {
     useEffect(() => {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("appStateChange", (state) => {
+            set_app_active(state.isActive);
             if (state.isActive) {
+                set_live_refresh_epoch((current) => current + 1);
                 void load_feed(locale, { background: true });
                 void check_for_live_update();
             }
@@ -204,6 +213,18 @@ export function App() {
             void remove_listener?.();
         };
     }, [load_feed, locale]);
+
+    useEffect(() => {
+        if (!online || !app_active) {
+            return;
+        }
+        const timer = window.setInterval(() => {
+            if (document.visibilityState === "visible") {
+                void load_feed(locale, { background: true });
+            }
+        }, 60_000);
+        return (): void => window.clearInterval(timer);
+    }, [app_active, load_feed, locale, online]);
 
     useEffect(() => {
         const handle_link = (link: ContentDeepLink): void => {
@@ -271,7 +292,10 @@ export function App() {
         };
     }, [selected_item]);
 
-    const all_items = useMemo(() => sort_mobile_items(feed?.items ?? []), [feed]);
+    const all_items = useMemo(
+        () => sort_mobile_items(feed?.items ?? [], live_events),
+        [feed, live_events],
+    );
     const scoped_items = useMemo(
         () => filter_items_for_view(all_items, active_view),
         [active_view, all_items],
@@ -289,6 +313,39 @@ export function App() {
                 ),
         );
     }, [locale, query, scoped_items]);
+    useEffect(() => {
+        if (active_view !== "events" || !online || !feed) {
+            set_live_events({});
+            return;
+        }
+        let active = true;
+        void get_public_event_statuses()
+            .then((events) => {
+                if (!active) {
+                    return;
+                }
+                const published_slugs = new Set(
+                    feed.items
+                        .filter((item) => item.type === "event")
+                        .map((item) => item.slug),
+                );
+                set_live_events(
+                    Object.fromEntries(
+                        events
+                            .filter((event) => published_slugs.has(event.slug))
+                            .map((event) => [event.slug, event]),
+                    ),
+                );
+            })
+            .catch(() => {
+                if (active) {
+                    set_live_events({});
+                }
+            });
+        return (): void => {
+            active = false;
+        };
+    }, [active_view, feed, live_refresh_epoch, online]);
     const hero_content = useMemo(
         () => create_page_hero(active_view, scoped_items, locale, APP_CONFIG.site_url),
         [active_view, locale, scoped_items],
@@ -336,7 +393,9 @@ export function App() {
 
     return (
         <div class="app-shell">
-            <header class={`app-header${selected_item ? "" : " app-header--hero"}`}>
+            <header
+                class={`app-header${selected_item || active_view === "manage" ? "" : " app-header--hero"}`}
+            >
                 <button
                     aria-label={translate(locale, "events")}
                     class="brand-button"
@@ -345,6 +404,14 @@ export function App() {
                 >
                     <img alt="ACC ClubHub" src="/app-logo.png" />
                     <span>{translate(locale, "app_name")}</span>
+                </button>
+                <button
+                    aria-label={translate(locale, "website")}
+                    class="text-button"
+                    onClick={() => open_site_page("")}
+                    type="button"
+                >
+                    {translate(locale, "website")} ↗
                 </button>
                 <label class="language-picker">
                     <span class="sr-only">{translate(locale, "language")}</span>
@@ -361,6 +428,17 @@ export function App() {
                     </select>
                 </label>
             </header>
+
+            {APP_CONFIG.stage === "staging" ? (
+                <div class="connection-banner" role="status">
+                    {translate(locale, "staging_build")}
+                </div>
+            ) : null}
+            {APP_CONFIG.stage === "preview" ? (
+                <div class="connection-banner" role="status">
+                    {translate(locale, "preview_build")}
+                </div>
+            ) : null}
 
             <div
                 aria-hidden={pull_refresh.state === "idle" ? "true" : undefined}
@@ -410,15 +488,36 @@ export function App() {
                         favorite={favorites.has(selected_item.id)}
                         item={selected_item}
                         locale={locale}
+                        refresh_epoch={live_refresh_epoch}
                         on_back={() => set_selected_item(undefined)}
                         on_message={show_message}
+                        on_registered={() =>
+                            set_live_refresh_epoch((current) => current + 1)
+                        }
                         on_toggle_favorite={toggle_favorite}
                         online={online}
                     />
                 ) : (
                     <>
-                        <PageHero content={hero_content} on_action={activate_hero} />
-                        {active_view === "about" ? (
+                        {active_view !== "manage" ? (
+                            <PageHero
+                                content={hero_content}
+                                on_action={activate_hero}
+                            />
+                        ) : null}
+                        {active_view === "manage" ? (
+                            APP_CONFIG.stage === "preview" ? (
+                                <section class="page-content">
+                                    <p>{translate(locale, "preview_build")}</p>
+                                </section>
+                            ) : (
+                                <AdminPage
+                                    locale={locale}
+                                    online={online}
+                                    refresh_epoch={live_refresh_epoch}
+                                />
+                            )
+                        ) : active_view === "about" ? (
                             <section class="page-content about-view">
                                 <div class="section-heading">
                                     <span class="eyebrow">Across, together.</span>
@@ -498,7 +597,10 @@ export function App() {
                                         {translate(locale, "website")} <span>↗</span>
                                     </button>
                                 </div>
-                                <SubscribeForm locale={locale} online={online} />
+                                {APP_CONFIG.stage !== "preview" ? (
+                                    <SubscribeForm locale={locale} online={online} />
+                                ) : null}
+                                <AppUpdates locale={locale} />
                             </section>
                         ) : (
                             <section class="page-content">
@@ -552,6 +654,7 @@ export function App() {
                                             <ContentCard
                                                 favorite={favorites.has(item.id)}
                                                 item={item}
+                                                live_event={live_events[item.slug]}
                                                 key={`${item.locale}:${item.id}`}
                                                 locale={locale}
                                                 on_open={open_item}

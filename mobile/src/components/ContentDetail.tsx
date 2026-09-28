@@ -1,9 +1,14 @@
 import DOMPurify from "dompurify";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
-import { format_item_date, registration_time_is_open } from "../lib/content";
-import { get_event_status, type EventStatusResult } from "../services/api";
+import { APP_CONFIG } from "../config";
+import { format_item_date, registration_live_is_open } from "../lib/content";
+import {
+    get_event_status,
+    type EventStatusResult,
+    type RegistrationResult,
+} from "../services/api";
 import {
     add_event_to_calendar,
     open_external_url,
@@ -18,8 +23,10 @@ interface ContentDetailProps {
     locale: MobileLocale;
     on_back: () => void;
     on_message: (message: string) => void;
+    on_registered: () => void;
     on_toggle_favorite: (item: MobileContentItem) => void;
     online: boolean;
+    refresh_epoch: number;
 }
 
 type LiveState =
@@ -60,10 +67,15 @@ export function ContentDetail({
     locale,
     on_back,
     on_message,
+    on_registered,
     on_toggle_favorite,
     online,
+    refresh_epoch,
 }: ContentDetailProps) {
     const [live_state, set_live_state] = useState<LiveState>({ kind: "idle" });
+    const [registration_result, set_registration_result] =
+        useState<RegistrationResult>();
+    const [registration_refresh, set_registration_refresh] = useState(0);
     const safe_body = useMemo(
         () =>
             DOMPurify.sanitize(item.body_html, {
@@ -98,33 +110,60 @@ export function ContentDetail({
             };
         }
 
-        set_live_state({ kind: "loading" });
-        void get_event_status(item.slug)
-            .then((result) => {
-                if (active) {
-                    set_live_state(result);
-                }
-            })
-            .catch(() => {
-                if (active) {
-                    set_live_state({ kind: "error" });
-                }
-            });
+        set_live_state((current) =>
+            current.kind === "live" && current.value.slug === item.slug
+                ? current
+                : { kind: "loading" },
+        );
+        let in_flight = false;
+        const refresh = (): void => {
+            if (in_flight) return;
+            in_flight = true;
+            void get_event_status(item.slug)
+                .then((result) => {
+                    if (active) {
+                        set_live_state(result);
+                    }
+                })
+                .catch(() => {
+                    if (active) {
+                        set_live_state({ kind: "error" });
+                    }
+                })
+                .finally(() => {
+                    in_flight = false;
+                });
+        };
+        refresh();
+        const timer = window.setInterval(() => {
+            if (document.visibilityState === "visible") refresh();
+        }, 30_000);
         return (): void => {
             active = false;
+            window.clearInterval(timer);
         };
-    }, [item.slug, item.type, online]);
+    }, [item.slug, item.type, online, refresh_epoch, registration_refresh]);
+
+    useEffect(() => {
+        set_registration_result(undefined);
+    }, [item.slug]);
+
+    const handle_registered = useCallback(
+        (result: RegistrationResult): void => {
+            set_registration_result(result);
+            set_registration_refresh((current) => current + 1);
+            on_registered();
+        },
+        [on_registered],
+    );
 
     const live_event = live_state.kind === "live" ? live_state.value : undefined;
     const registration_link = item.metadata.registration_link;
     const registration_open =
-        registration_time_is_open(item) &&
         online &&
-        live_state.kind !== "error" &&
-        live_state.kind !== "loading" &&
-        live_event?.is_cancelled !== true &&
-        live_event?.is_public !== false;
-    const date = format_item_date(item, locale);
+        live_state.kind === "live" &&
+        registration_live_is_open(item, live_state);
+    const date = format_item_date(item, locale, live_event?.event_date);
 
     const handle_body_click = (event: MouseEvent): void => {
         const target = event.target;
@@ -256,7 +295,24 @@ export function ContentDetail({
                             {translate(locale, "live_status_unavailable")}
                         </div>
                     ) : null}
-                    {registration_link && registration_open ? (
+                    {live_state.kind === "not_synced" ? (
+                        <div class="status-card status-card--error">
+                            {translate(locale, "event_not_synced")}
+                        </div>
+                    ) : null}
+                    {registration_result ? (
+                        <p aria-live="polite" class="form-success">
+                            {registration_result.status === "waitlist"
+                                ? translate(locale, "registration_waitlist", {
+                                      count:
+                                          registration_result.waitlist_position ?? "—",
+                                  })
+                                : translate(locale, "registration_success")}
+                        </p>
+                    ) : null}
+                    {registration_link &&
+                    registration_open &&
+                    APP_CONFIG.stage !== "preview" ? (
                         <button
                             class="primary-button"
                             onClick={() =>
@@ -267,12 +323,20 @@ export function ContentDetail({
                             {translate(locale, "register")} ↗
                         </button>
                     ) : null}
-                    {!registration_link && registration_open ? (
-                        <RegistrationForm item={item} locale={locale} />
+                    {!registration_link &&
+                    registration_open &&
+                    !registration_result &&
+                    APP_CONFIG.stage !== "preview" ? (
+                        <RegistrationForm
+                            item={item}
+                            locale={locale}
+                            on_registered={handle_registered}
+                        />
                     ) : null}
                     {!registration_open &&
                     live_state.kind !== "loading" &&
                     live_state.kind !== "error" &&
+                    live_state.kind !== "not_synced" &&
                     !live_event?.is_cancelled ? (
                         <div class="status-card">
                             {translate(locale, "registration_closed")}

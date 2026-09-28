@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { MobileContentItem } from "../../../shared/mobile_content";
 import {
     filter_items_for_view,
+    registration_live_is_open,
     registration_time_is_open,
     sort_mobile_items,
 } from "./content";
@@ -75,6 +76,29 @@ describe("sort_mobile_items", () => {
 
         expect(sort_mobile_items([later, sooner])).toEqual([sooner, later]);
     });
+
+    it("uses the live rescheduled date to order activities", () => {
+        const moved = create_event("moved", "2027-01-01T10:00:00Z");
+        const regular = create_event("regular", "2027-02-01T10:00:00Z");
+        const live_events = {
+            moved: {
+                available_spots: 2,
+                cancellation_reason: null,
+                current_participants: 0,
+                event_date: "2027-03-01T10:00:00Z",
+                is_cancelled: false,
+                is_public: true,
+                max_participants: 2,
+                registration_deadline: null,
+                slug: "moved",
+            },
+        };
+
+        expect(sort_mobile_items([moved, regular], live_events)).toEqual([
+            regular,
+            moved,
+        ]);
+    });
 });
 
 describe("registration_time_is_open", () => {
@@ -95,5 +119,65 @@ describe("registration_time_is_open", () => {
         expect(registration_time_is_open(item, new Date("2027-01-01T10:00:00Z"))).toBe(
             true,
         );
+    });
+});
+
+describe("registration_live_is_open", () => {
+    const live_event = {
+        available_spots: 0,
+        cancellation_reason: null,
+        current_participants: 12,
+        event_date: "2027-02-01T10:00:00Z",
+        is_cancelled: false,
+        is_public: true,
+        max_participants: 12,
+        registration_deadline: "2027-01-31T10:00:00Z",
+        slug: "ride",
+    };
+
+    it("uses the live deadline even when cached content has an old date", () => {
+        const stale = create_event("ride", "2026-01-01T10:00:00Z");
+        expect(
+            registration_live_is_open(
+                stale,
+                { kind: "live", value: live_event },
+                new Date("2027-01-01T10:00:00Z"),
+            ),
+        ).toBe(true);
+    });
+
+    it("rejects unknown, private, cancelled and expired events", () => {
+        const item = create_event("ride", live_event.event_date);
+        const now = new Date("2027-01-01T10:00:00Z");
+        expect(registration_live_is_open(item, { kind: "not_synced" }, now)).toBe(
+            false,
+        );
+        expect(
+            registration_live_is_open(
+                item,
+                { kind: "live", value: { ...live_event, is_public: false } },
+                now,
+            ),
+        ).toBe(false);
+        expect(
+            registration_live_is_open(
+                item,
+                { kind: "live", value: { ...live_event, is_cancelled: true } },
+                now,
+            ),
+        ).toBe(false);
+        expect(
+            registration_live_is_open(
+                item,
+                {
+                    kind: "live",
+                    value: {
+                        ...live_event,
+                        registration_deadline: "2026-12-31T10:00:00Z",
+                    },
+                },
+                now,
+            ),
+        ).toBe(false);
     });
 });

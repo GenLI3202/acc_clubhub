@@ -33,15 +33,8 @@ interface FormData {
 
 export function EventRegistrationForm({
     eventSlug,
-    eventTitle,
-    eventLocation,
-    eventDate,
-    eventType,
     maxParticipants,
     registrationDeadline,
-    wechatQrCode,
-    distanceKm,
-    routeKomootUrl,
     isACCOfficialRide,
     lang,
     apiUrl,
@@ -105,15 +98,6 @@ export function EventRegistrationForm({
                 body: JSON.stringify({
                     ...formData,
                     event_slug: eventSlug,
-                    event_title: eventTitle,
-                    event_location: eventLocation,
-                    event_date: eventDate,
-                    event_type: eventType,
-                    max_participants: maxParticipants,
-                    registration_deadline: registrationDeadline,
-                    wechat_qr_code: wechatQrCode,
-                    distance_km: distanceKm,
-                    route_komoot_url: routeKomootUrl,
                 }),
             });
 
@@ -131,6 +115,15 @@ export function EventRegistrationForm({
                         detail.cancellation_reason,
                         lang,
                     ));
+                } else if (detail?.error_code === 'DUPLICATE_REGISTRATION') {
+                    throw new Error(t(lang, 'event.errorDuplicate'));
+                } else if (
+                    detail?.error_code === 'REGISTRATION_DEADLINE_PASSED'
+                    || detail?.error_code === 'EVENT_PAST'
+                ) {
+                    throw new Error(t(lang, 'event.errorDeadline'));
+                } else if (detail?.error_code === 'INSURANCE_REQUIRED') {
+                    throw new Error(t(lang, 'event.errorInsurance'));
                 } else if (
                     typeof detail === 'string'
                     && detail.includes('already registered')

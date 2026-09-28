@@ -39,7 +39,17 @@ jobs:
         run: npm ci --prefix mobile
 
       - name: Build mobile web bundle
+        env:
+          VITE_APP_ENV: production
+          VITE_API_URL: https://acc-clubhub-events-ms.vercel.app
+          VITE_CONTENT_BASE_URL: https://www.across-cc.de/mobile-content/live/v1
+          VITE_SITE_URL: https://www.across-cc.de
         run: npm run build --prefix mobile
+
+      - name: Test mobile app and verify deployed services
+        run: |
+          npm run test --prefix mobile
+          npm run release:check --prefix mobile
 
       - name: Package and sign live update
         env:
@@ -68,7 +78,10 @@ jobs:
           test -n "$bundle_path"
           gh release upload "$RELEASE_TAG" "$bundle_path" --clobber
           gh release upload "$RELEASE_TAG" \
-            "mobile/artifacts/live-update/manifest-${GITHUB_SHA}.json" \
+            mobile/artifacts/live-update/manifest-*.json \
+            --clobber
+          gh release upload "$RELEASE_TAG" \
+            mobile/artifacts/live-update/latest-native-*.json \
             --clobber
           gh release upload "$RELEASE_TAG" \
             mobile/artifacts/live-update/latest.json \

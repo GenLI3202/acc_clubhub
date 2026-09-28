@@ -1,6 +1,8 @@
 {
     "schema_version": 1,
-    "native_version_code": "2",
+    "native_version_code": "3",
+    "supported_native_version_codes": ["2", "3"],
+    "legacy_native_version_code": "2",
     "release_repository": "GenLI3202/acc_clubhub",
     "release_tag": "mobile-live-production",
     "manifest_asset_name": "latest.json"
