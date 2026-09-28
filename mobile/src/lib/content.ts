@@ -3,6 +3,7 @@ import type {
     MobileContentType,
     MobileLocale,
 } from "../../../shared/mobile_content";
+import type { EventStatusResult } from "../services/api";
 
 export type AppView = "about" | "events" | "gear" | "media" | "training";
 
@@ -60,8 +61,9 @@ export function filter_items_for_view(
 export function format_item_date(
     item: MobileContentItem,
     locale: MobileLocale,
+    live_event_date?: string,
 ): string | undefined {
-    const value = item.metadata.event_date ?? item.published_at;
+    const value = live_event_date ?? item.metadata.event_date ?? item.published_at;
     if (!value) {
         return undefined;
     }
@@ -74,6 +76,31 @@ export function format_item_date(
         timeStyle: item.type === "event" ? "short" : undefined,
         timeZone: "Europe/Berlin",
     }).format(date);
+}
+
+export function registration_live_is_open(
+    item: MobileContentItem,
+    status: EventStatusResult,
+    now: Date = new Date(),
+): boolean {
+    if (item.type !== "event" || status.kind !== "live") {
+        return false;
+    }
+    const event = status.value;
+    if (
+        event.slug !== item.slug ||
+        event.is_cancelled ||
+        !event.is_public ||
+        !Number.isFinite(new Date(event.event_date).getTime()) ||
+        new Date(event.event_date).getTime() <= now.getTime()
+    ) {
+        return false;
+    }
+    return (
+        !event.registration_deadline ||
+        (Number.isFinite(new Date(event.registration_deadline).getTime()) &&
+            new Date(event.registration_deadline).getTime() > now.getTime())
+    );
 }
 
 export function format_item_type(

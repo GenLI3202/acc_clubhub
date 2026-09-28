@@ -76,6 +76,7 @@ export function App() {
     const [online, set_online] = useState(navigator.onLine);
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
+    const [live_refresh_epoch, set_live_refresh_epoch] = useState(0);
     const current_feed = useRef<MobileContentFeed>();
     const feed_request_id = useRef(0);
 
@@ -91,6 +92,7 @@ export function App() {
             } else {
                 set_loading(true);
                 set_error(undefined);
+                set_live_refresh_epoch((current) => current + 1);
             }
 
             try {
@@ -194,6 +196,7 @@ export function App() {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("appStateChange", (state) => {
             if (state.isActive) {
+                set_live_refresh_epoch((current) => current + 1);
                 void load_feed(locale, { background: true });
                 void check_for_live_update();
             }
@@ -410,6 +413,7 @@ export function App() {
                         favorite={favorites.has(selected_item.id)}
                         item={selected_item}
                         locale={locale}
+                        refresh_epoch={live_refresh_epoch}
                         on_back={() => set_selected_item(undefined)}
                         on_message={show_message}
                         on_toggle_favorite={toggle_favorite}

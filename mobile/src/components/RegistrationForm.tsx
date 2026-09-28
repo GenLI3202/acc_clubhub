@@ -1,25 +1,40 @@
-import { useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
-import { submit_registration, type RegistrationFields } from "../services/api";
+import {
+    IndeterminateRegistrationError,
+    submit_registration,
+    type RegistrationFields,
+    type RegistrationResult,
+} from "../services/api";
+import { APP_CONFIG } from "../config";
+import { open_external_url } from "../services/native";
 import { translate } from "../i18n";
 
 interface RegistrationFormProps {
     item: MobileContentItem;
     locale: MobileLocale;
+    on_registered: (result: RegistrationResult) => void;
 }
 
 const EMPTY_FORM: RegistrationFields = {
     email: "",
+    insurance_accepted: false,
     name: "",
     notes: "",
     privacy_accepted: false,
     subscribe: false,
 };
 
-export function RegistrationForm({ item, locale }: RegistrationFormProps) {
+export function RegistrationForm({
+    item,
+    locale,
+    on_registered,
+}: RegistrationFormProps) {
     const [fields, set_fields] = useState<RegistrationFields>(EMPTY_FORM);
     const [submitting, set_submitting] = useState(false);
+    const [unresolved, set_unresolved] = useState(false);
+    const submitting_ref = useRef(false);
     const [message, set_message] = useState<string>();
     const [failed, set_failed] = useState(false);
 
@@ -32,25 +47,36 @@ export function RegistrationForm({ item, locale }: RegistrationFormProps) {
 
     const submit = async (event: SubmitEvent): Promise<void> => {
         event.preventDefault();
+        if (submitting_ref.current || unresolved) {
+            return;
+        }
+        submitting_ref.current = true;
         set_submitting(true);
         set_message(undefined);
         set_failed(false);
         try {
+            if (item.metadata.acc_official_ride && !fields.insurance_accepted) {
+                set_failed(true);
+                set_message(translate(locale, "insurance_required"));
+                return;
+            }
             const result = await submit_registration(item, locale, fields);
-            set_message(
-                result.status === "waitlist"
-                    ? `${translate(locale, "registration_success")} (${result.message})`
-                    : translate(locale, "registration_success"),
-            );
             set_fields(EMPTY_FORM);
+            on_registered(result);
         } catch (error) {
             set_failed(true);
+            if (error instanceof IndeterminateRegistrationError) {
+                set_unresolved(true);
+            }
             set_message(
-                error instanceof Error
-                    ? error.message
-                    : translate(locale, "registration_error"),
+                error instanceof IndeterminateRegistrationError
+                    ? translate(locale, "registration_unknown")
+                    : error instanceof Error
+                      ? error.message
+                      : translate(locale, "registration_error"),
             );
         } finally {
+            submitting_ref.current = false;
             set_submitting(false);
         }
     };
@@ -101,6 +127,35 @@ export function RegistrationForm({ item, locale }: RegistrationFormProps) {
                 />
                 <span>{translate(locale, "privacy_accept")}</span>
             </label>
+            {item.metadata.acc_official_ride ? (
+                <label class="check-label">
+                    <input
+                        checked={fields.insurance_accepted}
+                        onChange={(event) =>
+                            update_field(
+                                "insurance_accepted",
+                                event.currentTarget.checked,
+                            )
+                        }
+                        required
+                        type="checkbox"
+                    />
+                    <span>
+                        {translate(locale, "insurance_accept")}{" "}
+                        <button
+                            class="text-button"
+                            onClick={() =>
+                                void open_external_url(
+                                    `${APP_CONFIG.site_url}/${locale}/insurance`,
+                                )
+                            }
+                            type="button"
+                        >
+                            {translate(locale, "insurance")}
+                        </button>
+                    </span>
+                </label>
+            ) : null}
             <label class="check-label">
                 <input
                     checked={fields.subscribe}
@@ -111,7 +166,11 @@ export function RegistrationForm({ item, locale }: RegistrationFormProps) {
                 />
                 <span>{translate(locale, "subscribe")}</span>
             </label>
-            <button class="primary-button" disabled={submitting} type="submit">
+            <button
+                class="primary-button"
+                disabled={submitting || unresolved}
+                type="submit"
+            >
                 {translate(locale, "register")}
             </button>
             {message ? (
