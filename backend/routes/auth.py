@@ -9,15 +9,14 @@ from datetime import datetime, timezone
 from typing import Optional
 
 import jwt
+from config import settings
+from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
+from models import AdminSessionState
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-
-from config import settings
-from database import get_db
-from models import AdminSessionState
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -95,9 +94,13 @@ def activate_admin_session(db: Session, session_id: str, email: str) -> None:
     """Store the only dashboard session currently allowed to remain active."""
     now = datetime.now(timezone.utc)
     try:
-        state = db.query(AdminSessionState).filter_by(
-            id=DASHBOARD_SESSION_STATE_ID,
-        ).one_or_none()
+        state = (
+            db.query(AdminSessionState)
+            .filter_by(
+                id=DASHBOARD_SESSION_STATE_ID,
+            )
+            .one_or_none()
+        )
     except SQLAlchemyError as exc:
         db.rollback()
         logger.warning("Admin single-session state unavailable: %s", exc)
@@ -122,9 +125,13 @@ def activate_admin_session(db: Session, session_id: str, email: str) -> None:
 def clear_admin_session(db: Session, session_id: str) -> None:
     """Clear the active dashboard session if the caller owns it."""
     try:
-        state = db.query(AdminSessionState).filter_by(
-            id=DASHBOARD_SESSION_STATE_ID,
-        ).one_or_none()
+        state = (
+            db.query(AdminSessionState)
+            .filter_by(
+                id=DASHBOARD_SESSION_STATE_ID,
+            )
+            .one_or_none()
+        )
     except SQLAlchemyError as exc:
         db.rollback()
         logger.warning("Admin single-session state unavailable: %s", exc)
@@ -141,9 +148,13 @@ def verify_active_admin_session(payload: dict, db: Session) -> None:
         raise HTTPException(status_code=401, detail="Session superseded")
 
     try:
-        state = db.query(AdminSessionState).filter_by(
-            id=DASHBOARD_SESSION_STATE_ID,
-        ).one_or_none()
+        state = (
+            db.query(AdminSessionState)
+            .filter_by(
+                id=DASHBOARD_SESSION_STATE_ID,
+            )
+            .one_or_none()
+        )
     except SQLAlchemyError as exc:
         db.rollback()
         logger.warning("Admin single-session state unavailable: %s", exc)
@@ -178,13 +189,99 @@ def get_current_admin(
     request: Request,
     db: Session = Depends(get_db),
 ) -> dict:
-    """FastAPI dependency to verify admin session from cookie."""
-    token = request.cookies.get("admin_session")
+    """Verify the active administrator session from a cookie or bearer token."""
+    authorization = request.headers.get("authorization")
+    if authorization is not None:
+        token = _bearer_token(authorization)
+    else:
+        token = request.cookies.get("admin_session")
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     payload = verify_jwt_session(token)
     verify_active_admin_session(payload, db)
     return payload
+
+
+def _bearer_token(authorization: str) -> str:
+    """Extract a bearer token from an Authorization header."""
+    scheme, separator, token = authorization.partition(" ")
+    if separator != " " or scheme.lower() != "bearer" or not token.strip():
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "INVALID_AUTHORIZATION",
+                "message": "Bearer authorization is required",
+            },
+        )
+    return token.strip()
+
+
+def get_mobile_admin(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Verify an active bearer session for mobile-only authentication routes."""
+    authorization = request.headers.get("authorization")
+    if authorization is None:
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "error_code": "NOT_AUTHENTICATED",
+                "message": "Bearer authorization is required",
+            },
+        )
+    payload = verify_jwt_session(_bearer_token(authorization))
+    verify_active_admin_session(payload, db)
+    return payload
+
+
+@router.post("/auth/mobile-login")
+def mobile_login(
+    payload: EmailLoginRequest,
+    response: Response,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Issue a short-lived bearer session without setting a browser cookie."""
+    email = _normalize_email(payload.email)
+    if not is_admin_email_allowed(email) or not is_dashboard_password_valid(
+        payload.password,
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "error_code": "INVALID_CREDENTIALS",
+                "message": "Invalid login credentials",
+            },
+        )
+
+    session_id = secrets.token_urlsafe(32)
+    token = create_jwt_session(
+        admin_id=email,
+        auth_provider="email",
+        email=email,
+        session_id=session_id,
+    )
+    activate_admin_session(db, session_id, email)
+    db.commit()
+    response.headers["Cache-Control"] = "no-store"
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "expires_in": JWT_EXPIRY_HOURS * 3600,
+    }
+
+
+@router.post("/auth/mobile-logout")
+def mobile_logout(
+    admin: dict = Depends(get_mobile_admin),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Revoke the active bearer session used by the mobile client."""
+    session_id = admin.get("session_id")
+    if isinstance(session_id, str):
+        clear_admin_session(db, session_id)
+        db.commit()
+    return {"status": "logged_out"}
 
 
 @router.post("/auth/email-login")

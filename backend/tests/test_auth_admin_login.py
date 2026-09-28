@@ -1,7 +1,7 @@
-import pytest
-from fastapi import HTTPException, Response
 from http.cookies import SimpleCookie
 
+import pytest
+from fastapi import HTTPException, Response
 from routes import auth
 
 
@@ -116,3 +116,50 @@ def test_new_email_login_supersedes_previous_session(monkeypatch, db):
     assert "superseded" in exc_info.value.detail
     auth.verify_active_admin_session(second_payload, db)
 
+
+def test_mobile_login_bearer_round_trip_and_logout(monkeypatch, client_no_auth):
+    monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
+    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
+
+    login = client_no_auth.post(
+        "/auth/mobile-login",
+        json={"email": "leader@example.com", "password": "secret"},
+    )
+    assert login.status_code == 200
+    assert "set-cookie" not in login.headers
+    assert login.headers["cache-control"] == "no-store"
+    token = login.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    assert client_no_auth.get("/auth/me", headers=headers).status_code == 200
+    assert client_no_auth.get("/api/admin/events", headers=headers).status_code == 200
+    assert (
+        client_no_auth.post("/auth/mobile-logout", headers=headers).status_code == 200
+    )
+    assert client_no_auth.get("/auth/me", headers=headers).status_code == 401
+
+
+def test_website_login_supersedes_mobile_session(monkeypatch, client_no_auth):
+    monkeypatch.setattr(auth.settings, "ADMIN_SESSION_SECRET", "test-secret")
+    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
+
+    login_data = {"email": "leader@example.com", "password": "secret"}
+    mobile_login = client_no_auth.post("/auth/mobile-login", json=login_data)
+    headers = {"Authorization": f"Bearer {mobile_login.json()['access_token']}"}
+    assert client_no_auth.get("/auth/me", headers=headers).status_code == 200
+
+    assert client_no_auth.post("/auth/email-login", json=login_data).status_code == 200
+    assert client_no_auth.get("/auth/me", headers=headers).status_code == 401
+
+
+def test_mobile_login_rejects_wrong_password(monkeypatch, client_no_auth):
+    monkeypatch.setattr(auth.settings, "ADMIN_EMAIL_ALLOWLIST", "leader@example.com")
+    monkeypatch.setattr(auth.settings, "ADMIN_MAGIC_LINK_PASSWORD", "secret")
+    response = client_no_auth.post(
+        "/auth/mobile-login",
+        json={"email": "leader@example.com", "password": "wrong"},
+    )
+    assert response.status_code == 403
+    assert response.json()["detail"]["error_code"] == "INVALID_CREDENTIALS"
