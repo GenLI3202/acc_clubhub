@@ -50,6 +50,23 @@ describe("create_page_hero", () => {
         expect(hero.meta).toContain("München");
     });
 
+    it("does not feature an event that has ended", () => {
+        const past = create_item("event", {
+            featured: true,
+            metadata: { event_date: "2020-01-01T10:00:00Z" },
+        });
+
+        const hero = create_page_hero(
+            "events",
+            [past],
+            "zh",
+            "https://www.across-cc.de",
+        );
+
+        expect(hero.item).toBeUndefined();
+        expect(hero.action_target).toBeUndefined();
+    });
+
     it("uses media rather than route artwork for the combined view", () => {
         const route = create_item("route", { featured: true });
         const media = create_item("media", { featured: true });

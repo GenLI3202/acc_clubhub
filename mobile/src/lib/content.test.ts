@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 import type { MobileContentItem } from "../../../shared/mobile_content";
 import {
     filter_items_for_view,
+    format_item_type,
     registration_live_is_open,
     registration_time_is_open,
     sort_mobile_items,
+    split_event_items,
 } from "./content";
 
 function create_event(slug: string, event_date: string): MobileContentItem {
@@ -66,6 +68,55 @@ describe("filter_items_for_view", () => {
 
     it("does not mix content into the about view", () => {
         expect(filter_items_for_view(items, "about")).toEqual([]);
+    });
+});
+
+describe("format_item_type", () => {
+    it("uses the website event category for after-work rides", () => {
+        const item = create_event("afterwork-ride", "2027-02-01T10:00:00Z");
+        item.metadata.event_type = "after-work";
+
+        expect(format_item_type(item, "zh")).toBe("after-work");
+    });
+
+    it("keeps the website's Epic Ride label", () => {
+        const item = create_event("hahntennjoch-epic-ride", "2027-02-01T10:00:00Z");
+        item.metadata.event_type = "social-ride";
+
+        expect(format_item_type(item, "zh")).toBe("Epic Ride");
+    });
+});
+
+describe("split_event_items", () => {
+    it("keeps past rides out of the upcoming section", () => {
+        const past = create_event("past", "2026-09-27T08:00:00Z");
+        const upcoming = create_event("upcoming", "2026-09-29T15:50:00Z");
+
+        expect(
+            split_event_items([upcoming, past], {}, new Date("2026-09-28T18:00:00Z")),
+        ).toEqual({ upcoming: [upcoming], past: [past] });
+    });
+
+    it("uses the live rescheduled date", () => {
+        const moved = create_event("moved", "2026-09-27T08:00:00Z");
+        const live_events = {
+            moved: {
+                available_spots: 5,
+                cancellation_reason: null,
+                current_participants: 0,
+                event_date: "2026-09-29T15:50:00Z",
+                is_cancelled: false,
+                is_public: true,
+                max_participants: 5,
+                registration_deadline: null,
+                slug: "moved",
+            },
+        };
+
+        expect(
+            split_event_items([moved], live_events, new Date("2026-09-28T18:00:00Z"))
+                .upcoming,
+        ).toEqual([moved]);
     });
 });
 

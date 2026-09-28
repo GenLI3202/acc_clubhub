@@ -4,6 +4,7 @@ import {
     format_item_date,
     format_item_type,
     registration_time_is_open,
+    split_event_items,
     type AppView,
 } from "./content";
 
@@ -51,7 +52,7 @@ function create_event_hero(
     locale: MobileLocale,
     site_url: string,
 ): PageHeroContent {
-    const item = select_hero_item(items, "event");
+    const item = select_hero_item(split_event_items(items).upcoming, "event");
     if (!item) {
         return {
             description: translate(locale, "events_intro"),

@@ -17,7 +17,12 @@ import { SubscribeForm } from "./components/SubscribeForm";
 import { APP_CONFIG } from "./config";
 import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
-import { filter_items_for_view, sort_mobile_items, type AppView } from "./lib/content";
+import {
+    filter_items_for_view,
+    sort_mobile_items,
+    split_event_items,
+    type AppView,
+} from "./lib/content";
 import { create_page_hero, section_title } from "./lib/page_hero";
 import { get_public_event_statuses, type EventLiveState } from "./services/api";
 import {
@@ -313,6 +318,10 @@ export function App() {
                 ),
         );
     }, [locale, query, scoped_items]);
+    const event_groups = useMemo(
+        () => split_event_items(visible_items, live_events),
+        [live_events, visible_items],
+    );
     useEffect(() => {
         if (active_view !== "events" || !online || !feed) {
             set_live_events({});
@@ -604,12 +613,15 @@ export function App() {
                             </section>
                         ) : (
                             <section class="page-content">
-                                <div class="section-heading">
-                                    <span class="eyebrow">
-                                        Across Cycling Club Munich
-                                    </span>
-                                    <h2>{section_title(active_view, locale)}</h2>
-                                </div>
+                                {active_view !== "events" ||
+                                event_groups.upcoming.length > 0 ? (
+                                    <div class="section-heading">
+                                        <span class="eyebrow">
+                                            Across Cycling Club Munich
+                                        </span>
+                                        <h2>{section_title(active_view, locale)}</h2>
+                                    </div>
+                                ) : null}
                                 <label class="search-field">
                                     <span aria-hidden="true">⌕</span>
                                     <span class="sr-only">
@@ -649,19 +661,56 @@ export function App() {
                                         {translate(locale, "no_content")}
                                     </div>
                                 ) : (
-                                    <div class="content-grid">
-                                        {visible_items.map((item) => (
-                                            <ContentCard
-                                                favorite={favorites.has(item.id)}
-                                                item={item}
-                                                live_event={live_events[item.slug]}
-                                                key={`${item.locale}:${item.id}`}
-                                                locale={locale}
-                                                on_open={open_item}
-                                                on_toggle_favorite={toggle_favorite}
-                                            />
-                                        ))}
-                                    </div>
+                                    <>
+                                        <div class="content-grid">
+                                            {(active_view === "events"
+                                                ? event_groups.upcoming
+                                                : visible_items
+                                            ).map((item) => (
+                                                <ContentCard
+                                                    favorite={favorites.has(item.id)}
+                                                    item={item}
+                                                    live_event={live_events[item.slug]}
+                                                    key={`${item.locale}:${item.id}`}
+                                                    locale={locale}
+                                                    on_open={open_item}
+                                                    on_toggle_favorite={toggle_favorite}
+                                                />
+                                            ))}
+                                        </div>
+                                        {active_view === "events" &&
+                                        event_groups.past.length > 0 ? (
+                                            <>
+                                                <div class="section-heading">
+                                                    <h2>
+                                                        {translate(
+                                                            locale,
+                                                            "past_events",
+                                                        )}
+                                                    </h2>
+                                                </div>
+                                                <div class="content-grid">
+                                                    {event_groups.past.map((item) => (
+                                                        <ContentCard
+                                                            favorite={favorites.has(
+                                                                item.id,
+                                                            )}
+                                                            item={item}
+                                                            live_event={
+                                                                live_events[item.slug]
+                                                            }
+                                                            key={`${item.locale}:${item.id}`}
+                                                            locale={locale}
+                                                            on_open={open_item}
+                                                            on_toggle_favorite={
+                                                                toggle_favorite
+                                                            }
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </>
+                                        ) : null}
+                                    </>
                                 )}
                             </section>
                         )}

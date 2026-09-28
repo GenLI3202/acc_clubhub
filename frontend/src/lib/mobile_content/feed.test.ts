@@ -23,9 +23,9 @@ function create_item(id: string): MobileContentItem {
 }
 
 describe("sanitize_mobile_markdown", () => {
-    it("removes executable markup and embedded frames", () => {
+    it("removes executable markup and untrusted embedded frames", () => {
         const result = sanitize_mobile_markdown(
-            '[Unsafe](javascript:alert(1))<script>alert(1)</script>' +
+            "[Unsafe](javascript:alert(1))<script>alert(1)</script>" +
                 '<iframe src="https://www.komoot.com/tour/1"></iframe>',
         );
 
@@ -33,6 +33,21 @@ describe("sanitize_mobile_markdown", () => {
         expect(result).not.toContain("script");
         expect(result).not.toContain("iframe");
         expect(result).toContain("noopener noreferrer");
+    });
+
+    it("keeps only HTTPS Komoot route previews", () => {
+        const result = sanitize_mobile_markdown(
+            '<iframe src="https://www.komoot.com/tour/123/embed?profile=1" ' +
+                'onload="alert(1)"></iframe>' +
+                '<iframe src="https://evil.example/tour/123/embed"></iframe>',
+        );
+
+        expect(result).toContain(
+            'src="https://www.komoot.com/tour/123/embed?profile=1"',
+        );
+        expect(result).toContain('title="Komoot route preview"');
+        expect(result).not.toContain("evil.example");
+        expect(result).not.toContain("onload");
     });
 
     it("turns site-relative images into absolute HTTPS URLs", () => {
@@ -80,7 +95,6 @@ describe("create_mobile_content_feed", () => {
 
 describe("normalize_public_url", () => {
     it("rejects non-public schemes", () => {
-        expect(normalize_public_url("javascript:alert(1)"))
-            .toBeUndefined();
+        expect(normalize_public_url("javascript:alert(1)")).toBeUndefined();
     });
 });

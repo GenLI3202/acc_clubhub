@@ -2,8 +2,13 @@ import DOMPurify from "dompurify";
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 
 import type { MobileContentItem, MobileLocale } from "../../../shared/mobile_content";
+import { normalize_komoot_embed_url } from "../../../shared/komoot_embed";
 import { APP_CONFIG } from "../config";
-import { format_item_date, registration_live_is_open } from "../lib/content";
+import {
+    format_item_date,
+    format_item_type,
+    registration_live_is_open,
+} from "../lib/content";
 import {
     get_event_status,
     type EventStatusResult,
@@ -46,6 +51,7 @@ const ALLOWED_BODY_TAGS = [
     "h5",
     "h6",
     "hr",
+    "iframe",
     "img",
     "li",
     "ol",
@@ -76,24 +82,47 @@ export function ContentDetail({
     const [registration_result, set_registration_result] =
         useState<RegistrationResult>();
     const [registration_refresh, set_registration_refresh] = useState(0);
-    const safe_body = useMemo(
-        () =>
-            DOMPurify.sanitize(item.body_html, {
-                ALLOWED_ATTR: [
-                    "alt",
-                    "class",
-                    "href",
-                    "loading",
-                    "rel",
-                    "src",
-                    "target",
-                    "title",
-                ],
-                ALLOWED_TAGS: ALLOWED_BODY_TAGS,
-                ALLOW_UNKNOWN_PROTOCOLS: false,
-            }),
-        [item.body_html],
-    );
+    const safe_body = useMemo(() => {
+        const parsed = new DOMParser().parseFromString(item.body_html, "text/html");
+        parsed.querySelectorAll("iframe").forEach((frame) => {
+            const src = normalize_komoot_embed_url(
+                frame.getAttribute("src") ?? undefined,
+            );
+            if (!src) {
+                frame.remove();
+                return;
+            }
+            const safe_frame = parsed.createElement("iframe");
+            safe_frame.setAttribute("src", src);
+            safe_frame.setAttribute("loading", "lazy");
+            safe_frame.setAttribute("referrerpolicy", "no-referrer");
+            safe_frame.setAttribute(
+                "sandbox",
+                "allow-scripts allow-same-origin allow-popups",
+            );
+            safe_frame.setAttribute(
+                "title",
+                frame.getAttribute("title") || "Komoot route preview",
+            );
+            frame.replaceWith(safe_frame);
+        });
+        return DOMPurify.sanitize(parsed.body.innerHTML, {
+            ALLOWED_ATTR: [
+                "alt",
+                "class",
+                "href",
+                "loading",
+                "referrerpolicy",
+                "rel",
+                "sandbox",
+                "src",
+                "target",
+                "title",
+            ],
+            ALLOWED_TAGS: ALLOWED_BODY_TAGS,
+            ALLOW_UNKNOWN_PROTOCOLS: false,
+        });
+    }, [item.body_html]);
 
     useEffect(() => {
         let active = true;
@@ -211,7 +240,11 @@ export function ContentDetail({
                 />
             ) : null}
             <div class="detail-view__heading">
-                <span class="eyebrow">{date}</span>
+                <span class="eyebrow">
+                    {item.type === "event"
+                        ? `${format_item_type(item, locale)} · ${date}`
+                        : date}
+                </span>
                 <h1>{item.title}</h1>
                 <p>{item.description}</p>
                 <div class="detail-view__facts">

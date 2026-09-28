@@ -133,6 +133,7 @@ const COPY = {
             "Diese Inhalte benötigen eine neuere App-Version. Bitte App aktualisieren.",
         unfavorite: "Entfernen",
         upcoming_events: "Nächste Events",
+        past_events: "Vergangene Events",
         website: "Website",
     },
     en: {
@@ -265,6 +266,7 @@ const COPY = {
             "This content needs a newer app version. Please update the app.",
         unfavorite: "Remove",
         upcoming_events: "Upcoming Events",
+        past_events: "Past Events",
         website: "Website",
     },
     zh: {
@@ -390,6 +392,7 @@ const COPY = {
         update_required: "当前内容需要新版 App，请先更新安装包。",
         unfavorite: "取消收藏",
         upcoming_events: "即将到来",
+        past_events: "往期活动",
         website: "官网",
     },
 } as const;
