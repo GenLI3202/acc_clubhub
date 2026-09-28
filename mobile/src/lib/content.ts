@@ -3,7 +3,7 @@ import type {
     MobileContentType,
     MobileLocale,
 } from "../../../shared/mobile_content";
-import type { EventStatusResult } from "../services/api";
+import type { EventLiveState, EventStatusResult } from "../services/api";
 
 export type AppView = "about" | "events" | "gear" | "manage" | "media" | "training";
 
@@ -110,12 +110,19 @@ export function format_item_type(
     return TYPE_LABELS[locale][item.type];
 }
 
-export function sort_mobile_items(items: MobileContentItem[]): MobileContentItem[] {
+export function sort_mobile_items(
+    items: MobileContentItem[],
+    live_events: Record<string, EventLiveState> = {},
+): MobileContentItem[] {
     return [...items].sort((left, right) => {
         if (left.type === "event" && right.type === "event") {
             const now = Date.now();
-            const left_time = new Date(left.metadata.event_date ?? 0).getTime();
-            const right_time = new Date(right.metadata.event_date ?? 0).getTime();
+            const left_time = new Date(
+                live_events[left.slug]?.event_date ?? left.metadata.event_date ?? 0,
+            ).getTime();
+            const right_time = new Date(
+                live_events[right.slug]?.event_date ?? right.metadata.event_date ?? 0,
+            ).getTime();
             const left_upcoming = left_time >= now;
             const right_upcoming = right_time >= now;
             if (left_upcoming !== right_upcoming) {

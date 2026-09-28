@@ -22,6 +22,7 @@ interface ContentDetailProps {
     locale: MobileLocale;
     on_back: () => void;
     on_message: (message: string) => void;
+    on_registered: () => void;
     on_toggle_favorite: (item: MobileContentItem) => void;
     online: boolean;
     refresh_epoch: number;
@@ -65,6 +66,7 @@ export function ContentDetail({
     locale,
     on_back,
     on_message,
+    on_registered,
     on_toggle_favorite,
     online,
     refresh_epoch,
@@ -128,10 +130,14 @@ export function ContentDetail({
         set_registration_result(undefined);
     }, [item.slug]);
 
-    const handle_registered = useCallback((result: RegistrationResult): void => {
-        set_registration_result(result);
-        set_registration_refresh((current) => current + 1);
-    }, []);
+    const handle_registered = useCallback(
+        (result: RegistrationResult): void => {
+            set_registration_result(result);
+            set_registration_refresh((current) => current + 1);
+            on_registered();
+        },
+        [on_registered],
+    );
 
     const live_event = live_state.kind === "live" ? live_state.value : undefined;
     const registration_link = item.metadata.registration_link;

@@ -18,6 +18,7 @@ import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
 import { filter_items_for_view, sort_mobile_items, type AppView } from "./lib/content";
 import { create_page_hero, section_title } from "./lib/page_hero";
+import { get_public_event_statuses, type EventLiveState } from "./services/api";
 import {
     ContentUpdateRequiredError,
     load_content_feed,
@@ -78,6 +79,7 @@ export function App() {
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
     const [live_refresh_epoch, set_live_refresh_epoch] = useState(0);
+    const [live_events, set_live_events] = useState<Record<string, EventLiveState>>({});
     const current_feed = useRef<MobileContentFeed>();
     const feed_request_id = useRef(0);
 
@@ -275,7 +277,10 @@ export function App() {
         };
     }, [selected_item]);
 
-    const all_items = useMemo(() => sort_mobile_items(feed?.items ?? []), [feed]);
+    const all_items = useMemo(
+        () => sort_mobile_items(feed?.items ?? [], live_events),
+        [feed, live_events],
+    );
     const scoped_items = useMemo(
         () => filter_items_for_view(all_items, active_view),
         [active_view, all_items],
@@ -293,6 +298,39 @@ export function App() {
                 ),
         );
     }, [locale, query, scoped_items]);
+    useEffect(() => {
+        if (active_view !== "events" || !online || !feed) {
+            set_live_events({});
+            return;
+        }
+        let active = true;
+        void get_public_event_statuses()
+            .then((events) => {
+                if (!active) {
+                    return;
+                }
+                const published_slugs = new Set(
+                    feed.items
+                        .filter((item) => item.type === "event")
+                        .map((item) => item.slug),
+                );
+                set_live_events(
+                    Object.fromEntries(
+                        events
+                            .filter((event) => published_slugs.has(event.slug))
+                            .map((event) => [event.slug, event]),
+                    ),
+                );
+            })
+            .catch(() => {
+                if (active) {
+                    set_live_events({});
+                }
+            });
+        return (): void => {
+            active = false;
+        };
+    }, [active_view, feed, live_refresh_epoch, online]);
     const hero_content = useMemo(
         () => create_page_hero(active_view, scoped_items, locale, APP_CONFIG.site_url),
         [active_view, locale, scoped_items],
@@ -433,6 +471,9 @@ export function App() {
                         refresh_epoch={live_refresh_epoch}
                         on_back={() => set_selected_item(undefined)}
                         on_message={show_message}
+                        on_registered={() =>
+                            set_live_refresh_epoch((current) => current + 1)
+                        }
                         on_toggle_favorite={toggle_favorite}
                         online={online}
                     />
@@ -584,6 +625,7 @@ export function App() {
                                             <ContentCard
                                                 favorite={favorites.has(item.id)}
                                                 item={item}
+                                                live_event={live_events[item.slug]}
                                                 key={`${item.locale}:${item.id}`}
                                                 locale={locale}
                                                 on_open={open_item}

@@ -11,6 +11,14 @@
 
 ## Recent Updates
 
+- [X] **Issue #174 活动列表实时状态** (2026-09-28)
+  - [X] 活动列表读取最多 100 条公开、未过期数据库状态，仅对已发布 feed 中的
+    slug 叠加实时日期、取消标识和剩余名额，并按改期后日期排序；报名成功、
+    恢复前台及刷新后更新。
+  - [X] 列表响应校验失败时不采信错误数据，详情继续逐活动向服务端验证。
+    移动端 49 项测试、TypeScript、Prettier 和 Vite 构建通过。
+  - [ ] 真实 Android 列表/详情一致性仍需 staging 设备验证。
+
 - [X] **Issue #174 最新源码 Android debug 构建** (2026-09-28)
   - [X] 以 `a849a056` 重新执行前端内容打包、Capacitor 同步和 Android
     debug 构建；APK 位于 `mobile/artifacts/acc-clubhub-0.3.0-debug.apk`。

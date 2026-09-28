@@ -112,6 +112,24 @@ export async function get_event_status(slug: string): Promise<EventStatusResult>
     return { kind: "live", value: payload };
 }
 
+export async function get_public_event_statuses(): Promise<EventLiveState[]> {
+    const response = await fetch(
+        `${APP_CONFIG.api_url}/api/events?limit=100&upcoming_only=true`,
+        {
+            headers: { Accept: "application/json" },
+            signal: AbortSignal.timeout(8_000),
+        },
+    );
+    if (!response.ok) {
+        throw await response_error(response);
+    }
+    const payload: unknown = await response.json();
+    if (!Array.isArray(payload) || !payload.every(is_event_live_state)) {
+        throw new ApiError("Invalid event list response", 502);
+    }
+    return payload;
+}
+
 export async function submit_registration(
     item: MobileContentItem,
     locale: MobileLocale,

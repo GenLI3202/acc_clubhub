@@ -4,6 +4,7 @@ import type { MobileContentItem } from "../../../shared/mobile_content";
 import {
     ApiError,
     get_event_status,
+    get_public_event_statuses,
     IndeterminateRegistrationError,
     submit_registration,
 } from "./api";
@@ -68,6 +69,20 @@ describe("get_event_status", () => {
             kind: "live",
             value: { slug: "ride", available_spots: 2 },
         });
+    });
+});
+
+describe("get_public_event_statuses", () => {
+    it("rejects malformed list items", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi
+                .fn()
+                .mockResolvedValue(
+                    new Response(JSON.stringify([{ slug: "ride" }]), { status: 200 }),
+                ),
+        );
+        await expect(get_public_event_statuses()).rejects.toBeInstanceOf(ApiError);
     });
 });
 

@@ -76,6 +76,29 @@ describe("sort_mobile_items", () => {
 
         expect(sort_mobile_items([later, sooner])).toEqual([sooner, later]);
     });
+
+    it("uses the live rescheduled date to order activities", () => {
+        const moved = create_event("moved", "2027-01-01T10:00:00Z");
+        const regular = create_event("regular", "2027-02-01T10:00:00Z");
+        const live_events = {
+            moved: {
+                available_spots: 2,
+                cancellation_reason: null,
+                current_participants: 0,
+                event_date: "2027-03-01T10:00:00Z",
+                is_cancelled: false,
+                is_public: true,
+                max_participants: 2,
+                registration_deadline: null,
+                slug: "moved",
+            },
+        };
+
+        expect(sort_mobile_items([moved, regular], live_events)).toEqual([
+            regular,
+            moved,
+        ]);
+    });
 });
 
 describe("registration_time_is_open", () => {
