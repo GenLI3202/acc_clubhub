@@ -16,7 +16,7 @@ distanceKm: 56.4
 routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7QfLe3rNmCntuPxkmUW7BB37Nvekndb6uaf5injVrcXAQdX"
 ---
 
-From the season opener in April to today, the ACC 2026 riding season is coming to a close. This season we organised **21 events** — from relaxed lakeside rides and midweek after-work spins to big-mountain Epic Rides and the Eaglet training camp — and every one of them rolled out. In total, more than **110 rider sign-ups** joined us along the way.
+From the season opener in April to today, the ACC 2026 riding season is coming to a close. This season we organised **almost 50 events** — from relaxed lakeside rides and twice-weekly after-work spins to big-mountain Epic Rides and the Eaglet training camp. Well over a hundred rider participations were logged along the way.
 
 ![Riders posing together at the roadside, striking all kinds of poses](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-2.jpg)
 

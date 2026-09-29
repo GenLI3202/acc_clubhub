@@ -16,7 +16,7 @@ distanceKm: 56.4
 routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7QfLe3rNmCntuPxkmUW7BB37Nvekndb6uaf5injVrcXAQdX"
 ---
 
-Vom Saisonauftakt im April bis heute – die ACC-Radsaison 2026 neigt sich dem Ende zu. In dieser Saison haben wir **21 Ausfahrten** organisiert, von entspannten Seerunden über After-Work-Touren unter der Woche bis zu großen Epic Rides und dem Eaglet-Trainingscamp. Jede einzelne hat stattgefunden, und insgesamt gab es mehr als **110 Anmeldungen** von Teilnehmenden.
+Vom Saisonauftakt im April bis heute – die ACC-Radsaison 2026 neigt sich dem Ende zu. In dieser Saison haben wir **fast 50 Ausfahrten** organisiert, von entspannten Seerunden über die zweimal wöchentlichen After-Work-Touren bis zu großen Epic Rides und dem Eaglet-Trainingscamp. Insgesamt kamen weit über hundert Teilnahmen zusammen.
 
 ![Radfahrende posieren gemeinsam am Straßenrand](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-2.jpg)
 
