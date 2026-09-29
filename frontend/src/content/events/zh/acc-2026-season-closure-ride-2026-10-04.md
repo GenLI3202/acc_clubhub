@@ -16,11 +16,19 @@ distanceKm: 56.4
 routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7QfLe3rNmCntuPxkmUW7BB37Nvekndb6uaf5injVrcXAQdX"
 ---
 
-一起为 ACC 2026 骑行季画上句号！这是一场**轻松休闲的收官骑**，途中会在咖啡蛋糕店停一下，慢慢聊、慢慢骑。
+从 4 月的开季骑到现在，ACC 2026 骑行季即将走到尾声。这个赛季，我们一共组织了 **21 场**活动，从湖边的休闲骑、周中的 After Work，到翻山越岭的 Epic Ride 和 Eaglet 训练营，每一场都顺利成行；累计有超过 **110 人次**的小伙伴报名参与。
 
-路线约 **56.4 km，累计爬升 410 m**，预计骑行时间约 2 小时 24 分（不含休息）。
+![骑友们在路边合影，大家摆出各种姿势](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-2.jpg)
 
-![散落在木头上的 ACC 与 ACROSS 贴纸](/images/events/acc-2026-season-closure-ride-2026-10-04/cover.jpg)
+这些数字背后，是一张张熟悉的面孔：清晨在集合点互相打招呼的人，爬坡时彼此喊话鼓劲的人，咖啡馆里聊着聊着就忘了时间的人。**感谢每一位积极参与的你**——正因为有大家，ACC 2026 这个赛季才会如此精彩，也才留下了这么多值得回味的记忆。
+
+![两位骑友在冰淇淋店门口吃冰淇淋](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-1.jpg)
+
+![夕阳下停在长椅旁的公路车，远处是阿尔卑斯山](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-3.jpg)
+
+所以，我们想用一场轻松的骑行，为今年画上一个完整的句号：**本周日（10 月 4 日）**，ACC 2026 收官骑。不追速度、不比距离，一起慢慢骑，中途在咖啡店停下来喝杯咖啡、吃块蛋糕，聊聊这一季的故事。我们也为大家准备了 **ACC 周边小礼物**。
+
+欢迎新朋友、老朋友一起来，把这个赛季好好收个尾！
 
 |  |  |
 | --- | --- |

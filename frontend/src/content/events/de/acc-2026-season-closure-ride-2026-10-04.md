@@ -16,11 +16,19 @@ distanceKm: 56.4
 routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7QfLe3rNmCntuPxkmUW7BB37Nvekndb6uaf5injVrcXAQdX"
 ---
 
-Lasst uns die ACC-Saison 2026 gemeinsam abschließen! Es ist eine **entspannte Abschlussfahrt** mit einer Kaffee- und Kuchenpause unterwegs.
+Vom Saisonauftakt im April bis heute – die ACC-Radsaison 2026 neigt sich dem Ende zu. In dieser Saison haben wir **21 Ausfahrten** organisiert, von entspannten Seerunden über After-Work-Touren unter der Woche bis zu großen Epic Rides und dem Eaglet-Trainingscamp. Jede einzelne hat stattgefunden, und insgesamt gab es mehr als **110 Anmeldungen** von Teilnehmenden.
 
-Die Strecke ist etwa **56,4 km lang und hat 410 Höhenmeter**; die reine Fahrzeit beträgt rund 2 Std. 24 Min.
+![Radfahrende posieren gemeinsam am Straßenrand](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-2.jpg)
 
-![ACC- und ACROSS-Sticker auf einem Baumstamm](/images/events/acc-2026-season-closure-ride-2026-10-04/cover.jpg)
+Hinter diesen Zahlen stehen vertraute Gesichter: Menschen, die sich morgens am Treffpunkt begrüßen, sich am Berg gegenseitig anfeuern und beim Kaffee die Zeit vergessen. **Danke an alle, die dabei waren** – nur dank euch war die ACC-Saison 2026 so schön und hat uns so viele gute Erinnerungen geschenkt.
+
+![Zwei Radfahrende essen Eis vor einer Eisdiele](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-1.jpg)
+
+![Ein Rennrad lehnt im Abendlicht an einer Bank, im Hintergrund die Alpen](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-3.jpg)
+
+Deshalb schließen wir die Saison mit einer entspannten Runde ab: **Am Sonntag, 4. Oktober**, findet die ACC-Saisonabschlussfahrt 2026 statt. Kein Tempo-Druck – wir rollen gemeinsam gemütlich los und machen unterwegs eine Pause bei Kaffee und Kuchen, um Geschichten aus der Saison auszutauschen. Für alle gibt es außerdem **kleine ACC-Geschenke**.
+
+Neue Gesichter und alte Freunde sind herzlich willkommen. Kommt vorbei und lasst uns die Saison gemeinsam ausklingen!
 
 |  |  |
 | --- | --- |

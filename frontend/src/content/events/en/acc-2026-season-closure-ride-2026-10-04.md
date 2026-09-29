@@ -16,11 +16,19 @@ distanceKm: 56.4
 routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7QfLe3rNmCntuPxkmUW7BB37Nvekndb6uaf5injVrcXAQdX"
 ---
 
-Let's close the ACC 2026 season together! This is a **relaxed season-closing ride** with a coffee and cake stop along the way.
+From the season opener in April to today, the ACC 2026 riding season is coming to a close. This season we organised **21 events** — from relaxed lakeside rides and midweek after-work spins to big-mountain Epic Rides and the Eaglet training camp — and every one of them rolled out. In total, more than **110 rider sign-ups** joined us along the way.
 
-The route is about **56.4 km with 410 m of climbing**, roughly 2 h 24 min of riding time (breaks not included).
+![Riders posing together at the roadside, striking all kinds of poses](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-2.jpg)
 
-![ACC and ACROSS stickers laid out on a wooden log](/images/events/acc-2026-season-closure-ride-2026-10-04/cover.jpg)
+Behind those numbers are familiar faces: the people who greet each other at the meeting point in the early morning, cheer one another on up the climbs, and lose track of time over coffee. **Thank you to everyone who took part** — it is because of you that the ACC 2026 season was so much fun and left us with so many good memories.
+
+![Two cyclists enjoying ice cream outside an ice cream shop](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-1.jpg)
+
+![A road bike leaning on a bench at sunset with the Alps in the distance](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-3.jpg)
+
+So let's give this season a proper finish with one more relaxed ride: **this Sunday, 4 October**, the ACC 2026 Season Closure Ride. No racing, no pressure — we roll together at an easy pace and stop halfway for coffee and cake to swap stories from the season. We have also prepared **small ACC gifts** for everyone.
+
+New faces and old friends are all welcome. Come and close the season with us!
 
 |  |  |
 | --- | --- |
