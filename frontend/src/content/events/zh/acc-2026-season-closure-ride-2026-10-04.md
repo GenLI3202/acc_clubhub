@@ -16,7 +16,7 @@ distanceKm: 56.4
 routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7QfLe3rNmCntuPxkmUW7BB37Nvekndb6uaf5injVrcXAQdX"
 ---
 
-从 4 月的开季骑到现在，ACC 2026 骑行季即将走到尾声。这个赛季，我们一共组织了 **近 50 场**活动，从湖边的休闲骑、每周两次的 After Work，到翻山越岭的 Epic Ride 和 Eaglet 训练营；累计有上百人次的小伙伴参与其中。
+从 4 月的开季骑到现在，ACC 2026 骑行季即将走到尾声。这个赛季，我们一共组织了 **67 场**活动，其中 **57 场**顺利成行——从湖边的休闲骑、每周两次的 After Work，到翻山越岭的 Epic Ride 和 Eaglet 训练营；累计有 **260 多人次**的小伙伴参与其中。
 
 ![骑友们在路边合影，大家摆出各种姿势](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-2.jpg)
 
