@@ -22,6 +22,8 @@ From the season opener in April to today, the ACC 2026 riding season is coming t
 
 Behind those numbers are familiar faces: the people who greet each other at the meeting point in the early morning, cheer one another on up the climbs, and lose track of time over coffee. **Thank you to everyone who took part** — it is because of you that the ACC 2026 season was so much fun and left us with so many good memories.
 
+![Riders gathered at the meeting point, smiling as the route is explained](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-4.jpg)
+
 ![Two cyclists enjoying ice cream outside an ice cream shop](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-1.jpg)
 
 ![A road bike leaning on a bench at sunset with the Alps in the distance](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-3.jpg)

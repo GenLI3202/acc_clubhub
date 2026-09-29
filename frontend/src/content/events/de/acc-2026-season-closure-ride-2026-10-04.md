@@ -22,6 +22,8 @@ Vom Saisonauftakt im April bis heute – die ACC-Radsaison 2026 neigt sich dem E
 
 Hinter diesen Zahlen stehen vertraute Gesichter: Menschen, die sich morgens am Treffpunkt begrüßen, sich am Berg gegenseitig anfeuern und beim Kaffee die Zeit vergessen. **Danke an alle, die dabei waren** – nur dank euch war die ACC-Saison 2026 so schön und hat uns so viele gute Erinnerungen geschenkt.
 
+![Radfahrende am Treffpunkt hören lächelnd die Streckenbesprechung](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-4.jpg)
+
 ![Zwei Radfahrende essen Eis vor einer Eisdiele](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-1.jpg)
 
 ![Ein Rennrad lehnt im Abendlicht an einer Bank, im Hintergrund die Alpen](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-3.jpg)

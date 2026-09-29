@@ -22,6 +22,8 @@ routeKomootUrl: "https://www.komoot.com/de-de/tour/3318506812?share_token=aMw7Qf
 
 这些数字背后，是一张张熟悉的面孔：清晨在集合点互相打招呼的人，爬坡时彼此喊话鼓劲的人，咖啡馆里聊着聊着就忘了时间的人。**感谢每一位积极参与的你**——正因为有大家，ACC 2026 这个赛季才会如此精彩，也才留下了这么多值得回味的记忆。
 
+![集合点，骑友们围在一起听路线讲解，笑容满面](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-4.jpg)
+
 ![两位骑友在冰淇淋店门口吃冰淇淋](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-1.jpg)
 
 ![夕阳下停在长椅旁的公路车，远处是阿尔卑斯山](/images/events/acc-2026-season-closure-ride-2026-10-04/photo-3.jpg)
