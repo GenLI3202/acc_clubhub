@@ -11,6 +11,11 @@
 
 ## Recent Updates
 
+- [X] **10 月 4 日 ACC 2026 收官骑** (2026-09-29)
+  - [X] 发布中英德三语活动页：09:30 从 Parkplatz Untergiesing-Harlaching 出发，56.4 km / 410 m，途中 Café Golkofer 咖啡蛋糕休息；使用用户提供的贴纸照片作封面，并加入首页与活动页 hero。
+  - [X] 周二 After Work（München Süd）三语页面设为 draft，暂时从官网隐藏，2027 年开春改回 published 恢复。
+  - [X] 前端检查 0 errors / 0 warnings，生产构建通过。
+
 - [X] **Android 共享界面 0.3.7 热更新发布** (2026-09-28)
   - [X] 同步紧凑六入口悬浮导航、更透明的玻璃材质、活动详情与安全区调整，
     并限制页面意外缩放及输入框聚焦放大；原生 Android 基础包仍为 0.3.0。
