@@ -8,15 +8,25 @@ import type {
     MobileLocale,
 } from "../../shared/mobile_content";
 import { BottomNavigation } from "./components/BottomNavigation";
+import { AdminPage } from "./components/AdminPage";
+import { AppUpdates } from "./components/AppUpdates";
 import { ContentCard } from "./components/ContentCard";
 import { ContentDetail } from "./components/ContentDetail";
 import { PageHero } from "./components/PageHero";
 import { SubscribeForm } from "./components/SubscribeForm";
 import { APP_CONFIG } from "./config";
+import { use_edge_swipe_back } from "./hooks/use_edge_swipe_back";
 import { use_pull_to_refresh } from "./hooks/use_pull_to_refresh";
 import { translate } from "./i18n";
-import { filter_items_for_view, sort_mobile_items, type AppView } from "./lib/content";
+import {
+    filter_items_for_view,
+    sort_mobile_items,
+    split_event_items,
+    type AppView,
+} from "./lib/content";
 import { create_page_hero, section_title } from "./lib/page_hero";
+import { get_public_event_statuses, type EventLiveState } from "./services/api";
+import { restore_admin_session } from "./services/admin";
 import {
     ContentUpdateRequiredError,
     load_content_feed,
@@ -76,8 +86,41 @@ export function App() {
     const [online, set_online] = useState(navigator.onLine);
     const [message, set_message] = useState<string>();
     const [pending_link, set_pending_link] = useState<ContentDeepLink>();
+    const [live_refresh_epoch, set_live_refresh_epoch] = useState(0);
+    const [live_events, set_live_events] = useState<Record<string, EventLiveState>>({});
     const current_feed = useRef<MobileContentFeed>();
     const feed_request_id = useRef(0);
+    const list_scroll_y = useRef(0);
+    const app_header_ref = useRef<HTMLElement>(null);
+    const close_item = useCallback((): void => {
+        set_selected_item(undefined);
+        window.requestAnimationFrame(() => window.scrollTo(0, list_scroll_y.current));
+    }, []);
+    use_edge_swipe_back(Boolean(selected_item), close_item);
+
+    useEffect(() => {
+        const header = app_header_ref.current;
+        if (!header) {
+            return;
+        }
+        const update_header = (): void => {
+            const scroll_y = Math.max(0, window.scrollY);
+            header.classList.toggle("app-header--scrolled", scroll_y > 12);
+            if (!selected_item && active_view !== "manage") {
+                const opacity = Math.max(0, 1 - scroll_y / 44);
+                header.style.opacity = String(opacity);
+                header.style.pointerEvents = opacity < 0.1 ? "none" : "";
+            } else {
+                header.style.opacity = "";
+                header.style.pointerEvents = "";
+            }
+        };
+        update_header();
+        window.addEventListener("scroll", update_header, { passive: true });
+        return (): void => {
+            window.removeEventListener("scroll", update_header);
+        };
+    }, [active_view, selected_item]);
 
     const load_feed = useCallback(
         async (
@@ -86,11 +129,10 @@ export function App() {
         ): Promise<void> => {
             const request_id = feed_request_id.current + 1;
             feed_request_id.current = request_id;
-            if (options.background) {
-                set_refreshing(true);
-            } else {
+            if (!options.background) {
                 set_loading(true);
                 set_error(undefined);
+                set_live_refresh_epoch((current) => current + 1);
             }
 
             try {
@@ -106,6 +148,9 @@ export function App() {
                     current_feed.current = result.feed;
                     set_feed(result.feed);
                     set_source(result.source);
+                }
+                if (options.background) {
+                    set_live_refresh_epoch((current) => current + 1);
                 }
                 set_error(undefined);
                 if (options.announce && result.source === "network") {
@@ -129,7 +174,6 @@ export function App() {
             } finally {
                 if (request_id === feed_request_id.current) {
                     set_loading(false);
-                    set_refreshing(false);
                 }
             }
         },
@@ -139,15 +183,21 @@ export function App() {
     const pull_refresh = use_pull_to_refresh({
         disabled: !online || loading,
         on_refresh: async (): Promise<void> => {
-            await load_feed(locale, {
-                announce: true,
-                background: Boolean(feed),
-            });
+            set_refreshing(true);
+            try {
+                await load_feed(locale, {
+                    announce: true,
+                    background: Boolean(feed),
+                });
+            } finally {
+                set_refreshing(false);
+            }
         },
         refreshing,
     });
 
     useEffect(() => {
+        void restore_admin_session();
         void Promise.all([load_locale(), load_favorites()]).then(
             ([saved_locale, saved_favorites]) => {
                 if (saved_locale) {
@@ -176,10 +226,7 @@ export function App() {
             previous_connection = status.connected;
             set_online(status.connected);
             if (reconnected) {
-                void load_feed(locale, {
-                    announce: true,
-                    background: true,
-                });
+                void restore_admin_session();
                 void check_for_live_update();
             }
         }).then((listener) => {
@@ -188,13 +235,13 @@ export function App() {
         return (): void => {
             void remove_listener?.();
         };
-    }, [load_feed, locale]);
+    }, []);
 
     useEffect(() => {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("appStateChange", (state) => {
             if (state.isActive) {
-                void load_feed(locale, { background: true });
+                void restore_admin_session();
                 void check_for_live_update();
             }
         }).then((listener) => {
@@ -203,7 +250,7 @@ export function App() {
         return (): void => {
             void remove_listener?.();
         };
-    }, [load_feed, locale]);
+    }, []);
 
     useEffect(() => {
         const handle_link = (link: ContentDeepLink): void => {
@@ -261,7 +308,7 @@ export function App() {
         let remove_listener: (() => Promise<void>) | undefined;
         void CapacitorApp.addListener("backButton", () => {
             if (selected_item) {
-                set_selected_item(undefined);
+                close_item();
             }
         }).then((listener) => {
             remove_listener = async (): Promise<void> => listener.remove();
@@ -269,9 +316,12 @@ export function App() {
         return (): void => {
             void remove_listener?.();
         };
-    }, [selected_item]);
+    }, [close_item, selected_item]);
 
-    const all_items = useMemo(() => sort_mobile_items(feed?.items ?? []), [feed]);
+    const all_items = useMemo(
+        () => sort_mobile_items(feed?.items ?? [], live_events),
+        [feed, live_events],
+    );
     const scoped_items = useMemo(
         () => filter_items_for_view(all_items, active_view),
         [active_view, all_items],
@@ -289,9 +339,52 @@ export function App() {
                 ),
         );
     }, [locale, query, scoped_items]);
+    const event_groups = useMemo(
+        () => split_event_items(visible_items, live_events),
+        [live_events, visible_items],
+    );
+    useEffect(() => {
+        if (active_view !== "events" || !online || !feed) {
+            return;
+        }
+        let active = true;
+        void get_public_event_statuses()
+            .then((events) => {
+                if (!active) {
+                    return;
+                }
+                const published_slugs = new Set(
+                    feed.items
+                        .filter((item) => item.type === "event")
+                        .map((item) => item.slug),
+                );
+                set_live_events(
+                    Object.fromEntries(
+                        events
+                            .filter((event) => published_slugs.has(event.slug))
+                            .map((event) => [event.slug, event]),
+                    ),
+                );
+            })
+            .catch(() => {
+                if (active) {
+                    set_live_events({});
+                }
+            });
+        return (): void => {
+            active = false;
+        };
+    }, [active_view, feed, live_refresh_epoch]);
     const hero_content = useMemo(
-        () => create_page_hero(active_view, scoped_items, locale, APP_CONFIG.site_url),
-        [active_view, locale, scoped_items],
+        () =>
+            create_page_hero(
+                active_view,
+                scoped_items,
+                locale,
+                APP_CONFIG.site_url,
+                live_events,
+            ),
+        [active_view, live_events, locale, scoped_items],
     );
 
     const select_view = (view: AppView): void => {
@@ -302,8 +395,9 @@ export function App() {
     };
 
     const open_item = (item: MobileContentItem): void => {
+        list_scroll_y.current = window.scrollY;
         set_selected_item(item);
-        window.scrollTo(0, 0);
+        window.requestAnimationFrame(() => window.scrollTo(0, 0));
     };
 
     const toggle_favorite = (item: MobileContentItem): void => {
@@ -336,16 +430,58 @@ export function App() {
 
     return (
         <div class="app-shell">
-            <header class={`app-header${selected_item ? "" : " app-header--hero"}`}>
-                <button
-                    aria-label={translate(locale, "events")}
-                    class="brand-button"
-                    onClick={() => select_view("events")}
-                    type="button"
-                >
-                    <img alt="ACC ClubHub" src="/app-logo.png" />
-                    <span>{translate(locale, "app_name")}</span>
-                </button>
+            <header
+                class={`app-header${selected_item ? " app-header--detail" : active_view === "manage" ? "" : " app-header--hero"}`}
+                ref={app_header_ref}
+            >
+                {selected_item ? (
+                    <button
+                        aria-label={`${translate(locale, "back")}: ${translate(locale, active_view)}`}
+                        class="detail-back-button"
+                        onClick={close_item}
+                        type="button"
+                    >
+                        <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                        <span>{translate(locale, active_view)}</span>
+                    </button>
+                ) : (
+                    <button
+                        aria-label={translate(locale, "events")}
+                        class="brand-button"
+                        onClick={() => select_view("events")}
+                        type="button"
+                    >
+                        <img alt="ACC ClubHub" src="/app-logo.png" />
+                        <span>{translate(locale, "app_name")}</span>
+                    </button>
+                )}
+                {selected_item ? (
+                    <button
+                        aria-label={translate(
+                            locale,
+                            favorites.has(selected_item.id) ? "unfavorite" : "favorite",
+                        )}
+                        aria-pressed={favorites.has(selected_item.id)}
+                        class="icon-button header-favorite-button"
+                        onClick={() => toggle_favorite(selected_item)}
+                        type="button"
+                    >
+                        <span aria-hidden="true">
+                            {favorites.has(selected_item.id) ? "★" : "☆"}
+                        </span>
+                    </button>
+                ) : (
+                    <button
+                        aria-label={translate(locale, "website")}
+                        class="text-button"
+                        onClick={() => open_site_page("")}
+                        type="button"
+                    >
+                        {translate(locale, "website")} ↗
+                    </button>
+                )}
                 <label class="language-picker">
                     <span class="sr-only">{translate(locale, "language")}</span>
                     <select
@@ -361,6 +497,17 @@ export function App() {
                     </select>
                 </label>
             </header>
+
+            {APP_CONFIG.stage === "staging" ? (
+                <div class="connection-banner" role="status">
+                    {translate(locale, "staging_build")}
+                </div>
+            ) : null}
+            {APP_CONFIG.stage === "preview" ? (
+                <div class="connection-banner" role="status">
+                    {translate(locale, "preview_build")}
+                </div>
+            ) : null}
 
             <div
                 aria-hidden={pull_refresh.state === "idle" ? "true" : undefined}
@@ -407,18 +554,36 @@ export function App() {
             <main class={`app-main${selected_item ? " app-main--detail" : ""}`}>
                 {selected_item ? (
                     <ContentDetail
-                        favorite={favorites.has(selected_item.id)}
                         item={selected_item}
                         locale={locale}
-                        on_back={() => set_selected_item(undefined)}
+                        refresh_epoch={live_refresh_epoch}
                         on_message={show_message}
-                        on_toggle_favorite={toggle_favorite}
+                        on_registered={() =>
+                            set_live_refresh_epoch((current) => current + 1)
+                        }
                         online={online}
                     />
                 ) : (
                     <>
-                        <PageHero content={hero_content} on_action={activate_hero} />
-                        {active_view === "about" ? (
+                        {active_view !== "manage" ? (
+                            <PageHero
+                                content={hero_content}
+                                on_action={activate_hero}
+                            />
+                        ) : null}
+                        {active_view === "manage" ? (
+                            APP_CONFIG.stage === "preview" ? (
+                                <section class="page-content">
+                                    <p>{translate(locale, "preview_build")}</p>
+                                </section>
+                            ) : (
+                                <AdminPage
+                                    locale={locale}
+                                    online={online}
+                                    refresh_epoch={live_refresh_epoch}
+                                />
+                            )
+                        ) : active_view === "about" ? (
                             <section class="page-content about-view">
                                 <div class="section-heading">
                                     <span class="eyebrow">Across, together.</span>
@@ -498,16 +663,22 @@ export function App() {
                                         {translate(locale, "website")} <span>↗</span>
                                     </button>
                                 </div>
-                                <SubscribeForm locale={locale} online={online} />
+                                {APP_CONFIG.stage !== "preview" ? (
+                                    <SubscribeForm locale={locale} online={online} />
+                                ) : null}
+                                <AppUpdates locale={locale} />
                             </section>
                         ) : (
                             <section class="page-content">
-                                <div class="section-heading">
-                                    <span class="eyebrow">
-                                        Across Cycling Club Munich
-                                    </span>
-                                    <h2>{section_title(active_view, locale)}</h2>
-                                </div>
+                                {active_view !== "events" ||
+                                event_groups.upcoming.length > 0 ? (
+                                    <div class="section-heading">
+                                        <span class="eyebrow">
+                                            Across Cycling Club Munich
+                                        </span>
+                                        <h2>{section_title(active_view, locale)}</h2>
+                                    </div>
+                                ) : null}
                                 <label class="search-field">
                                     <span aria-hidden="true">⌕</span>
                                     <span class="sr-only">
@@ -547,18 +718,56 @@ export function App() {
                                         {translate(locale, "no_content")}
                                     </div>
                                 ) : (
-                                    <div class="content-grid">
-                                        {visible_items.map((item) => (
-                                            <ContentCard
-                                                favorite={favorites.has(item.id)}
-                                                item={item}
-                                                key={`${item.locale}:${item.id}`}
-                                                locale={locale}
-                                                on_open={open_item}
-                                                on_toggle_favorite={toggle_favorite}
-                                            />
-                                        ))}
-                                    </div>
+                                    <>
+                                        <div class="content-grid">
+                                            {(active_view === "events"
+                                                ? event_groups.upcoming
+                                                : visible_items
+                                            ).map((item) => (
+                                                <ContentCard
+                                                    favorite={favorites.has(item.id)}
+                                                    item={item}
+                                                    live_event={live_events[item.slug]}
+                                                    key={`${item.locale}:${item.id}`}
+                                                    locale={locale}
+                                                    on_open={open_item}
+                                                    on_toggle_favorite={toggle_favorite}
+                                                />
+                                            ))}
+                                        </div>
+                                        {active_view === "events" &&
+                                        event_groups.past.length > 0 ? (
+                                            <>
+                                                <div class="section-heading">
+                                                    <h2>
+                                                        {translate(
+                                                            locale,
+                                                            "past_events",
+                                                        )}
+                                                    </h2>
+                                                </div>
+                                                <div class="content-grid">
+                                                    {event_groups.past.map((item) => (
+                                                        <ContentCard
+                                                            favorite={favorites.has(
+                                                                item.id,
+                                                            )}
+                                                            item={item}
+                                                            live_event={
+                                                                live_events[item.slug]
+                                                            }
+                                                            key={`${item.locale}:${item.id}`}
+                                                            locale={locale}
+                                                            on_open={open_item}
+                                                            on_toggle_favorite={
+                                                                toggle_favorite
+                                                            }
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </>
+                                        ) : null}
+                                    </>
                                 )}
                             </section>
                         )}

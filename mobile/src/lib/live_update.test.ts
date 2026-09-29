@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
     parse_live_update_manifest,
+    native_manifest_url,
     release_asset_base_url,
     release_manifest_url,
 } from "./live_update";
@@ -66,6 +67,14 @@ describe("parse_live_update_manifest", () => {
 });
 
 describe("release_manifest_url", () => {
+    it("preserves the old Android channel and isolates newer native versions", () => {
+        const legacy_url = `${ASSET_BASE_URL}latest.json`;
+        expect(native_manifest_url(legacy_url, "2", "2")).toBe(legacy_url);
+        expect(native_manifest_url(legacy_url, "3", "2")).toBe(
+            `${ASSET_BASE_URL}latest-native-3.json`,
+        );
+        expect(() => native_manifest_url(legacy_url, "../other", "2")).toThrow();
+    });
     it("builds the stable production manifest URL", () => {
         expect(
             release_manifest_url(

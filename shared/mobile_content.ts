@@ -28,6 +28,7 @@ export interface MobileEventRecurrence {
 }
 
 export interface MobileContentMetadata {
+    acc_official_ride?: boolean;
     author?: string;
     category?: string;
     difficulty?: string;

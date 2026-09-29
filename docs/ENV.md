@@ -16,6 +16,7 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to sign admin session cookies | `replace-with-a-long-random-secret` |
 | `ADMIN_EMAIL_ALLOWLIST` | Yes | Comma-separated emails allowed to access `/dashboard` by email login. For the current setup, configure only the shared ride leader admin account in Vercel. | `admin@example.com` |
 | `ADMIN_MAGIC_LINK_PASSWORD` | Yes | Shared password required before direct dashboard email login | `replace-with-dashboard-password` |
+| `PUBLIC_FRONTEND_URL` | Yes | Trusted HTTPS website origin for published event verification and registration links | `https://www.across-cc.de` |
 | `ADMIN_GITHUB_ALLOWLIST` | No | Optional fallback GitHub usernames allowed to access `/dashboard` | `genli3202,rideleader1` |
 | `GITHUB_CLIENT_ID` | No | Optional fallback GitHub OAuth App client ID | `Ov23lixxxxxxxxxxxxxx` |
 | `GITHUB_CLIENT_SECRET` | No | Optional fallback GitHub OAuth App client secret | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` |
@@ -29,6 +30,11 @@ Copy `backend/.env.example` to `backend/.env` and fill in your values. Never com
 - **Dashboard email login**: configure `ADMIN_EMAIL_ALLOWLIST` in the
   backend Vercel project with only the shared ride leader admin account.
   Configure `ADMIN_MAGIC_LINK_PASSWORD` in the same backend project.
+- **Published events**: deploy the website's
+  `/api/registration-events/{slug}.json` and
+  `/api/registration-events/index.json` endpoints before updating the backend.
+  Point `PUBLIC_FRONTEND_URL` to that exact website origin. Public RSVP fails
+  closed if the website is unavailable or the slug is unpublished.
 - **GitHub OAuth**: GitHub Developer settings → OAuth Apps. Callback URL:
   `https://www.across-cc.de/auth/callback`
 
@@ -51,8 +57,23 @@ The production defaults are built in. Copy `mobile/.env.example` to
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
 | `VITE_API_URL` | No | FastAPI base URL used for live event status and registration | `https://acc-clubhub-events-ms.vercel.app` |
-| `VITE_CONTENT_BASE_URL` | No | Base URL for versioned, localized mobile content feeds | `https://www.across-cc.de/mobile-content/v1` |
+| `VITE_CONTENT_BASE_URL` | No | Base URL for live, localized mobile content feeds | `https://www.across-cc.de/mobile-content/live/v1` |
 | `VITE_SITE_URL` | No | Trusted website origin used for links and deep links | `https://www.across-cc.de` |
+| `VITE_APP_ENV` | No | `production`, `staging`, or read-only `preview`; staging requires explicit non-production endpoints | `production` |
+
+`npm run android:debug` forces the read-only preview stage and public production
+feed URLs, regardless of local `VITE_` overrides. The signed Android pilot
+script forces the staging stage and its three explicit staging endpoints.
+`npm run android:connected` explicitly builds the production-connected internal
+APK with registration, management, and signed OTA updates enabled. It retains
+the local debug signing identity for replacing an existing preview installation.
+
+The signed Android staging pilot uses `ACC_PILOT_API_URL`,
+`ACC_PILOT_CONTENT_BASE_URL`, and `ACC_PILOT_SITE_URL` instead of production
+defaults. Its `ACC_PILOT_KEYSTORE`, `ACC_PILOT_STORE_PASSWORD`,
+`ACC_PILOT_KEY_ALIAS`, `ACC_PILOT_KEY_PASSWORD`, and
+`ACC_PILOT_SIGNING_OWNER` inputs are consumed only by the local build script;
+do not add them to `VITE_` variables or commit them. See `docs/ANDROID_PILOT.md`.
 
 ### Notes
 
@@ -62,3 +83,16 @@ The production defaults are built in. Copy `mobile/.env.example` to
 - Vercel environment variables are configured in the Vercel Dashboard — they do not need a `.env` file in production.
 
 <!-- END AUTO-GENERATED -->
+
+## iOS release environment
+
+Set these in the shell when running `npm run ios:check` or `npm run ios:release`
+from `mobile/`. They are build inputs, not `VITE_` runtime configuration, and
+are not automatically loaded from `.env.local`.
+
+- `IOS_TEAM_ID`: 10-character Apple Developer Team ID. Configure the associated
+  account in Xcode Settings before building. Never put Apple account passwords here.
+- `IOS_BUILD_NUMBER`: unused positive integer, up to 9 digits. Passed as
+  `CURRENT_PROJECT_VERSION` without modifying the committed project.
+- `DEVELOPER_DIR`: optional full Xcode developer path, for example
+  `/Applications/Xcode.app/Contents/Developer`, when the selected tools differ.

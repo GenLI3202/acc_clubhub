@@ -6,10 +6,9 @@ from models import Event
 from sqlalchemy.orm import Session
 
 
-def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
+def test_create_rsvp_v2_syncs_published_metadata(client_no_auth, db, published_event):
     """
-    Verify that POST /api/rsvp (v2) correctly updates an existing event's 
-    metadata from the incoming request (CMS-driven model).
+    Verify that published CMS metadata wins over spoofed public request fields.
     """
     # 1. Create a dummy event with generic metadata
     slug = "test-sync-slug"
@@ -28,24 +27,33 @@ def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
     # 2. Simulate an RSVP with updated metadata
     new_title = "Updated Event Title"
     new_location = "New Meeting Point"
-    new_date_iso = "2026-05-20T14:45:00.000Z" 
-    
+    new_date_iso = "2030-05-20T14:45:00.000Z"
+    published_event({
+        "slug": slug,
+        "title": new_title,
+        "location": new_location,
+        "event_date": new_date_iso,
+        "event_type": "training-camp",
+        "max_participants": 25,
+        "distance_km": 48.5,
+    })
+
     payload = {
         "email": "new_registrant@example.com",
         "name": "New Rider",
         "privacy_accepted": True,
         "event_slug": slug,
-        "event_title": new_title,
-        "event_location": new_location,
-        "event_date": new_date_iso,
-        "event_type": "training-camp",
-        "max_participants": 25,
-        "distance_km": 48.5,
+        "event_title": "Spoofed title",
+        "event_location": "Spoofed location",
+        "event_date": "2040-05-20T14:45:00.000Z",
+        "event_type": "spoofed-type",
+        "max_participants": 1,
+        "distance_km": 1,
         "lang": "en"
     }
 
     response = client_no_auth.post("/api/rsvp", json=payload)
-    
+
     # Assert successful RSVP
     assert response.status_code == 200, f"RSVP failed: {response.json()}"
     assert response.json()["success"] is True
@@ -59,17 +67,19 @@ def test_create_rsvp_v2_syncs_metadata(client_no_auth, db):
     assert updated_event.event_type == "training-camp"
     assert updated_event.max_participants == 25
     assert float(updated_event.distance_km) == 48.5
-    
+
     # Verify exact time parsing (14:45 UTC)
     db_date = updated_event.event_date
     if db_date.tzinfo is None:
         db_date = db_date.replace(tzinfo=timezone.utc)
-        
-    expected_date = datetime(2026, 5, 20, 14, 45, tzinfo=timezone.utc)
+
+    expected_date = datetime(2030, 5, 20, 14, 45, tzinfo=timezone.utc)
     assert db_date == expected_date
 
 
-def test_create_rsvp_v2_does_not_clear_existing_distance(client_no_auth, db):
+def test_create_rsvp_v2_does_not_clear_existing_distance(
+    client_no_auth, db, published_event,
+):
     slug = "test-distance-preserve"
     event = Event(
         slug=slug,
@@ -82,6 +92,14 @@ def test_create_rsvp_v2_does_not_clear_existing_distance(client_no_auth, db):
     )
     db.add(event)
     db.commit()
+    published_event({
+        "slug": slug,
+        "title": "Updated Event Title",
+        "location": "New Meeting Point",
+        "event_date": "2030-05-20T14:45:00Z",
+        "event_type": "training-camp",
+        "max_participants": 25,
+    })
 
     payload = {
         "email": "new_registrant@example.com",
@@ -108,12 +126,20 @@ def test_create_rsvp_v2_does_not_clear_existing_distance(client_no_auth, db):
 def test_create_rsvp_v2_passes_route_to_confirmation_email(
     client_no_auth: TestClient,
     db: Session,
+    published_event,
 ) -> None:
     """The route is forwarded to email without being stored on Event."""
     route_url = (
         "https://www.komoot.com/de-de/tour/3200651827"
         "?share_token=test-token&ref=wtd"
     )
+    published_event({
+        "slug": "route-email-test",
+        "title": "Route Email Test",
+        "location": "Munich",
+        "event_date": "2030-09-01T09:00:00Z",
+        "route_komoot_url": route_url,
+    })
     payload = {
         "email": "route-rider@example.com",
         "name": "Route Rider",

@@ -1,8 +1,9 @@
+import { App } from "@capacitor/app";
 import { LiveUpdate } from "@capawesome/capacitor-live-update";
 import { Capacitor, CapacitorHttp } from "@capacitor/core";
 
 import { APP_CONFIG } from "../config";
-import { parse_live_update_manifest } from "../lib/live_update";
+import { native_manifest_url, parse_live_update_manifest } from "../lib/live_update";
 
 export type LiveUpdateCheckStatus =
     "current" | "downloaded" | "pending" | "skipped" | "unavailable";
@@ -13,6 +14,40 @@ export interface LiveUpdateCheckResult {
 }
 
 let active_check: Promise<LiveUpdateCheckResult> | undefined;
+let latest_result: LiveUpdateCheckResult = { status: "skipped" };
+const listeners = new Set<(result: LiveUpdateCheckResult) => void>();
+
+export function subscribe_live_updates(
+    listener: (result: LiveUpdateCheckResult) => void,
+): () => void {
+    listeners.add(listener);
+    listener(latest_result);
+    return (): void => {
+        listeners.delete(listener);
+    };
+}
+
+export async function apply_live_update(): Promise<void> {
+    if (!APP_CONFIG.live_update.enabled || Capacitor.getPlatform() !== "android") {
+        throw new Error("Live updates are unavailable for this build.");
+    }
+    const next = await LiveUpdate.getNextBundle();
+    if (!next.bundleId) {
+        throw new Error("No downloaded update is ready.");
+    }
+    await LiveUpdate.reload();
+}
+
+export async function get_native_version(): Promise<string | undefined> {
+    if (Capacitor.getPlatform() === "ios") {
+        return (await App.getInfo()).version;
+    }
+    if (Capacitor.getPlatform() !== "android") {
+        return undefined;
+    }
+    const version = await LiveUpdate.getVersionName();
+    return version.versionName;
+}
 
 function cache_busted_url(url: string): string {
     const parsed_url = new URL(url);
@@ -23,7 +58,12 @@ function cache_busted_url(url: string): string {
 async function perform_live_update_check(): Promise<LiveUpdateCheckResult> {
     try {
         const version = await LiveUpdate.getVersionCode();
-        if (version.versionCode !== APP_CONFIG.live_update.native_version_code) {
+        if (
+            !version.versionCode ||
+            !APP_CONFIG.live_update.supported_native_version_codes.includes(
+                version.versionCode,
+            )
+        ) {
             return { status: "skipped" };
         }
 
@@ -34,7 +74,13 @@ async function perform_live_update_check(): Promise<LiveUpdateCheckResult> {
             },
             readTimeout: 15_000,
             responseType: "json",
-            url: cache_busted_url(APP_CONFIG.live_update.manifest_url),
+            url: cache_busted_url(
+                native_manifest_url(
+                    APP_CONFIG.live_update.manifest_url,
+                    version.versionCode,
+                    APP_CONFIG.live_update.legacy_native_version_code,
+                ),
+            ),
         });
         if (response.status < 200 || response.status >= 300) {
             return { status: "unavailable" };
@@ -80,7 +126,7 @@ async function perform_live_update_check(): Promise<LiveUpdateCheckResult> {
 }
 
 export async function mark_live_update_ready(): Promise<void> {
-    if (!Capacitor.isNativePlatform()) {
+    if (Capacitor.getPlatform() !== "android") {
         return;
     }
     try {
@@ -91,16 +137,24 @@ export async function mark_live_update_ready(): Promise<void> {
 }
 
 export function check_for_live_update(): Promise<LiveUpdateCheckResult> {
-    if (!Capacitor.isNativePlatform()) {
+    if (!APP_CONFIG.live_update.enabled || Capacitor.getPlatform() !== "android") {
         return Promise.resolve({ status: "skipped" });
     }
     if (active_check) {
         return active_check;
     }
 
-    active_check = perform_live_update_check().finally(() => {
-        active_check = undefined;
-    });
+    active_check = perform_live_update_check()
+        .then((result) => {
+            latest_result = result;
+            for (const listener of listeners) {
+                listener(result);
+            }
+            return result;
+        })
+        .finally(() => {
+            active_check = undefined;
+        });
     return active_check;
 }
 

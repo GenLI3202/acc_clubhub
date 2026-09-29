@@ -8,6 +8,7 @@ import {
     type MobileContentItem,
     type MobileLocale,
 } from "../../../../shared/mobile_content";
+import { normalize_komoot_embed_url } from "../../../../shared/komoot_embed";
 
 const ALLOWED_TAGS = [
     "a",
@@ -23,6 +24,7 @@ const ALLOWED_TAGS = [
     "h5",
     "h6",
     "hr",
+    "iframe",
     "img",
     "li",
     "ol",
@@ -74,12 +76,15 @@ export function sanitize_mobile_markdown(
             a: ["href", "rel", "target", "title"],
             code: ["class"],
             img: ["alt", "loading", "src", "title"],
+            iframe: ["loading", "referrerpolicy", "sandbox", "src", "title"],
         },
         allowedSchemes: ["http", "https", "mailto"],
         allowedSchemesAppliedToAttributes: ["href", "src"],
         allowedTags: ALLOWED_TAGS,
         allowProtocolRelative: false,
         enforceHtmlBoundary: true,
+        exclusiveFilter: (frame) =>
+            frame.tag === "iframe" && !frame.attribs.src,
         transformTags: {
             a: (_tag_name, attributes) => {
                 const href = normalize_public_url(attributes.href, site_url);
@@ -106,6 +111,19 @@ export function sanitize_mobile_markdown(
                         ...(attributes.title
                             ? { title: attributes.title }
                             : {}),
+                    },
+                };
+            },
+            iframe: (_tag_name, attributes) => {
+                const src = normalize_komoot_embed_url(attributes.src);
+                return {
+                    tagName: "iframe",
+                    attribs: {
+                        ...(src ? { src } : {}),
+                        loading: "lazy",
+                        referrerpolicy: "no-referrer",
+                        sandbox: "allow-scripts allow-same-origin allow-popups",
+                        title: attributes.title || "Komoot route preview",
                     },
                 };
             },

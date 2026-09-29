@@ -40,6 +40,16 @@ function validated_bundle_id(commit_sha) {
 }
 
 const commit_sha = required_environment_value("GITHUB_SHA");
+const build = JSON.parse(
+    await readFile(resolve(dist_directory, "app-build.json"), "utf8"),
+);
+if (
+    build.stage !== "production" ||
+    build.source_revision !== commit_sha ||
+    build.source_dirty
+) {
+    throw new Error("Live updates require a production bundle built from GITHUB_SHA.");
+}
 const private_key = await read_private_key();
 const bundle_id = validated_bundle_id(commit_sha);
 const bundle_asset_name = `acc-mobile-${commit_sha.toLowerCase()}.zip`;
@@ -77,20 +87,35 @@ if (!verify("RSA-SHA256", bundle, public_key, Buffer.from(signature, "base64")))
 const asset_base_url =
     `https://github.com/${config.release_repository}/releases/download/` +
     `${config.release_tag}/`;
-const manifest = {
+const base_manifest = {
     schema_version: config.schema_version,
     bundle_id,
     bundle_url: `${asset_base_url}${bundle_asset_name}`,
     checksum,
     signature,
-    native_version_code: config.native_version_code,
     published_at: new Date().toISOString(),
 };
-const serialized_manifest = `${JSON.stringify(manifest, null, 4)}\n`;
-await Promise.all([
-    writeFile(manifest_path, serialized_manifest, "utf8"),
-    writeFile(history_manifest_path, serialized_manifest, "utf8"),
-]);
+for (const native_version_code of config.supported_native_version_codes) {
+    const manifest = { ...base_manifest, native_version_code };
+    const serialized_manifest = `${JSON.stringify(manifest, null, 4)}\n`;
+    await writeFile(
+        resolve(artifact_directory, `latest-native-${native_version_code}.json`),
+        serialized_manifest,
+        "utf8",
+    );
+    await writeFile(
+        resolve(
+            artifact_directory,
+            `manifest-${commit_sha.toLowerCase()}-native-${native_version_code}.json`,
+        ),
+        serialized_manifest,
+        "utf8",
+    );
+    if (native_version_code === config.legacy_native_version_code) {
+        await writeFile(manifest_path, serialized_manifest, "utf8");
+        await writeFile(history_manifest_path, serialized_manifest, "utf8");
+    }
+}
 
 console.log(`Live update bundle: ${bundle_path}`);
 console.log(`Live update manifest: ${manifest_path}`);
