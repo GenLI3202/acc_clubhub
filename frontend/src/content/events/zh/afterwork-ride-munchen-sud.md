@@ -16,7 +16,7 @@ distanceKm: 42
 routeKomootUrl: https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
-status: published
+status: draft
 ACCOfficialRide: true
 recurring:
   frequency: weekly
