@@ -1,22 +1,21 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: After-Work-Runde am Donnerstag ab 18:00 Uhr ab OEZ, entspannte 47,4-km-Rennradroute durch den Münchner Norden mit ca. 110 m Anstieg und rund 1 Std. 49 Min. Fahrzeit.
+description: Die Saison 2026 ist beendet. Beide After-Work-Ausfahrten sind in der Winterpause, die Anmeldung ist geschlossen. Danke fürs Mitfahren — bis 2027!
 date: 2026-06-04 18:00
+registrationDeadline: "2026-10-03T00:00:00+02:00"
 eventType: after-work
 location: OEZ Decathlon, Pelkovenstrasse 143, 80992 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
   - regular
-  - hero
-  - upcoming
 maxParticipants: 15
 distanceKm: 47.4
 routeKomootUrl: https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
-status: draft
+status: published
 ACCOfficialRide: true
 recurring:
   paused: true
@@ -30,61 +29,20 @@ recurring:
     "2026-07-16": "2026-07-16T19:00:00+02:00"
 ---
 
-Komm am Donnerstag mit auf eine entspannte North Afterwork Ride von ACC.
+## Winterpause · Anmeldung geschlossen
 
-Das ist eine **lockere After-Work-Rennradrunde ab OEZ** durch den Münchner Norden. Die Strecke hat nur moderate Höhenmeter und eignet sich gut für eine stabile gemeinsame Ausfahrt unter der Woche.
+Vom Saisonauftakt im April bis zu den letzten Herbstausfahrten: Die ACC-Radsaison 2026 geht zu Ende. Wir haben **67 Veranstaltungen** organisiert, von denen **57 stattgefunden haben**, mit insgesamt mehr als **260 Teilnahmen** — von entspannten Seerunden und zweimal wöchentlichen After-Work-Ausfahrten bis zu Epic Rides in den Bergen und dem Eaglet-Trainingscamp.
 
-Treffpunkt und Start ist **am Donnerstag um 18:00 Uhr** bei **OEZ Decathlon, Pelkovenstrasse 143, 80992 München**. Die Route ist etwa **47,4 km** lang, hat ca. **110 m** Anstieg, und Komoot schätzt die Fahrzeit auf etwa **1 Std. 49 Min.**. Die erwartete Durchschnittsgeschwindigkeit liegt bei etwa **26 km/h**.
+Beim After Work bleiben uns vor allem die ganz normalen Feierabende in Erinnerung: den Laptop zuklappen, ins Radtrikot wechseln und am Treffpunkt bekannte Gesichter sehen; gemeinsam im Abendwind fahren, miteinander reden und den Arbeitstag hinter sich lassen. Danke an alle, die dabei waren und aufeinander geachtet haben, und an unsere Ride-Leitung für die Begleitung Woche für Woche. **Ihr habt diese Feierabendstunden zu schönen Erinnerungen an unsere Saison gemacht.**
 
-***
+Der Winter rückt näher. Es wird kälter, die Straßen sind häufiger feucht und es wird viel früher dunkel. Licht und Straßenverhältnisse nach Feierabend eignen sich damit nicht mehr für unsere gemeinsamen Ausfahrten. **Die After-Work-Runden Nord und Süd gehen deshalb in die Winterpause. Die Anmeldung ist geschlossen, und wir verabschieden die ACC-Radsaison 2026.**
 
-|  | Infos |
-| --- | --- |
-| **Zeit** | Donnerstag · Treffpunkt und Start um 18:00 Uhr |
-| **Treffpunkt** | OEZ Decathlon, Pelkovenstrasse 143, 80992 München |
-| **Strecke** | Ca. 47,4 km · ca. 110 m Anstieg · geschätzte Fahrzeit 1 Std. 49 Min. |
-| **Tempo** | Komoot-Schätzung: ca. 26 km/h Durchschnitt |
-| **Fahrzeit** | Etwa 1 Std. 49 Min. |
-| **Radtyp** | Rennrad oder Gravelbike empfohlen |
-| **Hinweise** | Bitte Helm und grundlegende Verpflegung mitbringen; bitte prüfe dein Rad vorab; bitte pünktlich sein; entscheide selbst, ob Tempo und Strecke zu dir passen; bei schlechtem Wetter oder wenn sich außer dem Ride Leader weniger als 2 Personen anmelden, wird die Ausfahrt automatisch abgesagt |
-| **Teilnehmerzahl** | Maximal 15 Personen |
+Danke an alle neuen und vertrauten Gesichter, die in diesem Jahr mit uns unterwegs waren. Den Abendwind, das Lachen und die gemeinsamen Kilometer nehmen wir mit in den Winter. Wenn der Frühling zurückkommt, freuen wir uns aufs Wiedersehen auf dem Rad.
 
-***
+**Bis 2027!** Den Saisonstart und die Wiederöffnung der Anmeldung geben wir bekannt, sobald die Termine feststehen.
 
-### Treffpunkt
+### Strecken und Kontakt
 
-- OEZ Decathlon, Pelkovenstrasse 143, 80992 München
+[Strecke ansehen](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
 
-### Route
-
-- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
-
-<iframe src="https://www.komoot.com/tour/3074710714/embed?profile=1&share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
-
-### Zur Ausfahrt
-
-Diese Strecke ist als stabile Feierabendrunde gedacht und nicht als harte Trainingseinheit.
-Wenn du eine lockere Nordrunde ab OEZ mit ACC fahren möchtest, passt diese Strecke sehr gut.
-
-***
-
-### Logistics
-
-Die Runde endet voraussichtlich nach etwa **1 Std. 50 Min. wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
-
-***
-
-### Anmeldung
-
-Wenn du an dieser Ausfahrt teilnehmen möchtest, melde dich bitte unbedingt **über die auf der Event-Seite angegebene E-Mail-Adresse** an.  
-Nur so können wir Anwesenheit und Teilnahme korrekt dokumentieren; falls später ein Nachweis für Versicherung oder Teilnahme erforderlich ist, gelten **Anmeldedatensatz und Sign-in-Datensatz** als Grundlage.
-
-Bitte scanne den QR-Code unten und füge **Dashu (大树)**, die Ride-Leitung der Nordrunde, bei WeChat hinzu. Schreibe „North After Work“ in die Freundschaftsanfrage. Dashu fügt Teilnehmende anschließend zur Event-Gruppe hinzu, in der Treffpunktdetails, Streckenhinweise und kurzfristige Änderungen geteilt werden.
-
-Das Hinzufügen der Ride-Leitung bzw. der Beitritt zur Event-Gruppe dient nur der Kommunikation. Es **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
-
-***
-
-### Ride-Leitung der Nordrunde bei WeChat hinzufügen
-
-![WeChat-QR-Code von Dashu, Ride-Leitung der Nordrunde](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+![WeChat-QR-Code der Ride-Leitung](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)

@@ -1,22 +1,21 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Wöchentliche entspannte Social After-Work-Runde im Münchner Süden, jeden Dienstag mit Treffen um 17:50 Uhr und Abfahrt um 18:00 Uhr ab Münchner Tierpark.
+description: Die Saison 2026 ist beendet. Beide After-Work-Ausfahrten sind in der Winterpause, die Anmeldung ist geschlossen. Danke fürs Mitfahren — bis 2027!
 date: 2026-05-05 17:50
+registrationDeadline: "2026-10-03T00:00:00+02:00"
 eventType: after-work
 location: Münchner Tierpark · Tierparkstraße 30, 81543 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud/cover.jpg
 displaySections:
   - regular
-  - hero
-  - upcoming
 maxParticipants: 15
 distanceKm: 42
 routeKomootUrl: https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
-status: draft
+status: published
 ACCOfficialRide: true
 recurring:
   paused: true
@@ -28,59 +27,20 @@ recurring:
   registrationDeadlineHoursBefore: 2
 ---
 
-Komm nach der Arbeit mit auf eine entspannte Runde durch den Münchner Süden.
+## Winterpause · Anmeldung geschlossen
 
-Diese **After-Work Social Ride** richtet sich an alle, die nach der Arbeit noch locker fahren, frische Luft schnappen und gemeinsam mit ACC eine angenehme Abendrunde drehen möchten. Das Tempo ist freundlich, aber grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt.
+Vom Saisonauftakt im April bis zu den letzten Herbstausfahrten: Die ACC-Radsaison 2026 geht zu Ende. Wir haben **67 Veranstaltungen** organisiert, von denen **57 stattgefunden haben**, mit insgesamt mehr als **260 Teilnahmen** — von entspannten Seerunden und zweimal wöchentlichen After-Work-Ausfahrten bis zu Epic Rides in den Bergen und dem Eaglet-Trainingscamp.
 
-Treffpunkt ist um **17:50 Uhr** beim **Münchner Tierpark · Tierparkstraße 30, 81543 München**, die **pünktliche Abfahrt ist um 18:00 Uhr**. Die Details zur Strecke findest du im Komoot-Link. Die Strecke ist ca. **42 km** lang mit ca. **320 hm**; die Rückkehr zum Startpunkt ist gegen **20:00 Uhr** geplant.
+Beim After Work bleiben uns vor allem die ganz normalen Feierabende in Erinnerung: den Laptop zuklappen, ins Radtrikot wechseln und am Treffpunkt bekannte Gesichter sehen; gemeinsam im Abendwind fahren, miteinander reden und den Arbeitstag hinter sich lassen. Danke an alle, die dabei waren und aufeinander geachtet haben, und an unsere Ride-Leitung für die Begleitung Woche für Woche. **Ihr habt diese Feierabendstunden zu schönen Erinnerungen an unsere Saison gemacht.**
 
----
+Der Winter rückt näher. Es wird kälter, die Straßen sind häufiger feucht und es wird viel früher dunkel. Licht und Straßenverhältnisse nach Feierabend eignen sich damit nicht mehr für unsere gemeinsamen Ausfahrten. **Die After-Work-Runden Nord und Süd gehen deshalb in die Winterpause. Die Anmeldung ist geschlossen, und wir verabschieden die ACC-Radsaison 2026.**
 
-|                | Infos |
-| -------------- | ----- |
-| **Zeit**       | Treffen um 17:50 Uhr · Pünktliche Abfahrt um 18:00 Uhr · Rückkehr voraussichtlich gegen 20:00 Uhr |
-| **Treffpunkt** | Münchner Tierpark · Tierparkstraße 30, 81543 München |
-| **Strecke**    | Ca. **42 km / 320 hm** · Bitte dem Komoot-Routenlink folgen |
-| **Tempo**      | Entspannte Social Ride; grundlegende Erfahrung auf dem Rennrad wird vorausgesetzt |
-| **Radtyp**     | Rennrad oder Gravelbike empfohlen |
-| **Hinweise**   | Bitte Helm und grundlegende Verpflegung mitbringen; bitte prüfe dein Rad vorab; bitte pünktlich sein; entscheide selbst, ob Tempo und Strecke zu dir passen; bei schlechtem Wetter oder wenn sich außer dem Ride Leader weniger als 2 Personen anmelden, wird die Ausfahrt automatisch abgesagt |
-| **Teilnehmerzahl** | Begrenzt auf 15 Personen |
+Danke an alle neuen und vertrauten Gesichter, die in diesem Jahr mit uns unterwegs waren. Den Abendwind, das Lachen und die gemeinsamen Kilometer nehmen wir mit in den Winter. Wenn der Frühling zurückkommt, freuen wir uns aufs Wiedersehen auf dem Rad.
 
----
+**Bis 2027!** Den Saisonstart und die Wiederöffnung der Anmeldung geben wir bekannt, sobald die Termine feststehen.
 
-### Zur Ausfahrt
+### Strecken und Kontakt
 
-Diese Runde ist nicht als hartes Training gedacht. Im Mittelpunkt steht eine entspannte **After-Work-Ausfahrt**: gemeinsam fahren, nach dem Arbeitstag abschalten und mit anderen ACC-Fahrer:innen unterwegs sein.
+[Strecke ansehen](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
 
-Alle Radsportbegeisterten sind willkommen. Wenn du dich mit dem angegebenen Tempo wohlfühlst, fahr gerne mit.
-
----
-
-### Logistics
-
-Die Runde endet voraussichtlich gegen **20:00 Uhr wieder am Startpunkt** und eignet sich damit gut für eine Feierabend-Ausfahrt unter der Woche.
-
----
-
-### Anmeldung
-
-Wenn du an dieser Ausfahrt teilnehmen möchtest, melde dich bitte unbedingt **über die auf der Event-Seite angegebene E-Mail-Adresse** an.  
-Nur so können wir Anwesenheit und Teilnahme korrekt dokumentieren; falls später ein Nachweis für Versicherung oder Teilnahme erforderlich ist, gelten **Anmeldedatensatz und Sign-in-Datensatz** als Grundlage.
-
-Bitte scanne den QR-Code unten und füge **Ronnie**, die Ride-Leitung der Südrunde, bei WeChat hinzu. Schreibe „South After Work“ in die Freundschaftsanfrage. Ronnie fügt Teilnehmende anschließend zur Event-Gruppe hinzu, in der Treffpunktdetails, Streckenhinweise und kurzfristige Änderungen geteilt werden.
-
-Das Hinzufügen der Ride-Leitung bzw. der Beitritt zur Event-Gruppe dient nur der Kommunikation. Es **gilt nicht als erfolgreiche Anmeldung** und ersetzt die E-Mail-Anmeldung nicht.
-
----
-
-### Ride-Leitung der Südrunde bei WeChat hinzufügen
-
-![WeChat-QR-Code von Ronnie, Ride-Leitung der Südrunde](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
-
----
-
-### Streckenübersicht
-
-- **Komoot-Route:** [Route ansehen](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
-
-<iframe src="https://www.komoot.com/tour/2901905197/embed?profile=1&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+![WeChat-QR-Code der Ride-Leitung](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)

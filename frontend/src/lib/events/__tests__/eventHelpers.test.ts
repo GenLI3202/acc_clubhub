@@ -4,6 +4,7 @@ import {
   getTodayAtMidnight,
   getRegulars,
   isEventInSection,
+  splitEvents,
   type EventSection,
 } from '../eventHelpers';
 
@@ -15,6 +16,25 @@ type MockEvent = {
 };
 
 describe('event section helpers', () => {
+  it('keeps paused regulars visible without listing a next ride or a past event', () => {
+    const paused_event = {
+      data: {
+        date: '2026-06-04T16:00:00Z',
+        displaySections: ['regular'] as EventSection[],
+        recurring: { paused: true },
+      },
+    } as Parameters<typeof splitEvents>[0][number];
+
+    for (const date of ['2026-10-08T12:00:00Z', '2027-04-01T12:00:00Z']) {
+      const { upcoming, past, paused } = splitEvents(
+        [paused_event], new Date(date),
+      );
+      expect(upcoming).toEqual([]);
+      expect(past).toEqual([]);
+      expect(getRegulars([...upcoming, ...paused])).toEqual([paused_event]);
+    }
+  });
+
   it('uses Munich midnight for event day boundaries in summer and winter', () => {
     expect(getTodayAtMidnight(new Date('2026-09-05T22:30:00Z')).toISOString())
       .toBe('2026-09-05T22:00:00.000Z');

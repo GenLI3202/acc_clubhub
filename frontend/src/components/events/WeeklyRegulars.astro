@@ -11,6 +11,14 @@ const { events, lang } = Astro.props;
 
 const heading = lang === 'zh' ? '固定活动' : lang === 'de' ? 'Regelmäßige Ausfahrten' : 'Weekly Regulars';
 const badge = lang === 'zh' ? '每周' : lang === 'de' ? 'Wöchentlich' : 'Weekly';
+const paused_badge = {
+  zh: '冬季休赛', en: 'Winter break', de: 'Winterpause',
+}[lang];
+const closed_label = {
+  zh: '报名已关闭 · 期待 2027 年再会',
+  en: 'Registration closed · See you in 2027',
+  de: 'Anmeldung geschlossen · Bis 2027',
+}[lang];
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -28,10 +36,16 @@ function formatDate(dateStr: string): string {
       {events.map((event) => {
         return (
           <a href={`/${lang}/events/${event.data.slug}`} class="regular-row">
-            <span class="regular-badge">{badge}</span>
+            <span class="regular-badge">
+              {event.data.recurring?.paused ? paused_badge : badge}
+            </span>
             <div class="regular-info">
               <span class="regular-title">{event.data.title}</span>
-              <span class="regular-meta">{formatDate(event.data.date)} · {event.data.location}</span>
+              <span class="regular-meta">
+                {event.data.recurring?.paused
+                  ? closed_label
+                  : `${formatDate(event.data.date)} · ${event.data.location}`}
+              </span>
             </div>
             <span class="regular-arrow">→</span>
           </a>

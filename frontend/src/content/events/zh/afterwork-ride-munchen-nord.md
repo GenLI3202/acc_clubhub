@@ -1,22 +1,21 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: 周四 18:00 从 OEZ 出发，北线 afterwork 公路轻松骑，全程约 47.4 km，累计爬升约 110 m，预计骑行约 1 小时 49 分。
+description: 2026 赛季结束，南北线 After Work 进入冬季休赛，报名已关闭。感谢一路同行，期待 2027 年再会！
 date: 2026-06-04 18:00
+registrationDeadline: "2026-10-03T00:00:00+02:00"
 eventType: after-work
 location: OEZ Decathlon, Pelkovenstrasse 143, 80992 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
   - regular
-  - hero
-  - upcoming
 maxParticipants: 15
 distanceKm: 47.4
 routeKomootUrl: https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
-status: draft
+status: published
 ACCOfficialRide: true
 recurring:
   paused: true
@@ -30,61 +29,20 @@ recurring:
     "2026-07-16": "2026-07-16T19:00:00+02:00"
 ---
 
-周四来一条北线轻松 Afterwork。
+## 冬季休赛 · 报名已关闭
 
-这是一条**从 OEZ 出发的慕尼黑北部 afterwork 公路路线**。整体爬升不多，节奏友好，适合工作日傍晚出来骑一圈、透口气，也和 ACC 大家一起轻松活动一下。
+从 4 月的开季骑到现在，ACC 2026 骑行季走到了尾声。这个赛季，我们一共组织了 **67 场**活动，其中 **57 场**顺利成行；从湖边的休闲骑、每周两次的 After Work，到翻山越岭的 Epic Ride 和 Eaglet 训练营，累计有 **260 多人次**的小伙伴参与其中。
 
-我们将于**周四 18:00**在 **OEZ Decathlon, Pelkovenstrasse 143, 80992 München** 集合并出发。全程约 **47.4 km**，累计爬升约 **110 m**，Komoot 预计骑行时间约 **1 小时 49 分**，预计均速约 **26 km/h**。
+对 After Work 来说，最珍贵的是那些平常的工作日傍晚：合上电脑、换上骑行服，在集合点见到熟悉的面孔；一起迎着晚风骑一圈，边骑边聊，把一天工作的疲惫留在身后。谢谢每一位准时赶来、照应同伴的骑友，也谢谢领骑们一周又一周的陪伴。**是大家让这些下班后的时光，变成了这个赛季值得回味的记忆。**
 
-***
+随着冬天临近，天气转凉，路面更容易潮湿，天也黑得越来越早。工作日下班后的光照与路况，已经不再适合我们继续组织 After Work 骑行。因此，**南北两条 After Work 正式进入冬季休赛，停止报名，也为 ACC 2026 骑行季画上句号。**
 
-|  | 信息 |
-| --- | --- |
-| **时间** | 周四 18:00 集合并出发 |
-| **集合地点** | OEZ Decathlon, Pelkovenstrasse 143, 80992 München |
-| **路线** | 全程约 47.4 km，累计爬升约 110 m，预计骑行时间约 1 小时 49 分 |
-| **配速** | Komoot 预计均速约 26 km/h |
-| **骑行时长** | 约 1 小时 49 分 |
-| **适合车辆** | 建议使用 road bike 或 gravel bike |
-| **注意事项** | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线；如遇恶劣天气，或除领骑外报名人数不足 2 人，活动将自动取消 |
-| **人数上限** | 15 人 |
+感谢这一季一路同行的每一位新朋友、老朋友。先把这些晚风、笑声和并肩骑行的画面好好收起来，等春天回来，再一起出发。
 
-***
+**期待和大家 2027 年再会！** 新赛季开骑与报名恢复安排，会在确定后公布。
 
-### 集合地点
+### 路线与骑友联系
 
-- OEZ Decathlon, Pelkovenstrasse 143, 80992 München
+[查看路线](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
 
-### 路线
-
-- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
-
-<iframe src="https://www.komoot.com/tour/3074710714/embed?profile=1&share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
-
-### 活动说明
-
-这条线更适合稳定、轻松的工作日晚间骑行，不是训练拉爆型路线。
-如果你想和大家一起从 OEZ 出发骑一圈北线，这条会很合适。
-
-***
-
-### 返程 / Logistics
-
-本次路线预计在 **1 小时 50 分左右回到起点**，适合下班后直接参加，当晚正常返回。
-
-***
-
-### 报名
-
-如果你想参加本次活动，请务必通过**活动页提供的邮箱完成报名**。  
-这样我们才能做好签到和参与统计；如后续涉及保险或活动参与核对，也会以**报名记录和签到记录**作为依据。
-
-请扫描下方二维码添加北线领骑**大树**的微信，并备注“北线 After Work”。大树会将参与者拉入活动群，方便接收集合、路况和当天临时调整。
-
-添加领骑微信或进入活动群仅用于活动沟通，**不等于报名成功**，也不能替代邮件报名。
-
-***
-
-### 添加北线领骑微信
-
-![大树（北线领骑）微信二维码](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+![领骑微信二维码](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)

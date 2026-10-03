@@ -18,16 +18,24 @@ export function getTodayAtMidnight(now: Date = new Date()): Date {
   return parse_event_datetime(`${departure_day(now.toISOString())} 00:00`);
 }
 
-export function splitEvents(events: EventEntry[]): { upcoming: EventEntry[]; past: EventEntry[] } {
-  const today = getTodayAtMidnight();
+export function splitEvents(
+  events: EventEntry[],
+  now: Date = new Date(),
+): { upcoming: EventEntry[]; past: EventEntry[]; paused: EventEntry[] } {
+  const today = getTodayAtMidnight(now);
   const upcoming: EventEntry[] = [];
   const past: EventEntry[] = [];
+  const paused: EventEntry[] = [];
   for (const e of events) {
+    if (e.data.recurring?.paused === true) {
+      paused.push(e);
+      continue;
+    }
     (new Date(e.data.date) >= today ? upcoming : past).push(e);
   }
   upcoming.sort((a, b) => new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf());
   past.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
-  return { upcoming, past };
+  return { upcoming, past, paused };
 }
 
 export function getEventDisplaySections(event: EventWithSections): EventSection[] {

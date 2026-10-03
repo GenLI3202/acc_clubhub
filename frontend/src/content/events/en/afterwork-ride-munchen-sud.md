@@ -1,22 +1,21 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: Weekly relaxed social after-work ride every Tuesday with meet-up at 17:50 and rollout at 18:00, starting from Munich Zoo in München Süd.
+description: The 2026 season has ended. Both After Work rides are on winter break and registration is closed. Thank you for riding with us — see you in 2027!
 date: 2026-05-05 17:50
+registrationDeadline: "2026-10-03T00:00:00+02:00"
 eventType: after-work
 location: Munich Zoo · Tierparkstraße 30, 81543 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud/cover.jpg
 displaySections:
   - regular
-  - hero
-  - upcoming
 maxParticipants: 15
 distanceKm: 42
 routeKomootUrl: https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
-status: draft
+status: published
 ACCOfficialRide: true
 recurring:
   paused: true
@@ -28,59 +27,20 @@ recurring:
   registrationDeadlineHoursBefore: 2
 ---
 
-Join us for a relaxed ride through München Süd after work.
+## Winter break · Registration closed
 
-This is an **after-work social ride** for riders who want to get some fresh air, spin their legs after work, and enjoy an easy evening ride with ACC. The pace is friendly, but participants should be comfortable with basic road riding.
+From our season opener in April to these final autumn rides, the ACC 2026 cycling season is coming to an end. We organised **67 events**, of which **57 went ahead**, bringing together more than **260 rider participations**: relaxed lakeside rides, twice-weekly After Work outings, mountain Epic Rides and the Eaglet training camp.
 
-We will meet at **17:50** at **Munich Zoo · Tierparkstraße 30, 81543 München**, with a **prompt rollout at 18:00**. Please follow the Komoot link for the route details. The route is about **42 km** with about **320 m** of climbing, and we expect to return to the starting point at around **20:00**.
+For After Work, the memories are in those ordinary weekday evenings: closing the laptop, changing into cycling kit and meeting familiar faces at the start; sharing a ride in the evening breeze, catching up and leaving the working day behind. Thank you to every rider who turned up and looked out for others, and to our ride leaders for being there week after week. **You made those after-work hours a part of the season we will remember.**
 
-***
+As winter approaches, temperatures are falling, roads are more often damp and darkness arrives much earlier. The light and road conditions after work are no longer suitable for our weekday rides. **Both the North and South After Work rides are now on winter break, registration is closed, and we mark the end of the ACC 2026 cycling season.**
 
-|  | Details |
-| --- | --- |
-| **Time** | Meet-up at 17:50 · Rollout at 18:00 sharp · Expected return around 20:00 |
-| **Meeting point** | Munich Zoo · Tierparkstraße 30, 81543 München |
-| **Route** | Approx. **42 km / 320 m climbing** · Please follow the Komoot route link |
-| **Pace** | Relaxed social ride; basic road-riding ability required |
-| **Bike type** | Road bike or gravel bike recommended |
-| **Notes** | Please bring a helmet and basic supplies; make sure your bike is in good condition; please arrive on time; decide based on your own condition whether this pace and route suit you; the ride will be automatically cancelled in case of severe weather or if fewer than 2 participants register, excluding the ride leader |
-| **Capacity** | Limited to 15 riders |
+Thank you to every new and familiar friend who shared the road with us this year. We will carry the evening breeze, the laughter and the miles together into the winter, and look forward to riding together when spring returns.
 
-***
+**See you in 2027!** We will announce the new season and reopening of registration once the plans are confirmed.
 
-### About the ride
+### Routes and rider contacts
 
-This is not designed as a hard training ride. The idea is to enjoy an easy **after-work ride**, relax a bit after the workday, and ride together with other ACC cyclists.
+[View the route](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
 
-All cycling enthusiasts are welcome. If you are comfortable with the expected pace, feel free to join.
-
-***
-
-### Logistics
-
-The ride is expected to return to the starting point at around **20:00**, which makes it suitable for a weekday evening outing after work.
-
-***
-
-### Join
-
-If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
-This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
-
-Please scan the QR code below to add **Ronnie**, the South ride leader, on WeChat. Include “South After Work” in your friend request. Ronnie will add participants to the event group for meeting details, route conditions, and same-day updates.
-
-Adding the ride leader or joining the event group is for ride communication only. It **does not count as a successful registration** and cannot replace email registration.
-
-***
-
-### Add the South Ride Leader on WeChat
-
-![WeChat QR code for Ronnie, the South ride leader](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
-
-***
-
-### Route Preview
-
-- **Komoot route:** [View route](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
-
-<iframe src="https://www.komoot.com/tour/2901905197/embed?profile=1&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
+![Ride leader WeChat QR code](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)

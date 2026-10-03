@@ -1,22 +1,21 @@
 ---
 slug: afterwork-ride-Munich-South
 title: ACC After Work Ride · München Süd
-description: 每周二下班后 17:50 集合、18:00 从慕尼黑动物园出发的慕尼黑南区轻松社交骑行。
+description: 2026 赛季结束，南北线 After Work 进入冬季休赛，报名已关闭。感谢一路同行，期待 2027 年再会！
 date: 2026-05-05 17:50
+registrationDeadline: "2026-10-03T00:00:00+02:00"
 eventType: after-work
 location: 慕尼黑动物园 · Tierparkstraße 30, 81543 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-sud/cover.jpg
 displaySections:
   - regular
-  - hero
-  - upcoming
 maxParticipants: 15
 distanceKm: 42
 routeKomootUrl: https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
-status: draft
+status: published
 ACCOfficialRide: true
 recurring:
   paused: true
@@ -28,60 +27,20 @@ recurring:
   registrationDeadlineHoursBefore: 2
 ---
 
-下班后，一起去 München Süd 轻松骑一圈。
+## 冬季休赛 · 报名已关闭
 
-这是一场以 **after-work 社交休闲骑** 为主的路线，适合想在工作日傍晚出来透透气、活动一下，也和 ACC 车友一起骑车的人。整体节奏友好，但默认参加者具备基础公路骑行能力。
+从 4 月的开季骑到现在，ACC 2026 骑行季走到了尾声。这个赛季，我们一共组织了 **67 场**活动，其中 **57 场**顺利成行；从湖边的休闲骑、每周两次的 After Work，到翻山越岭的 Epic Ride 和 Eaglet 训练营，累计有 **260 多人次**的小伙伴参与其中。
 
-我们将于 **17:50** 在 **慕尼黑动物园 · Tierparkstraße 30, 81543 München** 集合，**18:00 准时出发**。路线以 Komoot 链接为准，全程约 **42 km**，累计爬升约 **320 m**，预计 **20:00 左右回到起点**。
+对 After Work 来说，最珍贵的是那些平常的工作日傍晚：合上电脑、换上骑行服，在集合点见到熟悉的面孔；一起迎着晚风骑一圈，边骑边聊，把一天工作的疲惫留在身后。谢谢每一位准时赶来、照应同伴的骑友，也谢谢领骑们一周又一周的陪伴。**是大家让这些下班后的时光，变成了这个赛季值得回味的记忆。**
 
-***
+随着冬天临近，天气转凉，路面更容易潮湿，天也黑得越来越早。工作日下班后的光照与路况，已经不再适合我们继续组织 After Work 骑行。因此，**南北两条 After Work 正式进入冬季休赛，停止报名，也为 ACC 2026 骑行季画上句号。**
 
-|  | 信息 |
-| --- | --- |
-| **时间** | 17:50 集合，18:00 准时发车，预计 20:00 回到起点 |
-| **集合地点** | 慕尼黑动物园 · Tierparkstraße 30, 81543 München |
-| **路线** | 约 **42 km / 320 m 爬升**，以 Komoot 路线链接为准 |
-| **强度** | 偏轻松社交骑，但需具备基础骑行能力 |
-| **适合车辆** | 建议使用 road bike 或 gravel bike |
-| **注意事项** | 请自备头盔与基础补给；请确认车辆状态良好；请准时到达，活动将按时出发；请根据自身状态判断是否适合本次配速与路线；如遇恶劣天气，或除领骑外报名人数不足 2 人，活动将自动取消 |
-| **人数限制** | 限 15 人 |
+感谢这一季一路同行的每一位新朋友、老朋友。先把这些晚风、笑声和并肩骑行的画面好好收起来，等春天回来，再一起出发。
 
-***
+**期待和大家 2027 年再会！** 新赛季开骑与报名恢复安排，会在确定后公布。
 
-### 路线预览
+### 路线与骑友联系
 
-- **Komoot 路线**：[查看路线](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
+[查看路线](https://www.komoot.com/tour/2901905197?ref=itd&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604&ref=its&t_s=referral&t_cid=route_share&t_ref_username=2285951965613)
 
-<iframe src="https://www.komoot.com/tour/2901905197/embed?profile=1&share_token=ayPDsqhyXUcwfhGDjb5KFl70WF1pLlaVhmNN0EjYdKG9Q29604" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
-
-### 活动说明
-
-这次活动不是训练刷强度导向，更偏向 **下班后一起骑、一起放松、顺便社交** 的节奏。
-如果你想在周二傍晚用一条不算太长、但足够舒服的路线结束一天工作，这条会很合适。
-
-欢迎所有骑行爱好者参加。如果你能适应上述配速，也欢迎加入这次 after work ride。
-
-***
-
-### 返程 / Logistics
-
-本次路线预计于 **20:00 左右回到起点**，结束位置与集合点一致，适合下班后参与并在当天晚间返回。
-
-***
-
-### 报名 / Join
-
-如果你想参加本次活动，请务必通过**活动页提供的邮箱完成报名**。  
-这样我们才能做好签到和参与统计；如后续涉及保险或活动参与核对，也会以**报名记录和签到记录**作为依据。
-
-请扫描下方二维码添加南线领骑 **Ronnie** 的微信，并备注“南线 After Work”。Ronnie 会将参与者拉入活动群，方便接收集合、路况和当天临时调整。
-
-添加领骑微信或进入活动群仅用于活动沟通，**不等于报名成功**，也不能替代邮件报名。
-
-***
-
-### 添加南线领骑微信
-
-![Ronnie（南线领骑）微信二维码](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)
-
-***
+![领骑微信二维码](/images/events/acc-after-work-ride-munchen-sud/wechat-qr.png)

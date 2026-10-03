@@ -1,22 +1,21 @@
 ---
 slug: afterwork-ride-Munich-North
 title: ACC North Afterwork Ride
-description: Thursday afterwork ride starting from OEZ at 18:00, following a relaxed 47.4 km road route through Munich North with about 110 m of climbing and 1h 49m estimated ride time.
+description: The 2026 season has ended. Both After Work rides are on winter break and registration is closed. Thank you for riding with us — see you in 2027!
 date: 2026-06-04 18:00
+registrationDeadline: "2026-10-03T00:00:00+02:00"
 eventType: after-work
 location: OEZ Decathlon, Pelkovenstrasse 143, 80992 München
 author: ACC Club
 cover: /images/events/acc-after-work-ride-munchen-nord/cover.jpg
 displaySections:
   - regular
-  - hero
-  - upcoming
 maxParticipants: 15
 distanceKm: 47.4
 routeKomootUrl: https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
-status: draft
+status: published
 ACCOfficialRide: true
 recurring:
   paused: true
@@ -30,61 +29,20 @@ recurring:
     "2026-07-16": "2026-07-16T19:00:00+02:00"
 ---
 
-Join us on Thursday for an ACC North Afterwork Ride.
+## Winter break · Registration closed
 
-This is a **relaxed afterwork road route starting from OEZ** and heading through Munich North. The climbing is modest, the pace is friendly, and the route is suited to a steady weekday evening ride with the ACC crew.
+From our season opener in April to these final autumn rides, the ACC 2026 cycling season is coming to an end. We organised **67 events**, of which **57 went ahead**, bringing together more than **260 rider participations**: relaxed lakeside rides, twice-weekly After Work outings, mountain Epic Rides and the Eaglet training camp.
 
-We meet and roll out at **18:00 on Thursday** from **OEZ Decathlon, Pelkovenstrasse 143, 80992 München**. The route is about **47.4 km** with about **110 m** of climbing, and Komoot estimates a riding time of about **1 h 49 min**. Expected average speed is around **26 km/h**.
+For After Work, the memories are in those ordinary weekday evenings: closing the laptop, changing into cycling kit and meeting familiar faces at the start; sharing a ride in the evening breeze, catching up and leaving the working day behind. Thank you to every rider who turned up and looked out for others, and to our ride leaders for being there week after week. **You made those after-work hours a part of the season we will remember.**
 
-***
+As winter approaches, temperatures are falling, roads are more often damp and darkness arrives much earlier. The light and road conditions after work are no longer suitable for our weekday rides. **Both the North and South After Work rides are now on winter break, registration is closed, and we mark the end of the ACC 2026 cycling season.**
 
-|  | Details |
-| --- | --- |
-| **Time** | Thursday · Meet and roll out at 18:00 |
-| **Meeting point** | OEZ Decathlon, Pelkovenstrasse 143, 80992 München |
-| **Route** | Approx. 47.4 km · Approx. 110 m climbing · Estimated riding time 1 h 49 min |
-| **Pace** | Komoot estimate: about 26 km/h average speed |
-| **Ride time** | About 1 h 49 min |
-| **Bike type** | Road bike or gravel bike recommended |
-| **Notes** | Please bring a helmet and basic supplies; make sure your bike is in good condition; please arrive on time; decide based on your own condition whether this pace and route suit you; the ride will be automatically cancelled in case of severe weather or if fewer than 2 participants register, excluding the ride leader |
-| **Capacity** | Limited to 15 riders |
+Thank you to every new and familiar friend who shared the road with us this year. We will carry the evening breeze, the laughter and the miles together into the winter, and look forward to riding together when spring returns.
 
-***
+**See you in 2027!** We will announce the new season and reopening of registration once the plans are confirmed.
 
-### Meeting point
+### Routes and rider contacts
 
-- OEZ Decathlon, Pelkovenstrasse 143, 80992 München
+[View the route](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
 
-### Route
-
-- **Komoot route:** [View route](https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V)
-
-<iframe src="https://www.komoot.com/tour/3074710714/embed?profile=1&share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
-
-### About the ride
-
-This route is meant to be a steady weekday spin rather than a hard training session.
-If you want to ride a relaxed north route from OEZ with the ACC crew, this is a good fit.
-
-***
-
-### Logistics
-
-The route is expected to return to the starting point after about **1 h 50 min**, making it a good weekday evening ride after work.
-
-***
-
-### Registration
-
-If you would like to join this ride, please make sure to **register via the email address provided on the event page**.  
-This is necessary so we can keep proper sign-in and participation records; if insurance or ride participation verification is needed later, we will use the **registration record and sign-in record** as the basis.
-
-Please scan the QR code below to add **Dashu (大树)**, the North ride leader, on WeChat. Include “North After Work” in your friend request. Dashu will add participants to the event group for meeting details, route conditions, and same-day updates.
-
-Adding the ride leader or joining the event group is for ride communication only. It **does not count as a successful registration** and cannot replace email registration.
-
-***
-
-### Add the North Ride Leader on WeChat
-
-![WeChat QR code for Dashu, the North ride leader](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
+![Ride leader WeChat QR code](/images/events/acc-after-work-ride-munchen-nord/wechat-qr.png)
