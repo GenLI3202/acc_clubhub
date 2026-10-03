@@ -16,9 +16,10 @@ distanceKm: 47.4
 routeKomootUrl: https://www.komoot.com/tour/3074710714?share_token=aeZsLuIziu0gnH7eP0Hao3qqbggudrMKNPR0DHfcyixcQqLJ9V
 registrationLink: ''
 wechatQrCode: /images/events/acc-after-work-ride-munchen-nord/wechat-qr.png
-status: published
+status: draft
 ACCOfficialRide: true
 recurring:
+  paused: true
   frequency: weekly
   intervalWeeks: 1
   timezone: Europe/Berlin

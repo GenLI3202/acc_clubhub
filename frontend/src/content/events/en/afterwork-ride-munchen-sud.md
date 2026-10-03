@@ -19,6 +19,7 @@ wechatQrCode: /images/events/acc-after-work-ride-munchen-sud/wechat-qr.png
 status: draft
 ACCOfficialRide: true
 recurring:
+  paused: true
   frequency: weekly
   intervalWeeks: 1
   timezone: Europe/Berlin
