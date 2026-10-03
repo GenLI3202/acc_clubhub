@@ -11,6 +11,9 @@
 
 ## Recent Updates
 
+- [X] **收官骑报名截止时间调整** (2026-10-03)
+  - [X] 中英德三语活动配置设为慕尼黑时间 10 月 4 日 08:30 截止报名，即 09:30 出发前 1 小时。
+
 - [X] **10 月 4 日 ACC 2026 收官骑** (2026-09-29)
   - [X] 发布中英德三语活动页：09:30 从 Parkplatz Untergiesing-Harlaching 出发，56.4 km / 410 m，途中 Café Golkofer 咖啡蛋糕休息；使用用户提供的贴纸照片作封面，并加入首页与活动页 hero。
   - [X] 周二 After Work（München Süd）三语页面设为 draft，暂时从官网隐藏，2027 年开春改回 published 恢复。
