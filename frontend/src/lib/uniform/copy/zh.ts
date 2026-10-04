@@ -175,12 +175,11 @@ export const zh: UniformCopy = {
 
     form: {
         title: '提交订单表单',
-        intro: '订单信息已经自动填入下面的表单。请补充联系方式，并上传付款截图。',
+        intro: '订单信息会自动填入订购表单。请在表单里补充联系方式，并上传付款截图。',
         signInNote:
             '上传截图需要登录 Google 账号。无法登录时（例如在中国大陆），请把付款截图和订单号发给工作人员的微信或邮箱。',
-        openNewTab: '在新标签页中打开表单',
+        openNewTab: '打开订购表单',
         comingSoon: '订购表单正在准备中，请稍后再来。',
-        iframeTitle: 'ACC 2026 队服订购表单',
     },
 
     sizes: {

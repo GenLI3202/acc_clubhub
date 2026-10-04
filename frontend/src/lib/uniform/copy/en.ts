@@ -175,12 +175,11 @@ export const en: UniformCopy = {
 
     form: {
         title: 'Submit your order form',
-        intro: 'Your order is already filled in below. Add your contact details and upload your payment screenshot.',
+        intro: 'Your order is filled in for you when the form opens. Add your contact details there and upload your payment screenshot.',
         signInNote:
             'Uploading a screenshot requires a Google account. If you cannot sign in (for example in mainland China), send the screenshot and your order code to our team on WeChat or by email.',
-        openNewTab: 'Open the form in a new tab',
+        openNewTab: 'Open the order form',
         comingSoon: 'The order form is being prepared. Please check back shortly.',
-        iframeTitle: 'ACC 2026 kit order form',
     },
 
     sizes: {

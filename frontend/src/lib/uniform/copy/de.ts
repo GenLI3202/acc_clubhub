@@ -175,12 +175,11 @@ export const de: UniformCopy = {
 
     form: {
         title: 'Bestellformular absenden',
-        intro: 'Deine Bestellung ist unten bereits eingetragen. Ergänze deine Kontaktdaten und lade deinen Zahlungsnachweis hoch.',
+        intro: 'Deine Bestellung ist beim Öffnen des Formulars bereits eingetragen. Ergänze dort deine Kontaktdaten und lade deinen Zahlungsnachweis hoch.',
         signInNote:
             'Für den Upload eines Screenshots brauchst du ein Google-Konto. Wenn du dich nicht anmelden kannst (zum Beispiel in Festlandchina), schicke Screenshot und Bestellcode per WeChat oder E-Mail an unser Team.',
-        openNewTab: 'Formular in neuem Tab öffnen',
+        openNewTab: 'Bestellformular öffnen',
         comingSoon: 'Das Bestellformular wird gerade vorbereitet. Bitte schau in Kürze wieder vorbei.',
-        iframeTitle: 'ACC Kit 2026 Bestellformular',
     },
 
     sizes: {

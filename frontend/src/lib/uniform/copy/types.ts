@@ -130,7 +130,6 @@ export interface UniformCopy {
         readonly signInNote: string;
         readonly openNewTab: string;
         readonly comingSoon: string;
-        readonly iframeTitle: string;
     };
 
     readonly sizes: {

@@ -72,7 +72,6 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
 
     const config = isFormConfigured(FORM_CONFIG) ? FORM_CONFIG : null;
     const orderForForm = { code, lines: order.lines, membership, currency };
-    const embedUrl = config && code ? buildPrefillUrl(config, orderForForm, { embedded: true }) : null;
     const openUrl = config && code ? buildPrefillUrl(config, orderForForm) : null;
 
     return (
@@ -145,17 +144,10 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                     {form.title}
                 </h3>
 
-                {embedUrl && openUrl ? (
+                {openUrl ? (
                     <>
                         <p class="kit-lede">{form.intro}</p>
-                        <iframe
-                            class="kit-iframe"
-                            src={embedUrl}
-                            title={form.iframeTitle}
-                            loading="lazy"
-                            referrerpolicy="no-referrer"
-                        />
-                        <a class="kit-btn kit-btn--outline" href={openUrl} target="_blank" rel="noopener noreferrer">
+                        <a class="kit-btn kit-btn--solid" href={openUrl} target="_blank" rel="noopener noreferrer">
                             {form.openNewTab}
                         </a>
                     </>

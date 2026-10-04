@@ -95,14 +95,6 @@ describe('buildPrefillUrl', () => {
         expect(url.searchParams.get('entry.666')).toBe('非会员 Non-member');
     });
 
-    it('adds embedded=true only when asked', () => {
-        const order = { code: 'ACC26-ABCD', lines, membership: 'member', currency: 'EUR' } as const;
-        expect(new URL(buildPrefillUrl(config, order)).searchParams.has('embedded')).toBe(false);
-        expect(
-            new URL(buildPrefillUrl(config, order, { embedded: true })).searchParams.get('embedded'),
-        ).toBe('true');
-    });
-
     it('refuses an empty order', () => {
         expect(() =>
             buildPrefillUrl(config, {

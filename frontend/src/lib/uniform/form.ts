@@ -50,12 +50,13 @@ const FORM_ENTRIES: FormConfig['entries'] = {
 };
 
 /**
- * The form's public responder link, `https://docs.google.com/forms/d/e/<id>/viewform`.
- * It only exists once the form is published (Forms > Publish): paste it here.
- * While this is null the order page keeps checkout locked in production and
- * shows a "form being prepared" notice.
+ * The form's public responder link, `https://docs.google.com/forms/d/e/<id>/viewform`
+ * (it exists once the form is published). Set this back to null to put
+ * checkout on hold: the order page then locks "pay" in production and shows
+ * a "form being prepared" notice.
  */
-const FORM_VIEWFORM_URL: string | null = null;
+const FORM_VIEWFORM_URL: string | null =
+    'https://docs.google.com/forms/d/e/1FAIpQLSeJNy9Xupq8tcjuVrprbjASzmNwdmHM6UGMxOD0si4egvOTPw/viewform';
 
 export const FORM_CONFIG: FormConfig | null = FORM_VIEWFORM_URL
     ? { viewformUrl: FORM_VIEWFORM_URL, entries: FORM_ENTRIES }
@@ -68,11 +69,13 @@ export function isFormConfigured(config: FormConfig | null): config is FormConfi
     return Object.values(config.entries).every((id) => /^\d+$/.test(id));
 }
 
-export function buildPrefillUrl(
-    config: FormConfig,
-    order: PrefillOrder,
-    options: { embedded?: boolean } = {},
-): string {
+/**
+ * Link that opens the Form with the order already filled in. It opens in its
+ * own tab: a Form with a file upload cannot be embedded in a page (Google
+ * shows only a title card and a "Fill out form" button instead of the
+ * questions), and the upload needs a Google sign-in anyway.
+ */
+export function buildPrefillUrl(config: FormConfig, order: PrefillOrder): string {
     if (order.lines.length === 0) {
         throw new RangeError('Cannot pre-fill the form for an empty order');
     }
@@ -90,6 +93,5 @@ export function buildPrefillUrl(
     for (const field of Object.keys(values) as FormField[]) {
         params.set(`entry.${config.entries[field]}`, values[field]);
     }
-    if (options.embedded) params.set('embedded', 'true');
     return `${config.viewformUrl}?${params.toString()}`;
 }
