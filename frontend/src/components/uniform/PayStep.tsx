@@ -26,22 +26,26 @@ async function copyText(value: string): Promise<boolean> {
     }
 }
 
-function CopyButton({ value, copy }: { value: string; copy: UniformCopy['pay'] }) {
-    const [done, setDone] = useState(false);
+function CopyButton({ value, label, copy }: { value: string; label: string; copy: UniformCopy['pay'] }) {
+    const [result, setResult] = useState<'idle' | 'done' | 'failed'>('idle');
     const timer = useRef<number>();
     useEffect(() => () => window.clearTimeout(timer.current), []);
 
     async function onClick() {
-        if (!(await copyText(value))) return;
-        setDone(true);
+        setResult((await copyText(value)) ? 'done' : 'failed');
         window.clearTimeout(timer.current);
-        timer.current = window.setTimeout(() => setDone(false), 1600);
+        timer.current = window.setTimeout(() => setResult('idle'), 2400);
     }
 
     return (
-        <button type="button" class="kit-copy" onClick={onClick} aria-live="polite">
-            {done ? copy.copied : copy.copy}
-        </button>
+        <>
+            <button type="button" class="kit-copy" onClick={onClick} aria-label={`${copy.copy}: ${label}`}>
+                {result === 'done' ? copy.copied : copy.copy}
+            </button>
+            <span class="kit-copy-status" role="status" aria-live="polite">
+                {result === 'failed' ? copy.copyFailed : ''}
+            </span>
+        </>
     );
 }
 
@@ -51,7 +55,7 @@ function Row({ label, value, raw, copy }: { label: string; value: string; raw?: 
             <dt>{label}</dt>
             <dd>
                 <span class="kit-pay-value">{value}</span>
-                <CopyButton value={raw ?? value} copy={copy} />
+                <CopyButton value={raw ?? value} label={label} copy={copy} />
             </dd>
         </div>
     );
@@ -78,6 +82,7 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                     {pay.title}
                 </h3>
                 <p class="kit-lede">{pay.intro}</p>
+                <p class="kit-callout">{form.signInNote}</p>
 
                 <dl class="kit-pay-key">
                     <div>
@@ -88,11 +93,11 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                         <dt>{pay.orderCode}</dt>
                         <dd class="kit-pay-code">
                             {code}
-                            <CopyButton value={code} copy={pay} />
+                            <CopyButton value={code} label={pay.orderCode} copy={pay} />
                         </dd>
                     </div>
                 </dl>
-                <p class="kit-note">{pay.referenceHint}</p>
+                <p class="kit-note">{pay.saveNote}</p>
 
                 {currency === 'RMB' ? (
                     <div class="kit-method">
@@ -109,7 +114,8 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                             <div>
                                 <p>{pay.alipayScan}</p>
                                 <p class="kit-note">
-                                    {pay.payee}: {PAYMENT.alipay.payee}
+                                    {pay.payee}
+                                    {PAYMENT.alipay.payee}
                                 </p>
                             </div>
                         </div>
@@ -129,6 +135,7 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                                 copy={pay}
                             />
                         </dl>
+                        <p class="kit-note">{pay.referenceHint}</p>
                     </div>
                 )}
             </section>
@@ -137,11 +144,10 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                 <h3 class="kit-panel-title" id="kit-form-title">
                     {form.title}
                 </h3>
-                <p class="kit-lede">{form.intro}</p>
-                <p class="kit-note">{form.signInNote}</p>
 
                 {embedUrl && openUrl ? (
                     <>
+                        <p class="kit-lede">{form.intro}</p>
                         <iframe
                             class="kit-iframe"
                             src={embedUrl}

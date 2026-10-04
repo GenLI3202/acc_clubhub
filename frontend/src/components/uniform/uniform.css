@@ -629,6 +629,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  white-space: nowrap; /* never split ACC26-XXXX across two lines */
 }
 .kit-method {
   margin-top: 1.25rem;
@@ -664,19 +665,46 @@
 }
 .kit-pay-value {
   font-variant-numeric: tabular-nums;
-  word-break: break-all;
+  /* Wrap at spaces (IBAN groups); only break inside a word as a last resort. */
+  overflow-wrap: anywhere;
 }
 .kit-copy {
   flex: none;
   font: inherit;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  padding: 0.3rem 0.7rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
   color: var(--color-text-main);
   background: transparent;
   border: 1.5px solid var(--color-border-strong);
   border-radius: var(--radius-full);
   cursor: pointer;
+}
+.kit-copy-status {
+  flex-basis: 100%;
+  font-size: 0.8125rem;
+  color: var(--color-accent);
+}
+.kit-copy-status:empty {
+  display: none;
+}
+.kit-callout {
+  margin: 0.75rem 0 0;
+  padding: 0.8rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  background: var(--color-bg-secondary);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-md);
+}
+@media (max-width: 559px) {
+  /* Label above value: the bank details need the full row width on a phone. */
+  .kit-pay-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
 }
 .kit-copy:hover {
   border-color: var(--color-text-main);
