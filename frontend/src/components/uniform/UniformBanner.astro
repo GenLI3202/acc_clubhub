@@ -1,0 +1,122 @@
+---
+// Banner on the About page: a full-width card that leads to the kit order
+// page. Sits between the coda and the garage, so it breaks out of the
+// article's width with the same trick the other About bands use.
+
+import type { Locale } from '../../lib/i18n';
+import { getUniformCopy } from '../../lib/uniform/copy';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const { banner } = getUniformCopy(lang);
+---
+
+<section class="kit-banner" aria-labelledby="kit-banner-title">
+  <div class="kit-banner-inner">
+    <img
+      class="kit-banner-photo"
+      src="/images/uniform/model-front.webp"
+      alt=""
+      width="1086"
+      height="1448"
+      loading="lazy"
+    />
+    <div class="kit-banner-copy">
+      <p class="kit-banner-eyebrow">{banner.eyebrow}</p>
+      <h2 class="kit-banner-title" id="kit-banner-title">{banner.title}</h2>
+      <p class="kit-banner-body">{banner.body}</p>
+      <p class="kit-banner-deadline">{banner.deadline}</p>
+      <a class="kit-banner-cta" href={`/${lang}/uniform`}>{banner.cta}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .kit-banner {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+    background: var(--color-bg-secondary);
+  }
+  .kit-banner-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 2rem;
+    box-sizing: border-box;
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+  }
+  @media (min-width: 820px) {
+    .kit-banner-inner {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+  }
+  .kit-banner-photo {
+    display: block;
+    width: 100%;
+    height: clamp(16rem, 36vw, 26rem);
+    object-fit: cover;
+    object-position: center 28%;
+    border-radius: var(--radius-card);
+  }
+  .kit-banner-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-accent);
+    margin: 0 0 0.6rem;
+  }
+  .kit-banner-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--color-text-main);
+    margin: 0 0 0.9rem;
+  }
+  .kit-banner-body {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 34rem;
+    margin: 0 0 1rem;
+  }
+  .kit-banner-deadline {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-full);
+    margin: 0 0 1.5rem;
+  }
+  .kit-banner-cta {
+    display: flex;
+    width: fit-content;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.85rem 1.6rem;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+  .kit-banner-cta:hover {
+    background: var(--color-accent-dark);
+  }
+  .kit-banner-cta:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+</style>
