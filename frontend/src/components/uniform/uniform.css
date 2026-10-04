@@ -184,12 +184,16 @@
 .kit-shop-main {
   container-type: inline-size;
   display: grid;
+  /* minmax(0, ...) keeps wide children (thumbnail strip, tables) from
+     stretching the track past the viewport on phones. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--kit-gap);
 }
 
 /* ---------- Product card ---------- */
 .kit-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--kit-gap);
   padding: clamp(0.9rem, 2vw, 1.4rem);
   background: var(--color-bg-canvas);
@@ -201,6 +205,9 @@
   .kit-card {
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   }
+}
+.kit-card > * {
+  min-width: 0;
 }
 .kit-card-name {
   font-family: var(--font-heading);
@@ -517,6 +524,7 @@
 /* ---------- Pay + form step ---------- */
 .kit-pay {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--kit-gap);
 }
 .kit-panel {
@@ -710,11 +718,12 @@
 }
 .kit-charts {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--kit-gap);
   margin-top: var(--kit-gap);
 }
 @media (min-width: 1100px) {
-  .kit-charts { grid-template-columns: 1fr 1fr; }
+  .kit-charts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 .kit-chart-figure {
   margin: var(--kit-gap) 0 0;
