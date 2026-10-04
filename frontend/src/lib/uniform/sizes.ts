@@ -88,17 +88,30 @@ function bandIndex(bands: readonly Band[], value: number): number {
     );
 }
 
+export interface ChartCell {
+    readonly row: number;
+    readonly col: number;
+}
+
 /**
- * Size suggested by the quick-select chart, or null when the person falls
- * outside the chart or in one of its gaps.
+ * The chart cell for a height and weight, or null outside the chart. The
+ * cell itself can still be a gap — check it with recommendSize.
  */
-export function recommendSize(sex: Sex, heightCm: number, weightKg: number): Size | null {
+export function findCell(sex: Sex, heightCm: number, weightKg: number): ChartCell | null {
     const chart = SIZE_CHARTS[sex];
     const col = bandIndex(chart.heights, heightCm);
     const row = bandIndex(
         chart.rows.map((r) => r.weight),
         weightKg,
     );
-    if (col < 0 || row < 0) return null;
-    return chart.rows[row].sizes[col];
+    return col < 0 || row < 0 ? null : { row, col };
+}
+
+/**
+ * Size suggested by the quick-select chart, or null when the person falls
+ * outside the chart or in one of its gaps.
+ */
+export function recommendSize(sex: Sex, heightCm: number, weightKg: number): Size | null {
+    const cell = findCell(sex, heightCm, weightKg);
+    return cell ? SIZE_CHARTS[sex].rows[cell.row].sizes[cell.col] : null;
 }

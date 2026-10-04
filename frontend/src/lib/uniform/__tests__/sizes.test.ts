@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { SIZES } from '../pricing';
-import { SIZE_CHARTS, VEST_MEASUREMENTS, recommendSize } from '../sizes';
+import { SIZE_CHARTS, VEST_MEASUREMENTS, findCell, recommendSize } from '../sizes';
 
 describe('size charts', () => {
     it.each(['men', 'women'] as const)('%s chart has a size (or gap) in every column', (sex) => {
@@ -53,6 +53,20 @@ describe('recommendSize', () => {
     it('treats a shared band edge as the taller / heavier band', () => {
         // 160 cm sits in 160-165, 65 kg in 65-70
         expect(recommendSize('men', 160, 65)).toBe(recommendSize('men', 162, 67));
+    });
+});
+
+describe('findCell', () => {
+    it('returns the row and column the recommendation comes from', () => {
+        // men, 175 cm -> column 4 (175-180), 68 kg -> row 4 (65-70)
+        expect(findCell('men', 175, 68)).toEqual({ row: 4, col: 4 });
+        expect(findCell('women', 162, 52)).toEqual({ row: 2, col: 2 });
+    });
+
+    it('still finds a cell that is a gap in the chart, and null when out of range', () => {
+        expect(findCell('men', 156, 97)).toEqual({ row: 10, col: 0 });
+        expect(findCell('men', 150, 60)).toBeNull();
+        expect(findCell('women', 160, 90)).toBeNull();
     });
 });
 
