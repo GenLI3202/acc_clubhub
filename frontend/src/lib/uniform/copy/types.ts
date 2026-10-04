@@ -53,6 +53,7 @@ export interface UniformCopy {
         readonly priceMember: string;
         readonly priceNonMember: string;
         readonly sizeLabel: string;
+        readonly selectSize: string;
         readonly sizeGuideLink: string;
         readonly qtyLabel: string;
         readonly add: string;

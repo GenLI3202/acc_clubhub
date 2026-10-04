@@ -106,6 +106,7 @@ export const en: UniformCopy = {
         priceMember: 'Member price',
         priceNonMember: 'Non-member price',
         sizeLabel: 'Size',
+        selectSize: 'Choose a size first',
         sizeGuideLink: 'Size guide',
         qtyLabel: 'Quantity',
         add: 'Add to order',

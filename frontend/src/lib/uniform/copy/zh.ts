@@ -106,6 +106,7 @@ export const zh: UniformCopy = {
         priceMember: '会员价',
         priceNonMember: '非会员价',
         sizeLabel: '尺码',
+        selectSize: '请先选择尺码',
         sizeGuideLink: '尺码表',
         qtyLabel: '件数',
         add: '加入订单',
