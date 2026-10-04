@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+    FORM_CONFIG,
     MEMBERSHIP_LABEL,
     PAYMENT_LABEL,
     buildPrefillUrl,
@@ -36,6 +37,12 @@ describe('option labels', () => {
             RMB: 'Alipay (RMB)',
             EUR: 'SEPA transfer (EUR)',
         });
+    });
+});
+
+describe('FORM_CONFIG', () => {
+    it('is either not wired yet or completely valid — never half-pasted', () => {
+        expect(FORM_CONFIG === null || isFormConfigured(FORM_CONFIG)).toBe(true);
     });
 });
 

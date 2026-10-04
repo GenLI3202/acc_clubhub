@@ -39,12 +39,27 @@ export interface PrefillOrder {
     readonly currency: Currency;
 }
 
+/** Question ids of the "ACC 2026 队服订购 / Kit Order" Google Form (read from its preview). */
+const FORM_ENTRIES: FormConfig['entries'] = {
+    orderCode: '1557806289',
+    items: '1053998814',
+    pieces: '1527366407',
+    amount: '1708418500',
+    payment: '2070385535',
+    membership: '425611584',
+};
+
 /**
- * Set once the Google Form exists: paste its viewform URL and the six entry
- * ids from "Get pre-filled link". While this is null the order page shows a
- * "form opening soon" notice instead of the embedded form.
+ * The form's public responder link, `https://docs.google.com/forms/d/e/<id>/viewform`.
+ * It only exists once the form is published (Forms > Publish): paste it here.
+ * While this is null the order page keeps checkout locked in production and
+ * shows a "form being prepared" notice.
  */
-export const FORM_CONFIG: FormConfig | null = null;
+const FORM_VIEWFORM_URL: string | null = null;
+
+export const FORM_CONFIG: FormConfig | null = FORM_VIEWFORM_URL
+    ? { viewformUrl: FORM_VIEWFORM_URL, entries: FORM_ENTRIES }
+    : null;
 
 const FORM_URL_PATTERN = /^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform$/;
 
