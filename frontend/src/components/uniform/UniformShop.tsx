@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 
 import { fill, getUniformCopy } from '../../lib/uniform/copy';
+import { isWeChatUserAgent } from '../../lib/uniform/environment';
 import { FORM_CONFIG, isFormConfigured } from '../../lib/uniform/form';
 import {
     EMPTY_ORDER,
@@ -29,7 +30,8 @@ import { ProductCard } from './ProductCard';
 import { SummaryPanel } from './SummaryPanel';
 import './uniform.css';
 
-const STORAGE_KEY = 'acc-kit-2026-order';
+const ORDER_KEY = 'acc-kit-2026-order';
+const STEP_KEY = 'acc-kit-2026-step';
 const CATEGORIES: readonly SkuCategory[] = ['jersey', 'bib', 'vest'];
 
 type Step = 'select' | 'pay';
@@ -38,17 +40,20 @@ interface UniformShopProps {
     lang: Locale;
 }
 
-function loadSaved(): OrderState | null {
+// localStorage, not sessionStorage: a buyer who leaves to pay in their bank
+// or Alipay app and comes back (or reopens the tab) finds the order and code
+// they paid for. It holds no personal data — only items, sizes and choices.
+function readStorage(key: string): string | null {
     try {
-        return parseSavedOrder(window.sessionStorage.getItem(STORAGE_KEY));
+        return window.localStorage.getItem(key);
     } catch {
         return null;
     }
 }
 
-function save(order: OrderState): void {
+function writeStorage(key: string, value: string): void {
     try {
-        window.sessionStorage.setItem(STORAGE_KEY, serializeOrder(order));
+        window.localStorage.setItem(key, value);
     } catch {
         // Private mode or blocked storage: the basket just won't survive a refresh.
     }
@@ -67,23 +72,55 @@ export function UniformShop({ lang }: UniformShopProps) {
     const [step, setStep] = useState<Step>('select');
     const [closed, setClosed] = useState(false);
     const [ready, setReady] = useState(false);
+    const [inWeChat, setInWeChat] = useState(false);
+    const [summaryInView, setSummaryInView] = useState(false);
+    const titleRef = useRef<HTMLHeadingElement>(null);
+    const moveFocus = useRef(false);
 
     // Paying only makes sense once buyers can also submit the form. Dev builds
     // skip the check so the payment step can be previewed before it is wired.
     const formReady = isFormConfigured(FORM_CONFIG) || import.meta.env.DEV;
 
-    // The page is prerendered, so anything that depends on "now" or on the
-    // visitor's browser storage is decided after hydration.
+    // The page is prerendered, so anything that depends on "now", on the
+    // visitor's browser or on its storage is decided after hydration.
     useEffect(() => {
-        setClosed(isOrderClosed());
-        const saved = loadSaved();
-        if (saved) setOrder(saved);
+        const isClosed = isOrderClosed();
+        setClosed(isClosed);
+        setInWeChat(isWeChatUserAgent(window.navigator.userAgent));
+
+        const saved = isClosed ? null : parseSavedOrder(readStorage(ORDER_KEY));
+        if (saved) {
+            setOrder(saved);
+            // Come back to the payment screen the buyer left, with the same code.
+            if (readStorage(STEP_KEY) === 'pay' && saved.code && isReadyToPay(saved) && formReady) {
+                setStep('pay');
+            }
+        }
         setReady(true);
     }, []);
 
     useEffect(() => {
-        if (ready) save(order);
-    }, [order, ready]);
+        if (!ready) return;
+        writeStorage(ORDER_KEY, serializeOrder(order));
+        writeStorage(STEP_KEY, step);
+    }, [order, step, ready]);
+
+    // After a deliberate step change, put keyboard and screen-reader focus on
+    // the new screen's heading instead of leaving it on a button that vanished.
+    useEffect(() => {
+        if (!moveFocus.current) return;
+        moveFocus.current = false;
+        titleRef.current?.focus({ preventScroll: true });
+    }, [step]);
+
+    // The phone bar points at the summary; hide it while the summary is on screen.
+    useEffect(() => {
+        const target = document.getElementById('kit-summary');
+        if (!target || typeof IntersectionObserver === 'undefined') return;
+        const observer = new IntersectionObserver(([entry]) => setSummaryInView(entry.isIntersecting));
+        observer.observe(target);
+        return () => observer.disconnect();
+    }, [step]);
 
     // Until the buyer has chosen, prices are shown as non-member / EUR. Totals
     // never reach a code or the form link in that state (see isReadyToPay).
@@ -95,22 +132,34 @@ export function UniformShop({ lang }: UniformShopProps) {
 
     function goToPay() {
         if (closed || !formReady || !isReadyToPay(order)) return;
+        moveFocus.current = true;
         setOrder((current) => codeFor(current, generateOrderCode));
         setStep('pay');
         scrollToShop();
     }
 
     function goToSelect() {
+        moveFocus.current = true;
         setStep('select');
         scrollToShop();
     }
 
+    const showBar = step === 'select' && totals.pieces > 0 && !summaryInView;
+
     return (
-        <div class="kit-shop" id="kit-shop">
+        <div class={`kit-shop${showBar ? ' has-bar' : ''}`} id="kit-shop">
             <header class="kit-shop-head">
                 <p class="kit-eyebrow">{copy.shop.eyebrow}</p>
-                <h2 class="kit-h2">{step === 'select' ? copy.shop.title : copy.shop.payTitle}</h2>
+                <h2 class="kit-h2" ref={titleRef} tabIndex={-1}>
+                    {step === 'select' ? copy.shop.title : copy.shop.payTitle}
+                </h2>
                 {step === 'select' && <p class="kit-lede">{copy.shop.intro}</p>}
+                {inWeChat && (
+                    <div class="kit-callout" role="note">
+                        <strong>{copy.shop.wechatTitle}</strong>
+                        <p>{copy.shop.wechatBody}</p>
+                    </div>
+                )}
                 <ol class="kit-steps" aria-label={copy.shop.eyebrow}>
                     {copy.summary.steps.map((label, i) => {
                         const status =
@@ -184,7 +233,7 @@ export function UniformShop({ lang }: UniformShopProps) {
                 />
             </div>
 
-            {step === 'select' && totals.pieces > 0 && (
+            {showBar && (
                 <a class="kit-mobile-bar" href="#kit-summary">
                     <span>
                         {fill(copy.summary.pieces, { n: totals.pieces })} ·{' '}
