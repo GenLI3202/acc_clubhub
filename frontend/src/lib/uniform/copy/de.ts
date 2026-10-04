@@ -21,8 +21,8 @@ export const de: UniformCopy = {
     },
 
     closed: {
-        title: 'Bestellung beendet',
-        body: 'Die Bestellung für das Kit 2026 ist am 25. Oktober um 23:59 Uhr (Münchner Zeit) zu Ende gegangen. Fragen? Melde dich bei unserem Team.',
+        title: 'Bestellschluss erreicht',
+        body: 'Die Bestellphase für das Kit 2026 endete am 25. Oktober um 23:59 Uhr (Münchner Zeit). Fragen? Melde dich bei unserem Team.',
     },
 
     story: {
@@ -49,7 +49,7 @@ export const de: UniformCopy = {
             },
             {
                 title: '慕城骑士',
-                text: 'Das Siegel über den Rückentaschen des Trikots: „Rider von München“. Wir sind eine Radfahr-Community, die in München lebt und fährt.',
+                text: 'Das Siegel über den Rückentaschen des Trikots: „Radfahrer aus München“. Wir sind eine Radfahr-Community, die in München lebt und fährt.',
             },
             {
                 title: 'ACROSS · PATHS · MOUNTAINS · BORDERS',
@@ -57,22 +57,26 @@ export const de: UniformCopy = {
             },
         ],
         producedBy: 'Hergestellt von GRC',
-        sampleTitle: 'Bitte beachten: Das Model trägt ein Muster',
+        sampleTitle: 'Bitte beachten: Das Model trägt ein Musterexemplar',
         sampleText:
-            'Das Model trägt ein Musterteil. Nach dem Erhalt haben wir kleine Anpassungen vorgenommen, vor allem beim Stil des ACC-Logos; maßgeblich sind die Designzeichnungen. Das Kit, das du erhältst, weicht deshalb leicht von den Modellfotos ab.',
+            'Das Model trägt ein Musterteil. Nach dem Erhalt haben wir kleine Anpassungen vorgenommen, vor allem beim Stil des ACC-Logos; maßgeblich sind die Designzeichnungen. Das Kit, das du erhältst, weicht deshalb leicht von den Fotos mit Model ab.',
     },
 
     shop: {
         eyebrow: 'Shop',
         title: 'Artikel, Größe und Anzahl wählen',
-        intro: 'Alle Artikel werden einzeln verkauft, es gibt keinen Set-Rabatt. Prüfe rechts deine Bestellung und gehe dann zur Zahlung.',
+        intro: 'Alle Artikel werden einzeln verkauft, es gibt keinen Set-Rabatt. Wähle zuerst Mitgliedschaft und Zahlungsart, dann deine Artikel; prüfe „Deine Bestellung“ und gehe dann zur Zahlung.',
+        payTitle: 'Bezahlen und Bestellung absenden',
+        wechatTitle: 'Bitte im Browser öffnen',
+        wechatBody:
+            'Der Browser in WeChat kann sich meist nicht bei Google anmelden: Der Screenshot-Upload in Schritt 3 schlägt dann fehl, und deine Bestellung wird nicht in einen anderen Browser übernommen. Tippe oben rechts auf ··· → „Im Browser öffnen“ und bestelle dort.',
         products: {
             jersey: {
                 name: 'Kurzarmtrikot',
                 tagline: 'Weiß mit Tusche-Gratlinien, rot-schwarze Taille',
                 bullets: [
                     '3D-Schnitt, eng anliegend und sehr elastisch',
-                    'Atmungsaktive Netzärmel, kühlender Griff, für 25 °C und mehr',
+                    'Atmungsaktive Netzärmel, Stoff mit Kühleffekt, für 25 °C und mehr',
                     'YKK-Reißverschluss und Silikon-Gripper am Saum',
                     'Nahtlos verklebte Bündchen für weniger Reibung',
                     'Drei Rückentaschen',
@@ -85,7 +89,7 @@ export const de: UniformCopy = {
                 bullets: [
                     'Spacer-Doppelgewebe: elastisch, atmungsaktiv, wärmeableitend',
                     '4,5 cm breite Träger mit Rillenstruktur, leichtes Netzgewebe am Rücken',
-                    'Ergonomisches Ultra-Curve-53°-Polster: 3 mm Mittelschicht plus 14 mm hochdichte Stütze, Carbonfaser-Oberfläche gegen Bakterien',
+                    'Ergonomisches Ultra-Curve-53°-Polster: 3 mm Mittelschicht plus 14 mm hochdichte Stütze; laut GRC verhindert die Carbonfaser-Oberfläche das Wachstum schädlicher Bakterien',
                     'Silikon-Gripper am Beinabschluss',
                 ],
             },
@@ -93,7 +97,6 @@ export const de: UniformCopy = {
                 name: 'Weste',
                 tagline: 'Weiß oder Schwarz, gleicher Preis, freie Wahl',
                 bullets: [
-                    'Leicht und dünn, die weiße Weste ist halbtransparent',
                     'Reißverschluss vorn. Der atmungsaktive Netzrücken hat zwei Öffnungen, durch die du an die Taschen des Trikots darunter greifst',
                     'GRC | ACROSS CYCLING CLUB MUNICH auf der Brust, großes ACC-Logo auf dem Rücken',
                 ],
@@ -109,8 +112,9 @@ export const de: UniformCopy = {
         selectSize: 'Bitte zuerst eine Größe wählen',
         sizeGuideLink: 'Größentabelle',
         qtyLabel: 'Anzahl',
-        add: 'Zur Bestellung',
+        add: 'Hinzufügen',
         added: 'Zur Bestellung hinzugefügt',
+        sampleBadge: 'Musterexemplar',
         imageAlt: {
             flat: 'Designzeichnung',
             front: 'Model, Vorderseite',
@@ -123,22 +127,25 @@ export const de: UniformCopy = {
 
     summary: {
         title: 'Deine Bestellung',
-        empty: 'Noch nichts ausgewählt. Wähle eine Größe und drücke „Zur Bestellung“.',
+        empty: 'Noch nichts ausgewählt. Wähle eine Größe und drücke „Hinzufügen“.',
         membershipLabel: 'ACC-Mitgliedschaft',
         member: 'ACC-Mitglied',
         nonMember: 'Nichtmitglied',
         membershipHint: 'Selbstauskunft, wir prüfen sie nachträglich.',
-        currencyLabel: 'Zahlung per',
+        currencyLabel: 'Bezahlen mit',
         currencyRmb: 'Alipay · RMB',
         currencyEur: 'Überweisung · EUR',
         pieces: '{n} Stk.',
         subtotal: 'Artikel',
-        transfer: 'Transportkosten',
+        transfer: 'Versand (China → München)',
         transferHint: 'Versand von China nach München: {single} bei einem Teil, ab zwei Teilen {each} pro Teil.',
         total: 'Gesamtbetrag',
         remove: 'Entfernen',
         continue: 'Bestätigen und bezahlen',
         continueDisabled: 'Mindestens einen Artikel hinzufügen',
+        chooseFirst: 'Bitte zuerst Mitgliedschaft und Zahlungsart wählen',
+        fineprint: 'Maßanfertigung: keine Rückgabe bei falscher Größe · nur Abholung in München',
+        termsLink: 'Gut zu wissen',
         edit: 'Bestellung ändern',
         steps: ['Auswahl', 'Zahlung', 'Formular'],
         mobileBar: 'Bestellung ansehen',
@@ -149,10 +156,11 @@ export const de: UniformCopy = {
         intro: 'Zahle den Betrag unten und schreibe deinen Bestellcode in den Verwendungszweck. Danach sendest du im nächsten Schritt das Formular ab und lädst deinen Zahlungsnachweis hoch.',
         amountDue: 'Zu zahlender Betrag',
         orderCode: 'Bestellcode',
-        referenceHint: 'Trage den Bestellcode im Verwendungszweck der Überweisung oder in der Alipay-Notiz ein.',
+        referenceHint: 'Trage den Bestellcode im Verwendungszweck der Überweisung ein.',
         alipayTitle: 'Alipay (RMB)',
-        alipayScan: 'Mit „Scannen“ in Alipay bezahlen',
-        payee: 'Empfänger',
+        alipayScan:
+            'Zahlung auf diesem Handy: QR-Code speichern (gedrückt halten oder Screenshot), in Alipay „Scannen“ → „Album“ öffnen und das Bild wählen. Unter „Notiz hinzufügen“ den Bestellcode eintragen.',
+        payee: 'Empfänger: ',
         sepaTitle: 'Überweisung (EUR, SEPA)',
         iban: 'IBAN',
         bic: 'BIC',
@@ -160,6 +168,9 @@ export const de: UniformCopy = {
         reference: 'Verwendungszweck',
         copy: 'Kopieren',
         copied: 'Kopiert',
+        copyFailed: 'Automatisches Kopieren nicht möglich – Text gedrückt halten',
+        editWarning: 'Wenn du schon bezahlt hast, ändere die Bestellung bitte nicht, sondern melde dich bei unserem Team.',
+        saveNote: 'Mache einen Screenshot von Bestellcode und Betrag.',
     },
 
     form: {
@@ -168,7 +179,7 @@ export const de: UniformCopy = {
         signInNote:
             'Für den Upload eines Screenshots brauchst du ein Google-Konto. Wenn du dich nicht anmelden kannst (zum Beispiel in Festlandchina), schicke Screenshot und Bestellcode per WeChat oder E-Mail an unser Team.',
         openNewTab: 'Formular in neuem Tab öffnen',
-        comingSoon: 'Das Bestellformular wird gerade vorbereitet. Bitte schau gleich noch einmal vorbei.',
+        comingSoon: 'Das Bestellformular wird gerade vorbereitet. Bitte schau in Kürze wieder vorbei.',
         iframeTitle: 'ACC Kit 2026 Bestellformular',
     },
 
@@ -179,15 +190,16 @@ export const de: UniformCopy = {
         women: 'Damen – Schnellauswahl',
         sharedNote: 'Trikot und Trägerhose',
         vestNote: 'Die Weste nutzt die Herren-Tabelle und ist unisex.',
-        heightWeight: 'Größe cm ↓ / Gewicht kg →',
+        heightWeight: 'Gewicht kg ↓ / Körpergröße cm →',
         gapNote: 'Ein leeres Feld bedeutet: Für diese Kombination gibt die Tabelle keine Empfehlung.',
         finderTitle: 'Schnellsuche',
         sexMen: 'Herren',
         sexWomen: 'Damen',
-        height: 'Größe (cm)',
+        height: 'Körpergröße (cm)',
         weight: 'Gewicht (kg)',
         result: 'Empfohlene Größe: {size}',
         noResult: 'Für diese Kombination gibt die Tabelle keine Empfehlung. Frag bitte unser Team.',
+        back: 'Zurück zum Shop',
         vestTableTitle: 'Maße der Weste (cm)',
         vestColumns: ['Größe', 'Brust', 'Kragen', 'Saum', 'Vorderlänge', 'Rückenlänge'],
         tolerance: 'Von Hand gemessen, mit kleiner Toleranz.',
@@ -196,12 +208,12 @@ export const de: UniformCopy = {
     terms: {
         title: 'Gut zu wissen',
         items: [
-            'Das Model trägt ein Muster. Maßgeblich sind die Designzeichnungen (der Stil des ACC-Logos wurde angepasst), das Endprodukt weicht deshalb von den Fotos ab.',
+            'Das Model trägt ein Musterexemplar. Maßgeblich sind die Designzeichnungen (der Stil des ACC-Logos wurde angepasst), das Endprodukt weicht deshalb von den Fotos ab.',
             'Umtausch nur bei Qualitätsmängeln. Sonst gibt es weder Rückgabe noch Umtausch, auch nicht bei falscher Größe – bitte nutze die Größentabelle.',
             'Nur Abholung in München, kein Versand. Die Details klären wir in der WeChat-Gruppe.',
             'Bestellschluss 25.10.2026, 23:59 Uhr (Münchner Zeit). Wir bestellen am 31. Okt. bei GRC und erwarten die Lieferung Mitte Dezember.',
             'Deine Mitgliedschaft gibst du selbst an, wir prüfen sie nachträglich.',
-            'Deine persönlichen Daten und der Zahlungsnachweis werden nur für diese Kit-Bestellung und zur Zahlungsprüfung verwendet.',
+            'Deine persönlichen Daten und der Zahlungsnachweis werden über ein Google-Formular erfasst und nur für diese Kit-Bestellung und zur Zahlungsprüfung verwendet.',
         ],
     },
 

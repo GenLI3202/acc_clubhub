@@ -45,6 +45,10 @@ export interface UniformCopy {
         readonly eyebrow: string;
         readonly title: string;
         readonly intro: string;
+        /** Heading shown once the buyer has moved on to paying. */
+        readonly payTitle: string;
+        readonly wechatTitle: string;
+        readonly wechatBody: string;
         readonly products: Readonly<Record<SkuCategory, ProductCopy>>;
         readonly vestColorLabel: string;
         readonly vestWhite: string;
@@ -58,6 +62,8 @@ export interface UniformCopy {
         readonly qtyLabel: string;
         readonly add: string;
         readonly added: string;
+        /** Badge on every model photo: they show a sample, not the final kit. */
+        readonly sampleBadge: string;
         readonly imageAlt: {
             readonly flat: string;
             readonly front: string;
@@ -87,6 +93,11 @@ export interface UniformCopy {
         readonly remove: string;
         readonly continue: string;
         readonly continueDisabled: string;
+        /** Shown while membership or payment method is still unchosen. */
+        readonly chooseFirst: string;
+        /** One line above the Continue button, linking to the terms. */
+        readonly fineprint: string;
+        readonly termsLink: string;
         readonly edit: string;
         readonly steps: readonly [string, string, string];
         readonly mobileBar: string;
@@ -108,6 +119,9 @@ export interface UniformCopy {
         readonly reference: string;
         readonly copy: string;
         readonly copied: string;
+        readonly copyFailed: string;
+        readonly editWarning: string;
+        readonly saveNote: string;
     };
 
     readonly form: {
@@ -135,6 +149,7 @@ export interface UniformCopy {
         readonly weight: string;
         readonly result: string;
         readonly noResult: string;
+        readonly back: string;
         readonly vestTableTitle: string;
         readonly vestColumns: readonly [string, string, string, string, string, string];
         readonly tolerance: string;

@@ -65,7 +65,11 @@ export const en: UniformCopy = {
     shop: {
         eyebrow: 'Shop',
         title: 'Choose item, size and quantity',
-        intro: 'All items are sold separately, with no bundle discount. Check your order on the right, then continue to payment.',
+        intro: 'All items are sold separately, with no bundle discount. Choose your membership and payment method first, then your items; check “Your order”, then continue to payment.',
+        payTitle: 'Pay and submit your order',
+        wechatTitle: 'Open this page in your browser',
+        wechatBody:
+            'WeChat’s built-in browser usually cannot sign in to Google, so the screenshot upload in step 3 fails and your order does not follow you to another browser. Tap ··· (top right) → Open in Browser, then order.',
         products: {
             jersey: {
                 name: 'Short-sleeve jersey',
@@ -85,7 +89,7 @@ export const en: UniformCopy = {
                 bullets: [
                     'Spacer double-layer fabric: stretchy, breathable, vents heat',
                     '4.5 cm grooved stretch straps and a lightweight mesh back',
-                    'Ultra-Curve 53° ergonomic pad: 3 mm mid layer plus 14 mm high-density support, carbon-fibre surface against bacteria',
+                    'Ultra-Curve 53° ergonomic pad: 3 mm mid layer plus 14 mm high-density support; GRC says the carbon-fibre surface prevents harmful bacteria growth',
                     'Silicone-printed grippers at the leg openings',
                 ],
             },
@@ -93,7 +97,6 @@ export const en: UniformCopy = {
                 name: 'Vest',
                 tagline: 'White or black, same price, your choice',
                 bullets: [
-                    'Light and thin; the white one is semi-transparent',
                     'Front zip. The breathable mesh back has two openings, so you can reach through to the pockets of the jersey underneath',
                     'GRC | ACROSS CYCLING CLUB MUNICH on the chest, a large ACC logo on the back',
                 ],
@@ -111,6 +114,7 @@ export const en: UniformCopy = {
         qtyLabel: 'Quantity',
         add: 'Add to order',
         added: 'Added to your order',
+        sampleBadge: 'Sample',
         imageAlt: {
             flat: 'Design drawing',
             front: 'Model, front',
@@ -133,12 +137,15 @@ export const en: UniformCopy = {
         currencyEur: 'Bank transfer · EUR',
         pieces: '{n} pcs',
         subtotal: 'Items',
-        transfer: 'Transfer fee',
+        transfer: 'Shipping (China → Munich)',
         transferHint: 'Shipping from China to Munich: {single} for a single piece, {each} per piece from two pieces on.',
         total: 'Total due',
         remove: 'Remove',
         continue: 'Confirm and pay',
         continueDisabled: 'Add at least one item',
+        chooseFirst: 'Choose membership and payment method first',
+        fineprint: 'Made to order: no returns or exchanges for a wrong size · pick-up in Munich only',
+        termsLink: 'Good to know',
         edit: 'Edit order',
         steps: ['Choose', 'Pay', 'Submit form'],
         mobileBar: 'View order',
@@ -149,10 +156,11 @@ export const en: UniformCopy = {
         intro: 'Pay the amount below and write your order code in the payment note. Afterwards, submit the form in the next step and upload your payment screenshot.',
         amountDue: 'Amount due',
         orderCode: 'Order code',
-        referenceHint: 'Put the order code in the transfer reference (Verwendungszweck) or the Alipay note.',
+        referenceHint: 'Write the order code in the transfer reference (Verwendungszweck).',
         alipayTitle: 'Alipay (RMB)',
-        alipayScan: 'Pay with “Scan” in Alipay',
-        payee: 'Payee',
+        alipayScan:
+            'Paying on this phone: save the QR code (long-press or screenshot), open Alipay → Scan → Album and pick the image. Tap “Add note” and enter your order code.',
+        payee: 'Payee: ',
         sepaTitle: 'Bank transfer (EUR, SEPA)',
         iban: 'IBAN',
         bic: 'BIC',
@@ -160,6 +168,9 @@ export const en: UniformCopy = {
         reference: 'Reference',
         copy: 'Copy',
         copied: 'Copied',
+        copyFailed: 'Could not copy automatically — press and hold the text',
+        editWarning: 'If you have already paid, please do not change the order; contact our team instead.',
+        saveNote: 'Take a screenshot of your order code and amount.',
     },
 
     form: {
@@ -179,7 +190,7 @@ export const en: UniformCopy = {
         women: 'Women’s quick guide',
         sharedNote: 'Jersey and bib shorts',
         vestNote: 'The vest uses the men’s quick guide and is unisex.',
-        heightWeight: 'Height cm ↓ / weight kg →',
+        heightWeight: 'Weight kg ↓ / height cm →',
         gapNote: 'A blank cell means the chart has no recommendation for that height and weight.',
         finderTitle: 'Quick finder',
         sexMen: 'Men',
@@ -188,6 +199,7 @@ export const en: UniformCopy = {
         weight: 'Weight (kg)',
         result: 'Suggested size: {size}',
         noResult: 'The chart has no recommendation for this combination. Please ask our team.',
+        back: 'Back to the shop',
         vestTableTitle: 'Vest garment measurements (cm)',
         vestColumns: ['Size', 'Chest', 'Collar', 'Hem', 'Front length', 'Back length'],
         tolerance: 'Measured by hand, with a small tolerance.',
@@ -199,9 +211,9 @@ export const en: UniformCopy = {
             'The model wears a sample. The final product follows the design drawings (the ACC logo style was adjusted), so it will differ from the photos.',
             'Items can be exchanged for quality problems only. Otherwise there are no returns or exchanges, wrong size included, so please check the size guide.',
             'Pick-up in Munich only, no shipping. We will agree the details in the WeChat group.',
-            'Orders close 25 Oct 2026, 23:59 (Munich time). We place the order with GRC on about 31 Oct, and expect delivery in mid-December.',
+            'Orders close 25 Oct 2026, 23:59 (Munich time). We place the order with GRC around 31 Oct, and expect delivery in mid-December.',
             'Your membership status is self-declared; we check it afterwards.',
-            'Your personal data and payment screenshot are used only for this kit order and to check payments.',
+            'Your personal data and payment screenshot are collected through a Google Form and used only for this kit order and to check payments.',
         ],
     },
 

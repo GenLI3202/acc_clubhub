@@ -65,7 +65,11 @@ export const zh: UniformCopy = {
     shop: {
         eyebrow: '选购',
         title: '选择款式、尺码和件数',
-        intro: '三个款式单独售卖，没有套装优惠。选好后在右侧确认订单，再去付款。',
+        intro: '三个款式单独售卖，没有套装优惠。先选会员身份和付款方式，再挑款式；选好后在「你的订单」里确认，然后去付款。',
+        payTitle: '付款并提交订单',
+        wechatTitle: '请在浏览器中打开本页',
+        wechatBody:
+            '微信内置浏览器通常无法登录 Google，第 3 步的截图上传会失败，订单也不会带到别的浏览器。请点右上角「···」→「在浏览器打开」后再下单。',
         products: {
             jersey: {
                 name: '短袖上衣',
@@ -85,7 +89,7 @@ export const zh: UniformCopy = {
                 bullets: [
                     'Spacer 双面布，弹力贴身，透气散热',
                     '4.5 cm 透气凹槽弹力肩带，后背轻量网眼面料',
-                    'Ultra-Curve 53° 人体工学坐垫：3 mm 中层加 14 mm 高密度支撑，表面碳纤维抑菌',
+                    'Ultra-Curve 53° 人体工学坐垫：3 mm 中层加 14 mm 高密度支撑；据 GRC 介绍，表面碳纤维材料可防止有害细菌滋生',
                     '脚口硅胶徽标防滑',
                 ],
             },
@@ -93,7 +97,6 @@ export const zh: UniformCopy = {
                 name: '马甲',
                 tagline: '白 / 黑两色，同价自选',
                 bullets: [
-                    '轻薄，白色款偏透',
                     '前拉链；背部透气网布设两个开口，可以伸手探入内层骑行服的口袋取物',
                     '前胸 GRC | ACROSS CYCLING CLUB MUNICH，背面大 ACC 字标',
                 ],
@@ -111,6 +114,7 @@ export const zh: UniformCopy = {
         qtyLabel: '件数',
         add: '加入订单',
         added: '已加入订单',
+        sampleBadge: '样衣',
         imageAlt: {
             flat: '设计图',
             front: '模特正面',
@@ -139,6 +143,9 @@ export const zh: UniformCopy = {
         remove: '移除',
         continue: '确认订单，去付款',
         continueDisabled: '请至少加入一件',
+        chooseFirst: '请先选择会员身份和付款方式',
+        fineprint: '定制商品：尺码选错不退不换 · 仅慕尼黑自提',
+        termsLink: '订购须知',
         edit: '修改订单',
         steps: ['选购', '付款', '提交表单'],
         mobileBar: '查看订单',
@@ -149,10 +156,11 @@ export const zh: UniformCopy = {
         intro: '请按下面的金额付款，并在备注里写上订单号。付款后，到下一步提交表单并上传付款截图。',
         amountDue: '应付金额',
         orderCode: '订单号',
-        referenceHint: '转账备注（Verwendungszweck）或支付宝备注，请填写订单号。',
+        referenceHint: '请在转账的备注（Verwendungszweck）里填写订单号。',
         alipayTitle: '支付宝（人民币）',
-        alipayScan: '用支付宝「扫一扫」付款',
-        payee: '收款人',
+        alipayScan:
+            '用这部手机付款：长按二维码保存（或截图），打开支付宝「扫一扫」，点右上角「相册」选这张图。付款时点「添加备注」，填写订单号。',
+        payee: '收款人：',
         sepaTitle: '银行转账（欧元，SEPA）',
         iban: 'IBAN',
         bic: 'BIC',
@@ -160,6 +168,9 @@ export const zh: UniformCopy = {
         reference: '备注',
         copy: '复制',
         copied: '已复制',
+        copyFailed: '无法自动复制，请长按文字复制',
+        editWarning: '如果已经付款，请不要修改订单；需要改动请联系工作人员。',
+        saveNote: '请截图保存订单号和金额。',
     },
 
     form: {
@@ -179,7 +190,7 @@ export const zh: UniformCopy = {
         women: '女生尺码快选',
         sharedNote: '上衣、背带短裤通用',
         vestNote: '马甲使用男生尺码快选表，不分男女。',
-        heightWeight: '身高 cm ↓ / 体重 kg →',
+        heightWeight: '体重 kg ↓ / 身高 cm →',
         gapNote: '空白表示该身高体重组合没有推荐尺码。',
         finderTitle: '快速查询',
         sexMen: '男生',
@@ -188,6 +199,7 @@ export const zh: UniformCopy = {
         weight: '体重 (kg)',
         result: '建议尺码：{size}',
         noResult: '表中没有对应的推荐，请联系工作人员咨询。',
+        back: '返回选购',
         vestTableTitle: '马甲成衣尺寸（cm）',
         vestColumns: ['尺码', '胸围', '领口', '下摆', '前长', '后长'],
         tolerance: '手工测量，存在小误差。',
@@ -201,7 +213,7 @@ export const zh: UniformCopy = {
             '仅限慕尼黑自提，不支持邮寄；具体取货方式在微信群里沟通。',
             '10 月 25 日 23:59（慕尼黑时间）截止，预计 10 月 31 日向 GRC 下单，12 月中旬到货。',
             '会员身份由你自行选择，我们会事后核对。',
-            '个人信息与付款截图仅用于本次队服订购及核对付款。',
+            '个人信息与付款截图通过 Google 表单收集，仅用于本次队服订购及核对付款。',
         ],
     },
 
