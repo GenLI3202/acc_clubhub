@@ -4,6 +4,8 @@ import {
     EMPTY_ORDER,
     addLine,
     codeFor,
+    displayOptions,
+    isReadyToPay,
     orderSignature,
     parseSavedOrder,
     removeLine,
@@ -48,24 +50,53 @@ describe('removeLine', () => {
 });
 
 describe('membership and currency', () => {
-    it('default to non-member paying in EUR', () => {
-        expect(EMPTY_ORDER.membership).toBe('non-member');
-        expect(EMPTY_ORDER.currency).toBe('EUR');
+    it('start unchosen, so nobody pays the wrong price or method by default', () => {
+        expect(EMPTY_ORDER.membership).toBeNull();
+        expect(EMPTY_ORDER.currency).toBeNull();
     });
 
-    it('can be switched without mutating', () => {
+    it('can be chosen without mutating', () => {
         expect(setMembership(EMPTY_ORDER, 'member').membership).toBe('member');
         expect(setCurrency(EMPTY_ORDER, 'RMB').currency).toBe('RMB');
-        expect(EMPTY_ORDER.membership).toBe('non-member');
+        expect(EMPTY_ORDER.membership).toBeNull();
+    });
+});
+
+describe('displayOptions', () => {
+    it('falls back to non-member / EUR only for showing prices', () => {
+        expect(displayOptions(EMPTY_ORDER)).toEqual({ membership: 'non-member', currency: 'EUR' });
+        expect(displayOptions(setCurrency(setMembership(EMPTY_ORDER, 'member'), 'RMB'))).toEqual({
+            membership: 'member',
+            currency: 'RMB',
+        });
+    });
+});
+
+describe('isReadyToPay', () => {
+    const chosen = setCurrency(setMembership(withJersey, 'member'), 'EUR');
+
+    it('needs at least one item, a membership and a payment method', () => {
+        expect(isReadyToPay(chosen)).toBe(true);
+        expect(isReadyToPay(withJersey)).toBe(false);
+        expect(isReadyToPay(setMembership(withJersey, 'member'))).toBe(false);
+        expect(isReadyToPay(setCurrency(withJersey, 'EUR'))).toBe(false);
+        expect(isReadyToPay(setCurrency(setMembership(EMPTY_ORDER, 'member'), 'EUR'))).toBe(false);
     });
 });
 
 describe('order code', () => {
+    const ready = (state: OrderState): OrderState =>
+        setCurrency(setMembership(state, 'non-member'), 'EUR');
+
+    it('is not issued until membership and payment method are chosen', () => {
+        expect(codeFor(withJersey, () => 'ACC26-NOPE').code).toBeNull();
+    });
+
     it('is reused while the order is unchanged and renewed when it changes', () => {
         let n = 0;
         const make = () => `ACC26-TEST${(n += 1)}`;
 
-        const first = codeFor(withJersey, make);
+        const first = codeFor(ready(withJersey), make);
         expect(first.code?.value).toBe('ACC26-TEST1');
 
         const again = codeFor(first, make);
@@ -77,7 +108,7 @@ describe('order code', () => {
 
     it('is renewed when the currency or membership changes', () => {
         const make = () => 'ACC26-NEW1';
-        const first = { ...codeFor(withJersey, () => 'ACC26-OLD1') };
+        const first = codeFor(ready(withJersey), () => 'ACC26-OLD1');
         expect(codeFor(setCurrency(first, 'RMB'), make).code?.value).toBe('ACC26-NEW1');
         expect(codeFor(setMembership(first, 'member'), make).code?.value).toBe('ACC26-NEW1');
     });
@@ -98,10 +129,17 @@ describe('orderSignature', () => {
 describe('saved order', () => {
     it('round-trips through serialize and parse', () => {
         const state = codeFor(
-            setMembership(addLine(withJersey, { sku: 'vest-white', size: 'XL', qty: 2 }), 'member'),
+            setCurrency(
+                setMembership(addLine(withJersey, { sku: 'vest-white', size: 'XL', qty: 2 }), 'member'),
+                'RMB',
+            ),
             () => 'ACC26-ABCD',
         );
         expect(parseSavedOrder(serializeOrder(state))).toEqual(state);
+    });
+
+    it('round-trips an order whose membership and payment method are still unchosen', () => {
+        expect(parseSavedOrder(serializeOrder(withJersey))).toEqual(withJersey);
     });
 
     it.each([
@@ -118,7 +156,10 @@ describe('saved order', () => {
     });
 
     it('drops a stored order code that does not match the stored order', () => {
-        const state = codeFor(withJersey, () => 'ACC26-ABCD');
+        const state = codeFor(
+            setCurrency(setMembership(withJersey, 'member'), 'EUR'),
+            () => 'ACC26-ABCD',
+        );
         const tampered = JSON.stringify({
             ...JSON.parse(serializeOrder(state)),
             lines: [{ sku: 'bib', size: 'S', qty: 1 }],

@@ -10,6 +10,7 @@ import {
     type Sex,
 } from '../../lib/uniform/sizes';
 import type { Locale } from '../../lib/i18n';
+import { RadioGroup } from './RadioGroup';
 import './uniform.css';
 
 interface SizeGuideProps {
@@ -93,20 +94,17 @@ export function SizeGuide({ lang }: SizeGuideProps) {
                     {sizes.finderTitle}
                 </h3>
                 <div class="kit-finder-fields">
-                    <div class="kit-segment" role="radiogroup" aria-label={sizes.finderTitle}>
-                        {(['men', 'women'] as const).map((value) => (
-                            <button
-                                key={value}
-                                type="button"
-                                role="radio"
-                                class="kit-segment-btn"
-                                aria-checked={sex === value}
-                                onClick={() => setSex(value)}
-                            >
-                                {value === 'men' ? sizes.sexMen : sizes.sexWomen}
-                            </button>
-                        ))}
-                    </div>
+                    <RadioGroup
+                        name="kit-finder-sex"
+                        legend={sizes.finderTitle}
+                        value={sex}
+                        onChange={setSex}
+                        variant="segment"
+                        options={[
+                            { value: 'men', label: sizes.sexMen },
+                            { value: 'women', label: sizes.sexWomen },
+                        ]}
+                    />
                     <label class="kit-input">
                         <span>{sizes.height}</span>
                         <input
@@ -133,6 +131,9 @@ export function SizeGuide({ lang }: SizeGuideProps) {
                 <p class="kit-finder-result" role="status" aria-live="polite">
                     {entered && (suggested ? fill(sizes.result, { size: suggested }) : sizes.noResult)}
                 </p>
+                <a class="kit-link" href="#kit-shop">
+                    ← {sizes.back}
+                </a>
             </section>
 
             <div class="kit-charts">

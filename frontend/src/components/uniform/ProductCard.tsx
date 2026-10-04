@@ -15,15 +15,19 @@ import {
     type SkuCategory,
 } from '../../lib/uniform/pricing';
 import { ProductGallery } from './ProductGallery';
+import { RadioGroup } from './RadioGroup';
 
 interface ProductCardProps {
     category: SkuCategory;
     copy: UniformCopy;
-    membership: Membership;
+    /** null until the buyer has chosen: then no price is singled out. */
+    membership: Membership | null;
     currency: Currency;
     closed: boolean;
     onAdd: (line: OrderLine) => void;
 }
+
+const ADDED_FEEDBACK_MS = 1800;
 
 function skuFor(category: SkuCategory, color: VestColor): Sku {
     const id = category === 'vest' ? `vest-${color}` : category;
@@ -38,22 +42,26 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
     const [size, setSize] = useState<Size | null>(null);
     const [qty, setQty] = useState(1);
     const [color, setColor] = useState<VestColor>('white');
-    const [justAdded, setJustAdded] = useState(false);
+    const [added, setAdded] = useState<string | null>(null);
     const flashTimer = useRef<number>();
 
     useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
     const sku = skuFor(category, color);
     const images = galleryFor(category, color, shop.imageAlt);
+    const productLabel =
+        category === 'vest' ? `${product.name} · ${color === 'white' ? shop.vestWhite : shop.vestBlack}` : product.name;
 
     function add() {
-        if (!size || closed) return;
+        if (!size || closed || added) return;
         onAdd({ sku: sku.id, size, qty });
+        setAdded(`${productLabel} ${size} × ${qty}`);
         setQty(1);
-        setJustAdded(true);
         window.clearTimeout(flashTimer.current);
-        flashTimer.current = window.setTimeout(() => setJustAdded(false), 2200);
+        flashTimer.current = window.setTimeout(() => setAdded(null), ADDED_FEEDBACK_MS);
     }
+
+    const statusText = added ? `${shop.added}: ${added}` : !size && !closed ? shop.selectSize : '';
 
     return (
         <article class="kit-card" id={`kit-${category}`}>
@@ -79,50 +87,36 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
                 </ul>
 
                 {category === 'vest' && (
-                    <fieldset class="kit-field">
-                        <legend class="kit-field-label">{shop.vestColorLabel}</legend>
-                        <div class="kit-segment" role="radiogroup" aria-label={shop.vestColorLabel}>
-                            {(['white', 'black'] as const).map((value) => (
-                                <button
-                                    key={value}
-                                    type="button"
-                                    role="radio"
-                                    aria-checked={color === value}
-                                    class="kit-segment-btn"
-                                    onClick={() => setColor(value)}
-                                >
-                                    <span class={`kit-swatch kit-swatch--${value}`} aria-hidden="true" />
-                                    {value === 'white' ? shop.vestWhite : shop.vestBlack}
-                                </button>
-                            ))}
-                        </div>
-                        {color === 'white' && <p class="kit-note">{shop.vestNote}</p>}
-                    </fieldset>
+                    <>
+                        <RadioGroup
+                            name="kit-vest-color"
+                            legend={shop.vestColorLabel}
+                            value={color}
+                            onChange={setColor}
+                            variant="segment"
+                            options={[
+                                { value: 'white', label: shop.vestWhite, swatch: 'white' },
+                                { value: 'black', label: shop.vestBlack, swatch: 'black' },
+                            ]}
+                        />
+                        {color === 'white' && <p class="kit-note kit-note--tight">{shop.vestNote}</p>}
+                    </>
                 )}
 
-                <fieldset class="kit-field">
-                    <div class="kit-field-head">
-                        <legend class="kit-field-label">{shop.sizeLabel}</legend>
-                        <a class="kit-link" href="#size-guide">
-                            {shop.sizeGuideLink}
-                        </a>
-                    </div>
-                    <div class="kit-chips" role="radiogroup" aria-label={shop.sizeLabel}>
-                        {SIZES.map((value) => (
-                            <button
-                                key={value}
-                                type="button"
-                                role="radio"
-                                aria-checked={size === value}
-                                class="kit-chip"
-                                onClick={() => setSize(value)}
-                            >
-                                {value}
-                            </button>
-                        ))}
-                    </div>
-                    {product.tip && <p class="kit-note">{product.tip}</p>}
-                </fieldset>
+                <RadioGroup
+                    name={`kit-size-${category}`}
+                    legend={shop.sizeLabel}
+                    value={size}
+                    onChange={setSize}
+                    variant="chip"
+                    options={SIZES.map((value) => ({ value, label: value }))}
+                />
+                <p class="kit-note kit-note--tight">
+                    <a class="kit-link" href="#size-guide">
+                        {shop.sizeGuideLink}
+                    </a>
+                </p>
+                {product.tip && <p class="kit-note kit-note--tight">{product.tip}</p>}
 
                 <div class="kit-actions">
                     <div class="kit-stepper" role="group" aria-label={shop.qtyLabel}>
@@ -147,14 +141,14 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
                     <button
                         type="button"
                         class="kit-btn kit-btn--solid kit-add"
-                        disabled={!size || closed}
+                        disabled={!size || closed || added !== null}
                         onClick={add}
                     >
-                        {closed ? copy.closed.title : shop.add}
+                        {closed ? copy.closed.title : added ? `✓ ${shop.added}` : shop.add}
                     </button>
                 </div>
                 <p class="kit-flash" role="status" aria-live="polite">
-                    {justAdded ? shop.added : !size && !closed ? shop.selectSize : ''}
+                    {statusText}
                 </p>
             </div>
         </article>

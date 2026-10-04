@@ -59,11 +59,15 @@ function Row({ label, value, raw, copy }: { label: string; value: string; raw?: 
 
 export function PayStep({ copy, order, totals }: PayStepProps) {
     const { pay, form } = copy;
+    const { membership, currency } = order;
+    // Only reachable once the order is ready to pay; this narrows the types.
+    if (!membership || !currency) return null;
+
     const code = order.code?.value ?? '';
-    const amount = formatPrice(totals.total, order.currency);
+    const amount = formatPrice(totals.total, currency);
 
     const config = isFormConfigured(FORM_CONFIG) ? FORM_CONFIG : null;
-    const orderForForm = { code, lines: order.lines, membership: order.membership, currency: order.currency };
+    const orderForForm = { code, lines: order.lines, membership, currency };
     const embedUrl = config && code ? buildPrefillUrl(config, orderForForm, { embedded: true }) : null;
     const openUrl = config && code ? buildPrefillUrl(config, orderForForm) : null;
 
@@ -90,7 +94,7 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                 </dl>
                 <p class="kit-note">{pay.referenceHint}</p>
 
-                {order.currency === 'RMB' ? (
+                {currency === 'RMB' ? (
                     <div class="kit-method">
                         <h4>{pay.alipayTitle}</h4>
                         <div class="kit-alipay">

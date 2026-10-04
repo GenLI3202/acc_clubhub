@@ -138,7 +138,7 @@ const SYMBOL_FILES: Record<SymbolKey, string> = {
       <SizeGuide client:visible lang={lang} />
     </section>
 
-    <section class="kit-wrap kit-terms" aria-labelledby="kit-terms-title">
+    <section class="kit-wrap kit-terms" id="kit-terms" aria-labelledby="kit-terms-title">
       <h2 class="kit-h2" id="kit-terms-title">{terms.title}</h2>
       <ol class="kit-terms-list">
         {terms.items.map((item) => <li>{item}</li>)}

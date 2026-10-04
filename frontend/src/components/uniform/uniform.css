@@ -40,6 +40,12 @@
   color: var(--color-text-secondary);
   margin: 0.5rem 0 0;
 }
+.kit-note--tight {
+  margin-top: 0.35rem;
+}
+.kit-fineprint {
+  margin-top: 1rem;
+}
 .kit-link {
   font: inherit;
   font-size: 0.8125rem;
@@ -318,17 +324,12 @@
   border-color: var(--color-accent);
 }
 
-/* ---------- Fields: size chips, segments, stepper ---------- */
+/* ---------- Fields: radio groups, stepper ---------- */
 .kit-field {
   border: 0;
   padding: 0;
   margin: 0 0 1rem;
   min-width: 0;
-}
-.kit-field-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
 }
 .kit-field-label {
   font-family: var(--font-heading);
@@ -341,62 +342,83 @@
   margin-bottom: 0.4rem;
   display: block;
 }
-.kit-chips {
+
+/* Native radios, visually hidden but still focusable; the face is the label. */
+.kit-radios {
   display: flex;
+}
+.kit-radios--chip {
   flex-wrap: wrap;
   gap: 0.4rem;
 }
-.kit-chip {
-  min-width: 2.9rem;
-  height: 2.6rem;
-  padding: 0 0.6rem;
-  font-family: var(--font-heading);
-  font-size: 0.875rem;
-  font-weight: 600;
-  background: transparent;
-  color: var(--color-text-main);
-  border: 1.5px solid var(--color-border-strong);
-  border-radius: var(--radius-btn);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-.kit-chip:hover {
-  border-color: var(--color-text-main);
-}
-.kit-chip[aria-checked='true'],
-.kit-segment-btn[aria-checked='true'] {
-  background: var(--color-primary);
-  color: var(--color-bg-canvas);
-  border-color: var(--color-primary);
-}
-
-.kit-segment {
-  display: flex;
+.kit-radios--segment {
   border: 1.5px solid var(--color-border-strong);
   border-radius: var(--radius-btn);
   overflow: hidden;
 }
-.kit-segment-btn {
+.kit-radio {
+  position: relative;
+  display: flex;
+}
+.kit-radios--segment .kit-radio {
   flex: 1;
+}
+.kit-radio input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.kit-radio-face {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.6rem 0.5rem;
-  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.kit-radios--chip .kit-radio-face {
+  min-width: 3rem;
+  height: 2.75rem;
+  padding: 0 0.7rem;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-btn);
+}
+.kit-radios--chip .kit-radio:hover .kit-radio-face {
+  border-color: var(--color-text-main);
+}
+.kit-radios--segment .kit-radio-face {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.6rem;
   font-size: 0.8125rem;
   font-weight: 500;
-  background: transparent;
-  color: var(--color-text-main);
-  border: 0;
-  cursor: pointer;
+  text-align: center;
 }
-.kit-segment-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-.kit-segment-btn + .kit-segment-btn {
+.kit-radios--segment .kit-radio + .kit-radio .kit-radio-face {
   border-left: 1.5px solid var(--color-border-strong);
+}
+.kit-radio input:checked + .kit-radio-face {
+  background: var(--color-primary);
+  color: var(--color-bg-canvas);
+  border-color: var(--color-primary);
+}
+.kit-radio input:focus-visible + .kit-radio-face {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.kit-field:disabled .kit-radio-face {
+  opacity: 0.55;
+}
+.kit-field:disabled .kit-radio input {
+  cursor: not-allowed;
 }
 .kit-swatch {
   width: 0.85rem;
@@ -406,6 +428,23 @@
 }
 .kit-swatch--white { background: #fff; }
 .kit-swatch--black { background: #111; }
+
+/* Membership + payment method, above the product cards */
+.kit-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 720px) {
+  .kit-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+.kit-options .kit-field {
+  margin-bottom: 0;
+}
 
 .kit-actions {
   display: flex;
@@ -460,6 +499,25 @@
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0 0 1rem;
+}
+.kit-choices {
+  margin: 0 0 1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+}
+.kit-choices div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.kit-choices dt {
+  color: var(--color-text-secondary);
+}
+.kit-choices dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
 }
 .kit-lines {
   list-style: none;
@@ -785,5 +843,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kit-btn, .kit-chip { transition: none; }
+  .kit-btn, .kit-radio-face { transition: none; }
 }

@@ -1,6 +1,11 @@
 // src/lib/uniform/orderState.ts
 // The buyer's in-progress order: pure transitions plus (de)serialisation, so
 // the Preact island stays thin and a refresh does not lose the basket.
+//
+// Membership and payment method start unchosen (null) on purpose: a member
+// who skims past a pre-selected "non-member" overpays, and a pre-selected
+// currency sends people to the wrong payment method. Paying is locked until
+// both are chosen (see isReadyToPay).
 
 import {
     MAX_QTY_PER_LINE,
@@ -22,15 +27,15 @@ export interface OrderCode {
 
 export interface OrderState {
     readonly lines: readonly OrderLine[];
-    readonly membership: Membership;
-    readonly currency: Currency;
+    readonly membership: Membership | null;
+    readonly currency: Currency | null;
     readonly code: OrderCode | null;
 }
 
 export const EMPTY_ORDER: OrderState = {
     lines: [],
-    membership: 'non-member',
-    currency: 'EUR',
+    membership: null,
+    currency: null,
     code: null,
 };
 
@@ -71,17 +76,40 @@ export function setCurrency(state: OrderState, currency: Currency): OrderState {
     return { ...state, currency };
 }
 
+/**
+ * Membership and currency for *showing* prices while the buyer has not
+ * chosen yet. Never use this to issue a code or build the Google Form link.
+ */
+export function displayOptions(state: OrderState): {
+    membership: Membership;
+    currency: Currency;
+} {
+    return {
+        membership: state.membership ?? 'non-member',
+        currency: state.currency ?? 'EUR',
+    };
+}
+
+/** Something in the basket, and both membership and payment method chosen. */
+export function isReadyToPay(state: OrderState): boolean {
+    return state.lines.length > 0 && state.membership !== null && state.currency !== null;
+}
+
 /** Same for the same order, whatever order the lines were added in. */
 export function orderSignature(state: OrderState): string {
     const items = state.lines
         .map((line) => `${line.sku}:${line.size}:${line.qty}`)
         .sort()
         .join(',');
-    return `${state.membership}|${state.currency}|${items}`;
+    return `${state.membership ?? '-'}|${state.currency ?? '-'}|${items}`;
 }
 
-/** Keeps the current code while the order is unchanged, otherwise issues a new one. */
+/**
+ * Keeps the current code while the order is unchanged, otherwise issues a
+ * new one. No code is issued until the order is ready to pay.
+ */
 export function codeFor(state: OrderState, makeCode: () => string): OrderState {
+    if (!isReadyToPay(state)) return state;
     const signature = orderSignature(state);
     if (state.code?.signature === signature) return state;
     return { ...state, code: { value: makeCode(), signature } };
@@ -108,6 +136,12 @@ function parseLine(value: unknown): OrderLine | null {
         : null;
 }
 
+/** A stored choice must be a known value or null (not chosen yet). */
+function parseChoice<T extends string>(value: unknown, allowed: readonly T[]): T | null | undefined {
+    if (value === null) return null;
+    return allowed.includes(value as T) ? (value as T) : undefined;
+}
+
 /** Returns null for anything that is not a well-formed saved order. */
 export function parseSavedOrder(raw: string | null): OrderState | null {
     if (!raw) return null;
@@ -121,9 +155,9 @@ export function parseSavedOrder(raw: string | null): OrderState | null {
 
     const lines = data.lines.map(parseLine);
     if (lines.some((line) => line === null)) return null;
-    const membership = data.membership as Membership;
-    const currency = data.currency as Currency;
-    if (!MEMBERSHIPS.includes(membership) || !CURRENCIES.includes(currency)) return null;
+    const membership = parseChoice(data.membership, MEMBERSHIPS);
+    const currency = parseChoice(data.currency, CURRENCIES);
+    if (membership === undefined || currency === undefined) return null;
 
     const base: OrderState = {
         lines: lines as OrderLine[],

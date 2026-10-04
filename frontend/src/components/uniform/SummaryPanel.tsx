@@ -1,14 +1,12 @@
 import { fill, type UniformCopy } from '../../lib/uniform/copy';
-import type { OrderState } from '../../lib/uniform/orderState';
+import { displayOptions, isReadyToPay, type OrderState } from '../../lib/uniform/orderState';
 import {
     SKUS,
     formatPrice,
     shippingFee,
-    type Currency,
-    type Membership,
     type OrderTotals,
-    type SkuId,
     type Size,
+    type SkuId,
 } from '../../lib/uniform/pricing';
 
 interface SummaryPanelProps {
@@ -17,8 +15,8 @@ interface SummaryPanelProps {
     totals: OrderTotals;
     step: 'select' | 'pay';
     closed: boolean;
-    onMembership: (membership: Membership) => void;
-    onCurrency: (currency: Currency) => void;
+    /** The Google Form is wired in (or this is a dev build), so paying makes sense. */
+    formReady: boolean;
     onRemove: (sku: SkuId, size: Size) => void;
     onContinue: () => void;
     onEdit: () => void;
@@ -38,35 +36,18 @@ function lineName(copy: UniformCopy, sku: SkuId): string {
     }
 }
 
-interface SegmentProps<T extends string> {
-    label: string;
-    value: T;
-    options: readonly { value: T; label: string }[];
-    disabled: boolean;
-    onChange: (value: T) => void;
-}
-
-function Segment<T extends string>({ label, value, options, disabled, onChange }: SegmentProps<T>) {
-    return (
-        <div class="kit-field">
-            <span class="kit-field-label">{label}</span>
-            <div class="kit-segment" role="radiogroup" aria-label={label}>
-                {options.map((option) => (
-                    <button
-                        key={option.value}
-                        type="button"
-                        role="radio"
-                        class="kit-segment-btn"
-                        aria-checked={value === option.value}
-                        disabled={disabled}
-                        onClick={() => onChange(option.value)}
-                    >
-                        {option.label}
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
+/** Why Continue is locked right now, or null when it is open. */
+function blockedReason(
+    copy: UniformCopy,
+    order: OrderState,
+    closed: boolean,
+    formReady: boolean,
+): string | null {
+    if (closed) return null; // the closed banner already says it
+    if (order.lines.length === 0) return copy.summary.continueDisabled;
+    if (!isReadyToPay(order)) return copy.summary.chooseFirst;
+    if (!formReady) return copy.form.comingSoon;
+    return null;
 }
 
 export function SummaryPanel({
@@ -75,17 +56,18 @@ export function SummaryPanel({
     totals,
     step,
     closed,
-    onMembership,
-    onCurrency,
+    formReady,
     onRemove,
     onContinue,
     onEdit,
 }: SummaryPanelProps) {
     const { summary } = copy;
-    const { currency, membership } = order;
+    const { currency, membership } = displayOptions(order);
     const locked = step === 'pay';
     const empty = order.lines.length === 0;
     const money = (amount: number) => formatPrice(amount, currency);
+    const blocked = blockedReason(copy, order, closed, formReady);
+    const canContinue = !closed && isReadyToPay(order) && formReady;
 
     return (
         <aside class="kit-summary" id="kit-summary" aria-labelledby="kit-summary-title">
@@ -93,28 +75,28 @@ export function SummaryPanel({
                 {summary.title}
             </h3>
 
-            <Segment
-                label={summary.membershipLabel}
-                value={membership}
-                disabled={locked}
-                onChange={onMembership}
-                options={[
-                    { value: 'member', label: summary.member },
-                    { value: 'non-member', label: summary.nonMember },
-                ]}
-            />
-            <p class="kit-note">{summary.membershipHint}</p>
-
-            <Segment
-                label={summary.currencyLabel}
-                value={currency}
-                disabled={locked}
-                onChange={onCurrency}
-                options={[
-                    { value: 'RMB', label: summary.currencyRmb },
-                    { value: 'EUR', label: summary.currencyEur },
-                ]}
-            />
+            <dl class="kit-choices">
+                <div>
+                    <dt>{summary.membershipLabel}</dt>
+                    <dd>
+                        {order.membership === null
+                            ? '—'
+                            : order.membership === 'member'
+                              ? summary.member
+                              : summary.nonMember}
+                    </dd>
+                </div>
+                <div>
+                    <dt>{summary.currencyLabel}</dt>
+                    <dd>
+                        {order.currency === null
+                            ? '—'
+                            : order.currency === 'RMB'
+                              ? summary.currencyRmb
+                              : summary.currencyEur}
+                    </dd>
+                </div>
+            </dl>
 
             {empty ? (
                 <p class="kit-empty">{summary.empty}</p>
@@ -176,20 +158,29 @@ export function SummaryPanel({
             </p>
 
             {locked ? (
-                <button type="button" class="kit-btn kit-btn--outline kit-wide" onClick={onEdit}>
-                    {summary.edit}
-                </button>
+                <>
+                    <button type="button" class="kit-btn kit-btn--outline kit-wide" onClick={onEdit}>
+                        {summary.edit}
+                    </button>
+                    <p class="kit-note">{copy.pay.editWarning}</p>
+                </>
             ) : (
                 <>
+                    <p class="kit-note kit-fineprint">
+                        {summary.fineprint} ·{' '}
+                        <a class="kit-link" href="#kit-terms">
+                            {summary.termsLink}
+                        </a>
+                    </p>
                     <button
                         type="button"
                         class="kit-btn kit-btn--solid kit-wide"
-                        disabled={empty || closed}
+                        disabled={!canContinue}
                         onClick={onContinue}
                     >
                         {summary.continue}
                     </button>
-                    {empty && !closed && <p class="kit-note">{summary.continueDisabled}</p>}
+                    {blocked && <p class="kit-note">{blocked}</p>}
                 </>
             )}
         </aside>
