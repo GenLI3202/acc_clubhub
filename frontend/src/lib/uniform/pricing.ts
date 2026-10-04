@@ -144,6 +144,11 @@ export function formatAmount(minorUnits: number, currency: Currency): string {
     return currency === 'EUR' || !Number.isInteger(major) ? major.toFixed(2) : String(major);
 }
 
+/** Display price with its currency sign: "€52.50" or "¥390". */
+export function formatPrice(minorUnits: number, currency: Currency): string {
+    return `${currency === 'EUR' ? '€' : '¥'}${formatAmount(minorUnits, currency)}`;
+}
+
 // No 0/O, 1/I/L: the code gets read aloud and typed into a bank transfer.
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 

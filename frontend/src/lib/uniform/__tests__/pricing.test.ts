@@ -7,6 +7,7 @@ import {
     computeTotals,
     formatAmount,
     formatOrderItems,
+    formatPrice,
     generateOrderCode,
     isOrderClosed,
     mergeLines,
@@ -178,6 +179,18 @@ describe('formatAmount', () => {
         expect(formatAmount(5250, 'EUR')).toBe('52.50');
         expect(formatAmount(200, 'EUR')).toBe('2.00');
         expect(formatAmount(39000, 'RMB')).toBe('390');
+    });
+});
+
+describe('formatPrice', () => {
+    it('shows EUR with a euro sign and two decimals', () => {
+        expect(formatPrice(5250, 'EUR')).toBe('€52.50');
+        expect(formatPrice(11550, 'EUR')).toBe('€115.50');
+    });
+
+    it('shows whole RMB with a yuan sign and no decimals', () => {
+        expect(formatPrice(39000, 'RMB')).toBe('¥390');
+        expect(formatPrice(85900, 'RMB')).toBe('¥859');
     });
 });
 
