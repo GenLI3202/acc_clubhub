@@ -7,8 +7,14 @@
 .kit-shop,
 .kit-sizes {
   --kit-gap: clamp(1rem, 2vw, 1.75rem);
+  --kit-accent-text: var(--color-accent);
   font-family: var(--font-body);
   color: var(--color-text-main);
+}
+
+:root.dark .kit-shop,
+:root.dark .kit-sizes {
+  --kit-accent-text: #ef5350; /* #C62828 is only ~3:1 on the dark canvas */
 }
 
 .kit-eyebrow {
@@ -17,7 +23,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--color-accent);
+  color: var(--kit-accent-text);
   margin: 0;
 }
 .kit-h2 {
@@ -47,9 +53,12 @@
   margin-top: 1rem;
 }
 .kit-link {
+  display: inline-block;
+  padding: 0.55rem 0.3rem;
+  margin: -0.55rem -0.3rem;
   font: inherit;
   font-size: 0.8125rem;
-  color: var(--color-accent);
+  color: var(--kit-accent-text);
   background: none;
   border: 0;
   padding: 0;
@@ -97,6 +106,7 @@
 }
 .kit-btn--solid:hover:not(:disabled) {
   background: var(--color-accent-dark);
+  color: #fff;
 }
 .kit-btn--outline {
   background: transparent;
@@ -105,6 +115,7 @@
 }
 .kit-btn--outline:hover {
   border-color: var(--color-text-main);
+  color: var(--color-text-main);
 }
 .kit-btn:disabled {
   opacity: 0.45;
@@ -135,7 +146,7 @@
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 }
 .kit-step-no {
   display: grid;
@@ -152,7 +163,7 @@
 .kit-step.is-current .kit-step-no,
 .kit-step.is-done .kit-step-no {
   background: var(--color-accent);
-  border-color: var(--color-accent);
+  border-color: var(--kit-accent-text);
   color: #fff;
 }
 .kit-step.is-done {
@@ -184,7 +195,9 @@
   }
   .kit-summary {
     position: sticky;
-    top: 6rem;
+    top: 7.5rem;
+    max-height: calc(100vh - 8.5rem);
+    overflow-y: auto;
   }
 }
 .kit-shop-main {
@@ -197,6 +210,15 @@
 }
 
 /* ---------- Product card ---------- */
+#kit-shop,
+#kit-summary,
+#size-guide,
+#kit-terms {
+  scroll-margin-top: 7rem;
+}
+.kit-h2:focus {
+  outline: none; /* focused programmatically after a step change */
+}
 .kit-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -205,7 +227,7 @@
   background: var(--color-bg-canvas);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 7rem;
 }
 @container (min-width: 620px) {
   .kit-card {
@@ -233,7 +255,7 @@
   margin: 0 0 1rem;
 }
 .kit-prices div {
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 }
 .kit-prices dt {
   font-size: 0.75rem;
@@ -249,7 +271,7 @@
   color: var(--color-text-main);
 }
 .kit-prices .is-current dd {
-  color: var(--color-accent);
+  color: var(--kit-accent-text);
 }
 
 .kit-bullets {
@@ -278,6 +300,7 @@
 
 /* ---------- Gallery ---------- */
 .kit-gallery-stage {
+  position: relative;
   aspect-ratio: 4 / 5;
   background: var(--color-bg-secondary);
   border-radius: var(--radius-aero);
@@ -297,7 +320,24 @@
   object-fit: contain;
   background: #fff;
 }
+.kit-gallery-stage[data-sample]::after {
+  content: attr(data-sample);
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-heading);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(17, 17, 17, 0.72);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
 .kit-gallery-thumbs {
+  min-height: 4.5rem; /* same height with one picture, so the card does not jump */
   display: flex;
   gap: 0.5rem;
   list-style: none;
@@ -321,7 +361,7 @@
   height: 100%;
 }
 .kit-thumb[aria-current='true'] {
-  border-color: var(--color-accent);
+  border-color: var(--kit-accent-text);
 }
 
 /* ---------- Fields: radio groups, stepper ---------- */
@@ -454,6 +494,7 @@
 }
 .kit-add {
   flex: 1;
+  min-height: 2.9rem;
 }
 .kit-stepper {
   display: flex;
@@ -462,7 +503,7 @@
   border-radius: var(--radius-btn);
 }
 .kit-stepper button {
-  width: 2.6rem;
+  width: 2.9rem;
   align-self: stretch;
   font-size: 1.15rem;
   background: transparent;
@@ -622,7 +663,7 @@
   font-family: var(--font-heading);
   font-size: 1.9rem;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--kit-accent-text);
 }
 .kit-pay-code {
   font-family: var(--font-heading);
@@ -684,10 +725,13 @@
 .kit-copy-status {
   flex-basis: 100%;
   font-size: 0.8125rem;
-  color: var(--color-accent);
+  color: var(--kit-accent-text);
 }
 .kit-copy-status:empty {
   display: none;
+}
+.kit-callout p {
+  margin: 0.3rem 0 0;
 }
 .kit-callout {
   margin: 0.75rem 0 0;
@@ -759,8 +803,15 @@
   letter-spacing: 0.06em;
   font-size: 0.8125rem;
 }
+.kit-mobile-bar:hover,
+.kit-mobile-bar:focus-visible {
+  color: var(--color-bg-canvas);
+}
 @media (min-width: 960px) {
   .kit-mobile-bar { display: none; }
+}
+@media (max-width: 959px) {
+  .kit-shop.has-bar { padding-bottom: 4.5rem; } /* room for the fixed order bar */
 }
 
 /* ---------- Size guide ---------- */
@@ -800,7 +851,7 @@
   font-family: var(--font-heading);
   font-size: 1.15rem;
   font-weight: 600;
-  color: var(--color-accent);
+  color: var(--kit-accent-text);
 }
 .kit-charts {
   display: grid;
@@ -857,6 +908,16 @@
 .kit-table tbody th {
   background: var(--color-bg-secondary);
   font-weight: 600;
+}
+.kit-table tbody th,
+.kit-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.kit-table thead th:first-child {
+  white-space: normal;
+  min-width: 6.5rem;
 }
 .kit-table td {
   font-family: var(--font-heading);

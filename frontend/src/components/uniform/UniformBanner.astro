@@ -114,6 +114,10 @@ const { banner } = getUniformCopy(lang);
   }
   .kit-banner-cta:hover {
     background: var(--color-accent-dark);
+    color: #fff; /* the site's a:hover would turn it red on red */
+  }
+  :global(:root.dark) .kit-banner-eyebrow {
+    color: #ef5350;
   }
   .kit-banner-cta:focus-visible {
     outline: 2px solid var(--color-accent);

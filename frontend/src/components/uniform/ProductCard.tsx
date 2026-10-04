@@ -65,7 +65,7 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
 
     return (
         <article class="kit-card" id={`kit-${category}`}>
-            <ProductGallery images={images} />
+            <ProductGallery images={images} sampleLabel={shop.sampleBadge} />
 
             <div class="kit-card-body">
                 <h3 class="kit-card-name">{product.name}</h3>

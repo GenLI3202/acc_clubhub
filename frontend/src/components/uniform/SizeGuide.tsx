@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 import { fill, getUniformCopy } from '../../lib/uniform/copy';
 import {
@@ -27,13 +27,23 @@ interface ChartTableProps {
 
 function ChartTable({ sex, caption, hint, corner, highlight }: ChartTableProps) {
     const chart = SIZE_CHARTS[sex];
+    const wrapRef = useRef<HTMLDivElement>(null);
+
+    // On a phone the matching cell can sit off to the right of the table.
+    useEffect(() => {
+        const wrap = wrapRef.current;
+        const hit = wrap?.querySelector<HTMLElement>('.is-hit');
+        if (!wrap || !hit) return;
+        wrap.scrollLeft = hit.offsetLeft - (wrap.clientWidth - hit.offsetWidth) / 2;
+    }, [highlight?.row, highlight?.col]);
+
     return (
         <figure class="kit-chart-figure">
             <figcaption>
                 <strong>{caption}</strong>
                 <span>{hint}</span>
             </figcaption>
-            <div class="kit-table-wrap" tabIndex={0} role="region" aria-label={caption}>
+            <div class="kit-table-wrap" ref={wrapRef} tabIndex={0} role="region" aria-label={caption}>
                 <table class="kit-table">
                     <thead>
                         <tr>
