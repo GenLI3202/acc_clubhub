@@ -6,7 +6,6 @@ import {
     SKUS,
     computeTotals,
     formatAmount,
-    formatOrderItems,
     formatPrice,
     generateOrderCode,
     isOrderClosed,
@@ -15,8 +14,8 @@ import {
     type OrderLine,
 } from '../pricing';
 
-const jerseyM: OrderLine = { sku: 'jersey', size: 'M', qty: 1 };
-const bibM: OrderLine = { sku: 'bib', size: 'M', qty: 1 };
+const jerseyM: OrderLine = { sku: 'jersey', cut: 'men', size: 'M', qty: 1 };
+const bibM: OrderLine = { sku: 'bib', cut: 'men', size: 'M', qty: 1 };
 
 describe('catalog', () => {
     it('lists the four SKUs with their order codes', () => {
@@ -74,9 +73,9 @@ describe('computeTotals', () => {
 
     it('uses the non-member price list', () => {
         const lines: OrderLine[] = [
-            { sku: 'jersey', size: 'L', qty: 1 },
-            { sku: 'bib', size: 'L', qty: 1 },
-            { sku: 'vest-white', size: 'L', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'bib', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'vest-white', cut: 'men', size: 'L', qty: 1 },
         ];
         const eur = computeTotals(lines, 'non-member', 'EUR');
         expect(eur.subtotal).toBe(5950 + 6800 + 4000);
@@ -86,12 +85,12 @@ describe('computeTotals', () => {
 
     it('prices both vest colours the same', () => {
         const white = computeTotals(
-            [{ sku: 'vest-white', size: 'M', qty: 1 }],
+            [{ sku: 'vest-white', cut: 'men', size: 'M', qty: 1 }],
             'member',
             'EUR',
         );
         const black = computeTotals(
-            [{ sku: 'vest-black', size: 'M', qty: 1 }],
+            [{ sku: 'vest-black', cut: 'men', size: 'M', qty: 1 }],
             'member',
             'EUR',
         );
@@ -102,7 +101,7 @@ describe('computeTotals', () => {
 
     it('counts pieces across all items for the shipping tier', () => {
         const totals = computeTotals(
-            [{ sku: 'jersey', size: 'S', qty: 2 }, { sku: 'vest-black', size: 'S', qty: 1 }],
+            [{ sku: 'jersey', cut: 'men', size: 'S', qty: 2 }, { sku: 'vest-black', cut: 'men', size: 'S', qty: 1 }],
             'member',
             'EUR',
         );
@@ -116,23 +115,39 @@ describe('computeTotals', () => {
 
     it('rejects a quantity that is not a positive integer', () => {
         expect(() =>
-            computeTotals([{ sku: 'jersey', size: 'M', qty: 0 }], 'member', 'EUR'),
+            computeTotals([{ sku: 'jersey', cut: 'men', size: 'M', qty: 0 }], 'member', 'EUR'),
         ).toThrow(RangeError);
         expect(() =>
-            computeTotals([{ sku: 'jersey', size: 'M', qty: 1.5 }], 'member', 'EUR'),
+            computeTotals([{ sku: 'jersey', cut: 'men', size: 'M', qty: 1.5 }], 'member', 'EUR'),
         ).toThrow(RangeError);
+    });
+
+    it('rejects an unknown cut', () => {
+        expect(() =>
+            computeTotals(
+                [{ sku: 'jersey', cut: 'kids' as never, size: 'M', qty: 1 }],
+                'member',
+                'EUR',
+            ),
+        ).toThrow(RangeError);
+    });
+
+    it('prices men\'s and women\'s cuts the same', () => {
+        const men = computeTotals([{ sku: 'bib', cut: 'men', size: 'S', qty: 1 }], 'member', 'EUR');
+        const women = computeTotals([{ sku: 'bib', cut: 'women', size: 'S', qty: 1 }], 'member', 'EUR');
+        expect(women.total).toBe(men.total);
     });
 
     it('rejects an unknown size or SKU', () => {
         expect(() =>
             computeTotals(
-                [{ sku: 'jersey', size: 'XXS' as never, qty: 1 }],
+                [{ sku: 'jersey', cut: 'men', size: 'XXS' as never, qty: 1 }],
                 'member',
                 'EUR',
             ),
         ).toThrow(RangeError);
         expect(() =>
-            computeTotals([{ sku: 'cap' as never, size: 'M', qty: 1 }], 'member', 'EUR'),
+            computeTotals([{ sku: 'cap' as never, cut: 'men', size: 'M', qty: 1 }], 'member', 'EUR'),
         ).toThrow(RangeError);
     });
 });
@@ -140,37 +155,37 @@ describe('computeTotals', () => {
 describe('mergeLines', () => {
     it('adds quantities of the same SKU and size, keeping first-seen order', () => {
         const merged = mergeLines([
-            { sku: 'jersey', size: 'M', qty: 1 },
-            { sku: 'bib', size: 'M', qty: 1 },
-            { sku: 'jersey', size: 'M', qty: 2 },
-            { sku: 'jersey', size: 'L', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'bib', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 2 },
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
         ]);
         expect(merged).toEqual([
-            { sku: 'jersey', size: 'M', qty: 3 },
-            { sku: 'bib', size: 'M', qty: 1 },
-            { sku: 'jersey', size: 'L', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 3 },
+            { sku: 'bib', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+        ]);
+    });
+
+    it('keeps the same item and size in different cuts as separate lines', () => {
+        const merged = mergeLines([
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'women', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+        ]);
+        expect(merged).toEqual([
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 2 },
+            { sku: 'jersey', cut: 'women', size: 'M', qty: 1 },
         ]);
     });
 
     it('does not mutate its input', () => {
         const input: OrderLine[] = [
-            { sku: 'jersey', size: 'M', qty: 1 },
-            { sku: 'jersey', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
         ];
         mergeLines(input);
         expect(input[0].qty).toBe(1);
-    });
-});
-
-describe('formatOrderItems', () => {
-    it('writes one "CODE | SIZE | QTY" line per merged item', () => {
-        expect(
-            formatOrderItems([
-                jerseyM,
-                { sku: 'vest-white', size: '2XL', qty: 2 },
-                { sku: 'jersey', size: 'M', qty: 1 },
-            ]),
-        ).toBe('JERSEY | M | 2\nVEST-WHITE | 2XL | 2');
     });
 });
 

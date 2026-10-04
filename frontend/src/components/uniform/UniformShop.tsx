@@ -227,7 +227,7 @@ export function UniformShop({ lang }: UniformShopProps) {
                     step={step}
                     closed={closed}
                     formReady={formReady}
-                    onRemove={(sku, size) => setOrder((current) => removeLine(current, sku, size))}
+                    onRemove={(sku, cut, size) => setOrder((current) => removeLine(current, sku, cut, size))}
                     onContinue={goToPay}
                     onEdit={goToSelect}
                 />

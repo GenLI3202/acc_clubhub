@@ -8,6 +8,10 @@
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'] as const;
 export type Size = (typeof SIZES)[number];
 
+/** GRC cuts the same item for men and women; the order sheet counts them separately. */
+export type Cut = 'men' | 'women';
+export const CUTS: readonly Cut[] = ['men', 'women'];
+
 export type Currency = 'EUR' | 'RMB';
 export type Membership = 'member' | 'non-member';
 export type SkuId = 'jersey' | 'bib' | 'vest-white' | 'vest-black';
@@ -23,6 +27,7 @@ export interface Sku {
 
 export interface OrderLine {
     readonly sku: SkuId;
+    readonly cut: Cut;
     readonly size: Size;
     readonly qty: number;
 }
@@ -86,6 +91,9 @@ function skuOf(id: SkuId): Sku {
 
 function assertValidLine(line: OrderLine): void {
     skuOf(line.sku);
+    if (!CUTS.includes(line.cut)) {
+        throw new RangeError(`Unknown cut: ${String(line.cut)}`);
+    }
     if (!SIZES.includes(line.size)) {
         throw new RangeError(`Unknown size: ${String(line.size)}`);
     }
@@ -105,11 +113,11 @@ export function shippingFee(pieces: number, currency: Currency): number {
     return pieces * SHIPPING_PER_PIECE[currency];
 }
 
-/** Collapses lines with the same SKU and size; first-seen order is kept. */
+/** Collapses lines with the same SKU, cut and size; first-seen order is kept. */
 export function mergeLines(lines: readonly OrderLine[]): OrderLine[] {
     const merged = new Map<string, OrderLine>();
     for (const line of lines) {
-        const key = `${line.sku}|${line.size}`;
+        const key = `${line.sku}|${line.cut}|${line.size}`;
         const existing = merged.get(key);
         merged.set(key, existing ? { ...existing, qty: existing.qty + line.qty } : { ...line });
     }
@@ -129,13 +137,6 @@ export function computeTotals(
     );
     const shipping = shippingFee(pieces, currency);
     return { pieces, subtotal, shipping, total: subtotal + shipping, currency };
-}
-
-/** "CODE | SIZE | QTY" per line — the format the Google Form field expects. */
-export function formatOrderItems(lines: readonly OrderLine[]): string {
-    return mergeLines(lines)
-        .map((line) => `${skuOf(line.sku).code} | ${line.size} | ${line.qty}`)
-        .join('\n');
 }
 
 /** Plain number for the form: EUR with two decimals, whole RMB without. */

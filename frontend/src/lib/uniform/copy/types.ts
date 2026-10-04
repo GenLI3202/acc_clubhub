@@ -58,6 +58,10 @@ export interface UniformCopy {
         readonly priceNonMember: string;
         readonly sizeLabel: string;
         readonly selectSize: string;
+        readonly cutLabel: string;
+        readonly cutMen: string;
+        readonly cutWomen: string;
+        readonly cutHint: string;
         readonly sizeGuideLink: string;
         readonly qtyLabel: string;
         readonly add: string;
@@ -95,6 +99,8 @@ export interface UniformCopy {
         readonly continueDisabled: string;
         /** Shown while membership or payment method is still unchosen. */
         readonly chooseFirst: string;
+        /** Shown when a second size of an item goes into the form's "other sizes" field. */
+        readonly extrasNote: string;
         /** One line above the Continue button, linking to the terms. */
         readonly fineprint: string;
         readonly termsLink: string;

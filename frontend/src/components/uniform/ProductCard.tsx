@@ -8,6 +8,7 @@ import {
     SKUS,
     formatPrice,
     type Currency,
+    type Cut,
     type Membership,
     type OrderLine,
     type Size,
@@ -39,6 +40,7 @@ function skuFor(category: SkuCategory, color: VestColor): Sku {
 export function ProductCard({ category, copy, membership, currency, closed, onAdd }: ProductCardProps) {
     const { shop } = copy;
     const product = shop.products[category];
+    const [cut, setCut] = useState<Cut | null>(null);
     const [size, setSize] = useState<Size | null>(null);
     const [qty, setQty] = useState(1);
     const [color, setColor] = useState<VestColor>('white');
@@ -53,15 +55,16 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
         category === 'vest' ? `${product.name} · ${color === 'white' ? shop.vestWhite : shop.vestBlack}` : product.name;
 
     function add() {
-        if (!size || closed || added) return;
-        onAdd({ sku: sku.id, size, qty });
-        setAdded(`${productLabel} ${size} × ${qty}`);
+        if (!cut || !size || closed || added) return;
+        onAdd({ sku: sku.id, cut, size, qty });
+        setAdded(`${productLabel} · ${cut === 'men' ? shop.cutMen : shop.cutWomen} ${size} × ${qty}`);
         setQty(1);
         window.clearTimeout(flashTimer.current);
         flashTimer.current = window.setTimeout(() => setAdded(null), ADDED_FEEDBACK_MS);
     }
 
-    const statusText = added ? `${shop.added}: ${added}` : !size && !closed ? shop.selectSize : '';
+    const missingChoice = !cut || !size;
+    const statusText = added ? `${shop.added}: ${added}` : missingChoice && !closed ? shop.selectSize : '';
 
     return (
         <article class="kit-card" id={`kit-${category}`}>
@@ -104,6 +107,19 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
                 )}
 
                 <RadioGroup
+                    name={`kit-cut-${category}`}
+                    legend={shop.cutLabel}
+                    value={cut}
+                    onChange={setCut}
+                    variant="segment"
+                    options={[
+                        { value: 'men', label: shop.cutMen },
+                        { value: 'women', label: shop.cutWomen },
+                    ]}
+                />
+                <p class="kit-note kit-note--tight">{shop.cutHint}</p>
+
+                <RadioGroup
                     name={`kit-size-${category}`}
                     legend={shop.sizeLabel}
                     value={size}
@@ -141,7 +157,7 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
                     <button
                         type="button"
                         class="kit-btn kit-btn--solid kit-add"
-                        disabled={!size || closed || added !== null}
+                        disabled={missingChoice || closed || added !== null}
                         onClick={add}
                     >
                         {closed ? copy.closed.title : added ? `✓ ${shop.added}` : shop.add}

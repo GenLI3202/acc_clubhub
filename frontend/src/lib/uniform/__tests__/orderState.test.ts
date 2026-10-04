@@ -16,35 +16,53 @@ import {
 } from '../orderState';
 import { MAX_QTY_PER_LINE } from '../pricing';
 
-const withJersey: OrderState = addLine(EMPTY_ORDER, { sku: 'jersey', size: 'M', qty: 1 });
+const withJersey: OrderState = addLine(EMPTY_ORDER, { sku: 'jersey', cut: 'men', size: 'M', qty: 1 });
 
 describe('addLine', () => {
     it('adds a line without touching the previous state', () => {
         expect(EMPTY_ORDER.lines).toEqual([]);
-        expect(withJersey.lines).toEqual([{ sku: 'jersey', size: 'M', qty: 1 }]);
+        expect(withJersey.lines).toEqual([{ sku: 'jersey', cut: 'men', size: 'M', qty: 1 }]);
     });
 
     it('merges the same SKU and size', () => {
-        const twice = addLine(withJersey, { sku: 'jersey', size: 'M', qty: 2 });
-        expect(twice.lines).toEqual([{ sku: 'jersey', size: 'M', qty: 3 }]);
+        const twice = addLine(withJersey, { sku: 'jersey', cut: 'men', size: 'M', qty: 2 });
+        expect(twice.lines).toEqual([{ sku: 'jersey', cut: 'men', size: 'M', qty: 3 }]);
     });
 
     it('caps a line at the per-line maximum instead of failing', () => {
-        const capped = addLine(withJersey, { sku: 'jersey', size: 'M', qty: 99 });
+        const capped = addLine(withJersey, { sku: 'jersey', cut: 'men', size: 'M', qty: 99 });
         expect(capped.lines[0].qty).toBe(MAX_QTY_PER_LINE);
     });
 
     it('ignores a line that is not a positive whole number', () => {
-        expect(addLine(EMPTY_ORDER, { sku: 'jersey', size: 'M', qty: 0 })).toBe(EMPTY_ORDER);
-        expect(addLine(EMPTY_ORDER, { sku: 'jersey', size: 'M', qty: 1.5 })).toBe(EMPTY_ORDER);
+        expect(addLine(EMPTY_ORDER, { sku: 'jersey', cut: 'men', size: 'M', qty: 0 })).toBe(EMPTY_ORDER);
+        expect(addLine(EMPTY_ORDER, { sku: 'jersey', cut: 'men', size: 'M', qty: 1.5 })).toBe(EMPTY_ORDER);
+    });
+});
+
+describe('cuts', () => {
+    it('keeps the same item and size in two cuts as two lines', () => {
+        const both = addLine(withJersey, { sku: 'jersey', cut: 'women', size: 'M', qty: 1 });
+        expect(both.lines).toHaveLength(2);
+    });
+
+    it('rejects a line without a valid cut', () => {
+        expect(addLine(EMPTY_ORDER, { sku: 'jersey', size: 'M', qty: 1 } as never)).toBe(EMPTY_ORDER);
+        expect(addLine(EMPTY_ORDER, { sku: 'jersey', cut: 'kids', size: 'M', qty: 1 } as never)).toBe(EMPTY_ORDER);
+    });
+
+    it('counts the cut in the order signature', () => {
+        const men = addLine(EMPTY_ORDER, { sku: 'bib', cut: 'men', size: 'S', qty: 1 });
+        const women = addLine(EMPTY_ORDER, { sku: 'bib', cut: 'women', size: 'S', qty: 1 });
+        expect(orderSignature(men)).not.toBe(orderSignature(women));
     });
 });
 
 describe('removeLine', () => {
     it('removes only the matching SKU and size', () => {
-        const two = addLine(withJersey, { sku: 'jersey', size: 'L', qty: 1 });
-        expect(removeLine(two, 'jersey', 'M').lines).toEqual([
-            { sku: 'jersey', size: 'L', qty: 1 },
+        const two = addLine(withJersey, { sku: 'jersey', cut: 'men', size: 'L', qty: 1 });
+        expect(removeLine(two, 'jersey', 'men', 'M').lines).toEqual([
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
         ]);
     });
 });
@@ -102,7 +120,7 @@ describe('order code', () => {
         const again = codeFor(first, make);
         expect(again.code?.value).toBe('ACC26-TEST1');
 
-        const edited = codeFor(addLine(first, { sku: 'bib', size: 'M', qty: 1 }), make);
+        const edited = codeFor(addLine(first, { sku: 'bib', cut: 'men', size: 'M', qty: 1 }), make);
         expect(edited.code?.value).toBe('ACC26-TEST2');
     });
 
@@ -116,10 +134,10 @@ describe('order code', () => {
 
 describe('orderSignature', () => {
     it('ignores line order but not content', () => {
-        const a = addLine(withJersey, { sku: 'bib', size: 'M', qty: 1 });
+        const a = addLine(withJersey, { sku: 'bib', cut: 'men', size: 'M', qty: 1 });
         const b = addLine(
-            addLine(EMPTY_ORDER, { sku: 'bib', size: 'M', qty: 1 }),
-            { sku: 'jersey', size: 'M', qty: 1 },
+            addLine(EMPTY_ORDER, { sku: 'bib', cut: 'men', size: 'M', qty: 1 }),
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
         );
         expect(orderSignature(a)).toBe(orderSignature(b));
         expect(orderSignature(a)).not.toBe(orderSignature(withJersey));
@@ -130,7 +148,7 @@ describe('saved order', () => {
     it('round-trips through serialize and parse', () => {
         const state = codeFor(
             setCurrency(
-                setMembership(addLine(withJersey, { sku: 'vest-white', size: 'XL', qty: 2 }), 'member'),
+                setMembership(addLine(withJersey, { sku: 'vest-white', cut: 'men', size: 'XL', qty: 2 }), 'member'),
                 'RMB',
             ),
             () => 'ACC26-ABCD',
@@ -147,9 +165,11 @@ describe('saved order', () => {
         ['empty', ''],
         ['not JSON', '{oops'],
         ['wrong type', '"hello"'],
-        ['unknown SKU', '{"lines":[{"sku":"cap","size":"M","qty":1}],"membership":"member","currency":"EUR"}'],
-        ['bad size', '{"lines":[{"sku":"jersey","size":"XXS","qty":1}],"membership":"member","currency":"EUR"}'],
-        ['bad quantity', '{"lines":[{"sku":"jersey","size":"M","qty":-2}],"membership":"member","currency":"EUR"}'],
+        ['unknown SKU', '{"lines":[{"sku":"cap","cut":"men","size":"M","qty":1}],"membership":"member","currency":"EUR"}'],
+        ['bad size', '{"lines":[{"sku":"jersey","cut":"men","size":"XXS","qty":1}],"membership":"member","currency":"EUR"}'],
+        ['line without a cut (older basket)', '{"lines":[{"sku":"jersey","size":"M","qty":1}],"membership":"member","currency":"EUR"}'],
+        ['bad cut', '{"lines":[{"sku":"jersey","cut":"kids","size":"M","qty":1}],"membership":"member","currency":"EUR"}'],
+        ['bad quantity', '{"lines":[{"sku":"jersey","cut":"men","size":"M","qty":-2}],"membership":"member","currency":"EUR"}'],
         ['bad membership', '{"lines":[],"membership":"vip","currency":"EUR"}'],
     ])('rejects %s', (_label, raw) => {
         expect(parseSavedOrder(raw)).toBeNull();
@@ -162,7 +182,7 @@ describe('saved order', () => {
         );
         const tampered = JSON.stringify({
             ...JSON.parse(serializeOrder(state)),
-            lines: [{ sku: 'bib', size: 'S', qty: 1 }],
+            lines: [{ sku: 'bib', cut: 'men', size: 'S', qty: 1 }],
         });
         expect(parseSavedOrder(tampered)?.code).toBeNull();
     });

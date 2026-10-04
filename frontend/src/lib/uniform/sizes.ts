@@ -3,9 +3,10 @@
 // Jersey and bib shorts share one men's and one women's quick-select chart;
 // the vest uses the men's chart plus its own garment measurements.
 
-import type { Size } from './pricing';
+import type { Cut, Size } from './pricing';
 
-export type Sex = 'men' | 'women';
+/** The size charts are split by cut, so the two are the same thing here. */
+export type Sex = Cut;
 type Band = readonly [number, number];
 
 export interface SizeRow {

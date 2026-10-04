@@ -11,8 +11,10 @@ import {
     MAX_QTY_PER_LINE,
     SIZES,
     SKUS,
+    CUTS,
     mergeLines,
     type Currency,
+    type Cut,
     type Membership,
     type OrderLine,
     type Size,
@@ -46,6 +48,7 @@ const CURRENCIES: readonly Currency[] = ['EUR', 'RMB'];
 function isValidLine(line: OrderLine): boolean {
     return (
         SKU_IDS.includes(line.sku) &&
+        CUTS.includes(line.cut) &&
         SIZES.includes(line.size) &&
         Number.isInteger(line.qty) &&
         line.qty >= 1
@@ -61,10 +64,12 @@ export function addLine(state: OrderState, line: OrderLine): OrderState {
     return { ...state, lines };
 }
 
-export function removeLine(state: OrderState, sku: SkuId, size: Size): OrderState {
+export function removeLine(state: OrderState, sku: SkuId, cut: Cut, size: Size): OrderState {
     return {
         ...state,
-        lines: state.lines.filter((line) => !(line.sku === sku && line.size === size)),
+        lines: state.lines.filter(
+            (line) => !(line.sku === sku && line.cut === cut && line.size === size),
+        ),
     };
 }
 
@@ -98,7 +103,7 @@ export function isReadyToPay(state: OrderState): boolean {
 /** Same for the same order, whatever order the lines were added in. */
 export function orderSignature(state: OrderState): string {
     const items = state.lines
-        .map((line) => `${line.sku}:${line.size}:${line.qty}`)
+        .map((line) => `${line.sku}:${line.cut}:${line.size}:${line.qty}`)
         .sort()
         .join(',');
     return `${state.membership ?? '-'}|${state.currency ?? '-'}|${items}`;
@@ -132,7 +137,7 @@ function parseLine(value: unknown): OrderLine | null {
     if (!isRecord(value)) return null;
     const line = value as unknown as OrderLine;
     return isValidLine(line) && line.qty <= MAX_QTY_PER_LINE
-        ? { sku: line.sku, size: line.size, qty: line.qty }
+        ? { sku: line.sku, cut: line.cut, size: line.size, qty: line.qty }
         : null;
 }
 

@@ -1,9 +1,11 @@
 import { fill, type UniformCopy } from '../../lib/uniform/copy';
+import { splitOrderLines } from '../../lib/uniform/form';
 import { displayOptions, isReadyToPay, type OrderState } from '../../lib/uniform/orderState';
 import {
     SKUS,
     formatPrice,
     shippingFee,
+    type Cut,
     type OrderTotals,
     type Size,
     type SkuId,
@@ -17,7 +19,7 @@ interface SummaryPanelProps {
     closed: boolean;
     /** The Google Form is wired in (or this is a dev build), so paying makes sense. */
     formReady: boolean;
-    onRemove: (sku: SkuId, size: Size) => void;
+    onRemove: (sku: SkuId, cut: Cut, size: Size) => void;
     onContinue: () => void;
     onEdit: () => void;
 }
@@ -68,6 +70,7 @@ export function SummaryPanel({
     const money = (amount: number) => formatPrice(amount, currency);
     const blocked = blockedReason(copy, order, closed, formReady);
     const canContinue = !closed && isReadyToPay(order) && formReady;
+    const hasExtras = splitOrderLines(order.lines).extras.length > 0;
 
     return (
         <aside class="kit-summary" id="kit-summary" aria-labelledby="kit-summary-title">
@@ -106,9 +109,12 @@ export function SummaryPanel({
                         const sku = SKUS.find((candidate) => candidate.id === line.sku);
                         const price = sku ? sku.prices[membership][currency] * line.qty : 0;
                         return (
-                            <li key={`${line.sku}-${line.size}`} class="kit-line">
+                            <li key={`${line.sku}-${line.cut}-${line.size}`} class="kit-line">
                                 <div>
-                                    <p class="kit-line-name">{lineName(copy, line.sku)}</p>
+                                    <p class="kit-line-name">
+                                        {lineName(copy, line.sku)} ·{' '}
+                                        {line.cut === 'men' ? copy.shop.cutMen : copy.shop.cutWomen}
+                                    </p>
                                     <p class="kit-line-meta">
                                         {line.size} × {line.qty}
                                     </p>
@@ -120,7 +126,7 @@ export function SummaryPanel({
                                             type="button"
                                             class="kit-link"
                                             aria-label={`${summary.remove}: ${lineName(copy, line.sku)} ${line.size}`}
-                                            onClick={() => onRemove(line.sku, line.size)}
+                                            onClick={() => onRemove(line.sku, line.cut, line.size)}
                                         >
                                             {summary.remove}
                                         </button>
@@ -131,6 +137,8 @@ export function SummaryPanel({
                     })}
                 </ul>
             )}
+
+            {hasExtras && <p class="kit-note">{summary.extrasNote}</p>}
 
             {!empty && (
                 <dl class="kit-totals" aria-live="polite">
