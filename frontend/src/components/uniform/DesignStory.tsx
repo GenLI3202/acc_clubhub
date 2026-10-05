@@ -96,7 +96,6 @@ export function DesignStory({ copy }: DesignStoryProps) {
                                 {paragraph}
                             </p>
                         ))}
-                        <p class="kit-story-coda">{story.coda}</p>
                         <p class="kit-produced">{story.producedBy}</p>
                     </div>
 

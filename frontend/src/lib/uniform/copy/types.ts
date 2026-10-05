@@ -44,8 +44,6 @@ export interface UniformCopy {
         readonly middle: readonly string[];
         /** End of the essay, set full width below the photos. */
         readonly closing: readonly string[];
-        /** Closing line of the essay, set apart from the paragraphs. */
-        readonly coda: string;
         readonly symbolsTitle: string;
         readonly symbolsIntro: string;
         readonly symbols: readonly { readonly key: SymbolKey; readonly name: string }[];

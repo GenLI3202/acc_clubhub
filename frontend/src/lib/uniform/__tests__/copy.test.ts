@@ -36,7 +36,6 @@ describe('getUniformCopy', () => {
         expect(story.opening.length).toBeGreaterThan(0);
         expect(story.middle.length).toBeGreaterThan(0);
         expect(story.closing.length).toBeGreaterThan(0);
-        expect(story.coda.length).toBeGreaterThan(0);
         expect(story.symbolsIntro.length).toBeGreaterThan(0);
         // The two meanings the club asked to keep: the 平安 wish and the club name.
         expect(story.middle.join(' ')).toContain('平安');

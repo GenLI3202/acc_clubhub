@@ -947,21 +947,11 @@
     order: -1;
   }
 }
-.kit-story-coda {
-  font-family: var(--font-heading);
-  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-  font-weight: 700;
-  line-height: 1.7;
-  margin: 1.75rem 0 0;
-  padding-left: 1rem;
-  border-left: 3px solid var(--color-accent);
-  max-width: 40rem;
-}
 /* The end of the essay leaves the two-column layout and runs the full width. */
 .kit-story-closing {
   margin-top: clamp(2rem, 5vw, 3.5rem);
 }
-.kit-story-closing :is(.kit-story-p, .kit-story-coda) {
+.kit-story-closing .kit-story-p {
   max-width: none;
 }
 .kit-story-p {
