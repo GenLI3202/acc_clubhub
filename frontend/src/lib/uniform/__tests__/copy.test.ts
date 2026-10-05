@@ -19,6 +19,7 @@ describe('getUniformCopy', () => {
         const copy = getUniformCopy(lang);
         expect(copy.hero.timeline).toHaveLength(base.hero.timeline.length);
         expect(copy.story.opening).toHaveLength(base.story.opening.length);
+        expect(copy.story.middle).toHaveLength(base.story.middle.length);
         expect(copy.story.closing).toHaveLength(base.story.closing.length);
         expect(copy.story.symbols.map((s) => s.key)).toEqual(base.story.symbols.map((s) => s.key));
         expect(copy.story.details).toHaveLength(base.story.details.length);
@@ -33,11 +34,12 @@ describe('getUniformCopy', () => {
     it.each(locales)('%s tells the whole design story', (lang) => {
         const { story } = getUniformCopy(lang);
         expect(story.opening.length).toBeGreaterThan(0);
+        expect(story.middle.length).toBeGreaterThan(0);
         expect(story.closing.length).toBeGreaterThan(0);
         expect(story.coda.length).toBeGreaterThan(0);
         expect(story.symbolsIntro.length).toBeGreaterThan(0);
         // The two meanings the club asked to keep: the 平安 wish and the club name.
-        expect(story.closing.join(' ')).toContain('平安');
+        expect(story.middle.join(' ')).toContain('平安');
         expect(story.closing.join(' ')).toMatch(/Across Paths/);
     });
 

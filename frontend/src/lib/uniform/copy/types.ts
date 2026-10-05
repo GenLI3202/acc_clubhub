@@ -38,9 +38,11 @@ export interface UniformCopy {
     readonly story: {
         readonly eyebrow: string;
         readonly title: string;
-        /** First half of the essay, set beside the front photo. */
+        /** Start of the essay, set beside the front photo. */
         readonly opening: readonly string[];
-        /** Second half of the essay, set beside the back photo. */
+        /** Middle of the essay, set beside the back photo. */
+        readonly middle: readonly string[];
+        /** End of the essay, set full width below the photos. */
         readonly closing: readonly string[];
         /** Closing line of the essay, set apart from the paragraphs. */
         readonly coda: string;

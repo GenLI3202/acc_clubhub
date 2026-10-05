@@ -34,9 +34,11 @@ export const de: UniformCopy = {
             'Wir haben die Grate der Alpen mit Tusche gezeichnet, Linie über Linie, und die leeren Flächen werden zu Schnee und weitem Himmel. Östliche Pinselkunst und europäische Berge begegnen sich so auf einem einzigen Radtrikot.',
             'Das schwarze Taillenband ist die Erde. Von dort windet sich eine graue Straße hinauf, durch ein Band aus abendrotem Gewölk, und verschwindet im Bergwald. Die zarten orangeroten Spuren zwischen den Gipfeln sind Herbstlaub und zugleich das Leuchten des Himmels, wenn wir im Morgengrauen aufbrechen und in der Abenddämmerung heimkehren.',
         ],
-        closing: [
+        middle: [
             'Die chinesische Malerei kennt eine alte Regel: Ein Bild ist erst vollendet, wenn es ein Siegel trägt. Dieses Trikot trägt zwei. Das eine über den Rückentaschen lautet 慕城骑士, „Radfahrer aus München“. Es ist unsere Signatur: Wir sind Radfahrer, die von München aus aufbrechen. Das andere sitzt zinnoberrot vorn an der Taille und trägt nur zwei Schriftzeichen: 平安 (píng’ān), wohlbehalten. Dieselben zwei Zeichen stehen handgeschrieben auf den Beinen der Trägerhose. Auf einer langen Ausfahrt drehen sich die Beine mehr als zehntausend Mal, und bei jedem Tritt heben und senken sich die beiden Zeichen mit, wie ein stiller Segenswunsch, zehntausendfach wiederholt.',
             '平安 ist vielleicht das Schlichteste und zugleich Ernsteste, was Chinesen einander sagen. In der Tang-Zeit traf der Dichter Cen Shen auf seinem Weg nach Westen an die Grenze einen Boten, der nach Chang’an zurückritt. Sie begegneten sich zu Pferd, ohne Papier und ohne Pinsel, und alles, was er nach Hause schicken konnte, war ein einziger Satz: Sag ihnen, dass ich wohlauf bin (凭君传语报平安). Mehr als tausend Jahre später sind wir noch weiter nach Westen gezogen, und auf den Bergstraßen eines fremden Landes wollen wir noch immer dasselbe sagen: Mögen alle, die mit uns fahren, wohlbehalten aufbrechen und erfüllt heimkehren.',
+        ],
+        closing: [
             '穿越无疆, „Across, ohne Grenzen“, ist der chinesische Name unseres Clubs und unser Leitsatz: Across Paths, Across Mountains, Across Borders. Wege bewältigen wir mit den Beinen, Berge mit Willenskraft. Und die Grenzen zwischen Ländern, zwischen Heimat und Fremde, zwischen Sprachen lösen sich auf im Schweiß und Lachen einer Gruppe, die sich im Wind abwechselt.',
         ],
         coda: 'Die Berge bleiben, die Straße bleibt. Wir ziehen es an und fahren los, und darin kommen wir wohlbehalten zurück.',

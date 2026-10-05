@@ -929,7 +929,7 @@
 .kit-story-grid {
   display: grid;
   gap: 2rem;
-  align-items: center;
+  align-items: start;
 }
 .kit-story-grid + .kit-story-grid {
   margin-top: clamp(2rem, 5vw, 3.5rem);
@@ -956,6 +956,13 @@
   padding-left: 1rem;
   border-left: 3px solid var(--color-accent);
   max-width: 40rem;
+}
+/* The end of the essay leaves the two-column layout and runs the full width. */
+.kit-story-closing {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+.kit-story-closing :is(.kit-story-p, .kit-story-coda) {
+  max-width: none;
 }
 .kit-story-p {
   font-size: clamp(1rem, 1.6vw, 1.15rem);
@@ -1009,8 +1016,19 @@
   background: rgba(17, 17, 17, 0.72);
   border-radius: var(--radius-full);
 }
-.kit-flat {
+.kit-flats {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
   margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+@media (min-width: 700px) {
+  /* Columns in the drawings' aspect ratios (1400×890 and 980×900), so both stand the same height. */
+  .kit-flats {
+    grid-template-columns: minmax(0, 1.573fr) minmax(0, 1.089fr);
+  }
+}
+.kit-flat {
   background: #fff;
   border: 1px solid var(--color-border);
 }

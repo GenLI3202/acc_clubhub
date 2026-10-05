@@ -69,16 +69,14 @@ export function DesignStory({ copy }: DesignStoryProps) {
                         </figure>
                     </div>
 
-                    {/* The seals and the club name sit on the back, so the second half goes beside the back photo. */}
+                    {/* The 慕城骑士 seal sits on the back, so the seal paragraphs go beside the back photo. */}
                     <div class="kit-story-grid kit-story-grid--flip">
                         <div>
-                            {story.closing.map((paragraph) => (
+                            {story.middle.map((paragraph) => (
                                 <p class="kit-story-p" key={paragraph}>
                                     {paragraph}
                                 </p>
                             ))}
-                            <p class="kit-story-coda">{story.coda}</p>
-                            <p class="kit-produced">{story.producedBy}</p>
                         </div>
                         <figure class="kit-story-photo kit-story-photo--back" data-sample={shop.sampleBadge}>
                             <img
@@ -92,16 +90,38 @@ export function DesignStory({ copy }: DesignStoryProps) {
                         </figure>
                     </div>
 
-                    <figure class="kit-flat">
-                        <img
-                            src="/images/uniform/flat-jersey.webp"
-                            alt={shop.imageAlt.flat}
-                            width="1400"
-                            height="890"
-                            loading="lazy"
-                            decoding="async"
-                        />
-                    </figure>
+                    <div class="kit-story-closing">
+                        {story.closing.map((paragraph) => (
+                            <p class="kit-story-p" key={paragraph}>
+                                {paragraph}
+                            </p>
+                        ))}
+                        <p class="kit-story-coda">{story.coda}</p>
+                        <p class="kit-produced">{story.producedBy}</p>
+                    </div>
+
+                    <div class="kit-flats">
+                        <figure class="kit-flat">
+                            <img
+                                src="/images/uniform/flat-jersey.webp"
+                                alt={`${shop.products.jersey.name} · ${shop.imageAlt.flat}`}
+                                width="1400"
+                                height="890"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                        <figure class="kit-flat">
+                            <img
+                                src="/images/uniform/flat-bib.webp"
+                                alt={`${shop.products.bib.name} · ${shop.imageAlt.flat}`}
+                                width="980"
+                                height="900"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                    </div>
 
                     <div class="kit-meaning">
                         <div>
