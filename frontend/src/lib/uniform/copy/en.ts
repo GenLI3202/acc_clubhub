@@ -256,7 +256,6 @@ export const en: UniformCopy = {
     banner: {
         eyebrow: 'ACC 2026 Kit',
         title: 'The 2026 kit is open for orders',
-        body: 'Alpine ridgelines, painted in ink on a cycling kit. Jersey, bib shorts and vest, picked up in Munich.',
         cta: 'See the kit and order',
         deadline: 'Orders close 25 Oct, 23:59 (Munich time)',
     },

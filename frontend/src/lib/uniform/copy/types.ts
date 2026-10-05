@@ -194,7 +194,6 @@ export interface UniformCopy {
     readonly banner: {
         readonly eyebrow: string;
         readonly title: string;
-        readonly body: string;
         readonly cta: string;
         readonly deadline: string;
     };

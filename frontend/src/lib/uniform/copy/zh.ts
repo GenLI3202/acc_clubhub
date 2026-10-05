@@ -256,7 +256,6 @@ export const zh: UniformCopy = {
     banner: {
         eyebrow: 'ACC 2026 队服',
         title: '2026 新队服，开放订购',
-        body: '阿尔卑斯的山脊，画进一件骑行服。短袖上衣、背带短裤与马甲，慕尼黑自提。',
         cta: '查看并订购',
         deadline: '10 月 25 日 23:59 截止（慕尼黑时间）',
     },
