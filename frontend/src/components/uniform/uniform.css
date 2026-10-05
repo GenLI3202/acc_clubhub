@@ -117,6 +117,39 @@
   border-color: var(--color-text-main);
   color: var(--color-text-main);
 }
+/* Going back to edit the order: secondary, but clearly a way out of the pay step. */
+.kit-btn--edit {
+  background: var(--color-bg-canvas);
+  color: var(--kit-accent-text);
+  border-color: var(--kit-accent-text);
+  border-width: 2px;
+}
+.kit-btn--edit:hover {
+  background: var(--kit-accent-text);
+  color: #fff;
+}
+.kit-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1.1rem 0.5rem 0.9rem;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kit-accent-text);
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--kit-accent-text);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.kit-back-btn:hover {
+  background: var(--kit-accent-text);
+  color: #fff;
+}
 .kit-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;

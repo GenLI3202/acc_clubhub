@@ -183,8 +183,8 @@ export function SummaryPanel({
 
             {locked ? (
                 <>
-                    <button type="button" class="kit-btn kit-btn--outline kit-wide" onClick={onEdit}>
-                        {summary.edit}
+                    <button type="button" class="kit-btn kit-btn--edit kit-wide" onClick={onEdit}>
+                        <span aria-hidden="true">←</span> {summary.edit}
                     </button>
                     <p class="kit-note">{copy.pay.editWarning}</p>
                 </>

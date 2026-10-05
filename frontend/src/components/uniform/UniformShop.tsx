@@ -149,6 +149,11 @@ export function UniformShop({ lang }: UniformShopProps) {
     return (
         <div class={`kit-shop${showBar ? ' has-bar' : ''}`} id="kit-shop">
             <header class="kit-shop-head">
+                {step !== 'select' && (
+                    <button type="button" class="kit-back-btn" onClick={goToSelect}>
+                        <span aria-hidden="true">←</span> {copy.summary.edit}
+                    </button>
+                )}
                 <p class="kit-eyebrow">{copy.shop.eyebrow}</p>
                 <h2 class="kit-h2" ref={titleRef} tabIndex={-1}>
                     {step === 'select' ? copy.shop.title : copy.shop.payTitle}
