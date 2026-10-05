@@ -70,6 +70,7 @@ export interface UniformCopy {
         readonly vestWhite: string;
         readonly vestBlack: string;
         readonly vestNote: string;
+        readonly priceCore: string;
         readonly priceMember: string;
         readonly priceNonMember: string;
         readonly sizeLabel: string;
@@ -100,6 +101,7 @@ export interface UniformCopy {
         readonly title: string;
         readonly empty: string;
         readonly membershipLabel: string;
+        readonly core: string;
         readonly member: string;
         readonly nonMember: string;
         readonly membershipHint: string;

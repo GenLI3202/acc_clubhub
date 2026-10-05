@@ -194,6 +194,11 @@ describe('saved order', () => {
         expect(parseSavedOrder(serializeOrder(state))).toEqual(state);
     });
 
+    it('round-trips a core-member order', () => {
+        const state = setCurrency(setMembership(withJersey, 'core'), 'EUR');
+        expect(parseSavedOrder(serializeOrder(state))).toEqual(state);
+    });
+
     it('round-trips an order whose membership and payment method are still unchosen', () => {
         expect(parseSavedOrder(serializeOrder(withJersey))).toEqual(withJersey);
     });

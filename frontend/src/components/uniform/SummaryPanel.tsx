@@ -7,6 +7,7 @@ import {
     formatPrice,
     shippingFee,
     type Cut,
+    type Membership,
     type OrderLine,
     type OrderTotals,
     type Size,
@@ -68,6 +69,11 @@ export function SummaryPanel({
 }: SummaryPanelProps) {
     const { summary } = copy;
     const { currency, membership } = displayOptions(order);
+    const membershipName: Record<Membership, string> = {
+        core: summary.core,
+        member: summary.member,
+        'non-member': summary.nonMember,
+    };
     const locked = step === 'pay';
     const empty = order.lines.length === 0;
     const money = (amount: number) => formatPrice(amount, currency);
@@ -88,11 +94,7 @@ export function SummaryPanel({
                 <div>
                     <dt>{summary.membershipLabel}</dt>
                     <dd>
-                        {order.membership === null
-                            ? '—'
-                            : order.membership === 'member'
-                              ? summary.member
-                              : summary.nonMember}
+                        {order.membership === null ? '—' : membershipName[order.membership]}
                     </dd>
                 </div>
                 <div>

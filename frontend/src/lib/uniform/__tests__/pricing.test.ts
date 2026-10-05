@@ -64,11 +64,21 @@ describe('computeTotals', () => {
         expect(formatAmount(totals.total, 'EUR')).toBe('115.50');
     });
 
-    it('prices a member jersey + bib in RMB (the agreed example: 859)', () => {
+    it('prices a member jersey + bib in RMB (¥874)', () => {
         const totals = computeTotals([jerseyM, bibM], 'member', 'RMB');
-        expect(totals.subtotal).toBe(83500);
+        expect(totals.subtotal).toBe(85000);
         expect(totals.shipping).toBe(2400);
-        expect(formatAmount(totals.total, 'RMB')).toBe('859');
+        expect(formatAmount(totals.total, 'RMB')).toBe('874');
+    });
+
+    it('uses the core-member price list', () => {
+        const lines: OrderLine[] = [
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'bib', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'vest-black', cut: 'men', size: 'L', qty: 1 },
+        ];
+        expect(computeTotals(lines, 'core', 'EUR').subtotal).toBe(4500 + 5100 + 3000);
+        expect(computeTotals(lines, 'core', 'RMB').subtotal).toBe(34500 + 38500 + 22500);
     });
 
     it('uses the non-member price list', () => {
@@ -243,4 +253,26 @@ describe('order deadline', () => {
     it('is open well before the deadline', () => {
         expect(isOrderClosed(new Date('2026-10-05T12:00:00Z'))).toBe(false);
     });
+});
+
+describe('price floor against the GRC dollar sheet', () => {
+    // USD cost per tier (sheet columns O, Q, S): jersey, bib, vest.
+    const USD = {
+        core: { jersey: 51, bib: 57, 'vest-white': 33, 'vest-black': 33 },
+        member: { jersey: 59.5, bib: 66.5, 'vest-white': 38.5, 'vest-black': 38.5 },
+        'non-member': { jersey: 67, bib: 76, 'vest-white': 44, 'vest-black': 44 },
+    } as const;
+    const RMB_PER_USD = 6.7;
+    const RMB_PER_EUR = 7.75;
+
+    for (const sku of SKUS) {
+        for (const tier of ['core', 'member', 'non-member'] as const) {
+            it(`${sku.id} / ${tier} is never below the dollar price`, () => {
+                const floorRmb = USD[tier][sku.id] * RMB_PER_USD;
+                const { EUR, RMB } = sku.prices[tier];
+                expect(RMB / 100).toBeGreaterThanOrEqual(floorRmb);
+                expect((EUR / 100) * RMB_PER_EUR).toBeGreaterThanOrEqual(floorRmb);
+            });
+        }
+    }
 });

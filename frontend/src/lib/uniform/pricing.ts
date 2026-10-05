@@ -13,7 +13,7 @@ export type Cut = 'men' | 'women';
 export const CUTS: readonly Cut[] = ['men', 'women'];
 
 export type Currency = 'EUR' | 'RMB';
-export type Membership = 'member' | 'non-member';
+export type Membership = 'core' | 'member' | 'non-member';
 export type SkuId = 'jersey' | 'bib' | 'vest-white' | 'vest-black';
 export type SkuCategory = 'jersey' | 'bib' | 'vest';
 
@@ -41,6 +41,7 @@ export interface OrderTotals {
 }
 
 const vestPrices = {
+    core: { EUR: 3000, RMB: 22500 },
     member: { EUR: 3500, RMB: 26000 },
     'non-member': { EUR: 4000, RMB: 30000 },
 } as const;
@@ -51,7 +52,8 @@ export const SKUS: readonly Sku[] = [
         code: 'JERSEY',
         category: 'jersey',
         prices: {
-            member: { EUR: 5250, RMB: 39000 },
+            core: { EUR: 4500, RMB: 34500 },
+            member: { EUR: 5250, RMB: 40000 },
             'non-member': { EUR: 5950, RMB: 45000 },
         },
     },
@@ -60,7 +62,8 @@ export const SKUS: readonly Sku[] = [
         code: 'BIB',
         category: 'bib',
         prices: {
-            member: { EUR: 6000, RMB: 44500 },
+            core: { EUR: 5100, RMB: 38500 },
+            member: { EUR: 6000, RMB: 45000 },
             'non-member': { EUR: 6800, RMB: 51000 },
         },
     },

@@ -50,6 +50,11 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
 
     useEffect(() => () => window.clearTimeout(flashTimer.current), []);
 
+    const priceLabel: Record<Membership, string> = {
+        core: shop.priceCore,
+        member: shop.priceMember,
+        'non-member': shop.priceNonMember,
+    };
     const sku = skuFor(category, color);
     const images = galleryFor(category, color, shop.imageAlt);
     const productLabel =
@@ -77,9 +82,9 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
                 {category === 'jersey' && <DesignStory copy={copy} />}
 
                 <dl class="kit-prices">
-                    {(['member', 'non-member'] as const).map((tier) => (
+                    {(['core', 'member', 'non-member'] as const).map((tier) => (
                         <div key={tier} class={tier === membership ? 'is-current' : undefined}>
-                            <dt>{tier === 'member' ? shop.priceMember : shop.priceNonMember}</dt>
+                            <dt>{priceLabel[tier]}</dt>
                             <dd>{formatPrice(sku.prices[tier][currency], currency)}</dd>
                         </div>
                     ))}

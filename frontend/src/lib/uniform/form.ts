@@ -23,6 +23,7 @@ import {
 } from './pricing';
 
 export const MEMBERSHIP_LABEL: Readonly<Record<Membership, string>> = {
+    core: '核心队员 Core member',
     member: '会员 Member',
     'non-member': '非会员 Non-member',
 };

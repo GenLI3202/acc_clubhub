@@ -56,6 +56,7 @@ function paramsFor(lines: OrderLine[], overrides: Partial<OrderBase> = {}) {
 describe('option labels', () => {
     it('match the option text the Google Form is created with', () => {
         expect(MEMBERSHIP_LABEL).toEqual({
+            core: '核心队员 Core member',
             member: '会员 Member',
             'non-member': '非会员 Non-member',
         });
@@ -157,6 +158,19 @@ describe('buildPrefillUrl', () => {
         expect(p.get('entry.112')).toBe('M');
         expect(p.get('entry.132')).toBe('白色');
         expect(p.get('entry.105')).toBe('分体上衣 | 女款 | L | 1\n马甲 | 男款 | 黑色 M | 2');
+    });
+
+    it('fills a core member paying in EUR', () => {
+        const p = paramsFor(
+            [
+                { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+                { sku: 'bib', cut: 'men', size: 'M', qty: 1 },
+            ],
+            { membership: 'core', currency: 'EUR', code: 'ACC26-CORE' },
+        );
+        // 45 + 51 + 2 pieces x 1.50 shipping
+        expect(p.get('entry.102')).toBe('99.00');
+        expect(p.get('entry.104')).toBe('核心队员 Core member');
     });
 
     it('fills a non-member paying in RMB', () => {

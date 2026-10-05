@@ -26,6 +26,7 @@ export function OrderOptions({ copy, order, onMembership, onCurrency }: OrderOpt
                     onChange={onMembership}
                     variant="segment"
                     options={[
+                        { value: 'core', label: summary.core },
                         { value: 'member', label: summary.member },
                         { value: 'non-member', label: summary.nonMember },
                     ]}

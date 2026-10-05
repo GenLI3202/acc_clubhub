@@ -42,7 +42,7 @@ export const EMPTY_ORDER: OrderState = {
 };
 
 const SKU_IDS: readonly string[] = SKUS.map((sku) => sku.id);
-const MEMBERSHIPS: readonly Membership[] = ['member', 'non-member'];
+const MEMBERSHIPS: readonly Membership[] = ['core', 'member', 'non-member'];
 const CURRENCIES: readonly Currency[] = ['EUR', 'RMB'];
 
 function isValidLine(line: OrderLine): boolean {
