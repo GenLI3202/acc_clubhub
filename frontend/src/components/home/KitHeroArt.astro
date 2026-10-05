@@ -1,0 +1,157 @@
+---
+// components/home/KitHeroArt.astro
+// Background of the home hero's kit slide: faint Alpine ridges in ink wash on
+// the page colour, with the model photo fading in from the right. The layers
+// rise in from far to near when the slide shows; the far ones and the mist
+// then drift slowly.
+
+import { ridgePath, type RidgeOptions } from '../../lib/home/ridgeline';
+
+const WIDTH = 1600;
+const HEIGHT = 900;
+const SPAN = { startX: -40, endX: WIDTH + 40 };
+
+interface Layer extends RidgeOptions {
+  readonly depth: 'far' | 'mid' | 'near';
+  /** Strength of the wash at the ridge line, fading to nothing below. */
+  readonly ink: number;
+  /** Fade-in delay, in seconds. */
+  readonly delay: number;
+}
+
+const LAYERS: readonly Layer[] = [
+  { ...SPAN, baseY: 430, amplitude: 170, peaks: 7, seed: 3, depth: 'far', ink: 0.07, delay: 0 },
+  { ...SPAN, baseY: 480, amplitude: 150, peaks: 6, seed: 11, depth: 'far', ink: 0.09, delay: 0.3 },
+  { ...SPAN, baseY: 570, amplitude: 140, peaks: 5, seed: 21, depth: 'mid', ink: 0.11, delay: 0.6 },
+  { ...SPAN, baseY: 700, amplitude: 90, peaks: 5, seed: 31, depth: 'near', ink: 0.12, delay: 0.9 },
+];
+
+const layers = LAYERS.map((layer, i) => ({
+  ...layer,
+  id: `kitArtWash${i}`,
+  shape: `${ridgePath(layer)} L${layer.endX} ${HEIGHT} L${layer.startX} ${HEIGHT} Z`,
+}));
+---
+
+<div class="kit-art" aria-hidden="true">
+  <svg class="kit-art-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMax slice">
+    <defs>
+      {layers.map((layer) => (
+        <linearGradient id={layer.id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7b838d" stop-opacity={layer.ink} />
+          <stop offset="0.6" stop-color="#7b838d" stop-opacity="0" />
+        </linearGradient>
+      ))}
+      <filter id="kitArtBlur" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="28" />
+      </filter>
+    </defs>
+
+    <rect class="kit-art-ground" width={WIDTH} height={HEIGHT} />
+
+    {layers.map((layer) => (
+      <g class:list={['kit-art-layer', `kit-art-layer--${layer.depth}`]}>
+        <path d={layer.shape} fill={`url(#${layer.id})`} style={`--delay: ${layer.delay}s`} />
+      </g>
+    ))}
+
+    <g class="kit-art-mist" filter="url(#kitArtBlur)">
+      <ellipse cx="380" cy="470" rx="320" ry="38" fill="#8d949c" opacity="0.08" />
+      <ellipse cx="900" cy="560" rx="360" ry="42" fill="#8d949c" opacity="0.06" />
+    </g>
+  </svg>
+
+  <img class="kit-art-photo" src="/images/uniform/model-left.webp" alt="" width="1086" height="1448" decoding="async" />
+</div>
+
+<style>
+  .kit-art {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-bg-canvas);
+  }
+
+  .kit-art-ground {
+    fill: var(--color-bg-canvas);
+  }
+
+  .kit-art-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The photo stands on the right and dissolves into the painting: a wide
+     fade on the left, softer ones top and bottom. */
+  .kit-art-photo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 46%;
+    object-fit: cover;
+    object-position: center 30%;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, #000 45%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 82%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 45%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 82%, transparent 100%);
+    mask-composite: intersect;
+  }
+
+  /* ---- Motion: only while the slide is showing ---- */
+  .kit-art-layer path {
+    opacity: 0;
+  }
+  :global(.hero-slide.active) .kit-art-layer path {
+    animation: kit-art-rise 1.8s ease-out var(--delay, 0s) forwards;
+  }
+  :global(.hero-slide.active) .kit-art-layer--far {
+    animation: kit-art-drift 36s ease-in-out infinite alternate;
+  }
+  :global(.hero-slide.active) .kit-art-mist {
+    animation: kit-art-drift-mist 24s ease-in-out infinite alternate;
+  }
+  :global(.hero-slide.active) .kit-art-photo {
+    animation: kit-art-push 16s ease-out forwards;
+  }
+
+  @keyframes kit-art-rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes kit-art-drift {
+    to { transform: translateX(-40px); }
+  }
+  @keyframes kit-art-drift-mist {
+    to { transform: translateX(90px); }
+  }
+  @keyframes kit-art-push {
+    from { transform: scale(1); }
+    to { transform: scale(1.06); }
+  }
+
+  /* On phones the photo fills the top and fades into the page colour, so the
+     dark copy below sits on a clean ground. */
+  @media (max-width: 640px) {
+    .kit-art-svg { display: none; }
+    .kit-art-photo {
+      width: 100%;
+      height: 62%;
+      object-position: center 25%;
+      -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kit-art-layer path { opacity: 1; }
+    :global(.hero-slide.active) :is(.kit-art-layer path, .kit-art-layer--far, .kit-art-mist, .kit-art-photo) {
+      animation: none;
+    }
+  }
+</style>

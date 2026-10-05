@@ -256,7 +256,6 @@ export const de: UniformCopy = {
     banner: {
         eyebrow: 'ACC Kit 2026',
         title: 'Das Kit 2026 ist bestellbar',
-        body: 'Alpine Gratlinien, in Tusche auf ein Radtrikot gemalt. Trikot, Trägerhose und Weste, Abholung in München.',
         cta: 'Kit ansehen und bestellen',
         deadline: 'Bestellschluss 25. Okt., 23:59 Uhr (Münchner Zeit)',
     },

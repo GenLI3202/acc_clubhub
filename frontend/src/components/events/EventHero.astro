@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../../lib/i18n';
+import OffSeasonHero from './OffSeasonHero.astro';
 
 interface Props {
   events: CollectionEntry<'events'>[];
@@ -30,10 +31,6 @@ function getTypeLabel(event: CollectionEntry<'events'>): string {
 
 const registerLabel = lang === 'zh' ? '立即报名 →' : lang === 'de' ? 'Jetzt anmelden →' : 'Register Now →';
 const detailsLabel  = lang === 'zh' ? '活动详情 →' : lang === 'de' ? 'Details →'        : 'View Details →';
-const fallbackTitle = lang === 'zh' ? '敬请期待'   : lang === 'de' ? 'Demnächst'        : 'Coming Soon';
-const fallbackSub   = lang === 'zh' ? '更多活动即将公布'
-                    : lang === 'de' ? 'Weitere Events folgen in Kürze'
-                    : 'More events coming soon — stay tuned';
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString(
@@ -44,13 +41,7 @@ function formatDate(dateStr: string): string {
 ---
 
 {events.length === 0 ? (
-  <section class="event-hero event-hero--fallback">
-    <div class="event-hero-overlay"></div>
-    <div class="event-hero-content">
-      <h1 class="event-hero-title">{fallbackTitle}</h1>
-      <p class="event-hero-desc">{fallbackSub}</p>
-    </div>
-  </section>
+  <OffSeasonHero lang={lang} />
 ) : (
   <section class="event-hero" id="eventHero">
     {/* Slides — stacked, only active one visible */}
@@ -164,14 +155,6 @@ function formatDate(dateStr: string): string {
     position: absolute;
     inset: 0;
     background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.30) 60%, rgba(0,0,0,0.10) 100%);
-  }
-
-  /* Fallback (no events) */
-  .event-hero--fallback {
-    background-color: var(--color-primary);
-  }
-  .event-hero--fallback .event-hero-overlay {
-    background: rgba(0,0,0,0.4);
   }
 
   /* Content */

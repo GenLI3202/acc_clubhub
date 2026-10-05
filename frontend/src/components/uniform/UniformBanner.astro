@@ -18,7 +18,7 @@ const { banner } = getUniformCopy(lang);
   <div class="kit-banner-inner">
     <img
       class="kit-banner-photo"
-      src="/images/uniform/model-front.webp"
+      src="/images/uniform/model-left.webp"
       alt=""
       width="1086"
       height="1448"
@@ -27,7 +27,6 @@ const { banner } = getUniformCopy(lang);
     <div class="kit-banner-copy">
       <p class="kit-banner-eyebrow">{banner.eyebrow}</p>
       <h2 class="kit-banner-title" id="kit-banner-title">{banner.title}</h2>
-      <p class="kit-banner-body">{banner.body}</p>
       <p class="kit-banner-deadline">{banner.deadline}</p>
       <a class="kit-banner-cta" href={`/${lang}/uniform`}>{banner.cta}</a>
     </div>
@@ -80,13 +79,7 @@ const { banner } = getUniformCopy(lang);
     line-height: 1.12;
     letter-spacing: -0.01em;
     color: var(--color-text-main);
-    margin: 0 0 0.9rem;
-  }
-  .kit-banner-body {
-    color: var(--color-text-secondary);
-    line-height: 1.7;
-    max-width: 34rem;
-    margin: 0 0 1rem;
+    margin: 0 0 1.1rem;
   }
   .kit-banner-deadline {
     display: inline-block;

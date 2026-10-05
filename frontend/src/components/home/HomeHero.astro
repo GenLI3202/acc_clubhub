@@ -1,18 +1,22 @@
 ---
 // components/home/HomeHero.astro
-// Homepage hero carousel: slide 0 is the club brand slide (team photo),
-// followed by one slide per event flagged for the hero section.
+// Homepage hero carousel: while the 2026 kit order is open its slide leads,
+// then the club brand slide (team photo), then one slide per event flagged
+// for the hero section.
 // Auto-advances; pauses on hover/focus and when the tab is hidden.
 // Separate from events/EventHero.astro on purpose — that one is the events
 // page hero and deliberately has no autoplay.
 
 import type { CollectionEntry } from 'astro:content';
 import { t, type Locale } from '../../lib/i18n';
+import KitHeroArt from './KitHeroArt.astro';
+import { getUniformCopy } from '../../lib/uniform/copy';
+import { isOrderClosed } from '../../lib/uniform/pricing';
 
 interface Props {
   lang: Locale;
   events?: CollectionEntry<'events'>[];
-  /** Auto-advance interval in ms. Set to 0 to disable autoplay. */
+  /** Auto-advance interval in ms (per slide, times its hold). 0 disables autoplay. */
   intervalMs?: number;
 }
 
@@ -55,8 +59,30 @@ function formatDate(dateStr: string): string {
   );
 }
 
-// Slide 0 is always the brand slide; events follow.
+// While the 2026 kit order is open, the first slide leads to the order page
+// and stays three times as long as the others. The page is prerendered, so
+// this is decided at build time: a build after the deadline drops the slide
+// (the order page itself shows "closed" either way).
+const kit = getUniformCopy(lang);
+const kitSlides = isOrderClosed()
+  ? []
+  : [
+      {
+        kind: 'kit' as const,
+        image: '/images/uniform/model-left.webp',
+        eyebrow: kit.banner.eyebrow,
+        title: kit.banner.title,
+        meta: kit.banner.deadline as string | null,
+        body: kit.hero.lede,
+        href: `/${lang}/uniform`,
+        cta: `${kit.banner.cta} →`,
+        hold: 3,
+      },
+    ];
+
+// The kit order (while open), then the brand slide, then events.
 const slides = [
+  ...kitSlides,
   {
     kind: 'brand' as const,
     image: BRAND_IMAGE,
@@ -66,6 +92,7 @@ const slides = [
     body: t(lang, 'home.tagline'),
     href: `/${lang}/events`,
     cta: t(lang, 'home.heroCta'),
+    hold: 1,
   },
   ...events.map((event) => ({
     kind: 'event' as const,
@@ -76,6 +103,7 @@ const slides = [
     body: event.data.description,
     href: `/${lang}/events/${event.data.slug}`,
     cta: detailsLabel,
+    hold: 1,
   })),
 ];
 
@@ -88,21 +116,31 @@ const hasCarousel = slides.length > 1;
   data-interval={hasCarousel ? intervalMs : 0}
   aria-roledescription={hasCarousel ? 'carousel' : undefined}
 >
-  {slides.map((slide, i) => (
-    <div
-      class:list={['hero-slide', { active: i === 0 }]}
-      style={`background-image: url('${slide.image}')`}
-      aria-hidden={i !== 0}
-    ></div>
-  ))}
+  {slides.map((slide, i) =>
+    slide.kind === 'kit' ? (
+      <div class:list={['hero-slide', 'hero-slide--kit', { active: i === 0 }]} aria-hidden={i !== 0}>
+        <KitHeroArt />
+      </div>
+    ) : (
+      <div
+        class:list={['hero-slide', { active: i === 0 }]}
+        style={`background-image: url('${slide.image}')`}
+        aria-hidden={i !== 0}
+      ></div>
+    )
+  )}
 
   <div class="hero-overlay"></div>
 
   <div class="hero-content">
     {slides.map((slide, i) => (
-      <div class:list={['hero-slide-content', { active: i === 0 }]} aria-hidden={i !== 0}>
+      <div
+        class:list={['hero-slide-content', `hero-slide-content--${slide.kind}`, { active: i === 0 }]}
+        aria-hidden={i !== 0}
+        data-hold={slide.hold}
+      >
         <p class="hero-eyebrow">{slide.eyebrow}</p>
-        <h1 class:list={['hero-title', { 'hero-title--event': slide.kind === 'event' }]}>
+        <h1 class:list={['hero-title', { 'hero-title--event': slide.kind !== 'brand' }]}>
           {slide.title}
         </h1>
         {slide.meta && <p class="hero-meta">{slide.meta}</p>}
@@ -142,7 +180,7 @@ const hasCarousel = slides.length > 1;
     const dots = hero.querySelectorAll<HTMLElement>('.hero-dot');
     const interval = Number(hero.dataset.interval || 0);
     let current = 0;
-    let timer: ReturnType<typeof setInterval> | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
     function goTo(index: number) {
       const next = (index + slides.length) % slides.length;
@@ -163,19 +201,36 @@ const hasCarousel = slides.length > 1;
       contents[current].setAttribute('aria-hidden', 'false');
       contents[current].querySelector('a')?.setAttribute('tabindex', '0');
       dots[current]?.classList.add('active');
+      syncHeader();
+    }
+
+    // The kit slide is light: ask the transparent header to turn solid while
+    // it shows (Header.astro reads data-light-hero in its scroll handler).
+    const header = document.querySelector<HTMLElement>('header.header-transparent');
+    function syncHeader() {
+      if (!header) return;
+      const light = slides[current].classList.contains('hero-slide--kit');
+      header.dataset.lightHero = String(light);
+      header.classList.toggle('header-scrolled', light || window.scrollY > 40);
     }
 
     // Autoplay — skipped entirely when the visitor prefers reduced motion.
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    // Each slide stays `interval × data-hold` (the kit slide holds longer).
     function start() {
       if (timer || !interval || reduceMotion || slides.length < 2) return;
-      timer = setInterval(() => goTo(current + 1), interval);
+      const hold = Number(contents[current].dataset.hold || 1);
+      timer = setTimeout(() => {
+        timer = null;
+        goTo(current + 1);
+        start();
+      }, interval * hold);
     }
 
     function stop() {
       if (timer) {
-        clearInterval(timer);
+        clearTimeout(timer);
         timer = null;
       }
     }
@@ -234,6 +289,7 @@ const hasCarousel = slides.length > 1;
       { passive: true }
     );
 
+    syncHeader();
     start();
   }
 </script>
@@ -265,6 +321,23 @@ const hasCarousel = slides.length > 1;
   .hero-slide.active {
     opacity: 1;
   }
+
+  /* The kit slide is painted on the page colour (KitHeroArt): no dark scrim,
+     just a soft wash of that colour behind the text, and dark copy on top. */
+  .homepage-hero:has(.hero-slide--kit.active) .hero-overlay {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-bg-canvas) 60%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg-canvas) 25%, transparent) 40%,
+      transparent 62%
+    );
+  }
+  .hero-slide-content--kit .hero-eyebrow { color: var(--color-accent); }
+  .hero-slide-content--kit .hero-title { color: var(--color-text-main); }
+  .hero-slide-content--kit .hero-meta { color: var(--color-text-secondary); }
+  .hero-slide-content--kit .hero-tagline { color: var(--color-text-main); }
+  .homepage-hero:has(.hero-slide--kit.active) .hero-dot { background: rgba(0, 0, 0, 0.2); }
+  .homepage-hero:has(.hero-slide--kit.active) .hero-dot.active { background: var(--color-accent); }
 
   /* Two scrims: the vertical one anchors the content to the bottom, the
      horizontal one keeps left-aligned copy legible over busy photography
