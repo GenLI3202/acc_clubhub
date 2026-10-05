@@ -15,6 +15,7 @@ import {
     type Sku,
     type SkuCategory,
 } from '../../lib/uniform/pricing';
+import { DesignStory } from './DesignStory';
 import { ProductGallery } from './ProductGallery';
 import { RadioGroup } from './RadioGroup';
 
@@ -73,6 +74,7 @@ export function ProductCard({ category, copy, membership, currency, closed, onAd
             <div class="kit-card-body">
                 <h3 class="kit-card-name">{product.name}</h3>
                 <p class="kit-card-tagline">{product.tagline}</p>
+                {category === 'jersey' && <DesignStory copy={copy} />}
 
                 <dl class="kit-prices">
                     {(['member', 'non-member'] as const).map((tier) => (

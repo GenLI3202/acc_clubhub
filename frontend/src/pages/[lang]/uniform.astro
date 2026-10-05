@@ -9,11 +9,11 @@ export const prerender = true;
 // lib/uniform/pricing.ts), decided in the browser so the page needs no rebuild.
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Countdown } from '../../components/uniform/Countdown';
 import { SizeGuide } from '../../components/uniform/SizeGuide';
 import { UniformShop } from '../../components/uniform/UniformShop';
 import { locales, type Locale } from '../../lib/i18n';
 import { getUniformCopy } from '../../lib/uniform/copy';
-import type { SymbolKey } from '../../lib/uniform/copy/types';
 import { PAYMENT } from '../../lib/uniform/payment';
 import '../../components/uniform/uniform.css';
 
@@ -23,17 +23,10 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params as { lang: Locale };
 const copy = getUniformCopy(lang);
-const { hero, story, terms, contact } = copy;
-
-const SYMBOL_FILES: Record<SymbolKey, string> = {
-  mountains: 'mountain-rider',
-  paths: 'parallel',
-  borders: 'bridge',
-  across: 'crossing',
-};
+const { hero, terms, contact } = copy;
 ---
 
-<BaseLayout title={copy.meta.title} lang={lang} heroImagePreload="/images/uniform/model-front.webp">
+<BaseLayout title={copy.meta.title} lang={lang} heroImagePreload="/images/uniform/model-left.webp">
   <section slot="hero" class="kit-hero">
     <div class="kit-hero-inner">
       <div class="kit-hero-text">
@@ -41,6 +34,7 @@ const SYMBOL_FILES: Record<SymbolKey, string> = {
         <h1 class="kit-hero-title">{hero.title}</h1>
         <p class="kit-hero-lede">{hero.lede}</p>
         <p class="kit-hero-deadline">{hero.deadline}</p>
+        <Countdown client:load lang={lang} />
         <a class="kit-btn kit-btn--solid" href="#kit-shop">{hero.cta}</a>
         <ol class="kit-timeline">
           {hero.timeline.map((item) => (
@@ -53,8 +47,8 @@ const SYMBOL_FILES: Record<SymbolKey, string> = {
       </div>
       <div class="kit-hero-photo" data-sample={copy.shop.sampleBadge}>
         <img
-          src="/images/uniform/model-front.webp"
-          alt={copy.shop.imageAlt.front}
+          src="/images/uniform/model-left.webp"
+          alt={copy.shop.imageAlt.left}
           width="1086"
           height="1448"
           fetchpriority="high"
@@ -64,72 +58,6 @@ const SYMBOL_FILES: Record<SymbolKey, string> = {
   </section>
 
   <article class="kit-page">
-    <section class="kit-wrap kit-story" aria-labelledby="kit-story-title">
-      <div class="kit-story-grid">
-        <div>
-          <p class="kit-eyebrow">{story.eyebrow}</p>
-          <h2 class="kit-h2" id="kit-story-title">{story.title}</h2>
-          {story.paragraphs.map((paragraph) => <p class="kit-story-p">{paragraph}</p>)}
-          <p class="kit-produced">{story.producedBy}</p>
-        </div>
-        <figure class="kit-story-photo" data-sample={copy.shop.sampleBadge}>
-          <img
-            src="/images/uniform/model-back.webp"
-            alt={copy.shop.imageAlt.back}
-            width="1086"
-            height="1448"
-            loading="lazy"
-          />
-        </figure>
-      </div>
-
-      <figure class="kit-flat">
-        <img
-          src="/images/uniform/flat-jersey.webp"
-          alt={copy.shop.imageAlt.flat}
-          width="1400"
-          height="890"
-          loading="lazy"
-        />
-      </figure>
-
-      <div class="kit-meaning">
-        <div>
-          <h3 class="kit-h3">{story.symbolsTitle}</h3>
-          <ul class="kit-symbols">
-            {story.symbols.map((symbol) => (
-              <li>
-                <img
-                  src={`/images/about/symbols/${SYMBOL_FILES[symbol.key]}.svg`}
-                  alt=""
-                  width="72"
-                  height="48"
-                  loading="lazy"
-                />
-                <span>{symbol.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 class="kit-h3">{story.detailsTitle}</h3>
-          <dl class="kit-details">
-            {story.details.map((detail) => (
-              <div>
-                <dt>{detail.title}</dt>
-                <dd>{detail.text}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-
-      <aside class="kit-sample" role="note">
-        <strong>{story.sampleTitle}</strong>
-        <p>{story.sampleText}</p>
-      </aside>
-    </section>
-
     <section class="kit-wrap" aria-label={copy.shop.title}>
       <UniformShop client:load lang={lang} />
     </section>
@@ -263,12 +191,10 @@ const SYMBOL_FILES: Record<SymbolKey, string> = {
     font-size: 1rem;
     color: #fff;
   }
-  .kit-hero-photo,
-  .kit-story-photo {
+  .kit-hero-photo {
     position: relative;
   }
-  .kit-hero-photo[data-sample]::after,
-  .kit-story-photo[data-sample]::after {
+  .kit-hero-photo[data-sample]::after {
     content: attr(data-sample);
     position: absolute;
     left: 0.75rem;
@@ -294,126 +220,7 @@ const SYMBOL_FILES: Record<SymbolKey, string> = {
     height: 100%;
     max-height: 34rem;
     object-fit: cover;
-    object-position: center 30%;
-  }
-
-  /* ---------- Story ---------- */
-  .kit-story-grid {
-    display: grid;
-    gap: 2rem;
-    align-items: center;
-  }
-  @media (min-width: 900px) {
-    .kit-story-grid {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-      gap: clamp(2rem, 5vw, 4rem);
-    }
-  }
-  .kit-story-p {
-    font-size: clamp(1rem, 1.6vw, 1.15rem);
-    line-height: 1.85;
-    margin: 0 0 1.1rem;
-    max-width: 40rem;
-  }
-  .kit-produced {
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--color-text-secondary);
-    margin: 1.5rem 0 0;
-  }
-  .kit-story-photo,
-  .kit-flat {
-    margin: 0;
-    border-radius: var(--radius-card);
-    overflow: hidden;
-    background: var(--color-bg-secondary);
-  }
-  .kit-story-photo img {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-height: 34rem;
-    object-fit: cover;
-  }
-  .kit-flat {
-    margin-top: clamp(2rem, 5vw, 3.5rem);
-    background: #fff;
-    border: 1px solid var(--color-border);
-  }
-  .kit-flat img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .kit-meaning {
-    display: grid;
-    gap: clamp(2rem, 5vw, 3.5rem);
-    margin-top: clamp(2rem, 5vw, 3.5rem);
-  }
-  @media (min-width: 900px) {
-    .kit-meaning { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
-  }
-  .kit-h3 {
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin: 0 0 1rem;
-  }
-  .kit-symbols {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem 1rem;
-  }
-  .kit-symbols li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-family: var(--font-heading);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-  }
-  .kit-symbols img {
-    height: 2.75rem;
-    width: auto;
-    align-self: flex-start;
-  }
-  .kit-details {
-    margin: 0;
-    display: grid;
-    gap: 1rem;
-  }
-  .kit-details div {
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .kit-details dt {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-  .kit-details dd {
-    margin: 0;
-    line-height: 1.65;
-    color: var(--color-text-secondary);
-  }
-  .kit-sample {
-    margin-top: clamp(2rem, 5vw, 3rem);
-    padding: 1.1rem 1.4rem;
-    border-left: 4px solid var(--color-accent);
-    background: var(--color-bg-secondary);
-    border-radius: var(--radius-md);
-  }
-  .kit-sample p {
-    margin: 0.4rem 0 0;
-    line-height: 1.7;
-    color: var(--color-text-secondary);
+    object-position: center 28%;
   }
 
   /* ---------- Terms + contact ---------- */

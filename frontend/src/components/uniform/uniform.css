@@ -925,6 +925,271 @@
   min-width: 26rem;
 }
 
+/* ---------- Design idea (dialog on the jersey card) ---------- */
+.kit-story-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .kit-story-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+}
+.kit-story-p {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.85;
+  margin: 0 0 1.1rem;
+  max-width: 40rem;
+}
+.kit-produced {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
+  margin: 1.5rem 0 0;
+}
+.kit-story-photo,
+.kit-flat {
+  margin: 0;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+}
+.kit-story-photo {
+  position: relative;
+}
+.kit-story-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 30rem;
+  object-fit: cover;
+  object-position: center 20%;
+}
+.kit-story-photo[data-sample]::after {
+  content: attr(data-sample);
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-heading);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(17, 17, 17, 0.72);
+  border-radius: var(--radius-full);
+}
+.kit-flat {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  background: #fff;
+  border: 1px solid var(--color-border);
+}
+.kit-flat img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.kit-meaning {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+@media (min-width: 900px) {
+  .kit-meaning { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+}
+.kit-h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+.kit-symbols {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 1rem;
+}
+.kit-symbols li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.kit-symbols img {
+  height: 2.75rem;
+  width: auto;
+  align-self: flex-start;
+}
+.kit-details {
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+.kit-details div {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.kit-details dt {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.kit-details dd {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+.kit-sample {
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding: 1.1rem 1.4rem;
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+.kit-sample p {
+  margin: 0.4rem 0 0;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+/* The button on the jersey card and the dialog it opens */
+.kit-design-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--kit-accent-text);
+  background: transparent;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.kit-design-btn:hover {
+  background: var(--color-bg-secondary);
+}
+dialog.kit-dialog {
+  width: min(960px, calc(100vw - 1.5rem));
+  max-height: calc(100vh - 1.5rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-bg-canvas);
+  color: var(--color-text-main);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+dialog.kit-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.62);
+}
+.kit-dialog-panel {
+  max-height: calc(100vh - 1.5rem);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+.kit-dialog-close {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  float: right;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 0 0.5rem 0.75rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--color-text-main);
+  background: var(--color-bg-secondary);
+  border: 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+.kit-dialog-close:hover {
+  background: var(--color-bg-tint);
+}
+.kit-dialog :is(button, a):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+/* A modal dialog does not stop the page behind it from scrolling. */
+body:has(dialog.kit-dialog[open]) {
+  overflow: hidden;
+}
+.kit-dialog .kit-h2 {
+  margin-top: 0.4rem;
+}
+
+/* ---------- Countdown (in the dark hero) ---------- */
+.kit-countdown {
+  margin: 0 0 1.5rem;
+}
+.kit-countdown-label {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.kit-countdown-cells {
+  display: flex;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.kit-countdown-cells li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 4.25rem;
+  padding: 0.6rem 0.5rem 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  color: #fff;
+}
+.kit-countdown-cells strong {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.kit-countdown-cells span {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.kit-countdown-closed {
+  margin: 0 0 1.5rem;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .kit-btn, .kit-radio-face { transition: none; }
 }
