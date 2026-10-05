@@ -85,7 +85,8 @@ export const en: UniformCopy = {
         eyebrow: 'Shop',
         title: 'Choose item, size and quantity',
         intro: 'All items are sold separately, with no bundle discount. Choose your membership and payment method first, then your items; check “Your order”, then continue to payment.',
-        payTitle: 'Pay and submit your order',
+        payTitle: 'Pay and upload your screenshot',
+        contactTitle: 'Your contact details',
         wechatTitle: 'Open this page in your browser',
         wechatBody:
             'WeChat’s built-in browser usually cannot sign in to Google, so the screenshot upload in step 3 fails and your order does not follow you to another browser. Tap ··· (top right) → Open in Browser, then order.',
@@ -170,20 +171,20 @@ export const en: UniformCopy = {
         remove: 'Remove',
         increase: 'One more',
         decrease: 'One less',
-        continue: 'Confirm and pay',
+        continue: 'Confirm and enter details',
         continueDisabled: 'Add at least one item',
         chooseFirst: 'Choose membership and payment method first',
         extrasNote: 'A second size of the same item (or a second vest colour) is written into the form’s “Additional items” field; our team adds it up by hand.',
         fineprint: 'Made to order: no returns or exchanges for a wrong size · pick-up in Munich only',
         termsLink: 'Good to know',
         edit: 'Edit order',
-        steps: ['Choose', 'Pay', 'Submit form'],
+        steps: ['Choose', 'Details', 'Pay', 'Upload proof'],
         mobileBar: 'View order',
     },
 
     pay: {
         title: 'Pay',
-        intro: 'Pay the amount below and write your order code in the payment note. Afterwards, submit the form in the next step and upload your payment screenshot.',
+        intro: 'Pay the amount below and write your order code in the payment note. Afterwards, upload your payment screenshot below.',
         amountDue: 'Amount due',
         orderCode: 'Order code',
         referenceHint: 'Write the order code in the transfer reference (Verwendungszweck).',
@@ -203,12 +204,30 @@ export const en: UniformCopy = {
         saveNote: 'Take a screenshot of your order code and amount.',
     },
 
+    contactStep: {
+        title: 'Contact details',
+        intro: 'Leave your contact details first. They are filled into the order form for you when you open it after paying.',
+        nameLabel: 'Name',
+        emailLabel: 'Email',
+        phoneLabel: 'Phone',
+        phoneHint: 'Include the country code, e.g. +49 170 1234567',
+        wechatLabel: 'WeChat name (optional)',
+        wechatHint: 'Helps our team find you in the WeChat group',
+        privacy: 'Used only for this kit order and passed to our team through a Google Form. This page does not store them on a server.',
+        continue: 'Confirm and pay',
+        errors: {
+            required: 'Required',
+            invalidEmail: 'This email address looks incomplete',
+            invalidPhone: 'Check the phone number and include the country code',
+        },
+    },
+
     form: {
-        title: 'Submit your order form',
-        intro: 'Your order is filled in for you when the form opens. Add your contact details there and upload your payment screenshot.',
+        title: 'Upload your payment screenshot',
+        intro: 'Your name, contact details and order are already filled into the form. After paying, open it, check everything, upload your payment screenshot and submit.',
         signInNote:
             'Uploading a screenshot requires a Google account. If you cannot sign in (for example in mainland China), send the screenshot and your order code to our team on WeChat or by email.',
-        openNewTab: 'Open the order form',
+        openNewTab: 'Submit the order form',
         comingSoon: 'The order form is being prepared. Please check back shortly.',
     },
 

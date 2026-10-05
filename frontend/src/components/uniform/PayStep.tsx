@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 
+import type { ContactInfo } from '../../lib/uniform/contact';
 import { FORM_CONFIG, buildPrefillUrl, isFormConfigured } from '../../lib/uniform/form';
 import type { UniformCopy } from '../../lib/uniform/copy';
 import type { OrderState } from '../../lib/uniform/orderState';
@@ -10,6 +11,8 @@ interface PayStepProps {
     copy: UniformCopy;
     order: OrderState;
     totals: OrderTotals;
+    /** Pre-filled into the form together with the order. */
+    contact: ContactInfo;
 }
 
 /**
@@ -61,7 +64,7 @@ function Row({ label, value, raw, copy }: { label: string; value: string; raw?: 
     );
 }
 
-export function PayStep({ copy, order, totals }: PayStepProps) {
+export function PayStep({ copy, order, totals, contact }: PayStepProps) {
     const { pay, form } = copy;
     const { membership, currency } = order;
     // Only reachable once the order is ready to pay; this narrows the types.
@@ -71,7 +74,7 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
     const amount = formatPrice(totals.total, currency);
 
     const config = isFormConfigured(FORM_CONFIG) ? FORM_CONFIG : null;
-    const orderForForm = { code, lines: order.lines, membership, currency };
+    const orderForForm = { code, lines: order.lines, membership, currency, contact };
     const openUrl = config && code ? buildPrefillUrl(config, orderForForm) : null;
 
     return (

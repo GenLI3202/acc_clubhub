@@ -1324,3 +1324,42 @@ body:has(dialog.kit-dialog[open]) {
   .kit-design-btn::after { animation: none; display: none; }
   .kit-design-btn:hover, .kit-design-btn:hover .kit-design-btn-arrow { transform: none; }
 }
+
+/* Contact details, asked before paying */
+.kit-contact {
+  display: grid;
+  gap: 1rem;
+  max-width: 34rem;
+}
+.kit-field {
+  display: grid;
+  gap: 0.35rem;
+}
+.kit-field-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+.kit-input {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 1rem; /* 16px keeps iOS from zooming the page on focus */
+  padding: 0.75rem 0.9rem;
+  color: var(--color-text-main);
+  background: var(--color-bg-canvas);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-btn);
+}
+.kit-input[aria-invalid='true'] {
+  border-color: var(--kit-accent-text);
+}
+.kit-field-hint {
+  margin: 0;
+}
+.kit-field-error {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--kit-accent-text);
+}

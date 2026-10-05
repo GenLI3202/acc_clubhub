@@ -85,7 +85,8 @@ export const de: UniformCopy = {
         eyebrow: 'Shop',
         title: 'Artikel, Größe und Anzahl wählen',
         intro: 'Alle Artikel werden einzeln verkauft, es gibt keinen Set-Rabatt. Wähle zuerst Mitgliedschaft und Zahlungsart, dann deine Artikel; prüfe „Deine Bestellung“ und gehe dann zur Zahlung.',
-        payTitle: 'Bezahlen und Bestellung absenden',
+        payTitle: 'Bezahlen und Zahlungsnachweis hochladen',
+        contactTitle: 'Deine Kontaktdaten',
         wechatTitle: 'Bitte im Browser öffnen',
         wechatBody:
             'Der Browser in WeChat kann sich meist nicht bei Google anmelden: Der Screenshot-Upload in Schritt 3 schlägt dann fehl, und deine Bestellung wird nicht in einen anderen Browser übernommen. Tippe oben rechts auf ··· → „Im Browser öffnen“ und bestelle dort.',
@@ -170,20 +171,20 @@ export const de: UniformCopy = {
         remove: 'Entfernen',
         increase: 'Eines mehr',
         decrease: 'Eines weniger',
-        continue: 'Bestätigen und bezahlen',
+        continue: 'Bestätigen und Angaben machen',
         continueDisabled: 'Mindestens einen Artikel hinzufügen',
         chooseFirst: 'Bitte zuerst Mitgliedschaft und Zahlungsart wählen',
         extrasNote: 'Eine zweite Größe desselben Artikels (oder eine zweite Westenfarbe) steht im Formularfeld „Additional items“; unser Team rechnet sie von Hand zusammen.',
         fineprint: 'Maßanfertigung: keine Rückgabe bei falscher Größe · nur Abholung in München',
         termsLink: 'Gut zu wissen',
         edit: 'Bestellung ändern',
-        steps: ['Auswahl', 'Zahlung', 'Formular'],
+        steps: ['Auswahl', 'Angaben', 'Zahlung', 'Nachweis'],
         mobileBar: 'Bestellung ansehen',
     },
 
     pay: {
         title: 'Bezahlen',
-        intro: 'Zahle den Betrag unten und schreibe deinen Bestellcode in den Verwendungszweck. Danach sendest du im nächsten Schritt das Formular ab und lädst deinen Zahlungsnachweis hoch.',
+        intro: 'Zahle den Betrag unten und schreibe deinen Bestellcode in den Verwendungszweck. Danach lädst du unten deinen Zahlungsnachweis hoch.',
         amountDue: 'Zu zahlender Betrag',
         orderCode: 'Bestellcode',
         referenceHint: 'Trage den Bestellcode im Verwendungszweck der Überweisung ein.',
@@ -203,12 +204,30 @@ export const de: UniformCopy = {
         saveNote: 'Mache einen Screenshot von Bestellcode und Betrag.',
     },
 
+    contactStep: {
+        title: 'Kontaktdaten',
+        intro: 'Hinterlasse zuerst deine Kontaktdaten. Sie werden beim Öffnen des Bestellformulars nach der Zahlung automatisch eingetragen.',
+        nameLabel: 'Name',
+        emailLabel: 'E-Mail',
+        phoneLabel: 'Telefon',
+        phoneHint: 'Mit Landesvorwahl, z. B. +49 170 1234567',
+        wechatLabel: 'WeChat-Name (optional)',
+        wechatHint: 'Damit unser Team dich in der WeChat-Gruppe findet',
+        privacy: 'Nur für diese Kit-Bestellung; sie gehen über ein Google-Formular an unser Team. Diese Seite speichert sie nicht auf einem Server.',
+        continue: 'Bestätigen und bezahlen',
+        errors: {
+            required: 'Pflichtfeld',
+            invalidEmail: 'Die E-Mail-Adresse scheint unvollständig',
+            invalidPhone: 'Bitte Nummer prüfen und Landesvorwahl angeben',
+        },
+    },
+
     form: {
-        title: 'Bestellformular absenden',
-        intro: 'Deine Bestellung ist beim Öffnen des Formulars bereits eingetragen. Ergänze dort deine Kontaktdaten und lade deinen Zahlungsnachweis hoch.',
+        title: 'Zahlungsnachweis hochladen',
+        intro: 'Name, Kontaktdaten und Bestellung sind im Formular schon eingetragen. Öffne es nach der Zahlung, prüfe alles, lade deinen Zahlungsnachweis hoch und sende es ab.',
         signInNote:
             'Für den Upload eines Screenshots brauchst du ein Google-Konto. Wenn du dich nicht anmelden kannst (zum Beispiel in Festlandchina), schicke Screenshot und Bestellcode per WeChat oder E-Mail an unser Team.',
-        openNewTab: 'Bestellformular öffnen',
+        openNewTab: 'Bestellformular absenden',
         comingSoon: 'Das Bestellformular wird gerade vorbereitet. Bitte schau in Kürze wieder vorbei.',
     },
 

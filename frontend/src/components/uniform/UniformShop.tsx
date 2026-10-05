@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 
+import {
+    EMPTY_CONTACT,
+    hasContactErrors,
+    parseSavedContact,
+    serializeContact,
+    validateContact,
+    type ContactInfo,
+} from '../../lib/uniform/contact';
 import { fill, getUniformCopy } from '../../lib/uniform/copy';
 import { isWeChatUserAgent } from '../../lib/uniform/environment';
 import { FORM_CONFIG, isFormConfigured } from '../../lib/uniform/form';
@@ -24,6 +32,7 @@ import {
     type SkuCategory,
 } from '../../lib/uniform/pricing';
 import type { Locale } from '../../lib/i18n';
+import { ContactStep } from './ContactStep';
 import { OrderOptions } from './OrderOptions';
 import { PayStep } from './PayStep';
 import { ProductCard } from './ProductCard';
@@ -32,9 +41,13 @@ import './uniform.css';
 
 const ORDER_KEY = 'acc-kit-2026-order';
 const STEP_KEY = 'acc-kit-2026-step';
+// Personal data goes to sessionStorage only: it survives a reload or a trip to
+// the bank app in the same tab, and is gone when the tab closes.
+const CONTACT_KEY = 'acc-kit-2026-contact';
 const CATEGORIES: readonly SkuCategory[] = ['jersey', 'bib', 'vest'];
 
-type Step = 'select' | 'pay';
+type Step = 'select' | 'info' | 'pay';
+const STEP_ORDER: readonly Step[] = ['select', 'info', 'pay'];
 
 interface UniformShopProps {
     lang: Locale;
@@ -59,6 +72,22 @@ function writeStorage(key: string, value: string): void {
     }
 }
 
+function readSession(key: string): string | null {
+    try {
+        return window.sessionStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function writeSession(key: string, value: string): void {
+    try {
+        window.sessionStorage.setItem(key, value);
+    } catch {
+        // Blocked storage: the buyer retypes their details after a reload.
+    }
+}
+
 // Jump, don't glide: the screen's content has just been swapped, so a smooth
 // scroll that started before the swap would be cut off by the layout change.
 function scrollToShop(): void {
@@ -69,6 +98,7 @@ export function UniformShop({ lang }: UniformShopProps) {
     const copy = getUniformCopy(lang);
     const [order, setOrder] = useState<OrderState>(EMPTY_ORDER);
     const [step, setStep] = useState<Step>('select');
+    const [contact, setContact] = useState<ContactInfo>(EMPTY_CONTACT);
     const [closed, setClosed] = useState(false);
     const [ready, setReady] = useState(false);
     const [inWeChat, setInWeChat] = useState(false);
@@ -88,12 +118,20 @@ export function UniformShop({ lang }: UniformShopProps) {
         setInWeChat(isWeChatUserAgent(window.navigator.userAgent));
 
         const saved = isClosed ? null : parseSavedOrder(readStorage(ORDER_KEY));
-        if (saved) {
+        const savedContact = parseSavedContact(readSession(CONTACT_KEY));
+        setContact(savedContact);
+        if (saved && isReadyToPay(saved) && formReady) {
             setOrder(saved);
-            // Come back to the payment screen the buyer left, with the same code.
-            if (readStorage(STEP_KEY) === 'pay' && saved.code && isReadyToPay(saved) && formReady) {
-                setStep('pay');
+            // Come back to the screen the buyer left. Paying needs the code and
+            // the contact details; without them they go back one screen.
+            const savedStep = readStorage(STEP_KEY);
+            if (savedStep === 'pay' && saved.code) {
+                setStep(hasContactErrors(validateContact(savedContact)) ? 'info' : 'pay');
+            } else if (savedStep === 'info') {
+                setStep('info');
             }
+        } else if (saved) {
+            setOrder(saved);
         }
         setReady(true);
     }, []);
@@ -103,6 +141,10 @@ export function UniformShop({ lang }: UniformShopProps) {
         writeStorage(ORDER_KEY, serializeOrder(order));
         writeStorage(STEP_KEY, step);
     }, [order, step, ready]);
+
+    useEffect(() => {
+        if (ready) writeSession(CONTACT_KEY, serializeContact(contact));
+    }, [contact, ready]);
 
     // After a deliberate step change, bring the new screen to the top and put
     // keyboard and screen-reader focus on its heading, instead of leaving it on
@@ -133,9 +175,16 @@ export function UniformShop({ lang }: UniformShopProps) {
         [order.lines, membership, currency],
     );
 
-    function goToPay() {
+    function goToInfo() {
         if (closed || !formReady || !isReadyToPay(order)) return;
         moveFocus.current = true;
+        setStep('info');
+    }
+
+    function goToPay(confirmed: ContactInfo) {
+        if (closed || !formReady || !isReadyToPay(order)) return;
+        moveFocus.current = true;
+        setContact(confirmed);
         setOrder((current) => codeFor(current, generateOrderCode));
         setStep('pay');
     }
@@ -157,7 +206,11 @@ export function UniformShop({ lang }: UniformShopProps) {
                 )}
                 <p class="kit-eyebrow">{copy.shop.eyebrow}</p>
                 <h2 class="kit-h2" ref={titleRef} tabIndex={-1}>
-                    {step === 'select' ? copy.shop.title : copy.shop.payTitle}
+                    {step === 'select'
+                        ? copy.shop.title
+                        : step === 'info'
+                          ? copy.shop.contactTitle
+                          : copy.shop.payTitle}
                 </h2>
                 {step === 'select' && <p class="kit-lede">{copy.shop.intro}</p>}
                 {inWeChat && (
@@ -168,16 +221,8 @@ export function UniformShop({ lang }: UniformShopProps) {
                 )}
                 <ol class="kit-steps" aria-label={copy.shop.eyebrow}>
                     {copy.summary.steps.map((label, i) => {
-                        const status =
-                            step === 'select'
-                                ? i === 0
-                                    ? 'current'
-                                    : 'todo'
-                                : i === 0
-                                  ? 'done'
-                                  : i === 1
-                                    ? 'current'
-                                    : 'todo';
+                        const here = STEP_ORDER.indexOf(step);
+                        const status = i < here ? 'done' : i === here ? 'current' : 'todo';
                         return (
                             <li
                                 key={label}
@@ -221,8 +266,10 @@ export function UniformShop({ lang }: UniformShopProps) {
                                 onAdd={(line) => setOrder((current) => addLine(current, line))}
                             />
                         ))
+                    ) : step === 'info' ? (
+                        <ContactStep copy={copy} contact={contact} onChange={(field, value) => setContact((current) => ({ ...current, [field]: value }))} onSubmit={goToPay} />
                     ) : (
-                        <PayStep copy={copy} order={order} totals={totals} />
+                        <PayStep copy={copy} order={order} totals={totals} contact={contact} />
                     )}
                 </div>
 
@@ -236,7 +283,7 @@ export function UniformShop({ lang }: UniformShopProps) {
                     onChangeQty={(sku, cut, size, delta) =>
                         setOrder((current) => changeQty(current, sku, cut, size, delta))
                     }
-                    onContinue={goToPay}
+                    onContinue={goToInfo}
                     onEdit={goToSelect}
                 />
             </div>

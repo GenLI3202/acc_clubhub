@@ -85,7 +85,8 @@ export const zh: UniformCopy = {
         eyebrow: '选购',
         title: '选择款式、尺码和件数',
         intro: '三个款式单独售卖，没有套装优惠。先选会员身份和付款方式，再挑款式；选好后在「你的订单」里确认，然后去付款。',
-        payTitle: '付款并提交订单',
+        payTitle: '付款并上传截图',
+        contactTitle: '填写联系信息',
         wechatTitle: '请在浏览器中打开本页',
         wechatBody:
             '微信内置浏览器通常无法登录 Google，第 3 步的截图上传会失败，订单也不会带到别的浏览器。请点右上角「···」→「在浏览器打开」后再下单。',
@@ -170,20 +171,20 @@ export const zh: UniformCopy = {
         remove: '移除',
         increase: '增加一件',
         decrease: '减少一件',
-        continue: '确认订单，去付款',
+        continue: '确认订单，填写信息',
         continueDisabled: '请至少加入一件',
         chooseFirst: '请先选择会员身份和付款方式',
         extrasNote: '同一款式的第二个尺码（或另一种马甲颜色）会写进表单的「其他尺码」栏，由工作人员手动汇总。',
         fineprint: '定制商品：尺码选错不退不换 · 仅慕尼黑自提',
         termsLink: '订购须知',
         edit: '修改订单',
-        steps: ['选购', '付款', '提交表单'],
+        steps: ['选购', '填写信息', '付款', '上传截图'],
         mobileBar: '查看订单',
     },
 
     pay: {
         title: '付款',
-        intro: '请按下面的金额付款，并在备注里写上订单号。付款后，到下一步提交表单并上传付款截图。',
+        intro: '请按下面的金额付款，并在备注里写上订单号。付款后，到下方上传付款截图。',
         amountDue: '应付金额',
         orderCode: '订单号',
         referenceHint: '请在转账的备注（Verwendungszweck）里填写订单号。',
@@ -203,12 +204,30 @@ export const zh: UniformCopy = {
         saveNote: '请截图保存订单号和金额。',
     },
 
+    contactStep: {
+        title: '联系信息',
+        intro: '请先留下联系方式。付款后打开订购表单时，这些信息会自动填好。',
+        nameLabel: '姓名',
+        emailLabel: '邮箱',
+        phoneLabel: '电话',
+        phoneHint: '请含国家区号，例如 +49 170 1234567',
+        wechatLabel: '微信名 / 备注名（选填）',
+        wechatHint: '方便工作人员在微信群里找到你',
+        privacy: '这些信息只用于本次队服订购，会通过 Google 表单交给工作人员；本页不会把它们保存到服务器。',
+        continue: '确认信息，去付款',
+        errors: {
+            required: '请填写',
+            invalidEmail: '邮箱格式不正确',
+            invalidPhone: '电话格式不正确，请含国家区号',
+        },
+    },
+
     form: {
-        title: '提交订单表单',
-        intro: '订单信息会自动填入订购表单。请在表单里补充联系方式，并上传付款截图。',
+        title: '上传付款截图',
+        intro: '你的姓名、联系方式和订单信息已自动填入表单。付款后打开表单，核对无误，上传付款截图并提交。',
         signInNote:
             '上传截图需要登录 Google 账号。无法登录时（例如在中国大陆），请把付款截图和订单号发给工作人员的微信或邮箱。',
-        openNewTab: '打开订购表单',
+        openNewTab: '提交订购表单',
         comingSoon: '订购表单正在准备中，请稍后再来。',
     },
 
