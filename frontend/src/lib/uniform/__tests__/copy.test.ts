@@ -39,6 +39,9 @@ describe('getUniformCopy', () => {
         expect(story.symbolsIntro.length).toBeGreaterThan(0);
         // The two meanings the club asked to keep: the 平安 wish and the club name.
         expect(story.middle.join(' ')).toContain('平安');
+        // The highlighted wish must still match the text after a translation edit.
+        expect(story.highlight.length).toBeGreaterThan(0);
+        expect(story.middle.join(' ')).toContain(story.highlight);
         expect(story.closing.join(' ')).toMatch(/Across Paths/);
     });
 

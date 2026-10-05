@@ -44,6 +44,8 @@ export interface UniformCopy {
         readonly middle: readonly string[];
         /** End of the essay, set full width below the photos. */
         readonly closing: readonly string[];
+        /** The 平安 wish: a phrase from `middle` that the page highlights. */
+        readonly highlight: string;
         readonly symbolsTitle: string;
         readonly symbolsIntro: string;
         readonly symbols: readonly { readonly key: SymbolKey; readonly name: string }[];

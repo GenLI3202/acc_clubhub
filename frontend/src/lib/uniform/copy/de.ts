@@ -41,6 +41,7 @@ export const de: UniformCopy = {
         closing: [
             '穿越无疆, „Across, ohne Grenzen“, ist der chinesische Name unseres Clubs und unser Leitsatz: Across Paths, Across Mountains, Across Borders. Wege bewältigen wir mit den Beinen, Berge mit Willenskraft. Und die Grenzen zwischen Ländern, zwischen Heimat und Fremde, zwischen Sprachen lösen sich auf im Schweiß und Lachen einer Gruppe, die sich im Wind abwechselt.',
         ],
+        highlight: 'Mögen alle, die mit uns fahren, wohlbehalten aufbrechen und erfüllt heimkehren.',
         symbolsTitle: 'Vier Symbole am rechten Ärmel',
         symbolsIntro:
             'Am rechten Ärmel stehen untereinander vier Symbole. Sie sind keine Schrift und haben doch die Schlichtheit von etwas, das älter ist als die Schrift: wie Ritzungen in einer Felswand oder Zeichen, die ein Reisender an einer Wegkreuzung hinterlässt. Es sind vier Arten, „across“ zu schreiben.',

@@ -1,6 +1,7 @@
 import { useRef } from 'preact/hooks';
 
 import type { SymbolKey, UniformCopy } from '../../lib/uniform/copy/types';
+import { splitAtPhrase } from '../../lib/uniform/highlight';
 
 interface DesignStoryProps {
     copy: UniformCopy;
@@ -12,6 +13,35 @@ const SYMBOL_FILES: Readonly<Record<SymbolKey, string>> = {
     borders: 'bridge',
     across: 'crossing',
 };
+
+interface StoryParagraphsProps {
+    paragraphs: readonly string[];
+    /** Phrase set in bold accent, at its first occurrence in a paragraph. */
+    highlight: string;
+}
+
+function StoryParagraphs({ paragraphs, highlight }: StoryParagraphsProps) {
+    return (
+        <>
+            {paragraphs.map((paragraph) => {
+                const parts = splitAtPhrase(paragraph, highlight);
+                return (
+                    <p class="kit-story-p" key={paragraph}>
+                        {parts ? (
+                            <>
+                                {parts.before}
+                                <strong class="kit-story-highlight">{parts.match}</strong>
+                                {parts.after}
+                            </>
+                        ) : (
+                            paragraph
+                        )}
+                    </p>
+                );
+            })}
+        </>
+    );
+}
 
 /**
  * "Read the design idea": a button on the jersey card that opens the story of
@@ -51,11 +81,7 @@ export function DesignStory({ copy }: DesignStoryProps) {
                             <h2 class="kit-h2" id="kit-story-title">
                                 {story.title}
                             </h2>
-                            {story.opening.map((paragraph) => (
-                                <p class="kit-story-p" key={paragraph}>
-                                    {paragraph}
-                                </p>
-                            ))}
+                            <StoryParagraphs paragraphs={story.opening} highlight={story.highlight} />
                         </div>
                         <figure class="kit-story-photo" data-sample={shop.sampleBadge}>
                             <img
@@ -72,11 +98,7 @@ export function DesignStory({ copy }: DesignStoryProps) {
                     {/* The 慕城骑士 seal sits on the back, so the seal paragraphs go beside the back photo. */}
                     <div class="kit-story-grid kit-story-grid--flip">
                         <div>
-                            {story.middle.map((paragraph) => (
-                                <p class="kit-story-p" key={paragraph}>
-                                    {paragraph}
-                                </p>
-                            ))}
+                            <StoryParagraphs paragraphs={story.middle} highlight={story.highlight} />
                         </div>
                         <figure class="kit-story-photo kit-story-photo--back" data-sample={shop.sampleBadge}>
                             <img
@@ -91,11 +113,7 @@ export function DesignStory({ copy }: DesignStoryProps) {
                     </div>
 
                     <div class="kit-story-closing">
-                        {story.closing.map((paragraph) => (
-                            <p class="kit-story-p" key={paragraph}>
-                                {paragraph}
-                            </p>
-                        ))}
+                        <StoryParagraphs paragraphs={story.closing} highlight={story.highlight} />
                         <p class="kit-produced">{story.producedBy}</p>
                     </div>
 

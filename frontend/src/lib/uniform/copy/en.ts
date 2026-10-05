@@ -41,6 +41,7 @@ export const en: UniformCopy = {
         closing: [
             '穿越无疆, “across, without borders”, is our club’s Chinese name and our creed: Across Paths, Across Mountains, Across Borders. Roads are covered on the strength of our legs; mountains are crossed on willpower. And the borders between countries, between home and abroad, and between languages dissolve in the sweat and laughter of riders taking turns in the wind.',
         ],
+        highlight: 'may every rider beside us ride out safely and come home with a full heart.',
         symbolsTitle: 'Four symbols on the right sleeve',
         symbolsIntro:
             'Four symbols run down the right sleeve. They are not writing, yet they have the plainness of something older than writing, like marks scratched into a rock face or signs left at a crossroads by someone travelling far. They are four ways of writing “across”.',

@@ -41,6 +41,7 @@ export const zh: UniformCopy = {
         closing: [
             '穿越无疆，是我们俱乐部的中文名，也是我们的信条：穿越道路（Across Paths），穿越群山（Across Mountains），穿越边界（Across Borders）。行路靠双腿，翻山则看意志力。而国与国、故乡与异乡的边界和语言屏障，则溶解在一群破风同行人的汗水和笑容之中。',
         ],
+        highlight: '愿每一位同行的伙伴，平安出行，尽兴而归。',
         symbolsTitle: '右袖上的四枚符号',
         symbolsIntro:
             '右袖上竖排着四枚符号。它们不是文字，却带着文字诞生之前的那种古拙，像岩壁上的刻痕，又像远行的人在路口留下的记号。四枚符号，是「穿越」的四种写法。',

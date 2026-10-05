@@ -954,6 +954,11 @@
 .kit-story-closing .kit-story-p {
   max-width: none;
 }
+/* The 平安 wish, in the vermilion of the seal it echoes. */
+.kit-story-highlight {
+  font-weight: 700;
+  color: var(--kit-accent-text);
+}
 .kit-story-p {
   font-size: clamp(1rem, 1.6vw, 1.15rem);
   line-height: 1.85;
