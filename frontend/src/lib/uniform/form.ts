@@ -81,12 +81,27 @@ export interface PrefillOrder {
 }
 
 /**
- * Question ids of the Form once it has been restructured with
- * docs/programs/uniform-2026/form-setup.gs. Read them from the Form's preview
- * page (FB_PUBLIC_LOAD_DATA_) and fill all fifteen in; until then the order
- * flow stays locked in production.
+ * Question ids of the Form as restructured by docs/programs/uniform-2026/form-setup.gs,
+ * read from the Form's preview page (FB_PUBLIC_LOAD_DATA_). They change if a
+ * question is deleted and re-created, so re-read them after such an edit.
  */
-const FORM_ENTRIES: FormConfig['entries'] | null = null;
+const FORM_ENTRIES: FormConfig['entries'] | null = {
+    orderCode: '1557806289',
+    amount: '1708418500',
+    payment: '2070385535',
+    membership: '425611584',
+    extras: '2058832949',
+    jerseyCut: '1846632135',
+    jerseySize: '9868957',
+    jerseyQty: '1886567049',
+    bibCut: '21887089',
+    bibSize: '590939562',
+    bibQty: '1318275855',
+    vestCut: '295293971',
+    vestColor: '1014764647',
+    vestSize: '1558664158',
+    vestQty: '2003499372',
+};
 
 /** The Form's public responder link (it exists once the form is published). */
 const FORM_VIEWFORM_URL: string | null =
