@@ -13,9 +13,10 @@ export const de: UniformCopy = {
         lede: 'Alpine Gratlinien, in Tusche auf ein Radtrikot gemalt.',
         deadline: 'Bestellschluss 25.10.2026, 23:59 Uhr (Münchner Zeit)',
         cta: 'Jetzt bestellen',
+        countdown: { label: 'Noch bis Bestellschluss', days: 'Tage', hours: 'Std.', minutes: 'Min.', seconds: 'Sek.' },
         timeline: [
-            { when: '25. Okt.', what: 'Bestellschluss' },
-            { when: '31. Okt.', what: 'Bestellung bei GRC' },
+            { when: 'Ab sofort bis 25. Okt.', what: 'Online bestellen' },
+            { when: '26. – 31. Okt.', what: 'ACC stellt die Bestellungen zusammen und bestellt bei GRC' },
             { when: 'Mitte Dezember', what: 'Voraussichtliche Lieferung · Abholung in München' },
         ],
     },
@@ -57,6 +58,7 @@ export const de: UniformCopy = {
             },
         ],
         producedBy: 'Hergestellt von GRC',
+        close: 'Schließen',
         sampleTitle: 'Bitte beachten: Das Model trägt ein Musterexemplar',
         sampleText:
             'Das Model trägt ein Musterteil. Nach dem Erhalt haben wir kleine Anpassungen vorgenommen, vor allem beim Stil des ACC-Logos; maßgeblich sind die Designzeichnungen. Das Kit, das du erhältst, weicht deshalb leicht von den Fotos mit Model ab.',
@@ -110,6 +112,7 @@ export const de: UniformCopy = {
         priceNonMember: 'Preis für Nichtmitglieder',
         sizeLabel: 'Größe',
         selectSize: 'Bitte zuerst Schnitt und Größe wählen',
+        designButton: 'Designidee ansehen',
         cutLabel: 'Schnitt',
         cutMen: 'Herren',
         cutWomen: 'Damen',

@@ -13,9 +13,10 @@ export const zh: UniformCopy = {
         lede: '把阿尔卑斯的山脊，画进一件骑行服。',
         deadline: '订购截止 2026 年 10 月 25 日 23:59（慕尼黑时间）',
         cta: '开始选购',
+        countdown: { label: '距订购截止还有', days: '天', hours: '时', minutes: '分', seconds: '秒' },
         timeline: [
-            { when: '10 月 25 日', what: '订购截止' },
-            { when: '10 月 31 日', what: '向 GRC 下单' },
+            { when: '即日起至 10 月 25 日', what: '在线订购' },
+            { when: '10 月 26 日至 10 月 31 日', what: 'ACC 统计订单并向 GRC 下单' },
             { when: '12 月中旬', what: '预计到货 · 慕尼黑自提' },
         ],
     },
@@ -57,6 +58,7 @@ export const zh: UniformCopy = {
             },
         ],
         producedBy: '由 GRC 生产',
+        close: '关闭',
         sampleTitle: '请注意：模特身上是样衣',
         sampleText:
             '模特身上穿的是样衣。收到样衣后，我们做了微调，尤其是 ACC Logo 的样式，请以设计图为准。所以你收到的衣服会和模特效果图略有出入。',
@@ -110,6 +112,7 @@ export const zh: UniformCopy = {
         priceNonMember: '非会员价',
         sizeLabel: '尺码',
         selectSize: '请先选择版型和尺码',
+        designButton: '查看设计理念',
         cutLabel: '版型',
         cutMen: '男款',
         cutWomen: '女款',

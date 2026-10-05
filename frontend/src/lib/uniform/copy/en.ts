@@ -13,9 +13,10 @@ export const en: UniformCopy = {
         lede: 'Alpine ridgelines, painted in ink on a cycling kit.',
         deadline: 'Orders close 25 Oct 2026, 23:59 (Munich time)',
         cta: 'Start your order',
+        countdown: { label: 'Time left to order', days: 'days', hours: 'hrs', minutes: 'min', seconds: 'sec' },
         timeline: [
-            { when: '25 Oct', what: 'Orders close' },
-            { when: '31 Oct', what: 'Order placed with GRC' },
+            { when: 'Now until 25 Oct', what: 'Order online' },
+            { when: '26 – 31 Oct', what: 'ACC tallies the orders and places the order with GRC' },
             { when: 'Mid-December', what: 'Expected delivery · pick-up in Munich' },
         ],
     },
@@ -57,6 +58,7 @@ export const en: UniformCopy = {
             },
         ],
         producedBy: 'Produced by GRC',
+        close: 'Close',
         sampleTitle: 'Please note: the model wears a sample',
         sampleText:
             'The model is wearing a sample. After receiving it we made small adjustments, above all to the style of the ACC logo; the flat design drawings show the final design. The kit you receive will therefore differ slightly from the model photos.',
@@ -110,6 +112,7 @@ export const en: UniformCopy = {
         priceNonMember: 'Non-member price',
         sizeLabel: 'Size',
         selectSize: 'Choose a cut and a size first',
+        designButton: 'Read the design idea',
         cutLabel: 'Cut',
         cutMen: 'Men’s',
         cutWomen: 'Women’s',

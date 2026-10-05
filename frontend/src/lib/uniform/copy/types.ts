@@ -23,6 +23,13 @@ export interface UniformCopy {
         readonly lede: string;
         readonly deadline: string;
         readonly cta: string;
+        readonly countdown: {
+            readonly label: string;
+            readonly days: string;
+            readonly hours: string;
+            readonly minutes: string;
+            readonly seconds: string;
+        };
         readonly timeline: readonly { readonly when: string; readonly what: string }[];
     };
 
@@ -37,6 +44,7 @@ export interface UniformCopy {
         readonly detailsTitle: string;
         readonly details: readonly { readonly title: string; readonly text: string }[];
         readonly producedBy: string;
+        readonly close: string;
         readonly sampleTitle: string;
         readonly sampleText: string;
     };
@@ -58,6 +66,8 @@ export interface UniformCopy {
         readonly priceNonMember: string;
         readonly sizeLabel: string;
         readonly selectSize: string;
+        /** Opens the design-idea dialog from the jersey card. */
+        readonly designButton: string;
         readonly cutLabel: string;
         readonly cutMen: string;
         readonly cutWomen: string;
