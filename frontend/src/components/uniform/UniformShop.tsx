@@ -59,11 +59,10 @@ function writeStorage(key: string, value: string): void {
     }
 }
 
+// Jump, don't glide: the screen's content has just been swapped, so a smooth
+// scroll that started before the swap would be cut off by the layout change.
 function scrollToShop(): void {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    document
-        .getElementById('kit-shop')
-        ?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    document.getElementById('kit-shop')?.scrollIntoView({ behavior: 'auto', block: 'start' });
 }
 
 export function UniformShop({ lang }: UniformShopProps) {
@@ -105,12 +104,16 @@ export function UniformShop({ lang }: UniformShopProps) {
         writeStorage(STEP_KEY, step);
     }, [order, step, ready]);
 
-    // After a deliberate step change, put keyboard and screen-reader focus on
-    // the new screen's heading instead of leaving it on a button that vanished.
+    // After a deliberate step change, bring the new screen to the top and put
+    // keyboard and screen-reader focus on its heading, instead of leaving it on
+    // a button that vanished. This runs once the new screen is in the DOM: the
+    // select screen is much taller than the pay screen, so scrolling any
+    // earlier would aim at a layout that is about to disappear.
     useEffect(() => {
         if (!moveFocus.current) return;
         moveFocus.current = false;
         titleRef.current?.focus({ preventScroll: true });
+        scrollToShop();
     }, [step]);
 
     // The phone bar points at the summary; hide it while the summary is on screen.
@@ -135,13 +138,11 @@ export function UniformShop({ lang }: UniformShopProps) {
         moveFocus.current = true;
         setOrder((current) => codeFor(current, generateOrderCode));
         setStep('pay');
-        scrollToShop();
     }
 
     function goToSelect() {
         moveFocus.current = true;
         setStep('select');
-        scrollToShop();
     }
 
     const showBar = step === 'select' && totals.pieces > 0 && !summaryInView;
