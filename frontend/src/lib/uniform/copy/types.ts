@@ -63,6 +63,8 @@ export interface UniformCopy {
         readonly intro: string;
         /** Heading shown once the buyer has moved on to paying. */
         readonly payTitle: string;
+        /** Heading of the contact-details screen. */
+        readonly contactTitle: string;
         readonly wechatTitle: string;
         readonly wechatBody: string;
         readonly products: Readonly<Record<SkuCategory, ProductCopy>>;
@@ -127,7 +129,7 @@ export interface UniformCopy {
         readonly fineprint: string;
         readonly termsLink: string;
         readonly edit: string;
-        readonly steps: readonly [string, string, string];
+        readonly steps: readonly [string, string, string, string];
         readonly mobileBar: string;
     };
 
@@ -150,6 +152,24 @@ export interface UniformCopy {
         readonly copyFailed: string;
         readonly editWarning: string;
         readonly saveNote: string;
+    };
+
+    readonly contactStep: {
+        readonly title: string;
+        readonly intro: string;
+        readonly nameLabel: string;
+        readonly emailLabel: string;
+        readonly phoneLabel: string;
+        readonly phoneHint: string;
+        readonly wechatLabel: string;
+        readonly wechatHint: string;
+        readonly privacy: string;
+        readonly continue: string;
+        readonly errors: {
+            readonly required: string;
+            readonly invalidEmail: string;
+            readonly invalidPhone: string;
+        };
     };
 
     readonly form: {

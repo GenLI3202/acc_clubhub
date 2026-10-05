@@ -10,6 +10,7 @@
 // Option labels must match, character for character, the option text the
 // Form was created with: Google only pre-selects a choice on an exact match.
 
+import { normalizeContact, type ContactInfo } from './contact';
 import {
     SKUS,
     computeTotals,
@@ -56,6 +57,10 @@ export type FormField =
     | 'payment'
     | 'membership'
     | 'extras'
+    | 'name'
+    | 'email'
+    | 'phone'
+    | 'wechat'
     | 'jerseyCut'
     | 'jerseySize'
     | 'jerseyQty'
@@ -79,6 +84,8 @@ export interface PrefillOrder {
     readonly lines: readonly OrderLine[];
     readonly membership: Membership;
     readonly currency: Currency;
+    /** Collected on the order page; each filled field is pre-filled in the Form. */
+    readonly contact?: ContactInfo;
 }
 
 /**
@@ -92,6 +99,10 @@ const FORM_ENTRIES: FormConfig['entries'] | null = {
     payment: '2070385535',
     membership: '425611584',
     extras: '2058832949',
+    name: '1830927678',
+    email: '1558824138',
+    phone: '1528195893',
+    wechat: '1152978077',
     jerseyCut: '1846632135',
     jerseySize: '9868957',
     jerseyQty: '1886567049',
@@ -185,6 +196,13 @@ export function buildPrefillUrl(config: FormConfig, order: PrefillOrder): string
         values.vestQty = String(primary.vest.qty);
     }
     if (extras.length > 0) values.extras = extras.map(extraText).join('\n');
+    if (order.contact) {
+        const { name, email, phone, wechat } = normalizeContact(order.contact);
+        if (name) values.name = name;
+        if (email) values.email = email;
+        if (phone) values.phone = phone;
+        if (wechat) values.wechat = wechat;
+    }
 
     const params = new URLSearchParams({ usp: 'pp_url' });
     for (const field of Object.keys(values) as FormField[]) {

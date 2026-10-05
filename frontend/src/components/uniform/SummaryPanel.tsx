@@ -18,7 +18,7 @@ interface SummaryPanelProps {
     copy: UniformCopy;
     order: OrderState;
     totals: OrderTotals;
-    step: 'select' | 'pay';
+    step: 'select' | 'info' | 'pay';
     closed: boolean;
     /** The Google Form is wired in (or this is a dev build), so paying makes sense. */
     formReady: boolean;
@@ -74,7 +74,7 @@ export function SummaryPanel({
         member: summary.member,
         'non-member': summary.nonMember,
     };
-    const locked = step === 'pay';
+    const locked = step !== 'select';
     const empty = order.lines.length === 0;
     const money = (amount: number) => formatPrice(amount, currency);
     const blocked = blockedReason(copy, order, closed, formReady);
@@ -188,7 +188,7 @@ export function SummaryPanel({
                     <button type="button" class="kit-btn kit-btn--edit kit-wide" onClick={onEdit}>
                         <span aria-hidden="true">←</span> {summary.edit}
                     </button>
-                    <p class="kit-note">{copy.pay.editWarning}</p>
+                    {step === 'pay' && <p class="kit-note">{copy.pay.editWarning}</p>}
                 </>
             ) : (
                 <>
