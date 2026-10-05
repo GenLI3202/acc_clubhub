@@ -1,0 +1,212 @@
+---
+// components/events/OffSeasonHero.astro
+// Events-page hero when no event is flagged for it: the season recap, with
+// the evening photo from the closing ride, the season's numbers and a link
+// back to that ride. Says "we're resting", not "nothing here".
+
+import type { Locale } from '../../lib/i18n';
+import { getOffSeasonCopy, OFF_SEASON } from '../../lib/events/offSeason';
+import { isOrderClosed } from '../../lib/uniform/pricing';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const copy = getOffSeasonCopy(lang);
+const stats = OFF_SEASON.stats.map((value, i) => ({ value, label: copy.statLabels[i] }));
+// Decided at build time, like the home hero's kit slide.
+const kitOpen = !isOrderClosed();
+---
+
+<section class="off-hero">
+  <img class="off-hero-photo" src={OFF_SEASON.image} alt="" width="2000" height="1500" fetchpriority="high" />
+  <div class="off-hero-scrim"></div>
+  <div class="off-hero-content">
+    <p class="off-hero-eyebrow">{copy.eyebrow}</p>
+    <h1 class="off-hero-title">{copy.title}</h1>
+    <p class="off-hero-body">{copy.body}</p>
+
+    <dl class="off-hero-stats">
+      {stats.map((stat) => (
+        <div>
+          <dt>{stat.label}</dt>
+          <dd>{stat.value}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <div class="off-hero-actions">
+      <a class="off-hero-btn off-hero-btn--primary" href={`/${lang}/events/${OFF_SEASON.recapSlug}`}>{copy.recap}</a>
+      {kitOpen && <a class="off-hero-btn off-hero-btn--ghost" href={`/${lang}/uniform`}>{copy.kit}</a>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .off-hero {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 480px;
+    max-height: 680px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--color-primary);
+  }
+
+  .off-hero-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 62%;
+    animation: off-hero-settle 14s ease-out both;
+  }
+
+  /* Warm evening light stays; the left and bottom darken for the copy. */
+  .off-hero-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.25) 45%, rgba(0, 0, 0, 0) 70%),
+      linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.15) 55%, rgba(0, 0, 0, 0.05) 100%);
+  }
+
+  .off-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+    color: #ffffff;
+    animation: off-hero-rise 0.8s ease-out both;
+  }
+
+  .off-hero-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.6rem;
+  }
+
+  .off-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.2rem, 5.5vw, 3.75rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin: 0 0 0.9rem;
+  }
+
+  .off-hero-body {
+    max-width: 34rem;
+    font-size: clamp(1rem, 1.6vw, 1.1rem);
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 0 0 1.75rem;
+  }
+
+  .off-hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.5rem;
+    margin: 0 0 2rem;
+  }
+  .off-hero-stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--color-accent);
+  }
+  .off-hero-stats dd {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+  }
+  .off-hero-stats dt {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .off-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+  .off-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.9rem;
+    padding: 0.7rem 1.6rem;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-btn);
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .off-hero-btn--primary {
+    background: var(--color-accent);
+    color: #ffffff;
+  }
+  .off-hero-btn--primary:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-2px);
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .off-hero-btn--ghost {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(4px);
+  }
+  .off-hero-btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.24);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  @keyframes off-hero-settle {
+    from { transform: scale(1.08); }
+    to { transform: scale(1); }
+  }
+  @keyframes off-hero-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .off-hero {
+      height: auto;
+      min-height: 560px;
+      max-height: none;
+    }
+    .off-hero-photo {
+      object-position: center 40%;
+    }
+    .off-hero-content {
+      padding: 6rem 1.25rem 2.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .off-hero-photo,
+    .off-hero-content {
+      animation: none;
+    }
+  }
+</style>
