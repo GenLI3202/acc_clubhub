@@ -13,6 +13,7 @@ export const prerender = true;
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AcrossWordmark from "../../assets/brand/across_wordmark.svg";
+import UniformBanner from '../../components/uniform/UniformBanner.astro';
 import { locales, t, type Locale } from '../../lib/i18n';
 import { MEMBERS } from '../../lib/about/members';
 
@@ -156,6 +157,11 @@ const phNote = t(lang, 'about.placeholderNote');
       <img class="coda-mark" src="/images/about/chuanyue-wujiang.png" alt="穿越无疆" />
       <p class="coda-sub">Across · Paths · Mountains · Borders</p>
     </section>
+
+    {/* ============================================================
+        3b. 2026 KIT — entry to the kit order page
+       ============================================================ */}
+    <UniformBanner lang={lang} />
 
     {/* ============================================================
         4. OUR GARAGE

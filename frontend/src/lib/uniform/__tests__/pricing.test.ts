@@ -1,0 +1,278 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+    ORDER_DEADLINE,
+    SIZES,
+    SKUS,
+    computeTotals,
+    formatAmount,
+    formatPrice,
+    generateOrderCode,
+    isOrderClosed,
+    mergeLines,
+    shippingFee,
+    type OrderLine,
+} from '../pricing';
+
+const jerseyM: OrderLine = { sku: 'jersey', cut: 'men', size: 'M', qty: 1 };
+const bibM: OrderLine = { sku: 'bib', cut: 'men', size: 'M', qty: 1 };
+
+describe('catalog', () => {
+    it('lists the four SKUs with their order codes', () => {
+        expect(SKUS.map((s) => s.code)).toEqual([
+            'JERSEY',
+            'BIB',
+            'VEST-WHITE',
+            'VEST-BLACK',
+        ]);
+    });
+
+    it('opens XS to 3XL only', () => {
+        expect(SIZES).toEqual(['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL']);
+    });
+});
+
+describe('shippingFee', () => {
+    it('charges nothing for an empty order', () => {
+        expect(shippingFee(0, 'EUR')).toBe(0);
+        expect(shippingFee(0, 'RMB')).toBe(0);
+    });
+
+    it('charges 2 EUR / 16 RMB for a single piece', () => {
+        expect(shippingFee(1, 'EUR')).toBe(200);
+        expect(shippingFee(1, 'RMB')).toBe(1600);
+    });
+
+    it('charges 1.5 EUR / 12 RMB per piece from two pieces', () => {
+        expect(shippingFee(2, 'EUR')).toBe(300);
+        expect(shippingFee(2, 'RMB')).toBe(2400);
+        expect(shippingFee(5, 'EUR')).toBe(750);
+        expect(shippingFee(5, 'RMB')).toBe(6000);
+    });
+});
+
+describe('computeTotals', () => {
+    it('prices a member jersey + bib in EUR (the agreed example: 115.50)', () => {
+        const totals = computeTotals([jerseyM, bibM], 'member', 'EUR');
+        expect(totals).toEqual({
+            pieces: 2,
+            subtotal: 11250,
+            shipping: 300,
+            total: 11550,
+            currency: 'EUR',
+        });
+        expect(formatAmount(totals.total, 'EUR')).toBe('115.50');
+    });
+
+    it('prices a member jersey + bib in RMB (¥874)', () => {
+        const totals = computeTotals([jerseyM, bibM], 'member', 'RMB');
+        expect(totals.subtotal).toBe(85000);
+        expect(totals.shipping).toBe(2400);
+        expect(formatAmount(totals.total, 'RMB')).toBe('874');
+    });
+
+    it('uses the core-member price list', () => {
+        const lines: OrderLine[] = [
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'bib', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'vest-black', cut: 'men', size: 'L', qty: 1 },
+        ];
+        expect(computeTotals(lines, 'core', 'EUR').subtotal).toBe(4500 + 5100 + 3000);
+        expect(computeTotals(lines, 'core', 'RMB').subtotal).toBe(34500 + 38500 + 22500);
+    });
+
+    it('uses the non-member price list', () => {
+        const lines: OrderLine[] = [
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'bib', cut: 'men', size: 'L', qty: 1 },
+            { sku: 'vest-white', cut: 'men', size: 'L', qty: 1 },
+        ];
+        const eur = computeTotals(lines, 'non-member', 'EUR');
+        expect(eur.subtotal).toBe(5950 + 6800 + 4000);
+        const rmb = computeTotals(lines, 'non-member', 'RMB');
+        expect(rmb.subtotal).toBe(45000 + 51000 + 30000);
+    });
+
+    it('prices both vest colours the same', () => {
+        const white = computeTotals(
+            [{ sku: 'vest-white', cut: 'men', size: 'M', qty: 1 }],
+            'member',
+            'EUR',
+        );
+        const black = computeTotals(
+            [{ sku: 'vest-black', cut: 'men', size: 'M', qty: 1 }],
+            'member',
+            'EUR',
+        );
+        expect(white.subtotal).toBe(3500);
+        expect(black.subtotal).toBe(3500);
+        expect(white.total).toBe(3700);
+    });
+
+    it('counts pieces across all items for the shipping tier', () => {
+        const totals = computeTotals(
+            [{ sku: 'jersey', cut: 'men', size: 'S', qty: 2 }, { sku: 'vest-black', cut: 'men', size: 'S', qty: 1 }],
+            'member',
+            'EUR',
+        );
+        expect(totals.pieces).toBe(3);
+        expect(totals.shipping).toBe(450);
+    });
+
+    it('returns zeros for an empty order', () => {
+        expect(computeTotals([], 'member', 'EUR').total).toBe(0);
+    });
+
+    it('rejects a quantity that is not a positive integer', () => {
+        expect(() =>
+            computeTotals([{ sku: 'jersey', cut: 'men', size: 'M', qty: 0 }], 'member', 'EUR'),
+        ).toThrow(RangeError);
+        expect(() =>
+            computeTotals([{ sku: 'jersey', cut: 'men', size: 'M', qty: 1.5 }], 'member', 'EUR'),
+        ).toThrow(RangeError);
+    });
+
+    it('rejects an unknown cut', () => {
+        expect(() =>
+            computeTotals(
+                [{ sku: 'jersey', cut: 'kids' as never, size: 'M', qty: 1 }],
+                'member',
+                'EUR',
+            ),
+        ).toThrow(RangeError);
+    });
+
+    it('prices men\'s and women\'s cuts the same', () => {
+        const men = computeTotals([{ sku: 'bib', cut: 'men', size: 'S', qty: 1 }], 'member', 'EUR');
+        const women = computeTotals([{ sku: 'bib', cut: 'women', size: 'S', qty: 1 }], 'member', 'EUR');
+        expect(women.total).toBe(men.total);
+    });
+
+    it('rejects an unknown size or SKU', () => {
+        expect(() =>
+            computeTotals(
+                [{ sku: 'jersey', cut: 'men', size: 'XXS' as never, qty: 1 }],
+                'member',
+                'EUR',
+            ),
+        ).toThrow(RangeError);
+        expect(() =>
+            computeTotals([{ sku: 'cap' as never, cut: 'men', size: 'M', qty: 1 }], 'member', 'EUR'),
+        ).toThrow(RangeError);
+    });
+});
+
+describe('mergeLines', () => {
+    it('adds quantities of the same SKU and size, keeping first-seen order', () => {
+        const merged = mergeLines([
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'bib', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 2 },
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+        ]);
+        expect(merged).toEqual([
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 3 },
+            { sku: 'bib', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
+        ]);
+    });
+
+    it('keeps the same item and size in different cuts as separate lines', () => {
+        const merged = mergeLines([
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'women', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+        ]);
+        expect(merged).toEqual([
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 2 },
+            { sku: 'jersey', cut: 'women', size: 'M', qty: 1 },
+        ]);
+    });
+
+    it('does not mutate its input', () => {
+        const input: OrderLine[] = [
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+            { sku: 'jersey', cut: 'men', size: 'M', qty: 1 },
+        ];
+        mergeLines(input);
+        expect(input[0].qty).toBe(1);
+    });
+});
+
+describe('formatAmount', () => {
+    it('shows EUR with two decimals and whole RMB without decimals', () => {
+        expect(formatAmount(5250, 'EUR')).toBe('52.50');
+        expect(formatAmount(200, 'EUR')).toBe('2.00');
+        expect(formatAmount(39000, 'RMB')).toBe('390');
+    });
+});
+
+describe('formatPrice', () => {
+    it('shows EUR with a euro sign and two decimals', () => {
+        expect(formatPrice(5250, 'EUR')).toBe('€52.50');
+        expect(formatPrice(11550, 'EUR')).toBe('€115.50');
+    });
+
+    it('shows whole RMB with a yuan sign and no decimals', () => {
+        expect(formatPrice(39000, 'RMB')).toBe('¥390');
+        expect(formatPrice(85900, 'RMB')).toBe('¥859');
+    });
+});
+
+describe('generateOrderCode', () => {
+    it('builds ACC26- plus four unambiguous characters', () => {
+        const code = generateOrderCode(() => 0.5);
+        expect(code).toMatch(/^ACC26-[A-HJ-NP-Z2-9]{4}$/);
+    });
+
+    it('is deterministic for a given random source', () => {
+        expect(generateOrderCode(() => 0)).toBe(generateOrderCode(() => 0));
+    });
+
+    it('never emits look-alike characters', () => {
+        for (let i = 0; i < 200; i += 1) {
+            const suffix = generateOrderCode().slice('ACC26-'.length);
+            expect(suffix).not.toMatch(/[01OIL]/);
+        }
+    });
+});
+
+describe('order deadline', () => {
+    it('is 25 Oct 2026 23:59:59 Munich time (CET, DST has just ended)', () => {
+        const munich = new Date(ORDER_DEADLINE).toLocaleString('sv-SE', {
+            timeZone: 'Europe/Berlin',
+        });
+        expect(munich).toBe('2026-10-25 23:59:59');
+    });
+
+    it('is open up to the last second and closed right after', () => {
+        expect(isOrderClosed(new Date('2026-10-25T22:59:59Z'))).toBe(false);
+        expect(isOrderClosed(new Date('2026-10-25T23:00:00Z'))).toBe(true);
+    });
+
+    it('is open well before the deadline', () => {
+        expect(isOrderClosed(new Date('2026-10-05T12:00:00Z'))).toBe(false);
+    });
+});
+
+describe('price floor against the GRC dollar sheet', () => {
+    // USD cost per tier (sheet columns O, Q, S): jersey, bib, vest.
+    const USD = {
+        core: { jersey: 51, bib: 57, 'vest-white': 33, 'vest-black': 33 },
+        member: { jersey: 59.5, bib: 66.5, 'vest-white': 38.5, 'vest-black': 38.5 },
+        'non-member': { jersey: 67, bib: 76, 'vest-white': 44, 'vest-black': 44 },
+    } as const;
+    const RMB_PER_USD = 6.7;
+    const RMB_PER_EUR = 7.75;
+
+    for (const sku of SKUS) {
+        for (const tier of ['core', 'member', 'non-member'] as const) {
+            it(`${sku.id} / ${tier} is never below the dollar price`, () => {
+                const floorRmb = USD[tier][sku.id] * RMB_PER_USD;
+                const { EUR, RMB } = sku.prices[tier];
+                expect(RMB / 100).toBeGreaterThanOrEqual(floorRmb);
+                expect((EUR / 100) * RMB_PER_EUR).toBeGreaterThanOrEqual(floorRmb);
+            });
+        }
+    }
+});

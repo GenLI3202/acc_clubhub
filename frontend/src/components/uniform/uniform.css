@@ -1,0 +1,1326 @@
+/* ===================================================
+   2026 kit order — shop, summary, payment, size guide
+   Uses the site's V4 tokens (variables.css), so dark mode follows.
+   Page-level sections (hero, story, terms) live in uniform.astro.
+   =================================================== */
+
+.kit-shop,
+.kit-sizes {
+  --kit-gap: clamp(1rem, 2vw, 1.75rem);
+  --kit-accent-text: var(--color-accent);
+  font-family: var(--font-body);
+  color: var(--color-text-main);
+}
+
+:root.dark .kit-shop,
+:root.dark .kit-sizes {
+  --kit-accent-text: #ef5350; /* #C62828 is only ~3:1 on the dark canvas */
+}
+
+.kit-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--kit-accent-text);
+  margin: 0;
+}
+.kit-h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0.4rem 0 0.75rem;
+}
+.kit-lede {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 46rem;
+  margin: 0 0 1rem;
+}
+.kit-note {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+  margin: 0.5rem 0 0;
+}
+.kit-remind {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.85rem 0 0;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-text-main);
+  background: rgba(198, 40, 40, 0.08);
+  border: 1.5px solid var(--kit-accent-text);
+  border-radius: var(--radius-md);
+}
+.kit-remind-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0.05rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--kit-accent-text);
+  border-radius: 50%;
+}
+.kit-note--tight {
+  margin-top: 0.35rem;
+}
+.kit-fineprint {
+  margin-top: 1rem;
+}
+.kit-link {
+  display: inline-block;
+  padding: 0.55rem 0.3rem;
+  margin: -0.55rem -0.3rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--kit-accent-text);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.kit-empty {
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+/* Keyboard focus, everywhere in the kit UI */
+.kit-shop :is(button, a, input, summary):focus-visible,
+.kit-sizes :is(button, a, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Buttons ---------- */
+.kit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 1.4rem;
+  border-radius: var(--radius-btn);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.kit-btn--solid {
+  background: var(--color-accent);
+  color: #fff;
+}
+.kit-btn--solid:hover:not(:disabled) {
+  background: var(--color-accent-dark);
+  color: #fff;
+}
+.kit-btn--outline {
+  background: transparent;
+  color: var(--color-text-main);
+  border-color: var(--color-border-strong);
+}
+.kit-btn--outline:hover {
+  border-color: var(--color-text-main);
+  color: var(--color-text-main);
+}
+/* Going back to edit the order: secondary, but clearly a way out of the pay step. */
+.kit-btn--edit {
+  background: var(--color-bg-canvas);
+  color: var(--kit-accent-text);
+  border-color: var(--kit-accent-text);
+  border-width: 2px;
+}
+.kit-btn--edit:hover {
+  background: var(--kit-accent-text);
+  color: #fff;
+}
+.kit-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1.1rem 0.5rem 0.9rem;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--kit-accent-text);
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--kit-accent-text);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.kit-back-btn:hover {
+  background: var(--kit-accent-text);
+  color: #fff;
+}
+.kit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.kit-wide {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* ---------- Header + steps ---------- */
+.kit-shop-head {
+  margin-bottom: 1.5rem;
+}
+.kit-steps {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 0;
+  margin: 1.25rem 0 0;
+}
+.kit-step {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+.kit-step-no {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid currentColor;
+  font-size: 0.75rem;
+}
+.kit-step.is-current {
+  color: var(--color-text-main);
+}
+.kit-step.is-current .kit-step-no,
+.kit-step.is-done .kit-step-no {
+  background: var(--color-accent);
+  border-color: var(--kit-accent-text);
+  color: #fff;
+}
+.kit-step.is-done {
+  color: var(--color-text-secondary);
+}
+
+.kit-closed {
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+.kit-closed p {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Layout ---------- */
+.kit-shop-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kit-gap);
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .kit-shop-grid {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+  }
+  .kit-summary {
+    position: sticky;
+    top: 7.5rem;
+    max-height: calc(100vh - 8.5rem);
+    overflow-y: auto;
+  }
+}
+.kit-shop-main {
+  container-type: inline-size;
+  display: grid;
+  /* minmax(0, ...) keeps wide children (thumbnail strip, tables) from
+     stretching the track past the viewport on phones. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kit-gap);
+}
+
+/* ---------- Product card ---------- */
+#kit-shop,
+#kit-summary,
+#size-guide,
+#kit-terms {
+  scroll-margin-top: 7rem;
+}
+.kit-h2:focus {
+  outline: none; /* focused programmatically after a step change */
+}
+.kit-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kit-gap);
+  padding: clamp(0.9rem, 2vw, 1.4rem);
+  background: var(--color-bg-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  scroll-margin-top: 7rem;
+}
+@container (min-width: 620px) {
+  .kit-card {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+}
+.kit-card > * {
+  min-width: 0;
+}
+.kit-card-name {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  font-weight: 700;
+  margin: 0;
+}
+.kit-card-tagline {
+  color: var(--color-text-secondary);
+  margin: 0.25rem 0 0.9rem;
+}
+
+.kit-prices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0 0 1rem;
+}
+.kit-prices div {
+  color: var(--color-text-secondary);
+}
+.kit-prices dt {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+.kit-prices dd {
+  margin: 0.1rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.kit-prices .is-current {
+  color: var(--color-text-main);
+}
+.kit-prices .is-current dd {
+  color: var(--kit-accent-text);
+}
+
+.kit-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.1rem;
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+.kit-bullets li {
+  padding-left: 1rem;
+  position: relative;
+}
+.kit-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 0.45rem;
+  height: 1.5px;
+  background: var(--color-accent);
+}
+
+/* ---------- Gallery ---------- */
+.kit-gallery-stage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-aero);
+  overflow: hidden;
+}
+.kit-gallery-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kit-fit-cover .kit-gallery-img,
+.kit-fit-cover img {
+  object-fit: cover;
+}
+.kit-fit-contain .kit-gallery-img,
+.kit-fit-contain img {
+  object-fit: contain;
+  background: #fff;
+}
+.kit-gallery-stage[data-sample]::after {
+  content: attr(data-sample);
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-heading);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(17, 17, 17, 0.72);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
+.kit-gallery-thumbs {
+  min-height: 4.5rem; /* same height with one picture, so the card does not jump */
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  overflow-x: auto;
+}
+.kit-thumb {
+  width: 3.6rem;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+  cursor: pointer;
+}
+.kit-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kit-thumb[aria-current='true'] {
+  border-color: var(--kit-accent-text);
+}
+
+/* ---------- Fields: radio groups, stepper ---------- */
+.kit-field {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+.kit-field-label {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+  padding: 0;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+/* Native radios, visually hidden but still focusable; the face is the label. */
+.kit-radios {
+  display: flex;
+}
+.kit-radios--chip {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.kit-radios--segment {
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+}
+.kit-radio {
+  position: relative;
+  display: flex;
+}
+.kit-radios--segment .kit-radio {
+  flex: 1;
+}
+.kit-radio input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.kit-radio-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.kit-radios--chip .kit-radio-face {
+  min-width: 3rem;
+  height: 2.75rem;
+  padding: 0 0.7rem;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-btn);
+}
+.kit-radios--chip .kit-radio:hover .kit-radio-face {
+  border-color: var(--color-text-main);
+}
+.kit-radios--segment .kit-radio-face {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: center;
+}
+.kit-radios--segment .kit-radio + .kit-radio .kit-radio-face {
+  border-left: 1.5px solid var(--color-border-strong);
+}
+.kit-radio input:checked + .kit-radio-face {
+  background: var(--color-primary);
+  color: var(--color-bg-canvas);
+  border-color: var(--color-primary);
+}
+.kit-radio input:focus-visible + .kit-radio-face {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.kit-field:disabled .kit-radio-face {
+  opacity: 0.55;
+}
+.kit-field:disabled .kit-radio input {
+  cursor: not-allowed;
+}
+.kit-swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-strong);
+}
+.kit-swatch--white { background: #fff; }
+.kit-swatch--black { background: #111; }
+
+/* Membership + payment method, above the product cards */
+.kit-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 720px) {
+  .kit-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+.kit-options .kit-field {
+  margin-bottom: 0;
+}
+
+.kit-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  margin-top: 1.25rem;
+}
+.kit-add {
+  flex: 1;
+  min-height: 2.9rem;
+}
+.kit-stepper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-btn);
+}
+.kit-stepper button {
+  width: 2.9rem;
+  align-self: stretch;
+  font-size: 1.15rem;
+  background: transparent;
+  color: var(--color-text-main);
+  border: 0;
+  cursor: pointer;
+}
+.kit-stepper button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.kit-stepper output {
+  min-width: 2rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+.kit-stepper--line {
+  margin-top: 0.1rem;
+}
+.kit-stepper--line output {
+  min-width: 1.75rem;
+  font-size: 0.9rem;
+}
+.kit-flash {
+  min-height: 1.3em;
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Summary ---------- */
+.kit-summary {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem;
+}
+.kit-summary-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+.kit-choices {
+  margin: 0 0 1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+}
+.kit-choices div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.kit-choices dt {
+  color: var(--color-text-secondary);
+}
+.kit-choices dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
+}
+.kit-lines {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--color-border);
+}
+.kit-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.kit-line-name {
+  margin: 0;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.kit-line-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+.kit-line-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.kit-totals {
+  margin: 0.75rem 0 0;
+}
+.kit-totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+}
+.kit-totals dt {
+  color: var(--color-text-secondary);
+}
+.kit-totals dd {
+  margin: 0;
+}
+.kit-totals .kit-total {
+  margin-top: 0.4rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border-strong);
+}
+.kit-total dt,
+.kit-total dd {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+/* ---------- Pay + form step ---------- */
+.kit-pay {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kit-gap);
+}
+.kit-panel {
+  background: var(--color-bg-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: clamp(1rem, 2.4vw, 1.6rem);
+}
+.kit-panel-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+.kit-pay-key {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 0;
+  padding: 1rem;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+.kit-pay-key dt {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+.kit-pay-key dd {
+  margin: 0.2rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.kit-pay-amount {
+  font-family: var(--font-heading);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--kit-accent-text);
+}
+.kit-pay-code {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap; /* never split ACC26-XXXX across two lines */
+}
+.kit-method {
+  margin-top: 1.25rem;
+}
+.kit-method h4 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  margin: 0 0 0.6rem;
+}
+.kit-pay-rows {
+  margin: 0;
+  display: grid;
+}
+.kit-pay-row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.kit-pay-row dt {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+.kit-pay-row dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.kit-pay-value {
+  font-variant-numeric: tabular-nums;
+  /* Wrap at spaces (IBAN groups); only break inside a word as a last resort. */
+  overflow-wrap: anywhere;
+}
+.kit-copy {
+  flex: none;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  color: var(--color-text-main);
+  background: transparent;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+.kit-copy-status {
+  flex-basis: 100%;
+  font-size: 0.8125rem;
+  color: var(--kit-accent-text);
+}
+.kit-copy-status:empty {
+  display: none;
+}
+.kit-callout p {
+  margin: 0.3rem 0 0;
+}
+.kit-callout {
+  margin: 0.75rem 0 0;
+  padding: 0.8rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  background: var(--color-bg-secondary);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-md);
+}
+@media (max-width: 559px) {
+  /* Label above value: the bank details need the full row width on a phone. */
+  .kit-pay-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
+}
+.kit-copy:hover {
+  border-color: var(--color-text-main);
+}
+.kit-alipay {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.kit-qr {
+  width: min(13rem, 100%);
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+/* ---------- Mobile order bar ---------- */
+.kit-mobile-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem calc(0.85rem + env(safe-area-inset-bottom));
+  background: var(--color-primary);
+  color: var(--color-bg-canvas);
+  text-decoration: none;
+  font-size: 0.9rem;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.18);
+}
+.kit-mobile-bar-cta {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.8125rem;
+}
+.kit-mobile-bar:hover,
+.kit-mobile-bar:focus-visible {
+  color: var(--color-bg-canvas);
+}
+@media (min-width: 960px) {
+  .kit-mobile-bar { display: none; }
+}
+@media (max-width: 959px) {
+  .kit-shop.has-bar { padding-bottom: 4.5rem; } /* room for the fixed order bar */
+}
+
+/* ---------- Size guide ---------- */
+.kit-section-head {
+  margin-bottom: 1.25rem;
+}
+.kit-finder-fields {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: end;
+  margin-top: 0.75rem;
+}
+@media (min-width: 720px) {
+  .kit-finder-fields { grid-template-columns: 16rem 1fr 1fr; }
+}
+.kit-input {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+.kit-input input {
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.65rem 0.8rem;
+  color: var(--color-text-main);
+  background: var(--color-bg-canvas);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-btn);
+  width: 100%;
+  box-sizing: border-box;
+}
+.kit-finder-result {
+  min-height: 1.6em;
+  margin: 0.9rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--kit-accent-text);
+}
+.kit-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kit-gap);
+  margin-top: var(--kit-gap);
+}
+@media (min-width: 1100px) {
+  .kit-charts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+.kit-chart-figure {
+  margin: var(--kit-gap) 0 0;
+}
+.kit-charts .kit-chart-figure {
+  margin: 0;
+}
+.kit-chart-figure figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin-bottom: 0.5rem;
+}
+.kit-chart-figure figcaption span {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+.kit-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.kit-table {
+  width: 100%;
+  min-width: 30rem;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  text-align: center;
+}
+.kit-table th,
+.kit-table td {
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+}
+.kit-table thead th {
+  background: var(--color-primary);
+  color: var(--color-bg-canvas);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  white-space: nowrap;
+  border-color: transparent;
+}
+.kit-table tbody th {
+  background: var(--color-bg-secondary);
+  font-weight: 600;
+}
+.kit-table tbody th,
+.kit-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.kit-table thead th:first-child {
+  white-space: normal;
+  min-width: 6.5rem;
+}
+.kit-table td {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+.kit-table td.is-hit {
+  background: var(--color-accent);
+  color: #fff;
+}
+.kit-table--vest {
+  min-width: 26rem;
+}
+
+/* ---------- Design idea (dialog on the jersey card) ---------- */
+.kit-story-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+.kit-story-grid + .kit-story-grid {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+@media (min-width: 900px) {
+  .kit-story-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  /* Photo on the left; in the HTML it comes after the text, so phones read text first. */
+  .kit-story-grid--flip {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .kit-story-grid--flip > figure {
+    order: -1;
+  }
+}
+/* The end of the essay leaves the two-column layout and runs the full width. */
+.kit-story-closing {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+.kit-story-closing .kit-story-p {
+  max-width: none;
+}
+/* The 平安 wish, in the vermilion of the seal it echoes. */
+.kit-story-highlight {
+  font-weight: 700;
+  color: var(--kit-accent-text);
+}
+.kit-story-p {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.85;
+  margin: 0 0 1.1rem;
+  max-width: 40rem;
+}
+.kit-produced {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
+  margin: 1.5rem 0 0;
+}
+.kit-story-photo,
+.kit-flat {
+  margin: 0;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+}
+.kit-story-photo {
+  position: relative;
+}
+.kit-story-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 30rem;
+  object-fit: cover;
+  object-position: center 20%;
+}
+/* Keep the back calligraphy and the pocket seal in frame when the photo is cropped. */
+.kit-story-photo--back img {
+  object-position: center 60%;
+}
+.kit-story-photo[data-sample]::after {
+  content: attr(data-sample);
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-heading);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(17, 17, 17, 0.72);
+  border-radius: var(--radius-full);
+}
+.kit-flats {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+@media (min-width: 700px) {
+  /* Columns in the drawings' aspect ratios (1400×890 and 980×900), so both stand the same height. */
+  .kit-flats {
+    grid-template-columns: minmax(0, 1.573fr) minmax(0, 1.089fr);
+  }
+}
+.kit-flat {
+  background: #fff;
+  border: 1px solid var(--color-border);
+}
+.kit-flat img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.kit-meaning {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+@media (min-width: 900px) {
+  .kit-meaning { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+}
+.kit-h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+.kit-symbols-intro {
+  margin: 0 0 1.25rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+}
+.kit-symbols {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 1rem;
+}
+.kit-symbols li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.kit-symbols img {
+  height: 2.75rem;
+  width: auto;
+  align-self: flex-start;
+}
+.kit-details {
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+.kit-details div {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.kit-details dt {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.kit-details dd {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+.kit-sample {
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding: 1.1rem 1.4rem;
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+.kit-sample p {
+  margin: 0.4rem 0 0;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+/* The button on the jersey card and the dialog it opens */
+.kit-design-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  margin: 0 0 1rem;
+  padding: 0.6rem 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--color-accent);
+  border: 0;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 14px rgba(198, 40, 40, 0.32);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+/* A band of light sweeps across now and then, to catch the eye without nagging. */
+.kit-design-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  animation: kit-design-shine 4.5s ease-in-out 1.5s infinite;
+  pointer-events: none;
+}
+@keyframes kit-design-shine {
+  0% { left: -60%; }
+  30%, 100% { left: 130%; }
+}
+.kit-design-btn-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.kit-design-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(198, 40, 40, 0.42);
+}
+.kit-design-btn:hover .kit-design-btn-arrow {
+  transform: translateX(4px);
+}
+dialog.kit-dialog {
+  width: min(960px, calc(100vw - 1.5rem));
+  max-height: calc(100vh - 1.5rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-bg-canvas);
+  color: var(--color-text-main);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+dialog.kit-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.62);
+}
+.kit-dialog-panel {
+  max-height: calc(100vh - 1.5rem);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+.kit-dialog-close {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  float: right;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 0 0.5rem 0.75rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--color-text-main);
+  background: var(--color-bg-secondary);
+  border: 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+.kit-dialog-close:hover {
+  background: var(--color-bg-tint);
+}
+.kit-dialog :is(button, a):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+/* A modal dialog does not stop the page behind it from scrolling. */
+body:has(dialog.kit-dialog[open]) {
+  overflow: hidden;
+}
+.kit-dialog .kit-h2 {
+  margin-top: 0.4rem;
+}
+
+/* ---------- Countdown (in the dark hero) ---------- */
+.kit-countdown {
+  margin: 0 0 1.5rem;
+}
+.kit-countdown-label {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.kit-countdown-cells {
+  display: flex;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.kit-countdown-cells li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 4.25rem;
+  padding: 0.6rem 0.5rem 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  color: #fff;
+}
+.kit-countdown-cells strong {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.kit-countdown-cells span {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.kit-countdown-closed {
+  margin: 0 0 1.5rem;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kit-btn, .kit-radio-face { transition: none; }
+  .kit-design-btn, .kit-design-btn-arrow { transition: none; }
+  .kit-design-btn::after { animation: none; display: none; }
+  .kit-design-btn:hover, .kit-design-btn:hover .kit-design-btn-arrow { transform: none; }
+}

@@ -1,0 +1,183 @@
+import { useRef } from 'preact/hooks';
+
+import type { SymbolKey, UniformCopy } from '../../lib/uniform/copy/types';
+import { splitAtPhrase } from '../../lib/uniform/highlight';
+
+interface DesignStoryProps {
+    copy: UniformCopy;
+}
+
+const SYMBOL_FILES: Readonly<Record<SymbolKey, string>> = {
+    mountains: 'mountain-rider',
+    paths: 'parallel',
+    borders: 'bridge',
+    across: 'crossing',
+};
+
+interface StoryParagraphsProps {
+    paragraphs: readonly string[];
+    /** Phrase set in bold accent, at its first occurrence in a paragraph. */
+    highlight: string;
+}
+
+function StoryParagraphs({ paragraphs, highlight }: StoryParagraphsProps) {
+    return (
+        <>
+            {paragraphs.map((paragraph) => {
+                const parts = splitAtPhrase(paragraph, highlight);
+                return (
+                    <p class="kit-story-p" key={paragraph}>
+                        {parts ? (
+                            <>
+                                {parts.before}
+                                <strong class="kit-story-highlight">{parts.match}</strong>
+                                {parts.after}
+                            </>
+                        ) : (
+                            paragraph
+                        )}
+                    </p>
+                );
+            })}
+        </>
+    );
+}
+
+/**
+ * "Read the design idea": a button on the jersey card that opens the story of
+ * the kit in a modal. A native <dialog> gives focus trapping and Esc to close;
+ * the text stays in the page's HTML (closed), so it is still indexable.
+ */
+export function DesignStory({ copy }: DesignStoryProps) {
+    const { story, shop } = copy;
+    const dialog = useRef<HTMLDialogElement>(null);
+
+    const open = () => dialog.current?.showModal();
+    const close = () => dialog.current?.close();
+
+    return (
+        <>
+            <button type="button" class="kit-design-btn" onClick={open}>
+                {shop.designButton} <span class="kit-design-btn-arrow" aria-hidden="true">→</span>
+            </button>
+
+            <dialog
+                class="kit-dialog"
+                ref={dialog}
+                aria-labelledby="kit-story-title"
+                // A click on the backdrop lands on the <dialog> itself, not on the panel.
+                onClick={(event) => {
+                    if (event.target === dialog.current) close();
+                }}
+            >
+                <div class="kit-dialog-panel">
+                    <button type="button" class="kit-dialog-close" aria-label={story.close} onClick={close}>
+                        <span aria-hidden="true">×</span>
+                    </button>
+
+                    <div class="kit-story-grid">
+                        <div>
+                            <p class="kit-eyebrow">{story.eyebrow}</p>
+                            <h2 class="kit-h2" id="kit-story-title">
+                                {story.title}
+                            </h2>
+                            <StoryParagraphs paragraphs={story.opening} highlight={story.highlight} />
+                        </div>
+                        <figure class="kit-story-photo" data-sample={shop.sampleBadge}>
+                            <img
+                                src="/images/uniform/model-front-zoom.webp"
+                                alt={shop.imageAlt.front}
+                                width="663"
+                                height="884"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                    </div>
+
+                    {/* The 慕城骑士 seal sits on the back, so the seal paragraphs go beside the back photo. */}
+                    <div class="kit-story-grid kit-story-grid--flip">
+                        <div>
+                            <StoryParagraphs paragraphs={story.middle} highlight={story.highlight} />
+                        </div>
+                        <figure class="kit-story-photo kit-story-photo--back" data-sample={shop.sampleBadge}>
+                            <img
+                                src="/images/uniform/model-back.webp"
+                                alt={shop.imageAlt.back}
+                                width="1086"
+                                height="1448"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                    </div>
+
+                    <div class="kit-story-closing">
+                        <StoryParagraphs paragraphs={story.closing} highlight={story.highlight} />
+                        <p class="kit-produced">{story.producedBy}</p>
+                    </div>
+
+                    <div class="kit-flats">
+                        <figure class="kit-flat">
+                            <img
+                                src="/images/uniform/flat-jersey.webp"
+                                alt={`${shop.products.jersey.name} · ${shop.imageAlt.flat}`}
+                                width="1400"
+                                height="890"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                        <figure class="kit-flat">
+                            <img
+                                src="/images/uniform/flat-bib.webp"
+                                alt={`${shop.products.bib.name} · ${shop.imageAlt.flat}`}
+                                width="980"
+                                height="900"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                    </div>
+
+                    <div class="kit-meaning">
+                        <div>
+                            <h3 class="kit-h3">{story.symbolsTitle}</h3>
+                            <p class="kit-symbols-intro">{story.symbolsIntro}</p>
+                            <ul class="kit-symbols">
+                                {story.symbols.map((symbol) => (
+                                    <li key={symbol.key}>
+                                        <img
+                                            src={`/images/about/symbols/${SYMBOL_FILES[symbol.key]}.svg`}
+                                            alt=""
+                                            width="72"
+                                            height="48"
+                                            loading="lazy"
+                                        />
+                                        <span>{symbol.name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="kit-h3">{story.detailsTitle}</h3>
+                            <dl class="kit-details">
+                                {story.details.map((detail) => (
+                                    <div key={detail.title}>
+                                        <dt>{detail.title}</dt>
+                                        <dd>{detail.text}</dd>
+                                    </div>
+                                ))}
+                            </dl>
+                        </div>
+                    </div>
+
+                    <aside class="kit-sample" role="note">
+                        <strong>{story.sampleTitle}</strong>
+                        <p>{story.sampleText}</p>
+                    </aside>
+                </div>
+            </dialog>
+        </>
+    );
+}
