@@ -21,6 +21,10 @@ const config: FormConfig = {
         payment: '103',
         membership: '104',
         extras: '105',
+        name: '106',
+        email: '107',
+        phone: '108',
+        wechat: '109',
         jerseyCut: '111',
         jerseySize: '112',
         jerseyQty: '113',
@@ -171,6 +175,34 @@ describe('buildPrefillUrl', () => {
         // 45 + 51 + 2 pieces x 1.50 shipping
         expect(p.get('entry.102')).toBe('99.00');
         expect(p.get('entry.104')).toBe('核心队员 Core member');
+    });
+
+    it('fills the contact details when given', () => {
+        const url = new URL(
+            buildPrefillUrl(config, {
+                ...base,
+                lines: oneOfEach,
+                contact: { name: 'Li Wei', email: 'li@example.com', phone: '+49 170 1234567', wechat: 'liwei' },
+            }),
+        );
+        expect(url.searchParams.get('entry.106')).toBe('Li Wei');
+        expect(url.searchParams.get('entry.107')).toBe('li@example.com');
+        expect(url.searchParams.get('entry.108')).toBe('+49 170 1234567');
+        expect(url.searchParams.get('entry.109')).toBe('liwei');
+    });
+
+    it('leaves the WeChat field out when it is empty, and all contact fields without a contact', () => {
+        const withEmptyWechat = new URL(
+            buildPrefillUrl(config, {
+                ...base,
+                lines: oneOfEach,
+                contact: { name: 'Li Wei', email: 'li@example.com', phone: '+49 1', wechat: '' },
+            }),
+        );
+        expect(withEmptyWechat.searchParams.has('entry.109')).toBe(false);
+        expect(withEmptyWechat.searchParams.get('entry.106')).toBe('Li Wei');
+        const without = paramsFor(oneOfEach);
+        for (const id of ['106', '107', '108', '109']) expect(without.has(`entry.${id}`)).toBe(false);
     });
 
     it('fills a non-member paying in RMB', () => {
