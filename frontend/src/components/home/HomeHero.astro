@@ -8,6 +8,8 @@
 
 import type { CollectionEntry } from 'astro:content';
 import { t, type Locale } from '../../lib/i18n';
+import { getUniformCopy } from '../../lib/uniform/copy';
+import { isOrderClosed } from '../../lib/uniform/pricing';
 
 interface Props {
   lang: Locale;
@@ -55,7 +57,26 @@ function formatDate(dateStr: string): string {
   );
 }
 
-// Slide 0 is always the brand slide; events follow.
+// While the 2026 kit order is open, slide 1 leads to the order page. The
+// page is prerendered, so this is decided at build time: a build after the
+// deadline drops the slide (the order page itself shows "closed" either way).
+const kit = getUniformCopy(lang);
+const kitSlides = isOrderClosed()
+  ? []
+  : [
+      {
+        kind: 'kit' as const,
+        image: '/images/uniform/model-left.webp',
+        eyebrow: kit.banner.eyebrow,
+        title: kit.banner.title,
+        meta: kit.banner.deadline as string | null,
+        body: kit.hero.lede,
+        href: `/${lang}/uniform`,
+        cta: `${kit.banner.cta} →`,
+      },
+    ];
+
+// Slide 0 is always the brand slide, then the kit order (while open), then events.
 const slides = [
   {
     kind: 'brand' as const,
@@ -67,6 +88,7 @@ const slides = [
     href: `/${lang}/events`,
     cta: t(lang, 'home.heroCta'),
   },
+  ...kitSlides,
   ...events.map((event) => ({
     kind: 'event' as const,
     image: event.data.coverImage || BRAND_IMAGE,
@@ -90,7 +112,7 @@ const hasCarousel = slides.length > 1;
 >
   {slides.map((slide, i) => (
     <div
-      class:list={['hero-slide', { active: i === 0 }]}
+      class:list={['hero-slide', `hero-slide--${slide.kind}`, { active: i === 0 }]}
       style={`background-image: url('${slide.image}')`}
       aria-hidden={i !== 0}
     ></div>
@@ -102,7 +124,7 @@ const hasCarousel = slides.length > 1;
     {slides.map((slide, i) => (
       <div class:list={['hero-slide-content', { active: i === 0 }]} aria-hidden={i !== 0}>
         <p class="hero-eyebrow">{slide.eyebrow}</p>
-        <h1 class:list={['hero-title', { 'hero-title--event': slide.kind === 'event' }]}>
+        <h1 class:list={['hero-title', { 'hero-title--event': slide.kind !== 'brand' }]}>
           {slide.title}
         </h1>
         {slide.meta && <p class="hero-meta">{slide.meta}</p>}
@@ -264,6 +286,15 @@ const hasCarousel = slides.length > 1;
 
   .hero-slide.active {
     opacity: 1;
+  }
+
+  /* The kit photo is portrait: on wide screens it stands on the right over a
+     dark ground instead of being cropped to a strip of jersey. */
+  .hero-slide--kit {
+    background-color: #111;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    background-position: right center;
   }
 
   /* Two scrims: the vertical one anchors the content to the bottom, the
@@ -471,6 +502,10 @@ const hasCarousel = slides.length > 1;
     }
     .hero-title--event {
       max-width: none;
+    }
+    .hero-slide--kit {
+      background-size: cover;
+      background-position: center 25%;
     }
   }
 
