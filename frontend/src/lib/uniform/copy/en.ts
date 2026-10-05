@@ -99,7 +99,8 @@ export const en: UniformCopy = {
                 name: 'Vest',
                 tagline: 'White or black, same price, your choice',
                 bullets: [
-                    'Front zip. The breathable mesh back has two openings, so you can reach through to the pockets of the jersey underneath',
+                    'Double front zip, opening from the top and the bottom, for easy adjusting and getting on and off',
+                    'The breathable mesh back has two openings, so you can reach the pockets of the jersey underneath',
                     'GRC | ACROSS CYCLING CLUB MUNICH on the chest, a large ACC logo on the back',
                 ],
             },

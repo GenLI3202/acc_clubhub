@@ -99,7 +99,8 @@ export const zh: UniformCopy = {
                 name: '马甲',
                 tagline: '白 / 黑两色，同价自选',
                 bullets: [
-                    '前拉链；背部透气网布设两个开口，可以伸手探入内层骑行服的口袋取物',
+                    '正面上下双拉链，轻松调节、穿脱',
+                    '背部透气网布设两个开口，便于探入内层骑行服口袋取物',
                     '前胸 GRC | ACROSS CYCLING CLUB MUNICH，背面大 ACC 字标',
                 ],
             },

@@ -99,7 +99,8 @@ export const de: UniformCopy = {
                 name: 'Weste',
                 tagline: 'Weiß oder Schwarz, gleicher Preis, freie Wahl',
                 bullets: [
-                    'Reißverschluss vorn. Der atmungsaktive Netzrücken hat zwei Öffnungen, durch die du an die Taschen des Trikots darunter greifst',
+                    'Doppelter Frontreißverschluss (von oben und von unten zu öffnen): leicht zu regulieren, bequem an- und auszuziehen',
+                    'Der atmungsaktive Netzrücken hat zwei Öffnungen, durch die du an die Taschen des Trikots darunter greifst',
                     'GRC | ACROSS CYCLING CLUB MUNICH auf der Brust, großes ACC-Logo auf dem Rücken',
                 ],
             },
