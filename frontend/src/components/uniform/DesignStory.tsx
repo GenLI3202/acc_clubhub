@@ -51,12 +51,11 @@ export function DesignStory({ copy }: DesignStoryProps) {
                             <h2 class="kit-h2" id="kit-story-title">
                                 {story.title}
                             </h2>
-                            {story.paragraphs.map((paragraph) => (
+                            {story.opening.map((paragraph) => (
                                 <p class="kit-story-p" key={paragraph}>
                                     {paragraph}
                                 </p>
                             ))}
-                            <p class="kit-produced">{story.producedBy}</p>
                         </div>
                         <figure class="kit-story-photo" data-sample={shop.sampleBadge}>
                             <img
@@ -64,6 +63,29 @@ export function DesignStory({ copy }: DesignStoryProps) {
                                 alt={shop.imageAlt.front}
                                 width="663"
                                 height="884"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </figure>
+                    </div>
+
+                    {/* The seals and the club name sit on the back, so the second half goes beside the back photo. */}
+                    <div class="kit-story-grid kit-story-grid--flip">
+                        <div>
+                            {story.closing.map((paragraph) => (
+                                <p class="kit-story-p" key={paragraph}>
+                                    {paragraph}
+                                </p>
+                            ))}
+                            <p class="kit-story-coda">{story.coda}</p>
+                            <p class="kit-produced">{story.producedBy}</p>
+                        </div>
+                        <figure class="kit-story-photo kit-story-photo--back" data-sample={shop.sampleBadge}>
+                            <img
+                                src="/images/uniform/model-back.webp"
+                                alt={shop.imageAlt.back}
+                                width="1086"
+                                height="1448"
                                 loading="lazy"
                                 decoding="async"
                             />
@@ -84,6 +106,7 @@ export function DesignStory({ copy }: DesignStoryProps) {
                     <div class="kit-meaning">
                         <div>
                             <h3 class="kit-h3">{story.symbolsTitle}</h3>
+                            <p class="kit-symbols-intro">{story.symbolsIntro}</p>
                             <ul class="kit-symbols">
                                 {story.symbols.map((symbol) => (
                                     <li key={symbol.key}>

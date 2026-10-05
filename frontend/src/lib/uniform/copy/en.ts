@@ -29,12 +29,20 @@ export const en: UniformCopy = {
     story: {
         eyebrow: 'The idea',
         title: 'Across, without borders',
-        paragraphs: [
-            'Alpine ridgelines, drawn in the loose brushwork of Chinese ink painting and carried onto a cycling kit: Across Mountains.',
-            'A winding grey road starts at the black waist band, which stands for tarmac and earth, climbs through a band of sunset-red cloud and slips into the forest: Across Paths, and Across Borders.',
-            'The faint orange-red ink lines are autumn leaves in the mountain woods, and the clouds at sunrise and sunset.',
+        opening: [
+            'Chinese painters have painted mountains for more than a thousand years: the pines of Huangshan, the waters of the Fuchun River, the cliffs of the Taihang range. Their ink-laden brush rarely strayed from the landscapes of home. No one imagined that one day it would travel thousands of kilometres and come to rest on the snow line of the Alps.',
+            'We drew the Alpine ridges in ink, line laid over line, and let the blank space become snow and open sky. Eastern brushwork and European mountains meet on a single cycling jersey.',
+            'The black waist band is the earth. From it a grey road winds upward, passes through a band of sunset-red cloud and disappears into the mountain forest. The faint traces of orange-red between the peaks are autumn leaves, and the glow of the sky as we set out at dawn and ride home at dusk.',
         ],
+        closing: [
+            'Chinese painting has an old rule: a picture is not finished until it carries a seal. This jersey carries two. The one above the back pockets reads 慕城骑士, “riders of Munich”. It is our signature: we are cyclists who set out from Munich. The other sits in vermilion at the front of the waist and holds just two characters: 平安 (píng’ān), safe and well. The same two characters are brushed by hand on the legs of the bib shorts. On a long ride the legs go round more than ten thousand times, and with every pedal stroke the two characters rise and fall, like a quiet blessing repeated ten thousand times.',
+            '平安 may be the plainest and the most solemn thing one Chinese person can say to another. In the Tang dynasty the poet Cen Shen, travelling west to the frontier, met an envoy riding east to Chang’an. They passed on horseback with no paper and no brush, and all he could send home was a single line: tell them I am safe (凭君传语报平安). More than a thousand years later we have travelled even further west, and on the mountain roads of another country we still want to say the same thing: may every rider beside us ride out safely and come home with a full heart.',
+            '穿越无疆, “across, without borders”, is our club’s Chinese name and our creed: Across Paths, Across Mountains, Across Borders. Roads are covered on the strength of our legs; mountains are crossed on willpower. And the borders between countries, between home and abroad, and between languages dissolve in the sweat and laughter of riders taking turns in the wind.',
+        ],
+        coda: 'The mountains will always be there, and so will the road. We put it on and ride out; in it, we come home safe.',
         symbolsTitle: 'Four symbols on the right sleeve',
+        symbolsIntro:
+            'Four symbols run down the right sleeve. They are not writing, yet they have the plainness of something older than writing, like marks scratched into a rock face or signs left at a crossroads by someone travelling far. They are four ways of writing “across”.',
         symbols: [
             { key: 'mountains', name: 'Across Mountains' },
             { key: 'paths', name: 'Across Paths' },
@@ -43,18 +51,25 @@ export const en: UniformCopy = {
         ],
         detailsTitle: 'Small details, real meanings',
         details: [
-            { title: 'Pretzel', text: 'The small icon on the back of the bib shorts stands for Munich.' },
             {
                 title: '平安 (píng’ān)',
-                text: 'Handwritten 平安 on the leg of the shorts, and a red 平安 seal at the front side of the jersey’s waist. It wishes you a safe ride.',
+                text: 'A vermilion seal at the front of the jersey’s waist, and the same word brushed by hand on the legs of the shorts. One stamped, one written, one above, one below, both saying the same thing: ride out safely, come home happy.',
+            },
+            {
+                title: '穿越无疆',
+                text: 'Our club’s Chinese name, written large on the back of the jersey. Across Paths, Mountains, Borders: along the roads, over the mountains, beyond the borders.',
             },
             {
                 title: '慕城骑士',
-                text: 'The seal above the jersey’s back pockets: “riders of Munich”. We are a cycling community that lives and rides in Munich.',
+                text: 'The seal above the jersey’s back pockets. 慕城 is Munich; the riders are us. The 平安 seal at the waist carries a wish; this one is the name seal that says who we are.',
+            },
+            {
+                title: 'Pretzel',
+                text: 'The small icon on the back of the bib shorts. Munich’s most ordinary bread happens to be tied in a knot, and to Chinese eyes a knot means a bond. This one ties us to the city.',
             },
             {
                 title: 'ACROSS · PATHS · MOUNTAINS · BORDERS',
-                text: 'Printed around the jersey cuffs.',
+                text: 'Printed on the jersey cuffs, the part closest to the handlebars. The hands hold the direction; the cuffs remember where we are going.',
             },
         ],
         producedBy: 'Produced by GRC',

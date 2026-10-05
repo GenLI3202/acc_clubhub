@@ -38,8 +38,14 @@ export interface UniformCopy {
     readonly story: {
         readonly eyebrow: string;
         readonly title: string;
-        readonly paragraphs: readonly string[];
+        /** First half of the essay, set beside the front photo. */
+        readonly opening: readonly string[];
+        /** Second half of the essay, set beside the back photo. */
+        readonly closing: readonly string[];
+        /** Closing line of the essay, set apart from the paragraphs. */
+        readonly coda: string;
         readonly symbolsTitle: string;
+        readonly symbolsIntro: string;
         readonly symbols: readonly { readonly key: SymbolKey; readonly name: string }[];
         readonly detailsTitle: string;
         readonly details: readonly { readonly title: string; readonly text: string }[];

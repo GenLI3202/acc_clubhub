@@ -931,11 +931,31 @@
   gap: 2rem;
   align-items: center;
 }
+.kit-story-grid + .kit-story-grid {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
 @media (min-width: 900px) {
   .kit-story-grid {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     gap: clamp(2rem, 5vw, 4rem);
   }
+  /* Photo on the left; in the HTML it comes after the text, so phones read text first. */
+  .kit-story-grid--flip {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .kit-story-grid--flip > figure {
+    order: -1;
+  }
+}
+.kit-story-coda {
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 1.75rem 0 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-accent);
+  max-width: 40rem;
 }
 .kit-story-p {
   font-size: clamp(1rem, 1.6vw, 1.15rem);
@@ -969,6 +989,10 @@
   max-height: 30rem;
   object-fit: cover;
   object-position: center 20%;
+}
+/* Keep the back calligraphy and the pocket seal in frame when the photo is cropped. */
+.kit-story-photo--back img {
+  object-position: center 60%;
 }
 .kit-story-photo[data-sample]::after {
   content: attr(data-sample);
@@ -1008,6 +1032,11 @@
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0 0 1rem;
+}
+.kit-symbols-intro {
+  margin: 0 0 1.25rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
 }
 .kit-symbols {
   list-style: none;
