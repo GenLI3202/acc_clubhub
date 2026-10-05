@@ -46,6 +46,33 @@
   color: var(--color-text-secondary);
   margin: 0.5rem 0 0;
 }
+.kit-remind {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.85rem 0 0;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-text-main);
+  background: rgba(198, 40, 40, 0.08);
+  border: 1.5px solid var(--kit-accent-text);
+  border-radius: var(--radius-md);
+}
+.kit-remind-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0.05rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--kit-accent-text);
+  border-radius: 50%;
+}
 .kit-note--tight {
   margin-top: 0.35rem;
 }

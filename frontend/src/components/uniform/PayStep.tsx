@@ -96,7 +96,10 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                         </dd>
                     </div>
                 </dl>
-                <p class="kit-note">{pay.saveNote}</p>
+                <p class="kit-remind" role="note">
+                    <span class="kit-remind-icon" aria-hidden="true">!</span>
+                    {pay.saveNote}
+                </p>
 
                 {currency === 'RMB' ? (
                     <div class="kit-method">
@@ -134,7 +137,10 @@ export function PayStep({ copy, order, totals }: PayStepProps) {
                                 copy={pay}
                             />
                         </dl>
-                        <p class="kit-note">{pay.referenceHint}</p>
+                        <p class="kit-remind" role="note">
+                            <span class="kit-remind-icon" aria-hidden="true">!</span>
+                            {pay.referenceHint}
+                        </p>
                     </div>
                 )}
             </section>
