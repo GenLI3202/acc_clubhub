@@ -10,7 +10,7 @@ import {
     displayOptions,
     isReadyToPay,
     parseSavedOrder,
-    removeLine,
+    changeQty,
     serializeOrder,
     setCurrency,
     setMembership,
@@ -227,7 +227,9 @@ export function UniformShop({ lang }: UniformShopProps) {
                     step={step}
                     closed={closed}
                     formReady={formReady}
-                    onRemove={(sku, cut, size) => setOrder((current) => removeLine(current, sku, cut, size))}
+                    onChangeQty={(sku, cut, size, delta) =>
+                        setOrder((current) => changeQty(current, sku, cut, size, delta))
+                    }
                     onContinue={goToPay}
                     onEdit={goToSelect}
                 />

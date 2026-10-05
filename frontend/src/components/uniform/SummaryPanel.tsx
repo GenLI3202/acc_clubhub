@@ -2,10 +2,12 @@ import { fill, type UniformCopy } from '../../lib/uniform/copy';
 import { splitOrderLines } from '../../lib/uniform/form';
 import { displayOptions, isReadyToPay, type OrderState } from '../../lib/uniform/orderState';
 import {
+    MAX_QTY_PER_LINE,
     SKUS,
     formatPrice,
     shippingFee,
     type Cut,
+    type OrderLine,
     type OrderTotals,
     type Size,
     type SkuId,
@@ -19,7 +21,8 @@ interface SummaryPanelProps {
     closed: boolean;
     /** The Google Form is wired in (or this is a dev build), so paying makes sense. */
     formReady: boolean;
-    onRemove: (sku: SkuId, cut: Cut, size: Size) => void;
+    /** One click on − or + changes a line by one piece; at zero the line disappears. */
+    onChangeQty: (sku: SkuId, cut: Cut, size: Size, delta: number) => void;
     onContinue: () => void;
     onEdit: () => void;
 }
@@ -59,7 +62,7 @@ export function SummaryPanel({
     step,
     closed,
     formReady,
-    onRemove,
+    onChangeQty,
     onContinue,
     onEdit,
 }: SummaryPanelProps) {
@@ -71,6 +74,9 @@ export function SummaryPanel({
     const blocked = blockedReason(copy, order, closed, formReady);
     const canContinue = !closed && isReadyToPay(order) && formReady;
     const hasExtras = splitOrderLines(order.lines).extras.length > 0;
+    const cutName = (cut: Cut) => (cut === 'men' ? copy.shop.cutMen : copy.shop.cutWomen);
+    const itemLabel = (line: OrderLine) =>
+        `${lineName(copy, line.sku)} · ${cutName(line.cut)} ${line.size}`;
 
     return (
         <aside class="kit-summary" id="kit-summary" aria-labelledby="kit-summary-title">
@@ -116,20 +122,30 @@ export function SummaryPanel({
                                         {line.cut === 'men' ? copy.shop.cutMen : copy.shop.cutWomen}
                                     </p>
                                     <p class="kit-line-meta">
-                                        {line.size} × {line.qty}
+                                        {locked ? `${line.size} × ${line.qty}` : line.size}
                                     </p>
                                 </div>
                                 <div class="kit-line-side">
                                     <span>{money(price)}</span>
                                     {!locked && (
-                                        <button
-                                            type="button"
-                                            class="kit-link"
-                                            aria-label={`${summary.remove}: ${lineName(copy, line.sku)} ${line.size}`}
-                                            onClick={() => onRemove(line.sku, line.cut, line.size)}
-                                        >
-                                            {summary.remove}
-                                        </button>
+                                        <div class="kit-stepper kit-stepper--line" role="group">
+                                            <button
+                                                type="button"
+                                                aria-label={`${line.qty === 1 ? summary.remove : summary.decrease}: ${itemLabel(line)}`}
+                                                onClick={() => onChangeQty(line.sku, line.cut, line.size, -1)}
+                                            >
+                                                −
+                                            </button>
+                                            <output aria-live="polite">{line.qty}</output>
+                                            <button
+                                                type="button"
+                                                aria-label={`${summary.increase}: ${itemLabel(line)}`}
+                                                disabled={line.qty >= MAX_QTY_PER_LINE}
+                                                onClick={() => onChangeQty(line.sku, line.cut, line.size, 1)}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             </li>

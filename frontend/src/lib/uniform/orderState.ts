@@ -73,6 +73,31 @@ export function removeLine(state: OrderState, sku: SkuId, cut: Cut, size: Size):
     };
 }
 
+/**
+ * Adds or takes away pieces of one line (the + / − in the order summary).
+ * Taking the last piece away removes the line; the per-line maximum caps it.
+ */
+export function changeQty(
+    state: OrderState,
+    sku: SkuId,
+    cut: Cut,
+    size: Size,
+    delta: number,
+): OrderState {
+    const index = state.lines.findIndex(
+        (line) => line.sku === sku && line.cut === cut && line.size === size,
+    );
+    if (index < 0) return state;
+    const wanted = state.lines[index].qty + delta;
+    if (wanted <= 0) return removeLine(state, sku, cut, size);
+    const qty = Math.min(wanted, MAX_QTY_PER_LINE);
+    if (qty === state.lines[index].qty) return state;
+    return {
+        ...state,
+        lines: state.lines.map((line, i) => (i === index ? { ...line, qty } : line)),
+    };
+}
+
 export function setMembership(state: OrderState, membership: Membership): OrderState {
     return { ...state, membership };
 }

@@ -148,6 +148,8 @@ export const zh: UniformCopy = {
         transferHint: '从国内向 GRC 订购并转运到慕尼黑：1 件 {single}，2 件及以上每件 {each}。',
         total: '应付合计',
         remove: '移除',
+        increase: '增加一件',
+        decrease: '减少一件',
         continue: '确认订单，去付款',
         continueDisabled: '请至少加入一件',
         chooseFirst: '请先选择会员身份和付款方式',

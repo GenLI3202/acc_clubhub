@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
     EMPTY_ORDER,
     addLine,
+    changeQty,
     codeFor,
     displayOptions,
     isReadyToPay,
@@ -64,6 +65,43 @@ describe('removeLine', () => {
         expect(removeLine(two, 'jersey', 'men', 'M').lines).toEqual([
             { sku: 'jersey', cut: 'men', size: 'L', qty: 1 },
         ]);
+    });
+});
+
+describe('changeQty', () => {
+    const two = addLine(withJersey, { sku: 'bib', cut: 'women', size: 'S', qty: 1 });
+
+    it('adds one piece to the matching line', () => {
+        const next = changeQty(two, 'jersey', 'men', 'M', 1);
+        expect(next.lines[0].qty).toBe(2);
+        expect(next.lines[1].qty).toBe(1);
+    });
+
+    it('takes one piece away', () => {
+        const three = changeQty(two, 'bib', 'women', 'S', 1);
+        expect(changeQty(three, 'bib', 'women', 'S', -1).lines[1].qty).toBe(1);
+    });
+
+    it('drops the line when the last piece is taken away', () => {
+        const next = changeQty(two, 'jersey', 'men', 'M', -1);
+        expect(next.lines).toEqual([{ sku: 'bib', cut: 'women', size: 'S', qty: 1 }]);
+    });
+
+    it('stops at the per-line maximum', () => {
+        let state = two;
+        for (let i = 0; i < MAX_QTY_PER_LINE + 3; i += 1) state = changeQty(state, 'jersey', 'men', 'M', 1);
+        expect(state.lines[0].qty).toBe(MAX_QTY_PER_LINE);
+        expect(changeQty(state, 'jersey', 'men', 'M', 1)).toBe(state);
+    });
+
+    it('only touches the line with the same item, cut and size', () => {
+        expect(changeQty(two, 'jersey', 'women', 'M', 1)).toBe(two);
+        expect(changeQty(two, 'jersey', 'men', 'L', 1)).toBe(two);
+    });
+
+    it('does not mutate the previous state', () => {
+        changeQty(two, 'jersey', 'men', 'M', 1);
+        expect(two.lines[0].qty).toBe(1);
     });
 });
 

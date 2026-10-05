@@ -105,6 +105,8 @@ export interface UniformCopy {
         readonly transferHint: string;
         readonly total: string;
         readonly remove: string;
+        readonly increase: string;
+        readonly decrease: string;
         readonly continue: string;
         readonly continueDisabled: string;
         /** Shown while membership or payment method is still unchosen. */

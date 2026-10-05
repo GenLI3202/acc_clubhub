@@ -521,6 +521,13 @@
   font-family: var(--font-heading);
   font-weight: 600;
 }
+.kit-stepper--line {
+  margin-top: 0.1rem;
+}
+.kit-stepper--line output {
+  min-width: 1.75rem;
+  font-size: 0.9rem;
+}
 .kit-flash {
   min-height: 1.3em;
   margin: 0.5rem 0 0;

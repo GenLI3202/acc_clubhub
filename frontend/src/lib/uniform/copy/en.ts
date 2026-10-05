@@ -148,6 +148,8 @@ export const en: UniformCopy = {
         transferHint: 'Shipping from China to Munich: {single} for a single piece, {each} per piece from two pieces on.',
         total: 'Total due',
         remove: 'Remove',
+        increase: 'One more',
+        decrease: 'One less',
         continue: 'Confirm and pay',
         continueDisabled: 'Add at least one item',
         chooseFirst: 'Choose membership and payment method first',

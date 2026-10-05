@@ -148,6 +148,8 @@ export const de: UniformCopy = {
         transferHint: 'Versand von China nach München: {single} bei einem Teil, ab zwei Teilen {each} pro Teil.',
         total: 'Gesamtbetrag',
         remove: 'Entfernen',
+        increase: 'Eines mehr',
+        decrease: 'Eines weniger',
         continue: 'Bestätigen und bezahlen',
         continueDisabled: 'Mindestens einen Artikel hinzufügen',
         chooseFirst: 'Bitte zuerst Mitgliedschaft und Zahlungsart wählen',
