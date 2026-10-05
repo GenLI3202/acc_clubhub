@@ -1,9 +1,9 @@
 ---
 // components/home/KitHeroArt.astro
-// Background of the home hero's kit slide: the jersey's own motif painted
-// large. Layered ink ridgelines, the vermilion strokes, the winding grey road
-// and a 平安 seal, with the model photo fading in from the right.
-// The lines are drawn like brush strokes each time the slide comes in.
+// Background of the home hero's kit slide: faint Alpine ridges in ink wash on
+// the page colour, with the model photo fading in from the right. The layers
+// rise in from far to near when the slide shows; the far ones and the mist
+// then drift slowly.
 
 import { ridgePath, type RidgeOptions } from '../../lib/home/ridgeline';
 
@@ -11,110 +11,53 @@ const WIDTH = 1600;
 const HEIGHT = 900;
 const SPAN = { startX: -40, endX: WIDTH + 40 };
 
-interface Ridge extends RidgeOptions {
-  readonly tone: 'far' | 'mid' | 'near' | 'red';
-  readonly width: number;
-  readonly opacity: number;
-  /** Fill the ground below the line with a faint ink wash. */
-  readonly wash?: boolean;
-  /** Draw-in delay, in seconds. */
+interface Layer extends RidgeOptions {
+  readonly depth: 'far' | 'mid' | 'near';
+  /** Strength of the wash at the ridge line, fading to nothing below. */
+  readonly ink: number;
+  /** Fade-in delay, in seconds. */
   readonly delay: number;
 }
 
-const RIDGES: readonly Ridge[] = [
-  { ...SPAN, baseY: 430, amplitude: 170, peaks: 7, seed: 3, tone: 'far', width: 1.3, opacity: 0.3, delay: 0 },
-  { ...SPAN, baseY: 480, amplitude: 150, peaks: 6, seed: 11, tone: 'far', width: 1.4, opacity: 0.38, wash: true, delay: 0.25 },
-  { ...SPAN, baseY: 570, amplitude: 140, peaks: 5, seed: 21, tone: 'mid', width: 1.7, opacity: 0.5, wash: true, delay: 0.5 },
-  { startX: 120, endX: 1060, baseY: 610, amplitude: 70, peaks: 4, seed: 5, tone: 'red', width: 2.6, opacity: 0.9, delay: 0.9 },
-  { ...SPAN, baseY: 700, amplitude: 90, peaks: 5, seed: 31, tone: 'near', width: 1.9, opacity: 0.55, wash: true, delay: 0.75 },
-  { startX: 560, endX: 1240, baseY: 735, amplitude: 45, peaks: 3, seed: 9, tone: 'red', width: 2.2, opacity: 0.75, delay: 1.2 },
+const LAYERS: readonly Layer[] = [
+  { ...SPAN, baseY: 430, amplitude: 170, peaks: 7, seed: 3, depth: 'far', ink: 0.07, delay: 0 },
+  { ...SPAN, baseY: 480, amplitude: 150, peaks: 6, seed: 11, depth: 'far', ink: 0.09, delay: 0.3 },
+  { ...SPAN, baseY: 570, amplitude: 140, peaks: 5, seed: 21, depth: 'mid', ink: 0.11, delay: 0.6 },
+  { ...SPAN, baseY: 700, amplitude: 90, peaks: 5, seed: 31, depth: 'near', ink: 0.12, delay: 0.9 },
 ];
 
-const ridges = RIDGES.map((ridge) => {
-  const line = ridgePath(ridge);
-  return {
-    ...ridge,
-    line,
-    wash: ridge.wash ? `${line} L${ridge.endX} ${HEIGHT} L${ridge.startX} ${HEIGHT} Z` : null,
-  };
-});
-
-// The grey road of the jersey, climbing out of the dark ground into the hills.
-const ROAD = 'M150 900 C70 850 250 810 170 760 S80 690 160 640 S250 590 190 555 S140 525 175 500';
+const layers = LAYERS.map((layer, i) => ({
+  ...layer,
+  id: `kitArtWash${i}`,
+  shape: `${ridgePath(layer)} L${layer.endX} ${HEIGHT} L${layer.startX} ${HEIGHT} Z`,
+}));
 ---
 
 <div class="kit-art" aria-hidden="true">
   <svg class="kit-art-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMax slice">
     <defs>
-      <radialGradient id="kitArtSun" cx="50%" cy="50%" r="50%">
-        <stop offset="0" stop-color="#e2553a" stop-opacity="0.55" />
-        <stop offset="0.55" stop-color="#e2553a" stop-opacity="0.22" />
-        <stop offset="1" stop-color="#c62828" stop-opacity="0" />
-      </radialGradient>
-      <linearGradient id="kitArtWash" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#8d949c" stop-opacity="0.1" />
-        <stop offset="1" stop-color="#8d949c" stop-opacity="0" />
-      </linearGradient>
-      <linearGradient id="kitArtRoad" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0" stop-color="#6f7781" stop-opacity="0.45" />
-        <stop offset="1" stop-color="#6f7781" stop-opacity="0.05" />
-      </linearGradient>
-      <!-- Roughens line edges so they read as ink on paper, not vector strokes. -->
-      <filter id="kitArtInk" x="-5%" y="-20%" width="110%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" />
-        <feDisplacementMap in="SourceGraphic" scale="5" />
-      </filter>
+      {layers.map((layer) => (
+        <linearGradient id={layer.id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7b838d" stop-opacity={layer.ink} />
+          <stop offset="0.6" stop-color="#7b838d" stop-opacity="0" />
+        </linearGradient>
+      ))}
       <filter id="kitArtBlur" x="-50%" y="-50%" width="200%" height="200%">
         <feGaussianBlur stdDeviation="28" />
       </filter>
     </defs>
 
     <rect class="kit-art-ground" width={WIDTH} height={HEIGHT} />
-    <circle class="kit-art-sun" cx="640" cy="200" r="140" fill="url(#kitArtSun)" />
+
+    {layers.map((layer) => (
+      <g class:list={['kit-art-layer', `kit-art-layer--${layer.depth}`]}>
+        <path d={layer.shape} fill={`url(#${layer.id})`} style={`--delay: ${layer.delay}s`} />
+      </g>
+    ))}
 
     <g class="kit-art-mist" filter="url(#kitArtBlur)">
       <ellipse cx="380" cy="470" rx="320" ry="38" fill="#8d949c" opacity="0.08" />
       <ellipse cx="900" cy="560" rx="360" ry="42" fill="#8d949c" opacity="0.06" />
-    </g>
-
-    {ridges.map((ridge) => (
-      <g
-        class:list={['kit-art-ridge', `kit-art-ridge--${ridge.tone}`]}
-        filter={ridge.tone === 'far' ? undefined : 'url(#kitArtInk)'}
-      >
-        {ridge.wash && <path class="kit-art-wash" d={ridge.wash} fill="url(#kitArtWash)" />}
-        <path
-          class="kit-art-line"
-          d={ridge.line}
-          pathLength="1"
-          fill="none"
-          stroke-width={ridge.width}
-          stroke-opacity={ridge.opacity}
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          style={`--delay: ${ridge.delay}s`}
-        />
-      </g>
-    ))}
-
-    <path
-      class="kit-art-line kit-art-road"
-      d={ROAD}
-      pathLength="1"
-      fill="none"
-      stroke="url(#kitArtRoad)"
-      stroke-width="9"
-      stroke-linecap="round"
-      style="--delay: 1.4s"
-    />
-
-    <g transform="translate(760 330) rotate(-4)">
-      <g class="kit-art-seal">
-        <rect x="-30" y="-46" width="60" height="92" rx="7" fill="#c62828" />
-        <rect x="-25" y="-41" width="50" height="82" rx="5" fill="none" stroke="#f6d9d2" stroke-opacity="0.55" stroke-width="1.5" />
-        <text x="0" y="-8" text-anchor="middle" font-size="30" fill="#fff4f0">平</text>
-        <text x="0" y="30" text-anchor="middle" font-size="30" fill="#fff4f0">安</text>
-      </g>
     </g>
   </svg>
 
@@ -140,17 +83,6 @@ const ROAD = 'M150 900 C70 850 250 810 170 760 S80 690 160 640 S250 590 190 555 
     height: 100%;
   }
 
-  .kit-art-seal text {
-    font-family: 'STKaiti', 'KaiTi', 'Kaiti SC', serif;
-    font-weight: 700;
-  }
-
-  /* Grey ink, paler with distance, as on the jersey. */
-  .kit-art-ridge--far .kit-art-line { stroke: #9ea5ae; }
-  .kit-art-ridge--mid .kit-art-line { stroke: #7b838d; }
-  .kit-art-ridge--near .kit-art-line { stroke: #555c66; }
-  .kit-art-ridge--red .kit-art-line { stroke: #d9542b; }
-
   /* The photo stands on the right and dissolves into the painting: a wide
      fade on the left, softer ones top and bottom. */
   .kit-art-photo {
@@ -172,43 +104,25 @@ const ROAD = 'M150 900 C70 850 250 810 170 760 S80 690 160 640 S250 590 190 555 
   }
 
   /* ---- Motion: only while the slide is showing ---- */
-  .kit-art-line {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-  }
-  :global(.hero-slide.active) .kit-art-line {
-    animation: kit-art-draw 2.6s cubic-bezier(0.6, 0.05, 0.3, 1) var(--delay, 0s) forwards;
-  }
-  .kit-art-seal {
+  .kit-art-layer path {
     opacity: 0;
   }
-  :global(.hero-slide.active) .kit-art-seal {
-    animation: kit-art-stamp 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) 2s forwards;
+  :global(.hero-slide.active) .kit-art-layer path {
+    animation: kit-art-rise 1.8s ease-out var(--delay, 0s) forwards;
   }
-  :global(.hero-slide.active) .kit-art-sun {
-    animation: kit-art-glow 6s ease-in-out infinite alternate;
-  }
-  :global(.hero-slide.active) .kit-art-ridge--far {
+  :global(.hero-slide.active) .kit-art-layer--far {
     animation: kit-art-drift 36s ease-in-out infinite alternate;
   }
   :global(.hero-slide.active) .kit-art-mist {
     animation: kit-art-drift-mist 24s ease-in-out infinite alternate;
   }
   :global(.hero-slide.active) .kit-art-photo {
-    animation: kit-art-push 14s ease-out forwards;
+    animation: kit-art-push 16s ease-out forwards;
   }
 
-  @keyframes kit-art-draw {
-    to { stroke-dashoffset: 0; }
-  }
-  /* The outer <g> places the seal; this inner one only scales around its own centre. */
-  @keyframes kit-art-stamp {
-    from { opacity: 0; transform: scale(1.6); }
-    to { opacity: 0.95; transform: scale(1); }
-  }
-  @keyframes kit-art-glow {
-    from { opacity: 0.75; }
-    to { opacity: 1; }
+  @keyframes kit-art-rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   @keyframes kit-art-drift {
     to { transform: translateX(-40px); }
@@ -221,7 +135,6 @@ const ROAD = 'M150 900 C70 850 250 810 170 760 S80 690 160 640 S250 590 190 555 
     to { transform: scale(1.06); }
   }
 
-  /* On phones the photo carries the slide on its own. */
   /* On phones the photo fills the top and fades into the page colour, so the
      dark copy below sits on a clean ground. */
   @media (max-width: 640px) {
@@ -236,9 +149,8 @@ const ROAD = 'M150 900 C70 850 250 810 170 760 S80 690 160 640 S250 590 190 555 
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .kit-art-line { stroke-dashoffset: 0; }
-    .kit-art-seal { opacity: 0.95; }
-    :global(.hero-slide.active) :is(.kit-art-line, .kit-art-seal, .kit-art-sun, .kit-art-ridge--far, .kit-art-mist, .kit-art-photo) {
+    .kit-art-layer path { opacity: 1; }
+    :global(.hero-slide.active) :is(.kit-art-layer path, .kit-art-layer--far, .kit-art-mist, .kit-art-photo) {
       animation: none;
     }
   }

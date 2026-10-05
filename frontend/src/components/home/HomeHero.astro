@@ -1,7 +1,8 @@
 ---
 // components/home/HomeHero.astro
-// Homepage hero carousel: slide 0 is the club brand slide (team photo),
-// followed by one slide per event flagged for the hero section.
+// Homepage hero carousel: while the 2026 kit order is open its slide leads,
+// then the club brand slide (team photo), then one slide per event flagged
+// for the hero section.
 // Auto-advances; pauses on hover/focus and when the tab is hidden.
 // Separate from events/EventHero.astro on purpose — that one is the events
 // page hero and deliberately has no autoplay.
@@ -15,7 +16,7 @@ import { isOrderClosed } from '../../lib/uniform/pricing';
 interface Props {
   lang: Locale;
   events?: CollectionEntry<'events'>[];
-  /** Auto-advance interval in ms. Set to 0 to disable autoplay. */
+  /** Auto-advance interval in ms (per slide, times its hold). 0 disables autoplay. */
   intervalMs?: number;
 }
 
@@ -58,9 +59,10 @@ function formatDate(dateStr: string): string {
   );
 }
 
-// While the 2026 kit order is open, slide 1 leads to the order page. The
-// page is prerendered, so this is decided at build time: a build after the
-// deadline drops the slide (the order page itself shows "closed" either way).
+// While the 2026 kit order is open, the first slide leads to the order page
+// and stays three times as long as the others. The page is prerendered, so
+// this is decided at build time: a build after the deadline drops the slide
+// (the order page itself shows "closed" either way).
 const kit = getUniformCopy(lang);
 const kitSlides = isOrderClosed()
   ? []
@@ -74,11 +76,13 @@ const kitSlides = isOrderClosed()
         body: kit.hero.lede,
         href: `/${lang}/uniform`,
         cta: `${kit.banner.cta} →`,
+        hold: 3,
       },
     ];
 
-// Slide 0 is always the brand slide, then the kit order (while open), then events.
+// The kit order (while open), then the brand slide, then events.
 const slides = [
+  ...kitSlides,
   {
     kind: 'brand' as const,
     image: BRAND_IMAGE,
@@ -88,8 +92,8 @@ const slides = [
     body: t(lang, 'home.tagline'),
     href: `/${lang}/events`,
     cta: t(lang, 'home.heroCta'),
+    hold: 1,
   },
-  ...kitSlides,
   ...events.map((event) => ({
     kind: 'event' as const,
     image: event.data.coverImage || BRAND_IMAGE,
@@ -99,6 +103,7 @@ const slides = [
     body: event.data.description,
     href: `/${lang}/events/${event.data.slug}`,
     cta: detailsLabel,
+    hold: 1,
   })),
 ];
 
@@ -132,6 +137,7 @@ const hasCarousel = slides.length > 1;
       <div
         class:list={['hero-slide-content', `hero-slide-content--${slide.kind}`, { active: i === 0 }]}
         aria-hidden={i !== 0}
+        data-hold={slide.hold}
       >
         <p class="hero-eyebrow">{slide.eyebrow}</p>
         <h1 class:list={['hero-title', { 'hero-title--event': slide.kind !== 'brand' }]}>
@@ -174,7 +180,7 @@ const hasCarousel = slides.length > 1;
     const dots = hero.querySelectorAll<HTMLElement>('.hero-dot');
     const interval = Number(hero.dataset.interval || 0);
     let current = 0;
-    let timer: ReturnType<typeof setInterval> | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
     function goTo(index: number) {
       const next = (index + slides.length) % slides.length;
@@ -211,14 +217,20 @@ const hasCarousel = slides.length > 1;
     // Autoplay — skipped entirely when the visitor prefers reduced motion.
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    // Each slide stays `interval × data-hold` (the kit slide holds longer).
     function start() {
       if (timer || !interval || reduceMotion || slides.length < 2) return;
-      timer = setInterval(() => goTo(current + 1), interval);
+      const hold = Number(contents[current].dataset.hold || 1);
+      timer = setTimeout(() => {
+        timer = null;
+        goTo(current + 1);
+        start();
+      }, interval * hold);
     }
 
     function stop() {
       if (timer) {
-        clearInterval(timer);
+        clearTimeout(timer);
         timer = null;
       }
     }
@@ -277,6 +289,7 @@ const hasCarousel = slides.length > 1;
       { passive: true }
     );
 
+    syncHeader();
     start();
   }
 </script>

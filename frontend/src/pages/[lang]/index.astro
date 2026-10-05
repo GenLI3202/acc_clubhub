@@ -13,6 +13,7 @@ import PillarSection from "../../components/home/PillarSection.astro";
 import SplashScreen from "../../components/home/SplashScreen.astro";
 import StravaWidget from "../../components/home/StravaWidget.astro";
 import SponsorStrip from "../../components/home/SponsorStrip.astro";
+import { isOrderClosed } from "../../lib/uniform/pricing";
 
 export function getStaticPaths() {
     return locales.map((lang) => ({ params: { lang } }));
@@ -29,6 +30,12 @@ const langEvents = allEvents.filter((e) => {
 const effectiveEvents = resolveRecurringEvents(langEvents);
 const { upcoming } = splitEvents(effectiveEvents);
 const heroEvent = upcoming[0] ?? null;
+
+// Preload whichever image the hero shows first: the kit photo while the kit
+// order is open (HomeHero leads with that slide), the team photo otherwise.
+const heroFirstImage = isOrderClosed()
+    ? "/images/home/acc-hero-group.jpg"
+    : "/images/uniform/model-left.webp";
 
 // Hero carousel: upcoming events flagged for the hero section. Events with an
 // explicit heroPriority lead (lower first); the rest follow by soonest date.
@@ -108,7 +115,7 @@ const routeItems = allRoutes
     title={t(lang, "nav.home")}
     lang={lang}
     headerTransparent={true}
-    heroImagePreload="/images/home/acc-hero-group.jpg"
+    heroImagePreload={heroFirstImage}
 >
     <SplashScreen />
 
