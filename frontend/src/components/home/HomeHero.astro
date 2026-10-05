@@ -8,6 +8,7 @@
 
 import type { CollectionEntry } from 'astro:content';
 import { t, type Locale } from '../../lib/i18n';
+import KitHeroArt from './KitHeroArt.astro';
 import { getUniformCopy } from '../../lib/uniform/copy';
 import { isOrderClosed } from '../../lib/uniform/pricing';
 
@@ -110,19 +111,28 @@ const hasCarousel = slides.length > 1;
   data-interval={hasCarousel ? intervalMs : 0}
   aria-roledescription={hasCarousel ? 'carousel' : undefined}
 >
-  {slides.map((slide, i) => (
-    <div
-      class:list={['hero-slide', `hero-slide--${slide.kind}`, { active: i === 0 }]}
-      style={`background-image: url('${slide.image}')`}
-      aria-hidden={i !== 0}
-    ></div>
-  ))}
+  {slides.map((slide, i) =>
+    slide.kind === 'kit' ? (
+      <div class:list={['hero-slide', 'hero-slide--kit', { active: i === 0 }]} aria-hidden={i !== 0}>
+        <KitHeroArt />
+      </div>
+    ) : (
+      <div
+        class:list={['hero-slide', { active: i === 0 }]}
+        style={`background-image: url('${slide.image}')`}
+        aria-hidden={i !== 0}
+      ></div>
+    )
+  )}
 
   <div class="hero-overlay"></div>
 
   <div class="hero-content">
     {slides.map((slide, i) => (
-      <div class:list={['hero-slide-content', { active: i === 0 }]} aria-hidden={i !== 0}>
+      <div
+        class:list={['hero-slide-content', `hero-slide-content--${slide.kind}`, { active: i === 0 }]}
+        aria-hidden={i !== 0}
+      >
         <p class="hero-eyebrow">{slide.eyebrow}</p>
         <h1 class:list={['hero-title', { 'hero-title--event': slide.kind !== 'brand' }]}>
           {slide.title}
@@ -185,6 +195,17 @@ const hasCarousel = slides.length > 1;
       contents[current].setAttribute('aria-hidden', 'false');
       contents[current].querySelector('a')?.setAttribute('tabindex', '0');
       dots[current]?.classList.add('active');
+      syncHeader();
+    }
+
+    // The kit slide is light: ask the transparent header to turn solid while
+    // it shows (Header.astro reads data-light-hero in its scroll handler).
+    const header = document.querySelector<HTMLElement>('header.header-transparent');
+    function syncHeader() {
+      if (!header) return;
+      const light = slides[current].classList.contains('hero-slide--kit');
+      header.dataset.lightHero = String(light);
+      header.classList.toggle('header-scrolled', light || window.scrollY > 40);
     }
 
     // Autoplay — skipped entirely when the visitor prefers reduced motion.
@@ -288,14 +309,22 @@ const hasCarousel = slides.length > 1;
     opacity: 1;
   }
 
-  /* The kit photo is portrait: on wide screens it stands on the right over a
-     dark ground instead of being cropped to a strip of jersey. */
-  .hero-slide--kit {
-    background-color: #111;
-    background-repeat: no-repeat;
-    background-size: auto 100%;
-    background-position: right center;
+  /* The kit slide is painted on the page colour (KitHeroArt): no dark scrim,
+     just a soft wash of that colour behind the text, and dark copy on top. */
+  .homepage-hero:has(.hero-slide--kit.active) .hero-overlay {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-bg-canvas) 60%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg-canvas) 25%, transparent) 40%,
+      transparent 62%
+    );
   }
+  .hero-slide-content--kit .hero-eyebrow { color: var(--color-accent); }
+  .hero-slide-content--kit .hero-title { color: var(--color-text-main); }
+  .hero-slide-content--kit .hero-meta { color: var(--color-text-secondary); }
+  .hero-slide-content--kit .hero-tagline { color: var(--color-text-main); }
+  .homepage-hero:has(.hero-slide--kit.active) .hero-dot { background: rgba(0, 0, 0, 0.2); }
+  .homepage-hero:has(.hero-slide--kit.active) .hero-dot.active { background: var(--color-accent); }
 
   /* Two scrims: the vertical one anchors the content to the bottom, the
      horizontal one keeps left-aligned copy legible over busy photography
@@ -502,10 +531,6 @@ const hasCarousel = slides.length > 1;
     }
     .hero-title--event {
       max-width: none;
-    }
-    .hero-slide--kit {
-      background-size: cover;
-      background-position: center 25%;
     }
   }
 

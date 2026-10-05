@@ -125,8 +125,10 @@ function getLangSwitchUrl(targetLang: Locale): string {
   // break script loading on non-transparent pages.)
   const header = document.querySelector('header');
   if (header?.classList.contains('header-transparent')) {
+    // A light hero slide (the home kit slide) sets data-light-hero, so the
+    // white nav text never sits on a white background.
     const onScroll = () => {
-      if (window.scrollY > 40) {
+      if (window.scrollY > 40 || header.dataset.lightHero === 'true') {
         header.classList.add('header-scrolled');
       } else {
         header.classList.remove('header-scrolled');
