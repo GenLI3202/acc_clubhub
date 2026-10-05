@@ -10,7 +10,7 @@ export const zh: UniformCopy = {
     hero: {
         eyebrow: 'ACC 2026 队服',
         title: '2026 新队服',
-        lede: '把阿尔卑斯的山脊，画进一件骑行服。',
+        lede: '东方的笔墨，欧洲的群山。',
         deadline: '订购截止 2026 年 10 月 25 日 23:59（慕尼黑时间）',
         cta: '开始选购',
         countdown: { label: '距订购截止还有', days: '天', hours: '时', minutes: '分', seconds: '秒' },

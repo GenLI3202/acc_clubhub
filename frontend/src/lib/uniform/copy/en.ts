@@ -10,7 +10,7 @@ export const en: UniformCopy = {
     hero: {
         eyebrow: 'ACC 2026 Kit',
         title: 'The 2026 Kit',
-        lede: 'Alpine ridgelines, painted in ink on a cycling kit.',
+        lede: 'Eastern ink, European mountains.',
         deadline: 'Orders close 25 Oct 2026, 23:59 (Munich time)',
         cta: 'Start your order',
         countdown: { label: 'Time left to order', days: 'days', hours: 'hrs', minutes: 'min', seconds: 'sec' },

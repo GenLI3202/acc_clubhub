@@ -10,7 +10,7 @@ export const de: UniformCopy = {
     hero: {
         eyebrow: 'ACC Kit 2026',
         title: 'Das Kit 2026',
-        lede: 'Alpine Gratlinien, in Tusche auf ein Radtrikot gemalt.',
+        lede: 'Östliche Tusche, europäische Berge.',
         deadline: 'Bestellschluss 25.10.2026, 23:59 Uhr (Münchner Zeit)',
         cta: 'Jetzt bestellen',
         countdown: { label: 'Noch bis Bestellschluss', days: 'Tage', hours: 'Std.', minutes: 'Min.', seconds: 'Sek.' },
