@@ -1107,25 +1107,51 @@
 
 /* The button on the jersey card and the dialog it opens */
 .kit-design-btn {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   min-height: 2.75rem;
   margin: 0 0 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.25rem;
   font-family: var(--font-heading);
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--kit-accent-text);
-  background: transparent;
-  border: 1.5px solid currentColor;
+  color: #fff;
+  background: var(--color-accent);
+  border: 0;
   border-radius: var(--radius-full);
+  box-shadow: 0 4px 14px rgba(198, 40, 40, 0.32);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+/* A band of light sweeps across now and then, to catch the eye without nagging. */
+.kit-design-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  animation: kit-design-shine 4.5s ease-in-out 1.5s infinite;
+  pointer-events: none;
+}
+@keyframes kit-design-shine {
+  0% { left: -60%; }
+  30%, 100% { left: 130%; }
+}
+.kit-design-btn-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
 }
 .kit-design-btn:hover {
-  background: var(--color-bg-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(198, 40, 40, 0.42);
+}
+.kit-design-btn:hover .kit-design-btn-arrow {
+  transform: translateX(4px);
 }
 dialog.kit-dialog {
   width: min(960px, calc(100vw - 1.5rem));
@@ -1234,4 +1260,7 @@ body:has(dialog.kit-dialog[open]) {
 
 @media (prefers-reduced-motion: reduce) {
   .kit-btn, .kit-radio-face { transition: none; }
+  .kit-design-btn, .kit-design-btn-arrow { transition: none; }
+  .kit-design-btn::after { animation: none; display: none; }
+  .kit-design-btn:hover, .kit-design-btn:hover .kit-design-btn-arrow { transform: none; }
 }

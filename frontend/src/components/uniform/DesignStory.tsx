@@ -58,7 +58,7 @@ export function DesignStory({ copy }: DesignStoryProps) {
     return (
         <>
             <button type="button" class="kit-design-btn" onClick={open}>
-                {shop.designButton} <span aria-hidden="true">→</span>
+                {shop.designButton} <span class="kit-design-btn-arrow" aria-hidden="true">→</span>
             </button>
 
             <dialog
