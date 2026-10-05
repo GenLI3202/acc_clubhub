@@ -101,11 +101,18 @@ const eventTypeLabel = epicRideSlugs.has(entry.data.slug)
 const effective_event_date = updated_departure ?? entry.data.date;
 const schedule_copy = SCHEDULE_NOTICE[lang];
 const isPastEvent = new Date(effective_event_date).getTime() <= Date.now();
+const is_paused_recurring = entry.data.recurring?.paused === true;
+const paused_labels = {
+  zh: '冬季休赛，报名已关闭。期待 2027 年再会！',
+  en: 'Winter break. Registration is closed. See you in 2027!',
+  de: 'Winterpause. Die Anmeldung ist geschlossen. Bis 2027!',
+};
 const registrationReopened = entry.data.registrationReopened === true;
 const showRegistrationForm = (
   !isPastEvent
   && !entry.data.registrationLink
   && !isEventCancelled
+  && !is_paused_recurring
 );
 const cancellationNotice = get_cancellation_notice(cancellationReason, lang);
 
@@ -127,7 +134,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
 
 <ArticleLayout
   title={entry.data.title}
-  date={effective_event_date}
+  date={is_paused_recurring ? undefined : effective_event_date}
   timeZone="Europe/Berlin"
   cover={entry.data.cover}
   lang={lang}
@@ -135,7 +142,7 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
   backLabel={t(lang, 'nav.events')}
 >
   <!-- Fallback: External registration link (if provided) -->
-  {entry.data.registrationLink && !isEventCancelled && (
+  {entry.data.registrationLink && !isEventCancelled && !is_paused_recurring && (
     <a href={entry.data.registrationLink} target="_blank" rel="noopener" class="event-register-btn">
       {registrationLabels[lang] || registrationLabels.en} →
     </a>
@@ -176,7 +183,12 @@ const isACCOfficialRide = entry.data.ACCOfficialRide === true;
       {cancellationNotice}
     </div>
   )}
-  {isPastEvent && !isEventCancelled && (
+  {is_paused_recurring && (
+    <div slot="before-comments" class="event-ended-notice" role="status">
+      {paused_labels[lang]}
+    </div>
+  )}
+  {isPastEvent && !isEventCancelled && !is_paused_recurring && (
     <div slot="before-comments" class="event-ended-notice">
       {endedLabels[lang] ?? endedLabels.en}
     </div>

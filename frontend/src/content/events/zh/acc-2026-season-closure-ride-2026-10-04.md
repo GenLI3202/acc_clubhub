@@ -5,6 +5,7 @@ description: 10 月 4 日 09:30 从 Untergiesing-Harlaching 停车场出发，56
 location: Parkplatz Untergiesing-Harlaching · 3HQF+VPV, 81545 München
 author: ACC Club
 date: "2026-10-04T09:30:00+02:00"
+registrationDeadline: "2026-10-04T08:30:00+02:00"
 eventType: social-ride
 cover: /images/events/acc-2026-season-closure-ride-2026-10-04/cover.jpg
 displaySections:
