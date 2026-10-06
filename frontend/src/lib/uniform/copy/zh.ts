@@ -178,7 +178,7 @@ export const zh: UniformCopy = {
         fineprint: '定制商品：尺码选错不退不换 · 仅慕尼黑自提',
         termsLink: '订购须知',
         edit: '修改订单',
-        steps: ['选购', '填写信息', '付款', '上传截图'],
+        steps: ['选购', '填写信息', '付款', '上传截图并入群'],
         mobileBar: '查看订单',
     },
 
@@ -202,6 +202,11 @@ export const zh: UniformCopy = {
         copyFailed: '无法自动复制，请长按文字复制',
         editWarning: '如果已经付款，请不要修改订单；需要改动请联系工作人员。',
         saveNote: '请截图保存订单号和金额。',
+        groupHint: '付款并上传截图后，还要添加 Ronnie 的微信加入订购群（见本页最下方）。',
+        groupTitle: '最后一步：加入订购微信群',
+        groupBody:
+            '提交表单后，请添加工作人员 Ronnie 的微信，让他拉你进订购群。到货时间、取货时间和地点都会在群里通知，没有入群可能错过取货。',
+        groupScan: '微信扫码添加 Ronnie，添加时请备注你的姓名和订单号。',
     },
 
     contactStep: {

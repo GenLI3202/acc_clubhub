@@ -1363,3 +1363,18 @@ body:has(dialog.kit-dialog[open]) {
   font-weight: 600;
   color: var(--kit-accent-text);
 }
+
+/* The last thing a buyer must do: join the order WeChat group */
+.kit-group {
+  border: 2px solid var(--kit-accent-text);
+  background: rgba(198, 40, 40, 0.05);
+}
+.kit-group .kit-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.kit-group p {
+  margin: 0 0 0.6rem;
+  line-height: 1.6;
+}
