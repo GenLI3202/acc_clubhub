@@ -38,8 +38,12 @@ const TERMS_TEXT = [
 ].join('\n');
 
 const CONFIRMATION_MESSAGE =
-  '感谢订购！我们会核对付款，并通过邮件或微信群通知你。请保存好订单号。\n' +
-  'Thank you! We will verify your payment and contact you by email or via the WeChat group. Please keep your order code.';
+  '感谢订购！我们会核对付款，并通过邮件或微信群通知您。请保存好订单号。\n\n' +
+  '最后一步：请添加工作人员 Ronnie 的微信，让他拉您进订购群（到货时间、取货时间和地点都在群里通知）。添加时请备注您的姓名和订单号。\n' +
+  '微信二维码：https://www.across-cc.de/images/uniform/contact-wechat.webp\n\n' +
+  'Thank you! We will verify your payment and contact you by email or via the WeChat group. Please keep your order code.\n\n' +
+  'Last step: add our team member Ronnie on WeChat and ask to be added to the order group (arrival and pick-up time and place are announced there). Please put your name and order code in the request note.\n' +
+  'WeChat QR code: https://www.across-cc.de/images/uniform/contact-wechat.webp';
 
 /** Final question order, by title prefix. */
 const ORDER = [
