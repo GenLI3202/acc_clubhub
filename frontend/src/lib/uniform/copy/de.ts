@@ -178,7 +178,7 @@ export const de: UniformCopy = {
         fineprint: 'Maßanfertigung: keine Rückgabe bei falscher Größe · nur Abholung in München',
         termsLink: 'Gut zu wissen',
         edit: 'Bestellung ändern',
-        steps: ['Auswahl', 'Angaben', 'Zahlung', 'Nachweis'],
+        steps: ['Auswahl', 'Angaben', 'Zahlung', 'Nachweis, Gruppe'],
         mobileBar: 'Bestellung ansehen',
     },
 
@@ -202,6 +202,11 @@ export const de: UniformCopy = {
         copyFailed: 'Automatisches Kopieren nicht möglich – Text gedrückt halten',
         editWarning: 'Wenn du schon bezahlt hast, ändere die Bestellung bitte nicht, sondern melde dich bei unserem Team.',
         saveNote: 'Mache einen Screenshot von Bestellcode und Betrag.',
+        groupHint: 'Füge nach Zahlung und Upload auch Ronnie auf WeChat hinzu, um der Bestellgruppe beizutreten (unten auf dieser Seite).',
+        groupTitle: 'Letzter Schritt: der WeChat-Bestellgruppe beitreten',
+        groupBody:
+            'Füge nach dem Absenden des Formulars unser Teammitglied Ronnie auf WeChat hinzu und bitte darum, in die Bestellgruppe aufgenommen zu werden. Ankunft sowie Zeit und Ort der Abholung werden dort bekannt gegeben; ohne Beitritt verpasst du die Abholung eventuell.',
+        groupScan: 'Scanne den Code, um Ronnie auf WeChat hinzuzufügen, und schreibe Namen und Bestellcode in die Anfrage.',
     },
 
     contactStep: {

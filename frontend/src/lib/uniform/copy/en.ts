@@ -178,7 +178,7 @@ export const en: UniformCopy = {
         fineprint: 'Made to order: no returns or exchanges for a wrong size · pick-up in Munich only',
         termsLink: 'Good to know',
         edit: 'Edit order',
-        steps: ['Choose', 'Details', 'Pay', 'Upload proof'],
+        steps: ['Choose', 'Details', 'Pay', 'Upload, join group'],
         mobileBar: 'View order',
     },
 
@@ -202,6 +202,11 @@ export const en: UniformCopy = {
         copyFailed: 'Could not copy automatically — press and hold the text',
         editWarning: 'If you have already paid, please do not change the order; contact our team instead.',
         saveNote: 'Take a screenshot of your order code and amount.',
+        groupHint: 'After paying and uploading your screenshot, also add Ronnie on WeChat to join the order group (at the bottom of this page).',
+        groupTitle: 'Last step: join the order WeChat group',
+        groupBody:
+            'After submitting the form, add our team member Ronnie on WeChat and ask to be added to the order group. Arrival and pick-up time and place are announced there; without joining you may miss the pick-up.',
+        groupScan: 'Scan to add Ronnie on WeChat, and put your name and order code in the request note.',
     },
 
     contactStep: {

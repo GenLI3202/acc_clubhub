@@ -152,6 +152,10 @@ export interface UniformCopy {
         readonly copyFailed: string;
         readonly editWarning: string;
         readonly saveNote: string;
+        readonly groupHint: string;
+        readonly groupTitle: string;
+        readonly groupBody: string;
+        readonly groupScan: string;
     };
 
     readonly contactStep: {

@@ -103,6 +103,7 @@ export function PayStep({ copy, order, totals, contact }: PayStepProps) {
                     <span class="kit-remind-icon" aria-hidden="true">!</span>
                     {pay.saveNote}
                 </p>
+                <p class="kit-callout kit-group-hint">{pay.groupHint}</p>
 
                 {currency === 'RMB' ? (
                     <div class="kit-method">
@@ -163,6 +164,27 @@ export function PayStep({ copy, order, totals, contact }: PayStepProps) {
                 ) : (
                     <p class="kit-empty">{form.comingSoon}</p>
                 )}
+            </section>
+
+            <section class="kit-panel kit-group" aria-labelledby="kit-group-title">
+                <h3 class="kit-panel-title" id="kit-group-title">
+                    <span class="kit-remind-icon" aria-hidden="true">!</span>
+                    {pay.groupTitle}
+                </h3>
+                <div class="kit-alipay">
+                    <img
+                        class="kit-qr"
+                        src={PAYMENT.contact.wechatQrImage}
+                        alt={pay.groupScan}
+                        width="240"
+                        height="320"
+                        loading="lazy"
+                    />
+                    <div>
+                        <p>{pay.groupBody}</p>
+                        <p class="kit-note">{pay.groupScan}</p>
+                    </div>
+                </div>
             </section>
         </div>
     );
