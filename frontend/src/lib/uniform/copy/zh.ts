@@ -85,7 +85,7 @@ export const zh: UniformCopy = {
         eyebrow: '选购',
         title: '选择款式、尺码和件数',
         intro: '三个款式单独售卖，没有套装优惠。先选会员身份和付款方式，再挑款式；选好后在「您的订单」里确认，然后去付款。',
-        payTitle: '付款并上传截图',
+        payTitle: '付款并确认订单',
         contactTitle: '填写联系信息',
         wechatTitle: '请在浏览器中打开本页',
         wechatBody:
@@ -178,7 +178,7 @@ export const zh: UniformCopy = {
         fineprint: '定制商品：尺码选错不退不换 · 仅慕尼黑自提',
         termsLink: '订购须知',
         edit: '修改订单',
-        steps: ['选购', '填写信息', '付款', '上传截图并入群'],
+        steps: ['选购', '填写信息', '付款', '确认订单并入群'],
         mobileBar: '查看订单',
     },
 
@@ -202,16 +202,16 @@ export const zh: UniformCopy = {
         copyFailed: '无法自动复制，请长按文字复制',
         editWarning: '如果已经付款，请不要修改订单；需要改动请联系工作人员。',
         saveNote: '请截图保存订单号和金额。',
-        groupHint: '付款并上传截图后，还要添加 Ronnie 的微信加入订购群（见本页最下方）。',
+        groupHint: '付款后还有两步，见下方：① 确认订单（提交表单；没有 Google 账号就把订单信息和付款截图发给 Ronnie）；② 添加 Ronnie 的微信，加入订购群。',
         groupTitle: '最后一步：加入订购微信群',
         groupBody:
-            '提交表单后，请添加工作人员 Ronnie 的微信，让他拉您进订购群。到货时间、取货时间和地点都会在群里通知，没有入群可能错过取货。',
+            '确认订单后，请添加工作人员 Ronnie 的微信，让他拉您进订购群。到货时间、取货时间和地点都会在群里通知，没有入群可能错过取货。',
         groupScan: '微信扫码添加 Ronnie，添加时请备注您的姓名和订单号。',
     },
 
     contactStep: {
         title: '联系信息',
-        intro: '请先留下联系方式。付款后打开订购表单时，这些信息会自动填好。',
+        intro: '请先留下联系方式。付款后需要确认订单：在线提交订购表单（要有 Google 账号），或把订单信息和付款截图发给 Ronnie。这些信息都会自动准备好。',
         nameLabel: '姓名',
         emailLabel: '邮箱',
         phoneLabel: '电话',
@@ -228,10 +228,18 @@ export const zh: UniformCopy = {
     },
 
     form: {
-        title: '上传付款截图',
-        intro: '您的姓名、联系方式和订单信息已自动填入表单。付款后打开表单，核对无误，上传付款截图并提交。',
-        signInNote:
-            '上传截图需要登录 Google 账号。无法登录时（例如在中国大陆），请把付款截图和订单号发给工作人员的微信或邮箱。',
+        title: '付款后：确认订单',
+        intro: '付款后请确认订单，二选一：',
+        withGoogleTitle: '有 Google 账号：在线提交表单',
+        withGoogleBody: '您的姓名、联系方式和订单信息已自动填入表单。核对无误，上传付款截图并提交。',
+        noGoogleTitle: '没有 Google 账号：发给 Ronnie',
+        noGoogleBody:
+            '把下面的订单信息和付款截图一起发给 Ronnie（微信二维码在本页最下方，也可以发邮件），他会为您登记订单，不需要再填表。',
+        orderInfoLabel: '订单信息',
+        copyInfo: '复制订单信息',
+        copied: '已复制',
+        copyFailed: '无法自动复制，请长按文字复制',
+        emailLink: '用邮件发送',
         openNewTab: '提交订购表单',
         comingSoon: '订购表单正在准备中，请稍后再来。',
     },
