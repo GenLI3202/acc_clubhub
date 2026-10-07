@@ -154,7 +154,8 @@ export function splitOrderLines(lines: readonly OrderLine[]): SplitLines {
     return { primary, extras };
 }
 
-function extraText(line: OrderLine): string {
+/** One line as staff read it: item | cut | (colour) size | quantity. */
+export function orderLineText(line: OrderLine): string {
     const category = categoryOf(line.sku);
     const colour = category === 'vest' ? `${VEST_COLOR_LABEL[line.sku as 'vest-white' | 'vest-black']} ` : '';
     return `${ITEM_NAME[category]} | ${CUT_LABEL[line.cut]} | ${colour}${line.size} | ${line.qty}`;
@@ -195,7 +196,7 @@ export function buildPrefillUrl(config: FormConfig, order: PrefillOrder): string
         values.vestSize = primary.vest.size;
         values.vestQty = String(primary.vest.qty);
     }
-    if (extras.length > 0) values.extras = extras.map(extraText).join('\n');
+    if (extras.length > 0) values.extras = extras.map(orderLineText).join('\n');
     if (order.contact) {
         const { name, email, phone, wechat } = normalizeContact(order.contact);
         if (name) values.name = name;

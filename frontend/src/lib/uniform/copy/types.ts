@@ -179,7 +179,15 @@ export interface UniformCopy {
     readonly form: {
         readonly title: string;
         readonly intro: string;
-        readonly signInNote: string;
+        readonly withGoogleTitle: string;
+        readonly withGoogleBody: string;
+        readonly noGoogleTitle: string;
+        readonly noGoogleBody: string;
+        readonly orderInfoLabel: string;
+        readonly copyInfo: string;
+        readonly copied: string;
+        readonly copyFailed: string;
+        readonly emailLink: string;
         readonly openNewTab: string;
         readonly comingSoon: string;
     };

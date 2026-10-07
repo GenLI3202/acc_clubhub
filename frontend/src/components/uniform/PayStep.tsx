@@ -4,6 +4,7 @@ import type { ContactInfo } from '../../lib/uniform/contact';
 import { FORM_CONFIG, buildPrefillUrl, isFormConfigured } from '../../lib/uniform/form';
 import type { UniformCopy } from '../../lib/uniform/copy';
 import type { OrderState } from '../../lib/uniform/orderState';
+import { buildOrderMailto, buildOrderSummary } from '../../lib/uniform/orderSummary';
 import { PAYMENT, formatIban } from '../../lib/uniform/payment';
 import { formatPrice, type OrderTotals } from '../../lib/uniform/pricing';
 
@@ -29,7 +30,13 @@ async function copyText(value: string): Promise<boolean> {
     }
 }
 
-function CopyButton({ value, label, copy }: { value: string; label: string; copy: UniformCopy['pay'] }) {
+interface CopyLabels {
+    readonly copy: string;
+    readonly copied: string;
+    readonly copyFailed: string;
+}
+
+function CopyButton({ value, label, copy }: { value: string; label: string; copy: CopyLabels }) {
     const [result, setResult] = useState<'idle' | 'done' | 'failed'>('idle');
     const timer = useRef<number>();
     useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -52,7 +59,7 @@ function CopyButton({ value, label, copy }: { value: string; label: string; copy
     );
 }
 
-function Row({ label, value, raw, copy }: { label: string; value: string; raw?: string; copy: UniformCopy['pay'] }) {
+function Row({ label, value, raw, copy }: { label: string; value: string; raw?: string; copy: CopyLabels }) {
     return (
         <div class="kit-pay-row">
             <dt>{label}</dt>
@@ -76,6 +83,9 @@ export function PayStep({ copy, order, totals, contact }: PayStepProps) {
     const config = isFormConfigured(FORM_CONFIG) ? FORM_CONFIG : null;
     const orderForForm = { code, lines: order.lines, membership, currency, contact };
     const openUrl = config && code ? buildPrefillUrl(config, orderForForm) : null;
+    const summaryText = code ? buildOrderSummary(orderForForm) : '';
+    const mailtoUrl = code ? buildOrderMailto(PAYMENT.contact.email, orderForForm) : null;
+    const formCopy: CopyLabels = { copy: form.copyInfo, copied: form.copied, copyFailed: form.copyFailed };
 
     return (
         <div class="kit-pay">
@@ -84,7 +94,6 @@ export function PayStep({ copy, order, totals, contact }: PayStepProps) {
                     {pay.title}
                 </h3>
                 <p class="kit-lede">{pay.intro}</p>
-                <p class="kit-callout">{form.signInNote}</p>
 
                 <dl class="kit-pay-key">
                     <div>
@@ -154,16 +163,44 @@ export function PayStep({ copy, order, totals, contact }: PayStepProps) {
                     {form.title}
                 </h3>
 
-                {openUrl ? (
-                    <>
-                        <p class="kit-lede">{form.intro}</p>
-                        <a class="kit-btn kit-btn--solid" href={openUrl} target="_blank" rel="noopener noreferrer">
-                            {form.openNewTab}
-                        </a>
-                    </>
-                ) : (
-                    <p class="kit-empty">{form.comingSoon}</p>
-                )}
+                <p class="kit-lede">{form.intro}</p>
+
+                <div class="kit-option">
+                    <h4>{form.withGoogleTitle}</h4>
+                    {openUrl ? (
+                        <>
+                            <p>{form.withGoogleBody}</p>
+                            <a class="kit-btn kit-btn--solid" href={openUrl} target="_blank" rel="noopener noreferrer">
+                                {form.openNewTab}
+                            </a>
+                        </>
+                    ) : (
+                        <p class="kit-empty">{form.comingSoon}</p>
+                    )}
+                </div>
+
+                <div class="kit-option">
+                    <h4>{form.noGoogleTitle}</h4>
+                    <p>{form.noGoogleBody}</p>
+                    <label class="kit-field-label" for="kit-order-info">
+                        {form.orderInfoLabel}
+                    </label>
+                    <textarea
+                        class="kit-input kit-order-info"
+                        id="kit-order-info"
+                        readOnly
+                        rows={Math.min(summaryText.split('\n').length, 14)}
+                        value={summaryText}
+                    />
+                    <div class="kit-option-actions">
+                        <CopyButton value={summaryText} label={form.orderInfoLabel} copy={formCopy} />
+                        {mailtoUrl && (
+                            <a class="kit-btn kit-btn--outline" href={mailtoUrl}>
+                                {form.emailLink}
+                            </a>
+                        )}
+                    </div>
+                </div>
             </section>
 
             <section class="kit-panel kit-group" aria-labelledby="kit-group-title">
