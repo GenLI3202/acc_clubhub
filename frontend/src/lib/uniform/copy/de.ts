@@ -85,7 +85,7 @@ export const de: UniformCopy = {
         eyebrow: 'Shop',
         title: 'Artikel, Größe und Anzahl wählen',
         intro: 'Alle Artikel werden einzeln verkauft, es gibt keinen Set-Rabatt. Wähle zuerst Mitgliedschaft und Zahlungsart, dann deine Artikel; prüfe „Deine Bestellung“ und gehe dann zur Zahlung.',
-        payTitle: 'Bezahlen und Bestellung bestätigen',
+        payTitle: 'Bezahlen und Bestellformular absenden',
         contactTitle: 'Deine Kontaktdaten',
         wechatTitle: 'Bitte im Browser öffnen',
         wechatBody:
@@ -178,7 +178,7 @@ export const de: UniformCopy = {
         fineprint: 'Maßanfertigung: keine Rückgabe bei falscher Größe · nur Abholung in München',
         termsLink: 'Gut zu wissen',
         edit: 'Bestellung ändern',
-        steps: ['Auswahl', 'Angaben', 'Zahlung', 'Bestätigen, Gruppe'],
+        steps: ['Auswahl', 'Angaben', 'Zahlung', 'Formular, Gruppe'],
         mobileBar: 'Bestellung ansehen',
     },
 
@@ -202,16 +202,16 @@ export const de: UniformCopy = {
         copyFailed: 'Automatisches Kopieren nicht möglich – Text gedrückt halten',
         editWarning: 'Wenn du schon bezahlt hast, ändere die Bestellung bitte nicht, sondern melde dich bei unserem Team.',
         saveNote: 'Mache einen Screenshot von Bestellcode und Betrag.',
-        groupHint: 'Nach der Zahlung folgen zwei Schritte, siehe unten: (1) Bestellung bestätigen (Formular absenden, oder ohne Google-Konto Bestelldaten und Zahlungsnachweis an Ronnie schicken); (2) Ronnie auf WeChat hinzufügen und der Bestellgruppe beitreten.',
+        groupHint: 'Nach der Zahlung folgen zwei Schritte, siehe unten: (1) Bestellformular mit Zahlungsnachweis absenden; (2) Ronnie auf WeChat hinzufügen und der Bestellgruppe beitreten.',
         groupTitle: 'Letzter Schritt: der WeChat-Bestellgruppe beitreten',
         groupBody:
-            'Füge nach der Bestätigung deiner Bestellung unser Teammitglied Ronnie auf WeChat hinzu und bitte darum, in die Bestellgruppe aufgenommen zu werden. Ankunft sowie Zeit und Ort der Abholung werden dort bekannt gegeben; ohne Beitritt verpasst du die Abholung eventuell.',
+            'Füge nach dem Absenden des Formulars unser Teammitglied Ronnie auf WeChat hinzu und bitte darum, in die Bestellgruppe aufgenommen zu werden. Ankunft sowie Zeit und Ort der Abholung werden dort bekannt gegeben; ohne Beitritt verpasst du die Abholung eventuell.',
         groupScan: 'Scanne den Code, um Ronnie auf WeChat hinzuzufügen, und schreibe Namen und Bestellcode in die Anfrage.',
     },
 
     contactStep: {
         title: 'Kontaktdaten',
-        intro: 'Hinterlasse zuerst deine Kontaktdaten. Nach der Zahlung bestätigst du die Bestellung: das Bestellformular online absenden (Google-Konto nötig) oder Bestelldaten und Zahlungsnachweis an Ronnie schicken. Alles wird für dich vorbereitet.',
+        intro: 'Hinterlasse zuerst deine Kontaktdaten. Sie werden automatisch ins Bestellformular eingetragen, wenn du nach der Zahlung deinen Zahlungsnachweis hochlädst.',
         nameLabel: 'Name',
         emailLabel: 'E-Mail',
         phoneLabel: 'Telefon',
@@ -228,14 +228,12 @@ export const de: UniformCopy = {
     },
 
     form: {
-        title: 'Nach der Zahlung: Bestellung bestätigen',
-        intro: 'Bestätige deine Bestellung nach der Zahlung auf einem von zwei Wegen:',
-        withGoogleTitle: 'Mit Google-Konto: Formular absenden',
-        withGoogleBody:
-            'Name, Kontaktdaten und Bestellung sind im Formular schon eingetragen. Prüfe alles, lade deinen Zahlungsnachweis hoch und sende es ab.',
-        noGoogleTitle: 'Ohne Google-Konto: an Ronnie schicken',
+        title: 'Nach der Zahlung: Bestellformular absenden',
+        intro: 'Deine Bestellung ist erst mit dem abgesendeten Formular vollständig. Name, Kontaktdaten und Bestellung sind schon eingetragen; prüfe alles, lade deinen Zahlungsnachweis hoch und sende es ab.',
+        signInHint: 'Für das Formular brauchst du eine Google-Anmeldung.',
+        noGoogleTitle: 'Kein Google-Konto, oder das Formular öffnet sich nicht?',
         noGoogleBody:
-            'Schicke die Bestelldaten unten zusammen mit deinem Zahlungsnachweis an Ronnie (WeChat-QR-Code unten auf dieser Seite, oder per E-Mail). Er trägt die Bestellung für dich ein; ein Formular ist dann nicht nötig.',
+            'Nur wenn du das Formular nicht absenden kannst: Schicke die Bestelldaten unten zusammen mit deinem Zahlungsnachweis an Ronnie (WeChat-QR-Code unten auf dieser Seite, oder per E-Mail); er trägt die Bestellung für dich ein.',
         orderInfoLabel: 'Bestelldaten',
         copyInfo: 'Bestelldaten kopieren',
         copied: 'Kopiert',

@@ -164,43 +164,47 @@ export function PayStep({ copy, order, totals, contact }: PayStepProps) {
                 </h3>
 
                 <p class="kit-lede">{form.intro}</p>
+                {openUrl ? (
+                    <>
+                        <a
+                            class="kit-btn kit-btn--solid kit-wide kit-form-cta"
+                            href={openUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {form.openNewTab} <span aria-hidden="true">↗</span>
+                        </a>
+                        <p class="kit-note">{form.signInHint}</p>
+                    </>
+                ) : (
+                    <p class="kit-empty">{form.comingSoon}</p>
+                )}
 
-                <div class="kit-option">
-                    <h4>{form.withGoogleTitle}</h4>
-                    {openUrl ? (
-                        <>
-                            <p>{form.withGoogleBody}</p>
-                            <a class="kit-btn kit-btn--solid" href={openUrl} target="_blank" rel="noopener noreferrer">
-                                {form.openNewTab}
-                            </a>
-                        </>
-                    ) : (
-                        <p class="kit-empty">{form.comingSoon}</p>
-                    )}
-                </div>
-
-                <div class="kit-option">
-                    <h4>{form.noGoogleTitle}</h4>
-                    <p>{form.noGoogleBody}</p>
-                    <label class="kit-field-label" for="kit-order-info">
-                        {form.orderInfoLabel}
-                    </label>
-                    <textarea
-                        class="kit-input kit-order-info"
-                        id="kit-order-info"
-                        readOnly
-                        rows={Math.min(summaryText.split('\n').length, 14)}
-                        value={summaryText}
-                    />
-                    <div class="kit-option-actions">
-                        <CopyButton value={summaryText} label={form.orderInfoLabel} copy={formCopy} />
-                        {mailtoUrl && (
-                            <a class="kit-btn kit-btn--outline" href={mailtoUrl}>
-                                {form.emailLink}
-                            </a>
-                        )}
+                {/* A fallback only, so it stays folded: the form is how orders are confirmed. */}
+                <details class="kit-fallback">
+                    <summary>{form.noGoogleTitle}</summary>
+                    <div class="kit-fallback-body">
+                        <p>{form.noGoogleBody}</p>
+                        <label class="kit-field-label" for="kit-order-info">
+                            {form.orderInfoLabel}
+                        </label>
+                        <textarea
+                            class="kit-input kit-order-info"
+                            id="kit-order-info"
+                            readOnly
+                            rows={Math.min(summaryText.split('\n').length, 14)}
+                            value={summaryText}
+                        />
+                        <div class="kit-option-actions">
+                            <CopyButton value={summaryText} label={form.orderInfoLabel} copy={formCopy} />
+                            {mailtoUrl && (
+                                <a class="kit-btn kit-btn--outline" href={mailtoUrl}>
+                                    {form.emailLink}
+                                </a>
+                            )}
+                        </div>
                     </div>
-                </div>
+                </details>
             </section>
 
             <section class="kit-panel kit-group" aria-labelledby="kit-group-title">
