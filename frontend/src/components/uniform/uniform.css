@@ -1379,25 +1379,31 @@ body:has(dialog.kit-dialog[open]) {
   line-height: 1.6;
 }
 
-/* After paying: two ways to confirm the order */
-.kit-option {
+/* After paying: the form first, a folded fallback for buyers without Google */
+.kit-form-cta {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  padding: 1rem 1.4rem;
+}
+.kit-fallback {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 0.9rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+.kit-fallback summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.kit-fallback-body {
   display: grid;
   gap: 0.6rem;
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  margin-top: 0.75rem;
 }
-.kit-option h4 {
-  margin: 0;
-  font-size: 1rem;
-}
-.kit-option p {
+.kit-fallback-body p {
   margin: 0;
   line-height: 1.6;
-}
-.kit-option .kit-btn {
-  width: fit-content;
 }
 .kit-order-info {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

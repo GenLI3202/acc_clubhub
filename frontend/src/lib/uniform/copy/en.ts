@@ -85,7 +85,7 @@ export const en: UniformCopy = {
         eyebrow: 'Shop',
         title: 'Choose item, size and quantity',
         intro: 'All items are sold separately, with no bundle discount. Choose your membership and payment method first, then your items; check “Your order”, then continue to payment.',
-        payTitle: 'Pay and confirm your order',
+        payTitle: 'Pay and submit the order form',
         contactTitle: 'Your contact details',
         wechatTitle: 'Open this page in your browser',
         wechatBody:
@@ -178,7 +178,7 @@ export const en: UniformCopy = {
         fineprint: 'Made to order: no returns or exchanges for a wrong size · pick-up in Munich only',
         termsLink: 'Good to know',
         edit: 'Edit order',
-        steps: ['Choose', 'Details', 'Pay', 'Confirm, join group'],
+        steps: ['Choose', 'Details', 'Pay', 'Form, join group'],
         mobileBar: 'View order',
     },
 
@@ -202,16 +202,16 @@ export const en: UniformCopy = {
         copyFailed: 'Could not copy automatically — press and hold the text',
         editWarning: 'If you have already paid, please do not change the order; contact our team instead.',
         saveNote: 'Take a screenshot of your order code and amount.',
-        groupHint: 'Two steps remain after paying, see below: (1) confirm your order (submit the form, or without a Google account send the order details and payment screenshot to Ronnie); (2) add Ronnie on WeChat to join the order group.',
+        groupHint: 'Two steps remain after paying, see below: (1) submit the order form with your payment screenshot; (2) add Ronnie on WeChat to join the order group.',
         groupTitle: 'Last step: join the order WeChat group',
         groupBody:
-            'After confirming your order, add our team member Ronnie on WeChat and ask to be added to the order group. Arrival and pick-up time and place are announced there; without joining you may miss the pick-up.',
+            'After submitting the form, add our team member Ronnie on WeChat and ask to be added to the order group. Arrival and pick-up time and place are announced there; without joining you may miss the pick-up.',
         groupScan: 'Scan to add Ronnie on WeChat, and put your name and order code in the request note.',
     },
 
     contactStep: {
         title: 'Contact details',
-        intro: 'Leave your contact details first. After paying you confirm the order: submit the order form online (needs a Google account) or send the order details and payment screenshot to Ronnie. Everything is prepared for you.',
+        intro: 'Leave your contact details first. They are filled into the order form for you when you upload your payment screenshot after paying.',
         nameLabel: 'Name',
         emailLabel: 'Email',
         phoneLabel: 'Phone',
@@ -228,14 +228,12 @@ export const en: UniformCopy = {
     },
 
     form: {
-        title: 'After paying: confirm your order',
-        intro: 'After paying, confirm your order in one of two ways:',
-        withGoogleTitle: 'With a Google account: submit the form',
-        withGoogleBody:
-            'Your name, contact details and order are already filled into the form. Check them, upload your payment screenshot and submit.',
-        noGoogleTitle: 'No Google account: send it to Ronnie',
+        title: 'After paying: submit the order form',
+        intro: 'Your order is complete only once the form is submitted. Your name, contact details and order are already filled in; check them, upload your payment screenshot and submit.',
+        signInHint: 'The form needs a Google sign-in.',
+        noGoogleTitle: 'No Google account, or the form will not open?',
         noGoogleBody:
-            'Send the order details below together with your payment screenshot to Ronnie (WeChat QR code at the bottom of this page, or by email). He registers the order for you; no form needed.',
+            'Only if you cannot submit the form: send the order details below together with your payment screenshot to Ronnie (WeChat QR code at the bottom of this page, or by email), and he registers the order for you.',
         orderInfoLabel: 'Order details',
         copyInfo: 'Copy order details',
         copied: 'Copied',
