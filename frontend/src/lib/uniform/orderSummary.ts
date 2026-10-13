@@ -18,7 +18,7 @@ export interface SummaryOrder {
 
 export function buildOrderSummary(order: SummaryOrder): string {
     const totals = computeTotals(order.lines, order.membership, order.currency);
-    const { name, email, phone, wechat } = order.contact;
+    const { name, email, phone, wechat, address } = order.contact;
     const rows = [
         `ACC 2026 队服订单 Kit order — ${order.code}`,
         '',
@@ -27,6 +27,9 @@ export function buildOrderSummary(order: SummaryOrder): string {
         `邮箱 Email: ${email}`,
         `电话 Phone: ${phone}`,
         wechat ? `微信 WeChat: ${wechat}` : null,
+        address
+            ? `收货地址 Delivery address: ${address}`
+            : '收货方式 Delivery: 慕尼黑自提 / Munich pick-up',
         `会员身份 Membership: ${MEMBERSHIP_LABEL[order.membership]}`,
         `付款方式 Payment: ${PAYMENT_LABEL[order.currency]}`,
         `应付金额 Amount due: ${formatPrice(totals.total, order.currency)}`,
