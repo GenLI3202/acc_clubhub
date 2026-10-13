@@ -167,12 +167,17 @@ export interface UniformCopy {
         readonly phoneHint: string;
         readonly wechatLabel: string;
         readonly wechatHint: string;
+        readonly scopeTitle: string;
+        readonly scopeBody: string;
+        readonly addressLabel: string;
+        readonly addressHint: string;
         readonly privacy: string;
         readonly continue: string;
         readonly errors: {
             readonly required: string;
             readonly invalidEmail: string;
             readonly invalidPhone: string;
+            readonly invalidAddress: string;
         };
     };
 

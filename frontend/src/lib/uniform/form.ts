@@ -61,6 +61,7 @@ export type FormField =
     | 'email'
     | 'phone'
     | 'wechat'
+    | 'address'
     | 'jerseyCut'
     | 'jerseySize'
     | 'jerseyQty'
@@ -103,6 +104,7 @@ const FORM_ENTRIES: FormConfig['entries'] | null = {
     email: '1558824138',
     phone: '1528195893',
     wechat: '1152978077',
+    address: '1684054380',
     jerseyCut: '1846632135',
     jerseySize: '9868957',
     jerseyQty: '1886567049',
@@ -198,11 +200,12 @@ export function buildPrefillUrl(config: FormConfig, order: PrefillOrder): string
     }
     if (extras.length > 0) values.extras = extras.map(orderLineText).join('\n');
     if (order.contact) {
-        const { name, email, phone, wechat } = normalizeContact(order.contact);
+        const { name, email, phone, wechat, address } = normalizeContact(order.contact);
         if (name) values.name = name;
         if (email) values.email = email;
         if (phone) values.phone = phone;
         if (wechat) values.wechat = wechat;
+        if (address) values.address = address;
     }
 
     const params = new URLSearchParams({ usp: 'pp_url' });

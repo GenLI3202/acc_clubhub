@@ -10,6 +10,8 @@ export interface ContactInfo {
     readonly phone: string;
     /** Optional. */
     readonly wechat: string;
+    /** Mainland China delivery address; empty means Munich pick-up. */
+    readonly address: string;
 }
 
 export type ContactField = keyof ContactInfo;
@@ -17,7 +19,7 @@ export type ContactError = 'required' | 'invalid';
 /** WeChat is optional, so it never has an error. */
 export type ContactErrors = Readonly<Record<Exclude<ContactField, 'wechat'>, ContactError | null>>;
 
-export const EMPTY_CONTACT: ContactInfo = { name: '', email: '', phone: '', wechat: '' };
+export const EMPTY_CONTACT: ContactInfo = { name: '', email: '', phone: '', wechat: '', address: '' };
 
 /** Longest value kept per field; the inputs use the same limits. */
 export const CONTACT_MAX_LENGTH: Readonly<Record<ContactField, number>> = {
@@ -25,9 +27,12 @@ export const CONTACT_MAX_LENGTH: Readonly<Record<ContactField, number>> = {
     email: 120,
     phone: 40,
     wechat: 60,
+    address: 200,
 };
 
-const FIELDS: readonly ContactField[] = ['name', 'email', 'phone', 'wechat'];
+const FIELDS: readonly ContactField[] = ['name', 'email', 'phone', 'wechat', 'address'];
+/** Shortest address that can plausibly reach a courier: province, city, street. */
+const ADDRESS_MIN_LENGTH = 6;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^\+?[\d\s\-().]+$/;
 const PHONE_MIN_DIGITS = 7;
@@ -39,6 +44,7 @@ export function normalizeContact(contact: ContactInfo): ContactInfo {
         email: contact.email.trim(),
         phone: contact.phone.trim(),
         wechat: contact.wechat.trim(),
+        address: contact.address.trim(),
     };
 }
 
@@ -48,12 +54,19 @@ function phoneIsValid(phone: string): boolean {
     return digits >= PHONE_MIN_DIGITS && digits <= PHONE_MAX_DIGITS;
 }
 
+/** Optional: empty is fine (pick-up), anything typed must look like a full address. */
+function addressError(address: string): ContactError | null {
+    if (address === '') return null;
+    return address.length < ADDRESS_MIN_LENGTH ? 'invalid' : null;
+}
+
 export function validateContact(contact: ContactInfo): ContactErrors {
-    const { name, email, phone } = normalizeContact(contact);
+    const { name, email, phone, address } = normalizeContact(contact);
     return {
         name: name === '' ? 'required' : null,
         email: email === '' ? 'required' : EMAIL_PATTERN.test(email) ? null : 'invalid',
         phone: phone === '' ? 'required' : phoneIsValid(phone) ? null : 'invalid',
+        address: addressError(address),
     };
 }
 

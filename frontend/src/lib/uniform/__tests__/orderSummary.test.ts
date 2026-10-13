@@ -14,7 +14,13 @@ const order = {
     lines,
     membership: 'member' as const,
     currency: 'EUR' as const,
-    contact: { name: 'Li Wei', email: 'li@example.com', phone: '+49 170 1234567', wechat: 'liwei' },
+    contact: {
+        name: 'Li Wei',
+        email: 'li@example.com',
+        phone: '+49 170 1234567',
+        wechat: 'liwei',
+        address: '北京市朝阳区某某路 1 号 100000',
+    },
 };
 
 describe('buildOrderSummary', () => {
@@ -39,6 +45,17 @@ describe('buildOrderSummary', () => {
         expect(text).toContain('分体上衣 | 男款 | M | 1');
         expect(text).toContain('分体裤 | 女款 | S | 2');
         expect(text).toContain('马甲 | 男款 | 黑色 L | 1');
+    });
+
+    it('shows the China delivery address when one is given', () => {
+        expect(text).toContain('收货地址 Delivery address: 北京市朝阳区某某路 1 号 100000');
+        expect(text).not.toContain('慕尼黑自提');
+    });
+
+    it('says Munich pick-up when there is no address', () => {
+        const pickup = buildOrderSummary({ ...order, contact: { ...order.contact, address: '' } });
+        expect(pickup).toContain('收货方式 Delivery: 慕尼黑自提 / Munich pick-up');
+        expect(pickup).not.toContain('收货地址');
     });
 
     it('leaves the WeChat line out when it is empty', () => {
