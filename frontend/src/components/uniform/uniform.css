@@ -1417,3 +1417,23 @@ body:has(dialog.kit-dialog[open]) {
   align-items: center;
   gap: 0.75rem;
 }
+
+/* Who may order here, shown above the contact fields */
+.kit-scope {
+  margin: 0 0 1.25rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.kit-scope strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+}
+.kit-scope p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+.kit-address {
+  min-height: 5.5rem;
+  resize: vertical;
+}
