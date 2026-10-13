@@ -4,7 +4,7 @@ export const zh: UniformCopy = {
     meta: {
         title: 'ACC 2026 新队服订购',
         description:
-            'Across Cycling Club Munich 2026 新队服开放订购：短袖上衣、背带短裤、马甲，截止 2026 年 10 月 25 日，慕尼黑自提。',
+            'Across Cycling Club Munich 2026 新队服开放订购：短袖上衣、背带短裤、马甲，截止 2026 年 10 月 25 日，慕尼黑自提或寄到国内。',
     },
 
     hero: {
@@ -17,7 +17,7 @@ export const zh: UniformCopy = {
         timeline: [
             { when: '即日起至 10 月 25 日', what: '在线订购' },
             { when: '10 月 26 日至 10 月 31 日', what: 'ACC 统计订单并向 GRC 下单' },
-            { when: '12 月中旬', what: '预计到货 · 慕尼黑自提' },
+            { when: '12 月中旬', what: '预计到货 · 慕尼黑自提或寄到国内' },
         ],
     },
 
@@ -175,7 +175,7 @@ export const zh: UniformCopy = {
         continueDisabled: '请至少加入一件',
         chooseFirst: '请先选择会员身份和付款方式',
         extrasNote: '同一款式的第二个尺码（或另一种马甲颜色）会写进表单的「其他尺码」栏，由工作人员手动汇总。',
-        fineprint: '定制商品：尺码选错不退不换 · 仅慕尼黑自提',
+        fineprint: '定制商品：尺码选错不退不换 · 慕尼黑自提或寄到国内',
         termsLink: '订购须知',
         edit: '修改订单',
         steps: ['选购', '填写信息', '付款', '提交表单并入群'],
@@ -218,12 +218,18 @@ export const zh: UniformCopy = {
         phoneHint: '请含国家区号，例如 +49 170 1234567',
         wechatLabel: '微信名 / 备注名（选填）',
         wechatHint: '方便工作人员在微信群里找到您',
+        scopeTitle: '请先确认收货方式',
+        scopeBody:
+            '仅支持两种方式：① 慕尼黑自提；② 寄送到中国大陆地址（请填写下方的收货地址）。欧洲其他地区（慕尼黑之外）或其他地方订购，请先微信联系 Ronnie 协调后续，暂不要在此提交。',
+        addressLabel: '国内收货地址（寄送时填写）',
+        addressHint: '省、市、区、详细地址和邮编。选择慕尼黑自提可留空。',
         privacy: '这些信息只用于本次队服订购，会通过 Google 表单交给工作人员；本页不会把它们保存到服务器。',
         continue: '确认信息，去付款',
         errors: {
             required: '请填写',
             invalidEmail: '邮箱格式不正确',
             invalidPhone: '电话格式不正确，请含国家区号',
+            invalidAddress: '地址请写全：省、市、区和详细地址',
         },
     },
 
@@ -270,7 +276,7 @@ export const zh: UniformCopy = {
         items: [
             '模特身上是样衣，成品以设计图为准（ACC Logo 样式有微调），实物与效果图会有出入。',
             '仅限质量问题可换，其余一律不退不换（包括尺码选错），请务必对照尺码表。',
-            '仅限慕尼黑自提，不支持邮寄；具体取货方式在微信群里沟通。',
+            '可慕尼黑自提，或寄送到中国大陆地址（寄送运费以工作人员确认为准）。慕尼黑之外的欧洲地区及其他地方，请先联系 Ronnie 协调。',
             '10 月 25 日 23:59（慕尼黑时间）截止，预计 10 月 31 日向 GRC 下单，12 月中旬到货。',
             '会员身份由您自行选择，我们会事后核对。',
             '个人信息与付款截图通过 Google 表单收集，仅用于本次队服订购及核对付款。',

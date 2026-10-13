@@ -4,7 +4,7 @@ export const en: UniformCopy = {
     meta: {
         title: 'ACC 2026 Kit Order',
         description:
-            'Order the Across Cycling Club Munich 2026 kit: jersey, bib shorts and vest. Orders close 25 October 2026, pick-up in Munich.',
+            'Order the Across Cycling Club Munich 2026 kit: jersey, bib shorts and vest. Orders close 25 October 2026, pick-up in Munich or shipping within China.',
     },
 
     hero: {
@@ -17,7 +17,7 @@ export const en: UniformCopy = {
         timeline: [
             { when: 'Now until 25 Oct', what: 'Order online' },
             { when: '26 – 31 Oct', what: 'ACC tallies the orders and places the order with GRC' },
-            { when: 'Mid-December', what: 'Expected delivery · pick-up in Munich' },
+            { when: 'Mid-December', what: 'Expected delivery · pick-up in Munich or shipped within China' },
         ],
     },
 
@@ -175,7 +175,7 @@ export const en: UniformCopy = {
         continueDisabled: 'Add at least one item',
         chooseFirst: 'Choose membership and payment method first',
         extrasNote: 'A second size of the same item (or a second vest colour) is written into the form’s “Additional items” field; our team adds it up by hand.',
-        fineprint: 'Made to order: no returns or exchanges for a wrong size · pick-up in Munich only',
+        fineprint: 'Made to order: no returns or exchanges for a wrong size · pick-up in Munich or shipped within China',
         termsLink: 'Good to know',
         edit: 'Edit order',
         steps: ['Choose', 'Details', 'Pay', 'Form, join group'],
@@ -218,12 +218,18 @@ export const en: UniformCopy = {
         phoneHint: 'Include the country code, e.g. +49 170 1234567',
         wechatLabel: 'WeChat name (optional)',
         wechatHint: 'Helps our team find you in the WeChat group',
+        scopeTitle: 'Check how you will receive the kit',
+        scopeBody:
+            'Two options only: (1) pick-up in Munich; (2) shipping to a mainland China address (fill in the address below). Outside Munich in Europe, or anywhere else: please contact Ronnie on WeChat first to arrange it, and do not submit here yet.',
+        addressLabel: 'Mainland China delivery address (for shipping)',
+        addressHint: 'Province, city, district, street address and postcode. Leave empty for Munich pick-up.',
         privacy: 'Used only for this kit order and passed to our team through a Google Form. This page does not store them on a server.',
         continue: 'Confirm and pay',
         errors: {
             required: 'Required',
             invalidEmail: 'This email address looks incomplete',
             invalidPhone: 'Check the phone number and include the country code',
+            invalidAddress: 'Please give the full address: province, city, district and street',
         },
     },
 
@@ -270,7 +276,7 @@ export const en: UniformCopy = {
         items: [
             'The model wears a sample. The final product follows the design drawings (the ACC logo style was adjusted), so it will differ from the photos.',
             'Items can be exchanged for quality problems only. Otherwise there are no returns or exchanges, wrong size included, so please check the size guide.',
-            'Pick-up in Munich only, no shipping. We will agree the details in the WeChat group.',
+            'Pick-up in Munich, or shipping to an address in mainland China (shipping costs confirmed by our team). Outside Munich in Europe and elsewhere, contact Ronnie first.',
             'Orders close 25 Oct 2026, 23:59 (Munich time). We place the order with GRC around 31 Oct, and expect delivery in mid-December.',
             'Your membership status is self-declared; we check it afterwards.',
             'Your personal data and payment screenshot are collected through a Google Form and used only for this kit order and to check payments.',

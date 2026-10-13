@@ -4,7 +4,7 @@ export const de: UniformCopy = {
     meta: {
         title: 'ACC Kit 2026 bestellen',
         description:
-            'Bestelle das Across Cycling Club München Kit 2026: Trikot, Trägerhose und Weste. Bestellschluss 25. Oktober 2026, Abholung in München.',
+            'Bestelle das Across Cycling Club München Kit 2026: Trikot, Trägerhose und Weste. Bestellschluss 25. Oktober 2026, Abholung in München oder Versand innerhalb Chinas.',
     },
 
     hero: {
@@ -17,7 +17,7 @@ export const de: UniformCopy = {
         timeline: [
             { when: 'Ab sofort bis 25. Okt.', what: 'Online bestellen' },
             { when: '26. – 31. Okt.', what: 'ACC stellt die Bestellungen zusammen und bestellt bei GRC' },
-            { when: 'Mitte Dezember', what: 'Voraussichtliche Lieferung · Abholung in München' },
+            { when: 'Mitte Dezember', what: 'Voraussichtliche Lieferung · Abholung in München oder Versand in China' },
         ],
     },
 
@@ -175,7 +175,7 @@ export const de: UniformCopy = {
         continueDisabled: 'Mindestens einen Artikel hinzufügen',
         chooseFirst: 'Bitte zuerst Mitgliedschaft und Zahlungsart wählen',
         extrasNote: 'Eine zweite Größe desselben Artikels (oder eine zweite Westenfarbe) steht im Formularfeld „Additional items“; unser Team rechnet sie von Hand zusammen.',
-        fineprint: 'Maßanfertigung: keine Rückgabe bei falscher Größe · nur Abholung in München',
+        fineprint: 'Maßanfertigung: keine Rückgabe bei falscher Größe · Abholung in München oder Versand in China',
         termsLink: 'Gut zu wissen',
         edit: 'Bestellung ändern',
         steps: ['Auswahl', 'Angaben', 'Zahlung', 'Formular, Gruppe'],
@@ -218,12 +218,18 @@ export const de: UniformCopy = {
         phoneHint: 'Mit Landesvorwahl, z. B. +49 170 1234567',
         wechatLabel: 'WeChat-Name (optional)',
         wechatHint: 'Damit unser Team dich in der WeChat-Gruppe findet',
+        scopeTitle: 'Bitte prüfe, wie du das Kit erhältst',
+        scopeBody:
+            'Nur zwei Möglichkeiten: (1) Abholung in München; (2) Versand an eine Adresse in Festlandchina (Adresse unten eintragen). Außerhalb von München in Europa oder anderswo: Bitte kontaktiere zuerst Ronnie auf WeChat, um alles abzustimmen, und sende hier noch nichts ab.',
+        addressLabel: 'Lieferadresse in Festlandchina (für Versand)',
+        addressHint: 'Provinz, Stadt, Bezirk, Straße und Hausnummer sowie Postleitzahl. Bei Abholung in München leer lassen.',
         privacy: 'Nur für diese Kit-Bestellung; sie gehen über ein Google-Formular an unser Team. Diese Seite speichert sie nicht auf einem Server.',
         continue: 'Bestätigen und bezahlen',
         errors: {
             required: 'Pflichtfeld',
             invalidEmail: 'Die E-Mail-Adresse scheint unvollständig',
             invalidPhone: 'Bitte Nummer prüfen und Landesvorwahl angeben',
+            invalidAddress: 'Bitte die vollständige Adresse angeben: Provinz, Stadt, Bezirk und Straße',
         },
     },
 
@@ -270,7 +276,7 @@ export const de: UniformCopy = {
         items: [
             'Das Model trägt ein Musterexemplar. Maßgeblich sind die Designzeichnungen (der Stil des ACC-Logos wurde angepasst), das Endprodukt weicht deshalb von den Fotos ab.',
             'Umtausch nur bei Qualitätsmängeln. Sonst gibt es weder Rückgabe noch Umtausch, auch nicht bei falscher Größe – bitte nutze die Größentabelle.',
-            'Nur Abholung in München, kein Versand. Die Details klären wir in der WeChat-Gruppe.',
+            'Abholung in München oder Versand an eine Adresse in Festlandchina (Versandkosten bestätigt unser Team). Außerhalb von München in Europa und anderswo bitte zuerst Ronnie kontaktieren.',
             'Bestellschluss 25.10.2026, 23:59 Uhr (Münchner Zeit). Wir bestellen am 31. Okt. bei GRC und erwarten die Lieferung Mitte Dezember.',
             'Deine Mitgliedschaft gibst du selbst an, wir prüfen sie nachträglich.',
             'Deine persönlichen Daten und der Zahlungsnachweis werden über ein Google-Formular erfasst und nur für diese Kit-Bestellung und zur Zahlungsprüfung verwendet.',
